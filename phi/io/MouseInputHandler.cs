@@ -96,7 +96,7 @@ namespace phi.io
          // Drawable Actions
          foreach (KeyValuePair<Drawable, LinkedList<Action<int, int>>> kvp in drawableActions)
          {
-            if (kvp.Key.GetBoundaryRectangle().Contains(e.X, e.Y))
+            if (kvp.Key.GetBoundaryRectangle().Contains(e.X, e.Y) && kvp.Key.IsDisplaying())
             {
                foreach (Action<int, int> action in kvp.Value)
                {
