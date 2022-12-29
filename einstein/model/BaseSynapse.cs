@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Einstein.model
 {
-    public abstract class BaseSynapse
+    public class BaseSynapse
     {
         public BaseNeuron From { get; set; }
         public BaseNeuron To { get; set; }
@@ -31,7 +31,7 @@ namespace Einstein.model
             return From.ToString() + " --(x" + Math.Round(Strength, 2) + ")--> " + To.ToString();
         }
 
-        public abstract string GetSave();
+        public virtual string GetSave() { throw new NotSupportedException(); }
     }
 
     public class SameNeuronException : Exception {

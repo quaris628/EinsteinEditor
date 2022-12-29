@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Einstein.ui;
 using phi;
 
 namespace Einstein
@@ -10,10 +11,13 @@ namespace Einstein
     // pass this object to the PhiMain method to set it to be used as the phi config settings
     public class EinsteinPhiConfig : DefaultConfig
     {
+        public const int PAD = 5;
+
         public new class Window : DefaultConfig.Window
         {
-            public new const int WIDTH = 1200;
-            public new const int HEIGHT = 700;
+            public new const string TITLE = "Einstien Bibite Editor";
+            public new const int WIDTH = 192 + (NeuronDrawable.RADIUS_SIZE * 2 + PAD) * 33 / 3 + 2 * PAD;
+            public new const int HEIGHT = 600;
         }
         public new class Render : DefaultConfig.Render
         {
@@ -22,6 +26,7 @@ namespace Einstein
 
         public override int GetWindowWidth() { return Window.WIDTH; }
         public override int GetWindowHeight() { return Window.HEIGHT; }
+        public override string GetWindowTitle() { return Window.TITLE; }
         public override int GetRenderFPS() { return Render.FPS; }
     }
 }

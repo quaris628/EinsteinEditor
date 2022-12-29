@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Einstein.model
 {
-    public abstract class BaseBrain
+    public class BaseBrain
     {
         public ICollection<BaseNeuron> Neurons { get; }
         private Dictionary<int, BaseNeuron> neuronsIndex;
@@ -126,7 +126,7 @@ namespace Einstein.model
             return synapsesToIndex[neuronIndex];
         }
 
-        public abstract string GetSave();
+        public virtual string GetSave() { throw new NotSupportedException(); }
     }
 
     public class ContainsDuplicateException : Exception {

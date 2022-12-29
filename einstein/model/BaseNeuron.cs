@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Einstein.model
 {
-    public abstract class BaseNeuron
+    public class BaseNeuron
     {
         // TODO add verification to setters on properties (on synapses and brain (?) too)
         public int Index { get; protected set; }
@@ -15,11 +15,15 @@ namespace Einstein.model
 
         protected BaseNeuron() { }
 
+        // Description will be the type name
+        public BaseNeuron(int index, NeuronType type) : this(index, type,
+            Enum.GetName(typeof(NeuronType), type)) { }
+
         public BaseNeuron(int index, NeuronType type, string description)
         {
             if (index < 0) {
-                throw new ArgumentOutOfRangeException("Index", index, "cannot be negative"); }
-            if (description == null) {
+                throw new ArgumentOutOfRangeException("Index", index, "cannot be negative");
+            } if (description == null) {
                 description = GetDefaultDescription(index);
             } else if (!description.All(char.IsLetterOrDigit)) {
                 throw new InvalidDescriptionException(
@@ -55,7 +59,7 @@ namespace Einstein.model
             return Description + " : " + Type.ToString();
         }
 
-        public abstract string GetSave();
+        public virtual string GetSave() { throw new NotSupportedException(); }
 
         public static string GetDefaultDescription(int index) { return "Hidden" + index; }
     }

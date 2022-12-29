@@ -7,7 +7,11 @@ To download and use:
  -----
 
 What this can do right now:
- - Show 3 buttons that do nothing
+ - Show a menu with options for input neurons, output neurons, and adding a hidden neuron
+     - For input neurons, show a single neuron icon
+	 - For output neurons, show a single neuron icon
+	 - For adding a hidden neuron, show icons with all 8 distinct neuron types
+ - Have the window be resized without hiding menu neuron icons (short of microscopic sizes)
  - (Maybe) crash or break in some other spectacular fashion (In other words: I make no guarantees about the condition of this software.)
 
 What this will do (planned features):
