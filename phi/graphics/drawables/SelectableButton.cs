@@ -27,15 +27,16 @@ namespace phi.graphics.drawables
             selectedButton.withOnClick(Deselect);
             this.unselectedButton = unselectedButton.Build();
             this.selectedButton = selectedButton.Build();
+            this.selectedButton.SetDisplaying(false);
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             unselectedButton.Initialize();
             selectedButton.Initialize();
         }
 
-        private void Select()
+        public void Select()
         {
             selectedButton.SetDisplaying(true);
             unselectedButton.SetDisplaying(false);
@@ -43,7 +44,7 @@ namespace phi.graphics.drawables
             FlagChange();
             onSelect.Invoke();
         }
-        private void Deselect()
+        public void Deselect()
         {
             selectedButton.SetDisplaying(false);
             unselectedButton.SetDisplaying(true);
@@ -51,6 +52,8 @@ namespace phi.graphics.drawables
             FlagChange();
             onDeselect.Invoke();
         }
+
+        public bool IsSelected() { return selected; }
 
         protected override void DrawAt(Graphics g, int x, int y)
         {
@@ -64,7 +67,6 @@ namespace phi.graphics.drawables
                 unselectedButton.SetXY(x, y);
                 unselectedButton.Draw(g);
             }
-
         }
     }
 }

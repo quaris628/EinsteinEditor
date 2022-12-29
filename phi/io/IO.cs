@@ -23,6 +23,14 @@ namespace phi.io
          public static void Clear() { CLICK.Clear(); DOWN.Clear(); UP.Clear(); MOVE.Clear(); }
       }
       public static readonly Renderer RENDERER = new Renderer();
+      
+      public struct WINDOW
+      {
+         private static WindowsForm form;
+         internal static void SetWindowsForm(WindowsForm form) { WINDOW.form = form; }
+         public static int GetWidth() { return form.Width - WindowsForm.WIDTH_FUDGE; }
+         public static int GetHeight() { return form.Height - WindowsForm.HEIGHT_FUDGE; }
+      }
 
       private IO() { }
 
