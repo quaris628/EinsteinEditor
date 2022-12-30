@@ -41,6 +41,10 @@ namespace phi.io
       {
          drawableActions[drawable].Remove(action);
       }
+      public void UnsubscribeAllFromDrawable(Drawable drawable)
+      {
+         drawableActions[drawable].Clear();
+      }
 
       public void SubscribeOnRegion(Action<int, int> action, Rectangle region)
       {
