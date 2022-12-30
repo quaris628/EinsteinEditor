@@ -53,7 +53,6 @@
     <Compile Include="model\json\JsonSynapse.cs" />
     <Compile Include="model\NeuronType.cs" />
     <Compile Include="Scene2.cs" />
-    <Compile Include="ui\menu\NeuronMenu.cs" />
     <Compile Include="ui\menu\NeuronMenuButton.cs" />
     <Compile Include="ui\NeuronDrawable.cs" />
     <Compile Include="config\VersionConfig.cs" />

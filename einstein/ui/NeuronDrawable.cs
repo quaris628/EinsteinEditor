@@ -30,12 +30,11 @@ namespace Einstein.ui
         private Text desc;
 
         public NeuronDrawable(int index, NeuronType type) :
-            this(new BaseNeuron(index, type), DEFAULT_X, DEFAULT_Y)
-        { }
+            this(new BaseNeuron(index, type), DEFAULT_X, DEFAULT_Y) { }
         public NeuronDrawable(int index, NeuronType type, string description) :
             this(new BaseNeuron(index, type, description), DEFAULT_X, DEFAULT_Y) { }
-        public NeuronDrawable(BaseNeuron neuron) :
-            this(neuron, DEFAULT_X, DEFAULT_Y) { }
+        public NeuronDrawable(NeuronDrawable neuron) : this(neuron.Neuron) { }
+        public NeuronDrawable(BaseNeuron neuron) : this(neuron, DEFAULT_X, DEFAULT_Y) { }
         public NeuronDrawable(BaseNeuron neuron, int x, int y) : base(x, y,
                 Math.Max(CIRCLE_DIAMETER, new Text.TextBuilder(neuron.Description)
                 .WithFontSize(FONT_SIZE).Build().GetWidth()), HEIGHT)

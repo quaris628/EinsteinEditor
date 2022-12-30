@@ -98,6 +98,18 @@ namespace Einstein.model
             synapsesToIndex[synapse.To.Index].Remove(synapse);
         }
 
+        public bool ContainsNeuron(BaseNeuron neuron) { return ContainsNeuron(neuron.Index); }
+        public bool ContainsNeuron(int index)
+        {
+            return neuronsIndex.ContainsKey(index);
+        }
+
+        public bool ContainsSynapse(BaseSynapse synapse) { return ContainsSynapse(synapse.From.Index, synapse.To.Index); }
+        public bool ContainsSynapse(int fromIndex, int toIndex)
+        {
+            return synapsesIndex.ContainsKey((fromIndex, toIndex));
+        }
+
         public BaseNeuron GetNeuron(int index)
         {
             return neuronsIndex[index];
