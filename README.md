@@ -6,39 +6,38 @@ To download and use:
 
  -----
 
-What this can do right now:
- - Show a menu with options for input neurons, output neurons, and adding a hidden neuron
-     - For input neurons, show a single neuron icon
-	 - For output neurons, show a single neuron icon
-	 - For adding a hidden neuron, show icons with all 8 distinct neuron types
+What this can do:
+ - (Maybe) crash or break in some other spectacular fashion
+ - Show a menu with options for input neurons, output neurons, and hidden neurons
+     - Selecting each button shows an appropriate list of neuron icons
+ - Show neurons as circular icons, with their type as a picture, and description as text below the circle
  - Have the window be resized without hiding menu neuron icons (short of microscopic sizes)
- - (Maybe) crash or break in some other spectacular fashion (In other words: I make no guarantees about the condition of this software.)
+
+What this can't do (and probably never will):
+ - Make you a milkshake
+ - Edit genes
+ - Edit world files
 
 What this will do (planned features):
+ - Allow you to create small, weak, inefficient, and dumb bibites to fill your empty worlds
  - Show/Hide input and output Neurons
  - Add/Remove hidden neurons (of specified types)
  - Add/Remove Synapses
- - View types and descriptions of neurons
+ - View types and descriptions of neurons in the brain
  - View synapse strengths
  - Drag neurons around the screen
  - Load brain from a bibite file
  - Save brain to a bibite file
- - Allow you to create small, weak, inefficient, and dumb bibites to fill your empty worlds
  
 What this might do (ideas for the future):
+ - Sentience
  - Create a blank bibite
  - Have keyboard shortcuts
  - Edit neuron type
  - Get some sort of visual indicator of the flow of any arbitrary input combination? Or allow testing certain input values?
  - Zoom in/out
- - Auto-arrange neurons in a prettier and more clean arrangement
+ - Have a button to auto-arrange neurons in a prettier and more clean arrangement
  - Look pretty
- - Sentience
-
-What this can't do (and probably never will):
- - Edit genes
- - Edit world files
- - Make you a milkshake
  
  -----
 
