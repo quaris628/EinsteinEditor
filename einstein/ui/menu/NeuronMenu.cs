@@ -13,7 +13,7 @@ namespace Einstein.ui.menu
 
         private NeuronMenuButton inputButton;
         private NeuronMenuButton outputButton;
-        private NeuronMenuButton addButton;
+        private NeuronMenuButton hiddenButton;
 
         public NeuronMenu()
         {
@@ -24,15 +24,16 @@ namespace Einstein.ui.menu
             // this is for now
             inputs.Add(new NeuronDrawable(0, NeuronType.Input, "Constant"));
             outputs.Add(new NeuronDrawable(1, NeuronType.TanH, "Accelerate"));
-            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MIN, NeuronType.Sigmoid));
-            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MIN, NeuronType.Linear));
-            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MIN, NeuronType.TanH));
-            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MIN, NeuronType.Sine));
-            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MIN, NeuronType.ReLu));
-            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MIN, NeuronType.Gaussian));
-            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MIN, NeuronType.Latch));
-            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MIN, NeuronType.Differential));
-            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MIN, NeuronType.Abs));
+            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MAX, NeuronType.Sigmoid, ""));
+            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MAX, NeuronType.Linear, ""));
+            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MAX, NeuronType.TanH, ""));
+            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MAX, NeuronType.Sine, ""));
+            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MAX, NeuronType.ReLu, ""));
+            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MAX, NeuronType.Gaussian, ""));
+            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MAX, NeuronType.Latch, ""));
+            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MAX, NeuronType.Differential, ""));
+            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MAX, NeuronType.Abs, ""));
+            hiddenTypes.Add(new NeuronDrawable(VersionConfig.HIDDEN_NODES_INDEX_MAX, NeuronType.Mult, ""));
 
             selected = null;
             inputButton = new NeuronMenuButton(
@@ -48,11 +49,11 @@ namespace Einstein.ui.menu
                 2 * EinsteinPhiConfig.PAD + NeuronMenuButton.HEIGHT,
                 "Output Neurons",
                 onSelectOutputs, onDeselectOutputs);
-            addButton = new NeuronMenuButton(
+            hiddenButton = new NeuronMenuButton(
                 hiddenTypes,
                 EinsteinPhiConfig.PAD,
                 3 * EinsteinPhiConfig.PAD + 2 * NeuronMenuButton.HEIGHT,
-                "Add Neurons",
+                "Hidden Neurons",
                 onSelectAdd, onDeselectAdd);
         }
 
@@ -60,7 +61,7 @@ namespace Einstein.ui.menu
         {
             inputButton.Initialize();
             outputButton.Initialize();
-            addButton.Initialize();
+            hiddenButton.Initialize();
         }
         
         // TODO still need to set up onclicks of the individual neuron options
@@ -80,7 +81,7 @@ namespace Einstein.ui.menu
         private void onSelectAdd()
         {
             selected?.Deselect();
-            selected = addButton;
+            selected = hiddenButton;
             selected.ShowOptions();
         }
 

@@ -18,5 +18,6 @@ namespace Einstein.model
         Latch = 7,
         Differential = 8,
         Abs = 9,
+        Mult = 10,
     }
 }
