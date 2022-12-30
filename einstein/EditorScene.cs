@@ -20,8 +20,6 @@ namespace Einstein
         //  UI Config
         // ----------------------------------------------------------------
 
-        private const string TITLE = "Einstein Bibite Editor";
-
         private const int PAD = EinsteinPhiConfig.PAD;
         
         private struct SELECTABLE_BUTTONS

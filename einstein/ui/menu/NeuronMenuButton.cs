@@ -78,11 +78,12 @@ namespace Einstein.ui.menu
             int startX = GetX() + GetWidth() + EinsteinPhiConfig.PAD;
             int x = startX;
             int y = EinsteinPhiConfig.PAD;
-            // assume all neuron option buttons are the same height
-            int deltaY = NeuronDrawable.RADIUS_SIZE * 2 + EinsteinPhiConfig.PAD;
+            // assumes all neuron option buttons are the same height
+            // idk why the *2 is needed, but it's too cramped (vertically) otherwise
+            int deltaY = NeuronDrawable.HEIGHT + EinsteinPhiConfig.PAD * 2;
             foreach (NeuronDrawable button in neuronOptions)
             {
-                button.SetXY(x, y);
+                button.SetXY(x + button.GetWidth() / 2, y + NeuronDrawable.CIRCLE_RADIUS);
                 x += (button.GetWidth() + EinsteinPhiConfig.PAD);
                 if (x + button.GetWidth() + EinsteinPhiConfig.PAD > IO.WINDOW.GetWidth())
                 {

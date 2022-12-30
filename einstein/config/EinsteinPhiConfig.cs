@@ -16,7 +16,7 @@ namespace Einstein
         public new class Window : DefaultConfig.Window
         {
             public new const string TITLE = "Einstien Bibite Editor";
-            public new const int WIDTH = 192 + (NeuronDrawable.RADIUS_SIZE * 2 + PAD) * 33 / 3 + 2 * PAD;
+            public new const int WIDTH = 192 + (NeuronDrawable.CIRCLE_DIAMETER + PAD) * 33 / 2 + 2 * PAD;
             public new const int HEIGHT = 600;
         }
         public new class Render : DefaultConfig.Render

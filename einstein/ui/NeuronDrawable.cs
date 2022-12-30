@@ -16,7 +16,10 @@ namespace Einstein.ui
     {
         private const string BASE_DIR = EinsteinPhiConfig.RES_DIR + "neurons/";
         public const string BASE_IMAGE = BASE_DIR + "NeuronBase.png";
-        public const int RADIUS_SIZE = 16;
+        public const int CIRCLE_RADIUS = 16;
+        public const int CIRCLE_DIAMETER = 2 * CIRCLE_RADIUS;
+        public const int HEIGHT = CIRCLE_DIAMETER + FONT_SIZE;
+        public const int FONT_SIZE = 10;
         public const int DEFAULT_X = 0;
         public const int DEFAULT_Y = 0;
 
@@ -24,6 +27,7 @@ namespace Einstein.ui
         public BaseNeuron Neuron { get; protected set; }
         private Sprite baseSprite;
         private Sprite icon;
+        private Text desc;
 
         public NeuronDrawable(int index, NeuronType type) :
             this(new BaseNeuron(index, type), DEFAULT_X, DEFAULT_Y)
@@ -32,8 +36,9 @@ namespace Einstein.ui
             this(new BaseNeuron(index, type, description), DEFAULT_X, DEFAULT_Y) { }
         public NeuronDrawable(BaseNeuron neuron) :
             this(neuron, DEFAULT_X, DEFAULT_Y) { }
-        public NeuronDrawable(BaseNeuron neuron, int x, int y) :
-            base(x, y, RADIUS_SIZE * 2, RADIUS_SIZE * 2)
+        public NeuronDrawable(BaseNeuron neuron, int x, int y) : base(x, y,
+                Math.Max(CIRCLE_DIAMETER, new Text.TextBuilder(neuron.Description)
+                .WithFontSize(FONT_SIZE).Build().GetWidth()), HEIGHT)
         {
             Neuron = neuron;
             baseSprite = new Sprite(new ImageWrapper(BASE_IMAGE), x, y);
@@ -47,14 +52,19 @@ namespace Einstein.ui
             {
                 // don't show any special icon
             }
+            desc = new Text.TextBuilder(neuron.Description)
+                .WithFontSize(FONT_SIZE).Build();
         }
 
         protected override void DrawAt(Graphics g, int x, int y)
         {
-            icon?.SetXY(x, y);
+            icon?.SetCenterXY(x, y);
             icon?.Draw(g);
-            baseSprite.SetXY(x, y);
+            baseSprite.SetCenterXY(x, y);
             baseSprite.Draw(g);
+            desc.SetCenterX(x);
+            desc.SetY(y + CIRCLE_RADIUS);
+            desc.Draw(g);
         }
 
         private static string getIconFileName(BaseNeuron neuron)
