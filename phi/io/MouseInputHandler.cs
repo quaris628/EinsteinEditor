@@ -106,6 +106,7 @@ namespace phi.io
                {
                   todos.AddLast(action);
                }
+               break; // only one drawable should be able to be clicked at a time.
             }
          }
 
