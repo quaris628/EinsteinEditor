@@ -10,12 +10,15 @@ namespace phi.graphics
 {
    public abstract class Drawable : Movable2D
    {
+      private static int nextId = 0;
+      private int id;
       private bool displaying;
       protected int height;
       protected int width;
 
       public Drawable(int x, int y, int width, int height) : base(x, y)
       {
+         id = nextId++;
          displaying = true;
          this.height = height;
          this.width = width;
@@ -23,6 +26,7 @@ namespace phi.graphics
 
       public Drawable(other.Rectangle rect) : base(rect.X, rect.Y)
       {
+         id = nextId++;
          displaying = true;
          this.height = rect.Height;
          this.width = rect.Width;
@@ -30,6 +34,7 @@ namespace phi.graphics
 
       public Drawable(System.Drawing.Rectangle rect) : base(rect.X, rect.Y)
       {
+         id = nextId++;
          displaying = true;
          this.height = rect.Height;
          this.width = rect.Width;
@@ -57,13 +62,7 @@ namespace phi.graphics
 
       public override int GetHashCode()
       {
-         unchecked // allow arithmetic overflow
-         {
-            int result = 1046527;
-            result *= 106033 ^ base.GetHashCode();
-            result *= 106033 ^ (displaying ? 1 : 0);
-            return result;
-         }
+         return id;
       }
 
       public override bool Equals(object obj)
