@@ -18,7 +18,6 @@ namespace Einstein.ui
         public const string BASE_IMAGE = BASE_DIR + "NeuronBase.png";
         public const int CIRCLE_RADIUS = 16;
         public const int CIRCLE_DIAMETER = 2 * CIRCLE_RADIUS;
-        public const int HEIGHT = CIRCLE_DIAMETER + FONT_SIZE;
         public const int FONT_SIZE = 10;
         public const int DEFAULT_X = 0;
         public const int DEFAULT_Y = 0;
@@ -35,9 +34,7 @@ namespace Einstein.ui
             this(new BaseNeuron(index, type, description), DEFAULT_X, DEFAULT_Y) { }
         public NeuronDrawable(NeuronDrawable neuron) : this(neuron.Neuron) { }
         public NeuronDrawable(BaseNeuron neuron) : this(neuron, DEFAULT_X, DEFAULT_Y) { }
-        public NeuronDrawable(BaseNeuron neuron, int x, int y) : base(x, y,
-                Math.Max(CIRCLE_DIAMETER, new Text.TextBuilder(neuron.Description)
-                .WithFontSize(FONT_SIZE).Build().GetWidth()), HEIGHT)
+        public NeuronDrawable(BaseNeuron neuron, int x, int y) : base(x, y, CIRCLE_DIAMETER, CIRCLE_DIAMETER)
         {
             Neuron = neuron;
             baseSprite = new Sprite(new ImageWrapper(BASE_IMAGE), x, y);
@@ -55,14 +52,24 @@ namespace Einstein.ui
                 .WithFontSize(FONT_SIZE).Build();
         }
 
+        public Text GetDescriptionText() { return desc; }
+
+        public int GetCircleCenterX() { return GetX() + CIRCLE_RADIUS; }
+        public int GetCircleCenterY() { return GetY() + CIRCLE_RADIUS; }
+        public void SetCircleCenterX(int x) { SetX(x - CIRCLE_RADIUS); }
+        public void SetCircleCenterY(int y) { SetY(y - CIRCLE_RADIUS); }
+        public void SetCircleCenterXY(int x, int y) { SetXY(x - CIRCLE_RADIUS, y - CIRCLE_RADIUS); }
+
         protected override void DrawAt(Graphics g, int x, int y)
         {
-            icon?.SetCenterXY(x, y);
+            icon?.SetXY(x, y);
             icon?.Draw(g);
-            baseSprite.SetCenterXY(x, y);
+            
+            baseSprite.SetXY(x, y);
             baseSprite.Draw(g);
-            desc.SetCenterX(x);
-            desc.SetY(y + CIRCLE_RADIUS);
+
+            desc.SetCenterX(x + CIRCLE_RADIUS);
+            desc.SetY(y + CIRCLE_DIAMETER);
             desc.Draw(g);
         }
 

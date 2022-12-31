@@ -21,8 +21,8 @@ namespace Einstein
         //  Config
         // ----------------------------------------------------------------
 
-        public const int SPAWN_X = 100 + NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD;
-        public const int SPAWN_Y = 100 + (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3;
+        public const int SPAWN_X = 250 + NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD;
+        public const int SPAWN_Y = 200 + (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3;
         public static readonly Rectangle BRAIN_AREA = new Rectangle(
             NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD,
             (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3,
@@ -59,13 +59,15 @@ namespace Einstein
                 EinsteinPhiConfig.PAD,
                 2 * EinsteinPhiConfig.PAD + NeuronMenuButton.HEIGHT,
                 "Output Neurons",
-                onSelectOutputs, onDeselectOutputs);
+                onSelectOutputs,
+                onDeselectOutputs);
             hiddenButton = new NeuronMenuButton(
                 generateHiddenNeurons(),
                 EinsteinPhiConfig.PAD,
                 3 * EinsteinPhiConfig.PAD + 2 * NeuronMenuButton.HEIGHT,
                 "Hidden Neurons",
-                onSelectAdd, onDeselectAdd);
+                onSelectAdd,
+                onDeselectAdd);
             prevWindowWidth = EinsteinPhiConfig.Window.WIDTH;
         }
 
@@ -83,7 +85,12 @@ namespace Einstein
                     }, neuronOption);
             }
             outputButton.Initialize();
-            // TODO set up onclicks
+            foreach (NeuronDrawable neuronOption in outputButton.GetNeuronOptions())
+            {
+                IO.MOUSE.UP.SubscribeOnDrawable(() => {
+                    onClickOutputOption(neuronOption);
+                }, neuronOption);
+            }
             hiddenButton.Initialize();
             // TODO set up onclicks
             IO.FRAME_TIMER.Subscribe(checkForResize);
@@ -105,7 +112,19 @@ namespace Einstein
         private void onClickInputOption(NeuronDrawable neuronOption)
         {
             inputButton.GetNeuronOptions().Remove(neuronOption);
-            neuronOption.SetXY(SPAWN_X, SPAWN_Y);
+            inputButton.RepositionOptions();
+            neuronOption.SetCircleCenterXY(SPAWN_X, SPAWN_Y);
+            IO.MOUSE.UP.UnsubscribeAllFromDrawable(neuronOption);
+            IO.MOUSE.CLICK.SubscribeOnDrawable(() => { onClickNeuron(neuronOption); }, neuronOption);
+            Draggable drag = new Draggable(neuronOption, BRAIN_AREA);
+            drag.Initialize();
+        }
+
+        private void onClickOutputOption(NeuronDrawable neuronOption)
+        {
+            outputButton.GetNeuronOptions().Remove(neuronOption);
+            outputButton.RepositionOptions();
+            neuronOption.SetCircleCenterXY(SPAWN_X, SPAWN_Y);
             IO.MOUSE.UP.UnsubscribeAllFromDrawable(neuronOption);
             IO.MOUSE.CLICK.SubscribeOnDrawable(() => { onClickNeuron(neuronOption); }, neuronOption);
             Draggable drag = new Draggable(neuronOption, BRAIN_AREA);
@@ -116,7 +135,9 @@ namespace Einstein
 
         private void onClickNeuron(NeuronDrawable neuron)
         {
-            // TODO show a menu or something
+            // TODO select this neuron and populate a menu of things you can do with it
+            //      (e.g. hide/delete, ... maybe that's it?)
+            // TODO make phi expose differentiation between left and right clicks
             Console.WriteLine("onclick");
         }
 
