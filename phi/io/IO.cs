@@ -17,10 +17,38 @@ namespace phi.io
       public struct MOUSE
       {
          public static readonly MouseInputHandler CLICK = new MouseInputHandler();
+         public static readonly MouseInputHandler LEFT_CLICK = new MouseInputHandler();
+         public static readonly MouseInputHandler RIGHT_CLICK = new MouseInputHandler();
+         public static readonly MouseInputHandler MID_CLICK = new MouseInputHandler();
          public static readonly MouseInputHandler DOWN = new MouseInputHandler();
+         public static readonly MouseInputHandler LEFT_DOWN = new MouseInputHandler();
+         public static readonly MouseInputHandler RIGHT_DOWN = new MouseInputHandler();
+         public static readonly MouseInputHandler MID_CLICK_DOWN = new MouseInputHandler();
          public static readonly MouseInputHandler UP = new MouseInputHandler();
+         public static readonly MouseInputHandler LEFT_UP = new MouseInputHandler();
+         public static readonly MouseInputHandler RIGHT_UP = new MouseInputHandler();
+         public static readonly MouseInputHandler MID_CLICK_UP = new MouseInputHandler();
+         //public static readonly MouseInputHandler MID_SCROLL_DOWN = new MouseInputHandler();
+         //public static readonly MouseInputHandler MID_SCROLL_UP = new MouseInputHandler();
          public static readonly MouseInputHandler MOVE = new MouseInputHandler();
-         public static void Clear() { CLICK.Clear(); DOWN.Clear(); UP.Clear(); MOVE.Clear(); }
+         public static void Clear()
+         {
+            CLICK.Clear();
+            LEFT_CLICK.Clear();
+            RIGHT_CLICK.Clear();
+            MID_CLICK.Clear();
+            DOWN.Clear();
+            LEFT_DOWN.Clear();
+            RIGHT_DOWN.Clear();
+            MID_CLICK_DOWN.Clear();
+            UP.Clear();
+            LEFT_UP.Clear();
+            RIGHT_UP.Clear();
+            MID_CLICK_UP.Clear();
+            //MID_SCROLL_DOWN.Clear();
+            //MID_SCROLL_UP.Clear();
+            MOVE.Clear();
+         }
       }
       public static readonly Renderer RENDERER = new Renderer();
       

@@ -11,31 +11,36 @@ namespace phi.graphics.renderables
 {
    public class Draggable : Renderable
    {
+      private const bool DEFAULT_USE_RIGHT_MOUSE_BUTTON = false;
+
       private Drawable drawable;
       private int dragOffsetX;
       private int dragOffsetY;
       private bool hasBounds;
       private Rectangle dragBounds;
+      private bool useRightMouseButton;
 
       public Draggable(Drawable drawable)
+         : this(drawable, new Rectangle(), DEFAULT_USE_RIGHT_MOUSE_BUTTON) { }
+      public Draggable(Drawable drawable, bool useRightMouseButton)
       {
          this.drawable = drawable;
-         this.hasBounds = false;
-         this.dragBounds = new Rectangle();
+         this.hasBounds = true;
+         this.dragBounds = new Rectangle(); // null doesn't work
+         this.useRightMouseButton = useRightMouseButton;
       }
-
-      public Draggable(Drawable drawable, Rectangle dragBounds)
+      public Draggable(Drawable drawable, Rectangle rectangle)
+         : this(drawable, rectangle, DEFAULT_USE_RIGHT_MOUSE_BUTTON) { }
+      public Draggable(Drawable drawable, int minX, int minY, int maxX, int maxY)
+         : this(drawable, minX, minY, maxX, maxY, DEFAULT_USE_RIGHT_MOUSE_BUTTON) { }
+      public Draggable(Drawable drawable, int minX, int minY, int maxX, int maxY, bool useRightMouseButton)
+         : this(drawable, new Rectangle(minX, minY, maxX - minX, maxY - minY), useRightMouseButton) { }
+      public Draggable(Drawable drawable, Rectangle dragBounds, bool useRightMouseButton)
       {
          this.drawable = drawable;
          this.hasBounds = true;
          this.dragBounds = dragBounds;
-      }
-
-      public Draggable(Drawable drawable, int minX, int minY, int maxX, int maxY)
-      {
-         this.drawable = drawable;
-         this.hasBounds = true;
-         this.dragBounds = new Rectangle(minX, minY, maxX - minX, maxY - minY);
+         this.useRightMouseButton = useRightMouseButton;
       }
 
       public void Initialize()

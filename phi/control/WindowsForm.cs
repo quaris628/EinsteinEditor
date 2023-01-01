@@ -54,9 +54,25 @@ namespace phi.control
          KeyPreview = true;
          KeyDown += new KeyEventHandler(IO.KEYS.KeyInputEvent);
          // Setup mouse input event handling
-         pictureBox.MouseClick += new MouseEventHandler(IO.MOUSE.CLICK.Event);
-         pictureBox.MouseDown += new MouseEventHandler(IO.MOUSE.DOWN.Event);
-         pictureBox.MouseUp += new MouseEventHandler(IO.MOUSE.UP.Event);
+         pictureBox.MouseClick += new MouseEventHandler((sender1, e1) => {
+            IO.MOUSE.CLICK.Event(sender1, e1);
+            if (e1.Button == MouseButtons.Left) { IO.MOUSE.LEFT_CLICK.Event(sender1, e1); }
+            else if (e1.Button == MouseButtons.Right) { IO.MOUSE.RIGHT_CLICK.Event(sender1, e1); }
+            else if (e1.Button == MouseButtons.Middle) { IO.MOUSE.MID_CLICK.Event(sender1, e1); }
+         });
+         pictureBox.MouseDown += new MouseEventHandler((sender1, e1) => {
+            IO.MOUSE.DOWN.Event(sender1, e1);
+            if (e1.Button == MouseButtons.Left) { IO.MOUSE.LEFT_DOWN.Event(sender1, e1); }
+            else if (e1.Button == MouseButtons.Right) { IO.MOUSE.RIGHT_DOWN.Event(sender1, e1); }
+            else if (e1.Button == MouseButtons.Middle) { IO.MOUSE.MID_CLICK_DOWN.Event(sender1, e1); }
+         });
+         pictureBox.MouseUp += new MouseEventHandler((sender1, e1) => {
+            IO.MOUSE.UP.Event(sender1, e1);
+            if (e1.Button == MouseButtons.Left) { IO.MOUSE.LEFT_UP.Event(sender1, e1); }
+            else if (e1.Button == MouseButtons.Right) { IO.MOUSE.RIGHT_UP.Event(sender1, e1); }
+            else if (e1.Button == MouseButtons.Middle) { IO.MOUSE.MID_CLICK_UP.Event(sender1, e1); }
+         });
+         // pictureBox.MouseWheel += new MouseEventHandler(IO.MOUSE.MID_SCROLL_DOWN.Event); // TODO
          pictureBox.MouseMove += new MouseEventHandler(IO.MOUSE.MOVE.Event);
 
          // Let's go!
