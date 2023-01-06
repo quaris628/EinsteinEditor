@@ -43,15 +43,41 @@ namespace phi.graphics.renderables
          this.useRightMouseButton = useRightMouseButton;
       }
 
-      public void Initialize()
+      public virtual void Initialize()
       {
-         IO.MOUSE.DOWN.SubscribeOnDrawable(MouseDown, drawable);
+         if (useRightMouseButton)
+         {
+            IO.MOUSE.RIGHT_DOWN.SubscribeOnDrawable(MouseDown, drawable);
+         }
+         else
+         {
+            IO.MOUSE.LEFT_DOWN.SubscribeOnDrawable(MouseDown, drawable);
+         }
+      }
+      
+      public virtual void Uninitialize()
+      {
+         if (useRightMouseButton)
+         {
+            IO.MOUSE.RIGHT_DOWN.UnsubscribeFromDrawable(MouseDown, drawable);
+         }
+         else
+         {
+            IO.MOUSE.LEFT_DOWN.UnsubscribeFromDrawable(MouseDown, drawable);
+         }
       }
 
       private void MouseDown(int x, int y)
       {
          IO.MOUSE.MOVE.Subscribe(MouseMove);
-         IO.MOUSE.UP.Subscribe(MouseUp);
+         if (useRightMouseButton)
+         {
+            IO.MOUSE.RIGHT_UP.Subscribe(MouseUp);
+         }
+         else
+         {
+            IO.MOUSE.LEFT_UP.Subscribe(MouseUp);
+         }
          dragOffsetX = x - drawable.GetX();
          dragOffsetY = y - drawable.GetY();
          MyMouseDown(x, y);
@@ -76,8 +102,15 @@ namespace phi.graphics.renderables
       private void MouseUp(int x, int y)
       {
          IO.MOUSE.MOVE.Unsubscribe(MouseMove);
-         IO.MOUSE.UP.Unsubscribe(MouseUp);
-         MyMouseUp(x, y);
+            if (useRightMouseButton)
+            {
+                IO.MOUSE.RIGHT_UP.Unsubscribe(MouseUp);
+            }
+            else
+            {
+                IO.MOUSE.LEFT_UP.Unsubscribe(MouseUp);
+            }
+            MyMouseUp(x, y);
       }
       protected virtual void MyMouseUp(int x, int y) { }
 
