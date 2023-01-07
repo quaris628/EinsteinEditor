@@ -14,20 +14,23 @@ namespace phi.graphics.drawables
     {
         private Button unselectedButton;
         private Button selectedButton;
-        private Action onSelect;
-        private Action onDeselect;
+        private ICollection<Action> onSelect;
+        private ICollection<Action> onDeselect;
         private bool selected;
 
         public SelectableButton(Button.ButtonBuilder unselectedButton,
             Button.ButtonBuilder selectedButton)
             : base(unselectedButton.Build().GetBoundaryRectangle()) {
-            onSelect = unselectedButton.GetOnClick();
-            onDeselect = selectedButton.GetOnClick();
+            onSelect = new List<Action>();
+            onDeselect = new List<Action>();
+            onSelect.Add(unselectedButton.GetOnClick());
+            onDeselect.Add(selectedButton.GetOnClick());
             unselectedButton.withOnClick(Select);
             selectedButton.withOnClick(Deselect);
             this.unselectedButton = unselectedButton.Build();
             this.selectedButton = selectedButton.Build();
             this.selectedButton.SetDisplaying(false);
+            selected = false;
         }
 
         public virtual void Initialize()
@@ -42,7 +45,10 @@ namespace phi.graphics.drawables
             unselectedButton.SetDisplaying(false);
             selected = true;
             FlagChange();
-            onSelect.Invoke();
+            foreach (Action action in onSelect)
+            {
+                action.Invoke();
+            }
         }
         public void Deselect()
         {
@@ -50,7 +56,30 @@ namespace phi.graphics.drawables
             unselectedButton.SetDisplaying(true);
             selected = false;
             FlagChange();
-            onDeselect.Invoke();
+            foreach (Action action in onDeselect)
+            {
+                action.Invoke();
+            }
+        }
+
+        public void SubscribeOnSelect(Action action)
+        {
+            onSelect.Add(action);
+        }
+
+        public void UnsubscribeFromSelect(Action action)
+        {
+            onSelect.Remove(action);
+        }
+
+        public void SubscribeOnDeselect(Action action)
+        {
+            onDeselect.Add(action);
+        }
+
+        public void UnsubscribeFromDeselect(Action action)
+        {
+            onDeselect.Remove(action);
         }
 
         public bool IsSelected() { return selected; }
