@@ -23,7 +23,7 @@ namespace phi
       public class Render
       {
          public const string DEFAULT_BACKGROUND = RES_DIR + "defaultBackground.png";
-         public const int DEFAULT_LAYER = 0;
+         public const int DEFAULT_LAYER = 10;
          public const int FPS = 60;
 
       }
