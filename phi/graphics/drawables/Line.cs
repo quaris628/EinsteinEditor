@@ -31,6 +31,9 @@ namespace phi.graphics.drawables
       public void SetX2(int x) { this.width = x - GetX(); FlagChange(); }
       public void SetY2(int y) { this.height = y - GetY(); FlagChange(); }
 
+      public int GetX2() { return GetX() + GetWidth(); }
+      public int GetY2() { return GetY() + GetHeight(); }
+
       public override string ToString()
       {
          return "Line " + base.ToString();
