@@ -31,6 +31,11 @@ namespace Einstein.ui.editarea.visibleElements
 
         public void SetDirection(float slopeDeltaX, float slopeDeltaY)
         {
+            if (slopeDeltaX == 0 && slopeDeltaY == 0)
+            {
+                // direction isn't defined, so just keep previous direction
+                return;
+            }
             float inputSlopeLength = (float)Math.Sqrt(
                 slopeDeltaX * slopeDeltaX + slopeDeltaY * slopeDeltaY);
             float dX = slopeDeltaX / inputSlopeLength;

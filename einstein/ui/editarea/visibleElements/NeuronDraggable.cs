@@ -17,31 +17,31 @@ namespace Einstein.ui.editarea
 
         public BaseNeuron Neuron { get; private set; }
         public NeuronDrawable NeuronDrawable { get { return (NeuronDrawable)GetDrawable(); } }
-        private List<Action<int, int>> onDrag;
+        private List<Action> onDrag;
 
         public NeuronDraggable(BaseNeuron neuron)
             : base(new NeuronDrawable(neuron, SPAWN_X, SPAWN_Y), EditArea.BOUNDS)
         {
             Neuron = neuron;
             NeuronDrawable.SetCircleCenterXY(SPAWN_X, SPAWN_Y);
-            onDrag = new List<Action<int, int>>();
+            onDrag = new List<Action>();
         }
 
-        public void SubscribeOnDrag(Action<int, int> action)
+        public void SubscribeOnDrag(Action action)
         {
             onDrag.Add(action);
         }
 
-        public void UnsubscribeFromDrag(Action<int, int> action)
+        public void UnsubscribeFromDrag(Action action)
         {
             onDrag.Remove(action);
         }
 
         protected override void MyMouseMove(int x, int y)
         {
-            foreach (Action<int, int> action in onDrag)
+            foreach (Action action in onDrag)
             {
-                action.Invoke(x, y);
+                action.Invoke();
             }
         }
     }

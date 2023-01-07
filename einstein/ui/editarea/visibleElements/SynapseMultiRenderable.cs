@@ -26,7 +26,8 @@ namespace Einstein.ui.editarea
             From = from;
             From.SubscribeOnDrag(UpdateBasePosition);
             line = new Line(
-                from.NeuronDrawable.GetCircleCenterX(), from.NeuronDrawable.GetCircleCenterY(),
+                from.NeuronDrawable.GetCircleCenterX(),
+                from.NeuronDrawable.GetCircleCenterY(),
                 mouseX, mouseY);
             arrow = new SynapseArrow(mouseX, mouseY,
                 mouseX - from.NeuronDrawable.GetCircleCenterX(),
@@ -38,18 +39,23 @@ namespace Einstein.ui.editarea
         {
             IO.RENDERER.Add(line, LAYER);
             IO.RENDERER.Add(arrow, LAYER);
-            IO.MOUSE.MOVE.Subscribe(UpdateTipPosition);
+            IO.MOUSE.MOVE.Subscribe(UpdateTipPositionXY);
             IO.MOUSE.RIGHT_UP.Subscribe(FinalizeTipPosition);
         }
         public void Uninitialize()
         {
             IO.RENDERER.Remove(line);
             IO.RENDERER.Remove(arrow);
-            IO.MOUSE.MOVE.Unsubscribe(UpdateTipPosition);
+            IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
         }
 
-        private void UpdateBasePosition(int x, int y)
+        private void UpdateBasePosition()
+        {
+            UpdateBasePositionXY(From.NeuronDrawable.GetCircleCenterX(),
+                               From.NeuronDrawable.GetCircleCenterY());
+        }
+        private void UpdateBasePositionXY(int x, int y)
         {
             line.SetXY1(x, y);
             arrow.SetDirection(
@@ -57,7 +63,15 @@ namespace Einstein.ui.editarea
                 line.GetY2() - y);
         }
 
-        private void UpdateTipPosition(int x, int y)
+        // Only use if To is set
+        private void UpdateTipPosition()
+        {
+            // TODO fix to make it not overlap with the neuron circle
+            int x = To.NeuronDrawable.GetCircleCenterX();
+            int y = To.NeuronDrawable.GetCircleCenterY();
+            UpdateTipPositionXY(x, y);
+        }
+        private void UpdateTipPositionXY(int x, int y)
         {
             line.SetXY2(x, y);
             arrow.SetXY(x, y);
@@ -66,14 +80,9 @@ namespace Einstein.ui.editarea
                 y - From.NeuronDrawable.GetCircleCenterY());
         }
 
-        private void UpdateTipPositionNeuronOffset(int x, int y)
+        private void FinalizeTipPosition(int x, int y)
         {
-            // TODO
-            line.SetXY2(x, y);
-            arrow.SetXY(x, y);
-            arrow.SetDirection(
-                x - From.NeuronDrawable.GetCircleCenterX(),
-                y - From.NeuronDrawable.GetCircleCenterY());
+            SetTipNeuron(editArea.HasNeuronAtPosition(x, y));
         }
 
         public void SetTipNeuron(NeuronDraggable dragNeuron)
@@ -85,16 +94,13 @@ namespace Einstein.ui.editarea
                 return;
             }
 
-            IO.MOUSE.MOVE.Unsubscribe(UpdateTipPosition);
+            IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
-            To.SubscribeOnDrag(UpdateTipPositionNeuronOffset);
+            To.SubscribeOnDrag(UpdateTipPosition);
+            UpdateTipPosition();
             editArea.AddSynapse(new BaseSynapse(From.Neuron, To.Neuron, 1f));
         }
 
-        private void FinalizeTipPosition(int x, int y)
-        {
-            SetTipNeuron(editArea.HasNeuronAtPosition(x, y));
-        }
 
     }
 }
