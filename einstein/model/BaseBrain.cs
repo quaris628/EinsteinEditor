@@ -88,11 +88,17 @@ namespace Einstein.model
                     neuron.ToString() + "'");
             }
             // remove linked synapses
+            // (can't remove inside the for loops over the index b/c would concurrently modify the index
+            LinkedList<BaseSynapse> linkedSynapses = new LinkedList<BaseSynapse>();
             foreach (BaseSynapse synapse in synapsesFromIndex[neuron.Index])
             {
-                Remove(synapse);
+                linkedSynapses.AddFirst(synapse);
             }
             foreach (BaseSynapse synapse in synapsesToIndex[neuron.Index])
+            {
+                linkedSynapses.AddFirst(synapse);
+            }
+            foreach (BaseSynapse synapse in linkedSynapses)
             {
                 Remove(synapse);
             }

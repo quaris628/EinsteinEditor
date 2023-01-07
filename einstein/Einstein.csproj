@@ -51,11 +51,13 @@
     <Compile Include="model\json\JsonSynapse.cs" />
     <Compile Include="model\NeuronType.cs" />
     <Compile Include="ui\editarea\EditArea.cs" />
-    <Compile Include="ui\editarea\DraggableNeuron.cs" />
+    <Compile Include="ui\editarea\visibleElements\NeuronDraggable.cs" />
+    <Compile Include="ui\editarea\visibleElements\SynapseArrow.cs" />
+    <Compile Include="ui\editarea\visibleElements\SynapseMultiRenderable.cs" />
     <Compile Include="ui\menu\IONeuronMenuCategory.cs" />
     <Compile Include="ui\menu\NeuronMenuCategory.cs" />
-    <Compile Include="ui\menu\NeuronMenuButton.cs" />
-    <Compile Include="ui\NeuronDrawable.cs" />
+    <Compile Include="ui\menu\visibleElements\NeuronMenuButton.cs" />
+    <Compile Include="ui\visibleElements\NeuronDrawable.cs" />
     <Compile Include="config\VersionConfig.cs" />
   </ItemGroup>
   <ItemGroup>

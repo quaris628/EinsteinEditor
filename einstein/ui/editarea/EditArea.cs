@@ -20,16 +20,17 @@ namespace Einstein.ui.editarea
             EinsteinPhiConfig.Window.HEIGHT - (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3);
 
         private BaseBrain brain;
-        //private List<SynapseInEditArea> synapses;
 
-        private Dictionary<int, DraggableNeuron> displayedNeuronsIndex;
+        private Dictionary<int, NeuronDraggable> displayedNeuronsIndex;
         private Action<BaseNeuron> onRemove;
+        private List<SynapseMultiRenderable> displayedSynapses;
 
         public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove)
         {
             this.brain = brain;
-            displayedNeuronsIndex = new Dictionary<int, DraggableNeuron>();
+            displayedNeuronsIndex = new Dictionary<int, NeuronDraggable>();
             this.onRemove = onRemove;
+            displayedSynapses = new List<SynapseMultiRenderable>();
         }
 
         
@@ -37,26 +38,61 @@ namespace Einstein.ui.editarea
         {
             brain.Add(neuron);
 
-            DraggableNeuron dragNeuron = new DraggableNeuron(neuron);
+            NeuronDraggable dragNeuron = new NeuronDraggable(neuron);
+            displayedNeuronsIndex.Add(neuron.Index, dragNeuron);
+
             dragNeuron.Initialize();
             IO.RENDERER.Add(dragNeuron);
             IO.MOUSE.MID_CLICK.SubscribeOnDrawable(() => {
                 RemoveNeuron(neuron);
             }, dragNeuron.GetDrawable());
-            displayedNeuronsIndex.Add(neuron.Index, dragNeuron);
+            IO.MOUSE.RIGHT_UP.SubscribeOnDrawable((x, y) => {
+                StartSynapse(dragNeuron, x, y);
+            }, dragNeuron.GetDrawable());
         }
 
-        public void RemoveNeuron(BaseNeuron neuron)
+        private void RemoveNeuron(BaseNeuron neuron)
         {
             brain.Remove(neuron);
 
-            DraggableNeuron dragNeuron = displayedNeuronsIndex[neuron.Index];
+            NeuronDraggable dragNeuron = displayedNeuronsIndex[neuron.Index];
+            displayedNeuronsIndex.Remove(neuron.Index);
+
             dragNeuron.Uninitialize();
             IO.RENDERER.Remove(dragNeuron);
             IO.MOUSE.MID_CLICK.UnsubscribeAllFromDrawable(dragNeuron.GetDrawable());
-            displayedNeuronsIndex.Remove(neuron.Index);
+            IO.MOUSE.RIGHT_UP.UnsubscribeAllFromDrawable(dragNeuron.GetDrawable());
+
             onRemove.Invoke(neuron);
         }
 
+        private void StartSynapse(NeuronDraggable from, int x, int y)
+        {
+            SynapseMultiRenderable synapseMR = new SynapseMultiRenderable(
+                this, from, x, y);
+            displayedSynapses.Add(synapseMR);
+            synapseMR.Initialize();
+        }
+
+        public void AddSynapse(BaseSynapse synapse)
+        {
+            brain.Add(synapse);
+        }
+
+        private void RemoveSynapse() { }
+
+        // if there are none, returns null
+        public NeuronDraggable HasNeuronAtPosition(int x, int y)
+        {
+            foreach (NeuronDraggable dragNeuron in displayedNeuronsIndex.Values)
+            {
+                if (dragNeuron.GetDrawable().GetBoundaryRectangle().Contains(x, y)
+                    && dragNeuron.GetDrawable().IsDisplaying())
+                {
+                    return dragNeuron;
+                }
+            }
+            return null;
+        }
     }
 }
