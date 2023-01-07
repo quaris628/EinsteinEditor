@@ -40,10 +40,14 @@ namespace phi.io
       public void UnsubscribeFromDrawable(Action<int, int> action, Drawable drawable)
       {
          drawableActions[drawable].Remove(action);
+         if (drawableActions[drawable].Count == 0)
+         {
+            drawableActions.Remove(drawable);
+         }
       }
       public void UnsubscribeAllFromDrawable(Drawable drawable)
       {
-         drawableActions[drawable].Clear();
+         drawableActions.Remove(drawable);
       }
 
       public void SubscribeOnRegion(Action<int, int> action, Rectangle region)
@@ -107,7 +111,7 @@ namespace phi.io
                   todos.AddLast(action);
                }
                // only one drawable should be able to be clicked at a time.
-               if (kvp.Value.Count >= 0) { break; }
+               break;
             }
          }
 
