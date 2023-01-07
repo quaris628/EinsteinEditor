@@ -81,7 +81,26 @@ namespace Einstein.model
 
         public void Remove(BaseNeuron neuron)
         {
-            // TODO (maybe)
+            if (!Neurons.Remove(neuron))
+            {
+                throw new ElementNotFoundException(
+                    "This brain does not have the neuron '" +
+                    neuron.ToString() + "'");
+            }
+            // remove linked synapses
+            foreach (BaseSynapse synapse in synapsesFromIndex[neuron.Index])
+            {
+                Remove(synapse);
+            }
+            foreach (BaseSynapse synapse in synapsesToIndex[neuron.Index])
+            {
+                Remove(synapse);
+            }
+            // update indexes
+            neuronsIndex.Remove(neuron.Index);
+            neuronDescriptionIndex.Remove(neuron.Description);
+            synapsesFromIndex.Remove(neuron.Index);
+            synapsesToIndex.Remove(neuron.Index);
         }
 
         public void Remove(BaseSynapse synapse)
