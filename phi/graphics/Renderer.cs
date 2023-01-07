@@ -129,6 +129,7 @@ namespace phi.graphics
       public void Add(IEnumerable<Drawable> items) { Add(items, defaultLayer); }
       public void SetDefaultLayer(int defaultLayer) { this.defaultLayer = defaultLayer; }
       public int GetDefaultLayer() { return defaultLayer; }
+      
 
       public bool Remove(Drawable item)
       {
@@ -148,6 +149,15 @@ namespace phi.graphics
             FlagChange();
          }
          return success;
+      }
+      // renderable overloads
+      public void Remove(Renderable r) { Remove(r.GetDrawable()); }
+      public void Remove(MultiRenderable mr)
+      {
+         foreach (Drawable d in mr.GetDrawables())
+         {
+            Remove(d);
+         }
       }
 
       public void ClearLayer(int layer) { layers.Remove(layer); FlagChange(); }
