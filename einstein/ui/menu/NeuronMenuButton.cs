@@ -1,4 +1,5 @@
-﻿using phi.graphics.drawables;
+﻿using Einstein.model;
+using phi.graphics.drawables;
 using phi.io;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,7 @@ namespace Einstein.ui.menu
         public const int WIDTH = 128;
         public const int HEIGHT = 32;
 
-        private ICollection<NeuronDrawable> neuronOptions;
-
         public NeuronMenuButton(
-                ICollection<NeuronDrawable> neuronOptions,
                 int x, int y,
                 string text,
                 Action onSelect,
@@ -35,62 +33,8 @@ namespace Einstein.ui.menu
                     .withText(text)
                     .withOnClick(onDeselect))
         {
-            this.neuronOptions = neuronOptions;
+            
         }
 
-        public override void Initialize()
-        {
-            base.Initialize();
-            IO.RENDERER.Add(this);
-            foreach (NeuronDrawable neuron in neuronOptions)
-            {
-                IO.RENDERER.Add(neuron);
-            }
-            RepositionOptions();
-            HideOptions();
-        }
-
-        public ICollection<NeuronDrawable> GetNeuronOptions()
-        {
-            return neuronOptions;
-        }
-
-        public void HideOptions()
-        {
-            foreach (NeuronDrawable neuron in neuronOptions)
-            {
-                neuron.SetDisplaying(false);
-            }
-        }
-
-        public void ShowOptions()
-        {
-            foreach (NeuronDrawable neuron in neuronOptions)
-            {
-                neuron.SetDisplaying(true);
-            }
-        }
-
-        // places buttons left to right on the screen, wrapping around if any would
-        // overflow across the right edge of the screen, just like how english reads.
-        public void RepositionOptions()
-        {
-            int startX = GetX() + GetWidth() + EinsteinPhiConfig.PAD;
-            int x = startX;
-            int y = EinsteinPhiConfig.PAD;
-            // assumes all neuron option buttons are the same height
-            int deltaY = NeuronDrawable.CIRCLE_DIAMETER + NeuronDrawable.FONT_SIZE + EinsteinPhiConfig.PAD * 2;
-            foreach (NeuronDrawable button in neuronOptions)
-            {
-                int descWidth = button.GetDescriptionText().GetWidth();
-                if (x + descWidth + EinsteinPhiConfig.PAD > IO.WINDOW.GetWidth())
-                {
-                    x = startX;
-                    y += deltaY;
-                }
-                button.SetCircleCenterXY(x + descWidth / 2, y + NeuronDrawable.CIRCLE_RADIUS);
-                x += descWidth + EinsteinPhiConfig.PAD;
-            }
-        }
     }
 }

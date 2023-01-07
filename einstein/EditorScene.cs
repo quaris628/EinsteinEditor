@@ -12,6 +12,7 @@ using Einstein.model;
 using Einstein.ui;
 using Einstein.ui.menu;
 using phi.other;
+using Einstein.ui.editarea;
 
 namespace Einstein
 {
@@ -21,53 +22,74 @@ namespace Einstein
         //  Config
         // ----------------------------------------------------------------
 
-        public const int SPAWN_X = 250 + NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD;
-        public const int SPAWN_Y = 200 + (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3;
-        public static readonly Rectangle BRAIN_AREA = new Rectangle(
-            NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD,
-            (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3,
-            EinsteinPhiConfig.Window.WIDTH - NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD,
-            EinsteinPhiConfig.Window.HEIGHT - (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3);
 
         // ----------------------------------------------------------------
         //  Data/Constructor
         // ----------------------------------------------------------------
 
-        private BaseBrain brain;
+        private EditArea editArea;
 
-        private NeuronMenuButton selected;
-        private NeuronMenuButton inputButton;
-        private NeuronMenuButton outputButton;
-        private NeuronMenuButton hiddenButton;
-        
+        // TODO maybe refactor the input/output/hidden buttons into one renderable class
+        private NeuronMenuCategory selected;
+        private IONeuronMenuCategory input;
+        private IONeuronMenuCategory output;
+        private NeuronMenuCategory hidden;
+
         private int prevWindowWidth;
 
         public EditorScene(Scene prevScene) : base(prevScene, new ImageWrapper(EinsteinPhiConfig.Render.DEFAULT_BACKGROUND))
         {
-            brain = new BaseBrain(); // TODO load the brain from a bibite file
+            editArea = new EditArea(
+                new BaseBrain(), // TODO load the brain from a bibite file
+                (neuronRemovedFromEditArea) => {
+                    if (neuronRemovedFromEditArea.IsInput())
+                    {
+                        input.AddOption(neuronRemovedFromEditArea);
+                    }
+                    else if (neuronRemovedFromEditArea.IsOutput())
+                    {
+                        output.AddOption(neuronRemovedFromEditArea);
+                    }
+                });
 
             selected = null;
-            inputButton = new NeuronMenuButton(
-                generateInputNeurons(),
+            NeuronMenuButton inputButton = new NeuronMenuButton(
                 EinsteinPhiConfig.PAD,
                 EinsteinPhiConfig.PAD,
                 "Input Neurons",
                 onSelectInputs,
                 onDeselectInputs);
-            outputButton = new NeuronMenuButton(
-                generateOutputNeurons(),
+            input = new IONeuronMenuCategory(
+                inputButton,
+                generateInputNeurons(),
+                (neuronRemovedFromMenu) => {
+                    editArea.AddNeuron(neuronRemovedFromMenu);
+                });
+
+            NeuronMenuButton outputButton = new NeuronMenuButton(
                 EinsteinPhiConfig.PAD,
                 2 * EinsteinPhiConfig.PAD + NeuronMenuButton.HEIGHT,
                 "Output Neurons",
                 onSelectOutputs,
                 onDeselectOutputs);
-            hiddenButton = new NeuronMenuButton(
-                generateHiddenNeurons(),
+            output = new IONeuronMenuCategory(
+                outputButton,
+                generateOutputNeurons(),
+                (neuronRemovedFromMenu) => {
+                    editArea.AddNeuron(neuronRemovedFromMenu);
+                });
+
+            NeuronMenuButton hiddenButton = new NeuronMenuButton(
                 EinsteinPhiConfig.PAD,
                 3 * EinsteinPhiConfig.PAD + 2 * NeuronMenuButton.HEIGHT,
                 "Hidden Neurons",
                 onSelectAdd,
                 onDeselectAdd);
+            hidden = new NeuronMenuCategory(
+                hiddenButton,
+                generateHiddenNeurons());
+            // TODO make the hidden neuron menu do stuff
+
             prevWindowWidth = EinsteinPhiConfig.Window.WIDTH;
         }
 
@@ -77,22 +99,9 @@ namespace Einstein
 
         protected override void InitializeMe()
         {
-            inputButton.Initialize();
-            foreach (NeuronDrawable neuronOption in inputButton.GetNeuronOptions())
-            {
-                IO.MOUSE.UP.SubscribeOnDrawable(() => {
-                        onClickInputOption(neuronOption);
-                    }, neuronOption);
-            }
-            outputButton.Initialize();
-            foreach (NeuronDrawable neuronOption in outputButton.GetNeuronOptions())
-            {
-                IO.MOUSE.UP.SubscribeOnDrawable(() => {
-                    onClickOutputOption(neuronOption);
-                }, neuronOption);
-            }
-            hiddenButton.Initialize();
-            // TODO set up onclicks
+            input.Initialize();
+            output.Initialize();
+            hidden.Initialize();
             IO.FRAME_TIMER.Subscribe(checkForResize);
         }
 
@@ -107,49 +116,15 @@ namespace Einstein
 
         // TODO look at increasing performance of re-clicking the same drawable very quickly?
 
-        // ----- OnClick of neuron options -----
-
-        private void onClickInputOption(NeuronDrawable neuronOption)
-        {
-            inputButton.GetNeuronOptions().Remove(neuronOption);
-            inputButton.RepositionOptions();
-            neuronOption.SetCircleCenterXY(SPAWN_X, SPAWN_Y);
-            IO.MOUSE.UP.UnsubscribeAllFromDrawable(neuronOption);
-            IO.MOUSE.CLICK.SubscribeOnDrawable(() => { onClickNeuron(neuronOption); }, neuronOption);
-            Draggable drag = new Draggable(neuronOption, BRAIN_AREA);
-            drag.Initialize();
-        }
-
-        private void onClickOutputOption(NeuronDrawable neuronOption)
-        {
-            outputButton.GetNeuronOptions().Remove(neuronOption);
-            outputButton.RepositionOptions();
-            neuronOption.SetCircleCenterXY(SPAWN_X, SPAWN_Y);
-            IO.MOUSE.UP.UnsubscribeAllFromDrawable(neuronOption);
-            IO.MOUSE.CLICK.SubscribeOnDrawable(() => { onClickNeuron(neuronOption); }, neuronOption);
-            Draggable drag = new Draggable(neuronOption, BRAIN_AREA);
-            drag.Initialize();
-        }
-
-        // ----- OnClick of neuron in brain -----
-
-        private void onClickNeuron(NeuronDrawable neuron)
-        {
-            // TODO select this neuron and populate a menu of things you can do with it
-            //      (e.g. hide/delete, ... maybe that's it?)
-            // TODO make phi expose differentiation between left and right clicks
-            Console.WriteLine("onclick");
-        }
-
         // ----- Generating neuron options -----
 
-        private static ICollection<NeuronDrawable> generateInputNeurons()
+        private static ICollection<BaseNeuron> generateInputNeurons()
         {
-            ICollection<NeuronDrawable> inputs = new List<NeuronDrawable>();
+            ICollection<BaseNeuron> inputs = new List<BaseNeuron>();
             for (int i = VersionConfig.INPUT_NODES_INDEX_MIN;
                 i <= VersionConfig.INPUT_NODES_INDEX_MAX; i++)
             {
-                inputs.Add(new NeuronDrawable(
+                inputs.Add(new BaseNeuron(
                     i,
                     NeuronType.Input,
                     VersionConfig.DESCRIPTIONS[i]));
@@ -157,13 +132,13 @@ namespace Einstein
             return inputs;
         }
 
-        private static ICollection<NeuronDrawable> generateOutputNeurons()
+        private static ICollection<BaseNeuron> generateOutputNeurons()
         {
-            ICollection<NeuronDrawable> outputs = new List<NeuronDrawable>();
+            ICollection<BaseNeuron> outputs = new List<BaseNeuron>();
             for (int i = VersionConfig.OUTPUT_NODES_INDEX_MIN;
                 i <= VersionConfig.OUTPUT_NODES_INDEX_MAX; i++)
             {
-                outputs.Add(new NeuronDrawable(
+                outputs.Add(new BaseNeuron(
                     i,
                     VersionConfig.GetOutputNeuronType(i),
                     VersionConfig.DESCRIPTIONS[i]));
@@ -171,14 +146,16 @@ namespace Einstein
             return outputs;
         }
 
-        private static ICollection<NeuronDrawable> generateHiddenNeurons()
+        private static ICollection<BaseNeuron> generateHiddenNeurons()
         {
-            ICollection<NeuronDrawable> hiddens = new List<NeuronDrawable>();
+            ICollection<BaseNeuron> hiddens = new List<BaseNeuron>();
+            int index = VersionConfig.HIDDEN_NODES_INDEX_MAX
+                - Enum.GetValues(typeof(NeuronType)).Length;
             foreach (NeuronType neuronType in Enum.GetValues(typeof(NeuronType)))
             {
                 if (neuronType == NeuronType.Input) { continue; }
-                hiddens.Add(new NeuronDrawable(
-                    VersionConfig.HIDDEN_NODES_INDEX_MAX,
+                hiddens.Add(new BaseNeuron(
+                    index++,
                     neuronType));
             }
             return hiddens;
@@ -188,26 +165,23 @@ namespace Einstein
 
         private void onSelectInputs()
         {
-            selected?.Deselect();
-            selected = inputButton;
-            selected.ShowOptions();
+            selected?.Button.Deselect();
+            selected = input;
         }
         private void onSelectOutputs()
         {
-            selected?.Deselect();
-            selected = outputButton;
-            selected.ShowOptions();
+            selected?.Button.Deselect();
+            selected = output;
         }
         private void onSelectAdd()
         {
-            selected?.Deselect();
-            selected = hiddenButton;
-            selected.ShowOptions();
+            selected?.Button.Deselect();
+            selected = hidden;
         }
 
-        private void onDeselectInputs() { selected?.HideOptions(); selected = null; }
-        private void onDeselectOutputs() { selected?.HideOptions(); selected = null; }
-        private void onDeselectAdd() { selected?.HideOptions(); selected = null; }
+        private void onDeselectInputs() { selected = null; }
+        private void onDeselectOutputs() { selected = null; }
+        private void onDeselectAdd() { selected = null; }
 
         public void repositionMenuButtons()
         {
@@ -221,9 +195,9 @@ namespace Einstein
         {
             if (IO.WINDOW.GetWidth() != prevWindowWidth)
             {
-                inputButton.RepositionOptions();
-                outputButton.RepositionOptions();
-                hiddenButton.RepositionOptions();
+                input.RepositionOptions();
+                output.RepositionOptions();
+                hidden.RepositionOptions();
             }
         }
 

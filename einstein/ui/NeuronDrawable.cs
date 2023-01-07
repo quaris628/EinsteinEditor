@@ -77,5 +77,10 @@ namespace Einstein.ui
         {
             return BASE_DIR + neuron.Type.ToString() + ".png";
         }
+
+        public override string ToString()
+        {
+            return Neuron.Index + " " + Neuron.ToString() + ", " + base.ToString();
+        }
     }
 }
