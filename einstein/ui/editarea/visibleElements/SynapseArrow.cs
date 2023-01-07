@@ -38,16 +38,16 @@ namespace Einstein.ui.editarea.visibleElements
             }
             float inputSlopeLength = (float)Math.Sqrt(
                 slopeDeltaX * slopeDeltaX + slopeDeltaY * slopeDeltaY);
-            float dX = slopeDeltaX / inputSlopeLength;
-            float dY = slopeDeltaY / inputSlopeLength;
+            float dX = -slopeDeltaX / inputSlopeLength;
+            float dY = -slopeDeltaY / inputSlopeLength;
             float baseX = GetX() + dX * tipToBaseLength;
             float baseY = GetY() + dY * tipToBaseLength;
 
             // TODO verify v
-            leftBaseX = (int)(baseX + dX * baseToLeftRightBasesLength);
-            leftBaseY = (int)(baseY - dY * baseToLeftRightBasesLength);
-            rightBaseX = (int)(baseX - dX * baseToLeftRightBasesLength);
-            rightBaseY = (int)(baseY + dY * baseToLeftRightBasesLength);
+            leftBaseX = (int)(baseX + dY * baseToLeftRightBasesLength);
+            leftBaseY = (int)(baseY - dX * baseToLeftRightBasesLength);
+            rightBaseX = (int)(baseX - dY * baseToLeftRightBasesLength);
+            rightBaseY = (int)(baseY + dX * baseToLeftRightBasesLength);
         }
     }
 }
