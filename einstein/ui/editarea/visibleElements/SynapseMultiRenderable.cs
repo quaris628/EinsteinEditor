@@ -12,7 +12,7 @@ namespace Einstein.ui.editarea
 {
     public class SynapseMultiRenderable
     {
-        public const int LAYER = 15;
+        public const int LAYER = 5;
 
         public NeuronDraggable From { get; private set; }
         public NeuronDraggable To { get; private set; }
@@ -54,6 +54,10 @@ namespace Einstein.ui.editarea
         {
             UpdateBasePositionXY(From.NeuronDrawable.GetCircleCenterX(),
                                From.NeuronDrawable.GetCircleCenterY());
+            if (To != null)
+            {
+                UpdateTipPosition();
+            }
         }
         private void UpdateBasePositionXY(int x, int y)
         {
@@ -66,10 +70,17 @@ namespace Einstein.ui.editarea
         // Only use if To is set
         private void UpdateTipPosition()
         {
-            // TODO fix to make it not overlap with the neuron circle
-            int x = To.NeuronDrawable.GetCircleCenterX();
-            int y = To.NeuronDrawable.GetCircleCenterY();
-            UpdateTipPositionXY(x, y);
+            int circleCenterX = To.NeuronDrawable.GetCircleCenterX();
+            int circleCenterY = To.NeuronDrawable.GetCircleCenterY();
+            float slopeDeltaX = circleCenterX - From.NeuronDrawable.GetCircleCenterX();
+            float slopeDeltaY = circleCenterY - From.NeuronDrawable.GetCircleCenterY();
+            float inputSlopeLength = (float)Math.Sqrt(
+                slopeDeltaX * slopeDeltaX + slopeDeltaY * slopeDeltaY);
+            float dX = -slopeDeltaX / inputSlopeLength;
+            float dY = -slopeDeltaY / inputSlopeLength;
+            int arrowTipX = (int)(circleCenterX + dX * NeuronDrawable.CIRCLE_RADIUS);
+            int arrowTipY = (int)(circleCenterY + dY * NeuronDrawable.CIRCLE_RADIUS);
+            UpdateTipPositionXY(arrowTipX, arrowTipY);
         }
         private void UpdateTipPositionXY(int x, int y)
         {

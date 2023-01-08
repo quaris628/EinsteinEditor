@@ -10,8 +10,8 @@ namespace Einstein.ui.editarea.visibleElements
 {
     public class SynapseArrow : PenDrawable 
     {
-        private const float baseToLeftRightBasesLength = 10f;
-        private const float tipToBaseLength = 16.18f;
+        private const float HALF_WIDTH = 8f;
+        private const float LENGTH = 16f;
         private int leftBaseX;
         private int leftBaseY;
         private int rightBaseX;
@@ -40,14 +40,13 @@ namespace Einstein.ui.editarea.visibleElements
                 slopeDeltaX * slopeDeltaX + slopeDeltaY * slopeDeltaY);
             float dX = -slopeDeltaX / inputSlopeLength;
             float dY = -slopeDeltaY / inputSlopeLength;
-            float baseX = GetX() + dX * tipToBaseLength;
-            float baseY = GetY() + dY * tipToBaseLength;
+            float baseX = GetX() + dX * LENGTH;
+            float baseY = GetY() + dY * LENGTH;
 
-            // TODO verify v
-            leftBaseX = (int)(baseX + dY * baseToLeftRightBasesLength);
-            leftBaseY = (int)(baseY - dX * baseToLeftRightBasesLength);
-            rightBaseX = (int)(baseX - dY * baseToLeftRightBasesLength);
-            rightBaseY = (int)(baseY + dX * baseToLeftRightBasesLength);
+            leftBaseX = (int)(baseX + dY * HALF_WIDTH);
+            leftBaseY = (int)(baseY - dX * HALF_WIDTH);
+            rightBaseX = (int)(baseX - dY * HALF_WIDTH);
+            rightBaseY = (int)(baseY + dX * HALF_WIDTH);
         }
     }
 }
