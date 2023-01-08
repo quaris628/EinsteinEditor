@@ -74,6 +74,12 @@ namespace Einstein.ui.editarea
             int circleCenterY = To.NeuronDrawable.GetCircleCenterY();
             float slopeDeltaX = circleCenterX - From.NeuronDrawable.GetCircleCenterX();
             float slopeDeltaY = circleCenterY - From.NeuronDrawable.GetCircleCenterY();
+            if (slopeDeltaX == 0 && slopeDeltaY == 0)
+            {
+                // neurons are exactly on top of each other
+                UpdateTipPositionXY(circleCenterX, circleCenterY);
+                return;
+            }
             float inputSlopeLength = (float)Math.Sqrt(
                 slopeDeltaX * slopeDeltaX + slopeDeltaY * slopeDeltaY);
             float dX = -slopeDeltaX / inputSlopeLength;
