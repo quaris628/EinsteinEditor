@@ -4,6 +4,7 @@ using phi.graphics.drawables;
 using phi.io;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ namespace Einstein.ui.editarea
     public class SynapseMultiRenderable
     {
         public const int LAYER = 5;
+        public const int LINE_WIDTH = 4;
+        public static readonly Color LINE_COLOR = Color.Black;
 
         public NeuronDraggable From { get; private set; }
         public NeuronDraggable To { get; private set; }
@@ -32,6 +35,8 @@ namespace Einstein.ui.editarea
             arrow = new SynapseArrow(mouseX, mouseY,
                 mouseX - from.NeuronDrawable.GetCircleCenterX(),
                 mouseY - from.NeuronDrawable.GetCircleCenterY());
+            line.SetPen(new Pen(LINE_COLOR, LINE_WIDTH));
+            arrow.SetPen(new Pen(LINE_COLOR, LINE_WIDTH));
             this.editArea = editArea;
         }
 
