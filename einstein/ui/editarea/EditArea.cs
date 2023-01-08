@@ -38,20 +38,13 @@ namespace Einstein.ui.editarea
         {
             brain.Add(neuron);
 
-            NeuronDraggable dragNeuron = new NeuronDraggable(neuron);
+            NeuronDraggable dragNeuron = new NeuronDraggable(this, neuron);
             displayedNeuronsIndex.Add(neuron.Index, dragNeuron);
 
             dragNeuron.Initialize();
-            IO.RENDERER.Add(dragNeuron);
-            IO.MOUSE.MID_CLICK.SubscribeOnDrawable(() => {
-                RemoveNeuron(neuron);
-            }, dragNeuron.GetDrawable());
-            IO.MOUSE.RIGHT_UP.SubscribeOnDrawable((x, y) => {
-                StartSynapse(dragNeuron, x, y);
-            }, dragNeuron.GetDrawable());
         }
 
-        private void RemoveNeuron(BaseNeuron neuron)
+        public void RemoveNeuron(BaseNeuron neuron)
         {
             brain.Remove(neuron);
 
@@ -59,14 +52,11 @@ namespace Einstein.ui.editarea
             displayedNeuronsIndex.Remove(neuron.Index);
 
             dragNeuron.Uninitialize();
-            IO.RENDERER.Remove(dragNeuron);
-            IO.MOUSE.MID_CLICK.UnsubscribeAllFromDrawable(dragNeuron.GetDrawable());
-            IO.MOUSE.RIGHT_UP.UnsubscribeAllFromDrawable(dragNeuron.GetDrawable());
 
             onRemove.Invoke(neuron);
         }
 
-        private void StartSynapse(NeuronDraggable from, int x, int y)
+        public void StartSynapse(NeuronDraggable from, int x, int y)
         {
             SynapseMultiRenderable synapseMR = new SynapseMultiRenderable(
                 this, from, x, y);
@@ -74,12 +64,15 @@ namespace Einstein.ui.editarea
             synapseMR.Initialize();
         }
 
-        public void AddSynapse(BaseSynapse synapse)
+        public void FinishSynapse(BaseSynapse synapse)
         {
             brain.Add(synapse);
         }
 
-        private void RemoveSynapse() { }
+        public void RemoveSynapse(BaseSynapse synapse)
+        {
+            // TODO
+        }
 
         // if there are none, returns null
         public NeuronDraggable HasNeuronAtPosition(int x, int y)

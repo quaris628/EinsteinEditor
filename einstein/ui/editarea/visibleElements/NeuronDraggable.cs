@@ -19,12 +19,35 @@ namespace Einstein.ui.editarea
         public NeuronDrawable NeuronDrawable { get { return (NeuronDrawable)GetDrawable(); } }
         private List<Action> onDrag;
 
-        public NeuronDraggable(BaseNeuron neuron)
+        private EditArea editArea;
+
+        public NeuronDraggable(EditArea editArea, BaseNeuron neuron)
             : base(new NeuronDrawable(neuron, SPAWN_X, SPAWN_Y), EditArea.BOUNDS)
         {
             Neuron = neuron;
             NeuronDrawable.SetCircleCenterXY(SPAWN_X, SPAWN_Y);
             onDrag = new List<Action>();
+            this.editArea = editArea;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            IO.RENDERER.Add(this);
+            IO.MOUSE.MID_CLICK.SubscribeOnDrawable(() => {
+                editArea.RemoveNeuron(Neuron);
+            }, GetDrawable());
+            IO.MOUSE.RIGHT_UP.SubscribeOnDrawable((x, y) => {
+                editArea.StartSynapse(this, x, y);
+            }, GetDrawable());
+        }
+
+        public override void Uninitialize()
+        {
+            base.Uninitialize();
+            IO.RENDERER.Remove(this);
+            IO.MOUSE.MID_CLICK.UnsubscribeAllFromDrawable(GetDrawable());
+            IO.MOUSE.RIGHT_UP.UnsubscribeAllFromDrawable(GetDrawable());
         }
 
         public void SubscribeOnDrag(Action action)

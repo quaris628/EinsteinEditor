@@ -120,7 +120,7 @@ namespace Einstein.ui.editarea
             IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
             To.SubscribeOnDrag(UpdateTipPosition);
             UpdateTipPosition();
-            editArea.AddSynapse(new BaseSynapse(From.Neuron, To.Neuron, 1f));
+            editArea.FinishSynapse(new BaseSynapse(From.Neuron, To.Neuron, 1f));
         }
 
 
