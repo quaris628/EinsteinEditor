@@ -23,55 +23,73 @@ namespace Einstein.ui.editarea
 
         private Dictionary<int, NeuronDraggable> displayedNeuronsIndex;
         private Action<BaseNeuron> onRemove;
-        private List<SynapseMultiRenderable> displayedSynapses;
+        private Dictionary<(int, int), SynapseMultiRenderable> displayedSynapsesIndex;
+        private SynapseMultiRenderable startedSynapse;
 
         public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove)
         {
             this.brain = brain;
             displayedNeuronsIndex = new Dictionary<int, NeuronDraggable>();
             this.onRemove = onRemove;
-            displayedSynapses = new List<SynapseMultiRenderable>();
+            displayedSynapsesIndex = new Dictionary<(int, int), SynapseMultiRenderable>();
         }
 
-        
         public void AddNeuron(BaseNeuron neuron)
         {
             brain.Add(neuron);
 
             NeuronDraggable dragNeuron = new NeuronDraggable(this, neuron);
-            displayedNeuronsIndex.Add(neuron.Index, dragNeuron);
-
             dragNeuron.Initialize();
+            displayedNeuronsIndex.Add(neuron.Index, dragNeuron);
         }
 
         public void RemoveNeuron(BaseNeuron neuron)
         {
+            // remove connecting synapses first
+            // can't remove inside the loops b/c would be concurrent modification
+            LinkedList<BaseSynapse> toRemove = new LinkedList<BaseSynapse>();
+            foreach (BaseSynapse from in brain.GetSynapsesFrom(neuron))
+            {
+                toRemove.AddFirst(from);
+            }
+            foreach (BaseSynapse to in brain.GetSynapsesTo(neuron))
+            {
+                toRemove.AddFirst(to);
+            }
+            foreach (BaseSynapse synapse in toRemove)
+            {
+                RemoveSynapse(synapse);
+            }
+
             brain.Remove(neuron);
 
             NeuronDraggable dragNeuron = displayedNeuronsIndex[neuron.Index];
-            displayedNeuronsIndex.Remove(neuron.Index);
-
             dragNeuron.Uninitialize();
+            displayedNeuronsIndex.Remove(neuron.Index);
 
             onRemove.Invoke(neuron);
         }
 
         public void StartSynapse(NeuronDraggable from, int x, int y)
         {
-            SynapseMultiRenderable synapseMR = new SynapseMultiRenderable(
-                this, from, x, y);
-            displayedSynapses.Add(synapseMR);
-            synapseMR.Initialize();
+            startedSynapse = new SynapseMultiRenderable(this, from, x, y);
+            startedSynapse.Initialize();
         }
 
         public void FinishSynapse(BaseSynapse synapse)
         {
             brain.Add(synapse);
+
+            displayedSynapsesIndex.Add((synapse.From.Index, synapse.To.Index), startedSynapse);
         }
 
         public void RemoveSynapse(BaseSynapse synapse)
         {
-            // TODO
+            brain.Remove(synapse);
+
+            (int, int) key = (synapse.From.Index, synapse.To.Index);
+            displayedSynapsesIndex[key].Uninitialize();
+            displayedSynapsesIndex.Remove(key);
         }
 
         // if there are none, returns null

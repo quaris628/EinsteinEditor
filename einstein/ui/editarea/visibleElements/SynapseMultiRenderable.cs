@@ -13,10 +13,14 @@ namespace Einstein.ui.editarea
 {
     public class SynapseMultiRenderable
     {
+        public const float DEFAULT_STRENGTH = 1f;
+
         public const int LAYER = 5;
-        public const int LINE_WIDTH = 4;
+        public const int LINE_WIDTH = 2 * HALF_LINE_WIDTH;
+        public const int HALF_LINE_WIDTH = 3;
         public static readonly Color LINE_COLOR = Color.Black;
 
+        public BaseSynapse Synapse { get; private set; }
         public NeuronDraggable From { get; private set; }
         public NeuronDraggable To { get; private set; }
 
@@ -53,6 +57,27 @@ namespace Einstein.ui.editarea
             IO.RENDERER.Remove(arrow);
             IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
+        }
+
+        // sort of a second step of initialization (or will uninitialize)
+        public void SetTipNeuron(NeuronDraggable dragNeuron)
+        {
+            To = dragNeuron;
+            if (To == null)
+            {
+                Uninitialize();
+                return;
+            }
+
+            IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
+            IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
+            IO.MOUSE.MID_CLICK_UP.SubscribeOnDrawable(RemoveIfExactlyContainsClick, line);
+            To.SubscribeOnDrag(UpdateTipPosition);
+            UpdateTipPosition();
+
+            // TODO allow setting a different strength besides the default
+            Synapse = new BaseSynapse(From.Neuron, To.Neuron, DEFAULT_STRENGTH);
+            editArea.FinishSynapse(Synapse);
         }
 
         private void UpdateBasePosition()
@@ -107,22 +132,30 @@ namespace Einstein.ui.editarea
             SetTipNeuron(editArea.HasNeuronAtPosition(x, y));
         }
 
-        public void SetTipNeuron(NeuronDraggable dragNeuron)
+        private void RemoveIfExactlyContainsClick(int x, int y)
         {
-            To = dragNeuron;
-            if (To == null)
+            // We only know this click was inside the rectangle that
+            // perfectly contains the line, but we only want to remove
+            // the synapse if the click was on that line.
+
+            // calculate click's distance to line
+            // (derived from solving series of equations for the line and the
+            //  perpendicular line that contains the click point)
+            float m = line.GetHeight() / (float)line.GetWidth();
+            float invM = -1 / m;
+            float intersectX = ((line.GetY() - m * line.GetX()) - (y - invM * x)) / (invM - m);
+            float intersectY = y + invM * (intersectX - x);
+            float dx = x - intersectX;
+            float dy = y - intersectY;
+            double sqDistanceToLine = dx * dx + dy * dy;
+            // if the distance is less than half of the line's width,
+            // or if the click is inside the triangle of the arrow,
+            if (sqDistanceToLine <= HALF_LINE_WIDTH * HALF_LINE_WIDTH
+                || arrow.TriangleContainsPoint(x, y))
             {
-                Uninitialize();
-                return;
+                IO.MOUSE.MID_CLICK_UP.UnsubscribeFromDrawable(RemoveIfExactlyContainsClick, line);
+                editArea.RemoveSynapse(Synapse);
             }
-
-            IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
-            IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
-            To.SubscribeOnDrag(UpdateTipPosition);
-            UpdateTipPosition();
-            editArea.FinishSynapse(new BaseSynapse(From.Neuron, To.Neuron, 1f));
         }
-
-
     }
 }
