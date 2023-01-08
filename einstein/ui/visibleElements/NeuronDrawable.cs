@@ -62,11 +62,11 @@ namespace Einstein.ui
 
         protected override void DrawAt(Graphics g, int x, int y)
         {
-            icon?.SetXY(x, y);
-            icon?.Draw(g);
-            
             baseSprite.SetXY(x, y);
             baseSprite.Draw(g);
+
+            icon?.SetXY(x, y);
+            icon?.Draw(g);
 
             desc.SetCenterX(x + CIRCLE_RADIUS);
             desc.SetY(y + CIRCLE_DIAMETER);
