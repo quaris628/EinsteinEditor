@@ -23,7 +23,13 @@ namespace phi.other
 
       public bool Contains(int x, int y)
       {
-         return 0 <= x - X && x - X < Width && 0 <= y - Y && y - Y < Height;
+         return isBetween(X, x, X + Width) && isBetween(Y, y, Y + Height);
+      }
+
+      private bool isBetween(int bound1, int value, int bound2)
+      {
+         return (bound1 <= value && value < bound2)
+            || (bound2 <= value && value < bound1);
       }
 
       public static explicit operator System.Drawing.Rectangle(Rectangle r)
