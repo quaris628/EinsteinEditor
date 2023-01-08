@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Einstein.ui.editarea
 {
-    public class NeuronDraggable : Draggable
+    public class NeuronRenderable : Draggable
     {
         public const int SPAWN_X = 250 + NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD;
         public const int SPAWN_Y = 200 + (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3;
@@ -21,7 +21,7 @@ namespace Einstein.ui.editarea
 
         private EditArea editArea;
 
-        public NeuronDraggable(EditArea editArea, BaseNeuron neuron)
+        public NeuronRenderable(EditArea editArea, BaseNeuron neuron)
             : base(new NeuronDrawable(neuron, SPAWN_X, SPAWN_Y), EditArea.BOUNDS)
         {
             Neuron = neuron;

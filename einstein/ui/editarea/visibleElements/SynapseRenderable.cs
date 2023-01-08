@@ -1,5 +1,6 @@
 ﻿using Einstein.model;
 using Einstein.ui.editarea.visibleElements;
+using phi.graphics;
 using phi.graphics.drawables;
 using phi.io;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Einstein.ui.editarea
 {
-    public class SynapseMultiRenderable
+    public class SynapseRenderable : MultiRenderable
     {
         public const float DEFAULT_STRENGTH = 1f;
 
@@ -21,14 +22,14 @@ namespace Einstein.ui.editarea
         public static readonly Color LINE_COLOR = Color.Black;
 
         public BaseSynapse Synapse { get; private set; }
-        public NeuronDraggable From { get; private set; }
-        public NeuronDraggable To { get; private set; }
+        public NeuronRenderable From { get; private set; }
+        public NeuronRenderable To { get; private set; }
 
         private Line line;
         private SynapseArrow arrow;
         private EditArea editArea;
 
-        public SynapseMultiRenderable(EditArea editArea, NeuronDraggable from, int mouseX, int mouseY)
+        public SynapseRenderable(EditArea editArea, NeuronRenderable from, int mouseX, int mouseY)
         {
             From = from;
             From.SubscribeOnDrag(UpdateBasePosition);
@@ -46,21 +47,19 @@ namespace Einstein.ui.editarea
 
         public void Initialize()
         {
-            IO.RENDERER.Add(line, LAYER);
-            IO.RENDERER.Add(arrow, LAYER);
+            IO.RENDERER.Add(this, LAYER);
             IO.MOUSE.MOVE.Subscribe(UpdateTipPositionXY);
             IO.MOUSE.RIGHT_UP.Subscribe(FinalizeTipPosition);
         }
         public void Uninitialize()
         {
-            IO.RENDERER.Remove(line);
-            IO.RENDERER.Remove(arrow);
+            IO.RENDERER.Remove(this);
             IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
         }
 
         // sort of a second step of initialization (or will uninitialize)
-        public void SetTipNeuron(NeuronDraggable dragNeuron)
+        public void SetTipNeuron(NeuronRenderable dragNeuron)
         {
             To = dragNeuron;
             if (To == null)
@@ -156,6 +155,12 @@ namespace Einstein.ui.editarea
                 IO.MOUSE.MID_CLICK_UP.UnsubscribeFromDrawable(RemoveIfExactlyContainsClick, line);
                 editArea.RemoveSynapse(Synapse);
             }
+        }
+
+        public IEnumerable<Drawable> GetDrawables()
+        {
+            yield return line;
+            yield return arrow;
         }
     }
 }

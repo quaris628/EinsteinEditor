@@ -21,24 +21,24 @@ namespace Einstein.ui.editarea
 
         private BaseBrain brain;
 
-        private Dictionary<int, NeuronDraggable> displayedNeuronsIndex;
+        private Dictionary<int, NeuronRenderable> displayedNeuronsIndex;
         private Action<BaseNeuron> onRemove;
-        private Dictionary<(int, int), SynapseMultiRenderable> displayedSynapsesIndex;
-        private SynapseMultiRenderable startedSynapse;
+        private Dictionary<(int, int), SynapseRenderable> displayedSynapsesIndex;
+        private SynapseRenderable startedSynapse;
 
         public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove)
         {
             this.brain = brain;
-            displayedNeuronsIndex = new Dictionary<int, NeuronDraggable>();
+            displayedNeuronsIndex = new Dictionary<int, NeuronRenderable>();
             this.onRemove = onRemove;
-            displayedSynapsesIndex = new Dictionary<(int, int), SynapseMultiRenderable>();
+            displayedSynapsesIndex = new Dictionary<(int, int), SynapseRenderable>();
         }
 
         public void AddNeuron(BaseNeuron neuron)
         {
             brain.Add(neuron);
 
-            NeuronDraggable dragNeuron = new NeuronDraggable(this, neuron);
+            NeuronRenderable dragNeuron = new NeuronRenderable(this, neuron);
             dragNeuron.Initialize();
             displayedNeuronsIndex.Add(neuron.Index, dragNeuron);
         }
@@ -63,16 +63,16 @@ namespace Einstein.ui.editarea
 
             brain.Remove(neuron);
 
-            NeuronDraggable dragNeuron = displayedNeuronsIndex[neuron.Index];
+            NeuronRenderable dragNeuron = displayedNeuronsIndex[neuron.Index];
             dragNeuron.Uninitialize();
             displayedNeuronsIndex.Remove(neuron.Index);
 
             onRemove.Invoke(neuron);
         }
 
-        public void StartSynapse(NeuronDraggable from, int x, int y)
+        public void StartSynapse(NeuronRenderable from, int x, int y)
         {
-            startedSynapse = new SynapseMultiRenderable(this, from, x, y);
+            startedSynapse = new SynapseRenderable(this, from, x, y);
             startedSynapse.Initialize();
         }
 
@@ -93,9 +93,9 @@ namespace Einstein.ui.editarea
         }
 
         // if there are none, returns null
-        public NeuronDraggable HasNeuronAtPosition(int x, int y)
+        public NeuronRenderable HasNeuronAtPosition(int x, int y)
         {
-            foreach (NeuronDraggable dragNeuron in displayedNeuronsIndex.Values)
+            foreach (NeuronRenderable dragNeuron in displayedNeuronsIndex.Values)
             {
                 if (dragNeuron.GetDrawable().GetBoundaryRectangle().Contains(x, y)
                     && dragNeuron.GetDrawable().IsDisplaying())
