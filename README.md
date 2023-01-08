@@ -9,8 +9,10 @@ To download and use:
 What this can do:
  - (Maybe) crash or break in some other spectacular fashion
  - Show/Hide input and output neurons in the brain editor area
- - View types and descriptions of neurons in the brain
  - Show a non-functional menu for adding hidden neurons
+ - Add/Remove Synapses
+ - View types and descriptions of neurons in the brain
+
  - Drag neurons around the brain editor area
  - Support window resizing
 
@@ -22,8 +24,7 @@ What this can't do (and probably never will):
 What this will do (planned features):
  - Allow you to create small, weak, inefficient, and dumb bibites to fill your empty worlds
  - Add/Remove hidden neurons (of specified types)
- - Add/Remove Synapses
- - View synapse strengths
+ - Set and View synapse strengths
  - Load brain from a bibite file
  - Save brain to a bibite file
  
