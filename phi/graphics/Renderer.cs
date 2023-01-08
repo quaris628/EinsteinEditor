@@ -120,7 +120,7 @@ namespace phi.graphics
       
       // renderable overloads
       public void Add(Renderable r, int layer) { Add(r, layer); }
-      public void Add(MultiRenderable mr, int layer) { Add(mr, layer); }
+      public void Add(MultiRenderable mr, int layer) { Add(mr.GetDrawables(), layer); }
       public void Add(Renderable r) { Add(r.GetDrawable()); }
       public void Add(MultiRenderable mr) { Add(mr.GetDrawables()); }
 
