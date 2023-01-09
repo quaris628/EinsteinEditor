@@ -25,6 +25,7 @@ namespace Einstein.ui.editarea
         private Action<BaseNeuron> onRemove;
         private Dictionary<(int, int), SynapseRenderable> displayedSynapsesIndex;
         private SynapseRenderable startedSynapse;
+        private int hiddenNeuronIndex;
 
         public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove)
         {
@@ -32,6 +33,7 @@ namespace Einstein.ui.editarea
             displayedNeuronsIndex = new Dictionary<int, NeuronRenderable>();
             this.onRemove = onRemove;
             displayedSynapsesIndex = new Dictionary<(int, int), SynapseRenderable>();
+            hiddenNeuronIndex = VersionConfig.HIDDEN_NODES_INDEX_MIN;
         }
 
         public void AddNeuron(BaseNeuron neuron)
@@ -41,6 +43,11 @@ namespace Einstein.ui.editarea
             NeuronRenderable dragNeuron = new NeuronRenderable(this, neuron);
             dragNeuron.Initialize();
             displayedNeuronsIndex.Add(neuron.Index, dragNeuron);
+        }
+
+        public void CreateHiddenNeuron(NeuronType type)
+        {
+            AddNeuron(new BaseNeuron(hiddenNeuronIndex++, type));
         }
 
         public void RemoveNeuron(BaseNeuron neuron)

@@ -85,9 +85,12 @@ namespace Einstein
                 "Hidden Neurons",
                 onSelectAdd,
                 onDeselectAdd);
-            hidden = new NeuronMenuCategory(
+            hidden = new HiddenNeuronMenuCategory(
                 hiddenButton,
-                generateHiddenNeurons());
+                generateHiddenNeurons(),
+                (neuronToAdd) => {
+                    editArea.CreateHiddenNeuron(neuronToAdd.Type);
+                });
             // TODO make the hidden neuron menu do stuff
 
             prevWindowWidth = EinsteinPhiConfig.Window.WIDTH;

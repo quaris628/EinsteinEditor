@@ -54,6 +54,7 @@
     <Compile Include="ui\editarea\visibleElements\NeuronRenderable.cs" />
     <Compile Include="ui\editarea\visibleElements\SynapseArrow.cs" />
     <Compile Include="ui\editarea\visibleElements\SynapseRenderable.cs" />
+    <Compile Include="ui\menu\HiddenNeuronMenuCategory.cs" />
     <Compile Include="ui\menu\IONeuronMenuCategory.cs" />
     <Compile Include="ui\menu\NeuronMenuCategory.cs" />
     <Compile Include="ui\menu\visibleElements\NeuronMenuButton.cs" />
