@@ -49,6 +49,8 @@ namespace phi.io
       public void Unsubscribe(Action<KeyStroke> action, Keys key) { Unsubscribe(action, new KeyStroke(key)); }
       public void Unsubscribe(Action action, KeyStroke keyStroke) { actions[keyStroke.GetCode()].Remove(action); }
       public void Unsubscribe(Action<KeyStroke> action, KeyStroke keyStroke) { keyActions[keyStroke.GetCode()].Remove(action); }
+      public void UnsubscribeAll(Keys key) { UnsubscribeAll(new KeyStroke(key)); }
+      public void UnsubscribeAll(KeyStroke keyStroke) { actions.Remove(keyStroke.GetCode()); keyActions.Remove(keyStroke.GetCode()); }
 
       public void Clear()
       {
@@ -59,15 +61,16 @@ namespace phi.io
       public void KeyInputEvent(object sender, KeyEventArgs e)
       {
          KeyStroke stroke = new KeyStroke(e.KeyData);
-         if (actions.ContainsKey(stroke.GetCode()))
+         if (actions.TryGetValue(stroke.GetCode(), out LinkedList<Action> keystrokeActions))
          {
-            // This extra-verbose while loop iteration is here instead of a simpler foreach
-            //    to force iteration to continue even if an element in the collection is updated.
-            // If this was replaced by a foreach, an exception would be thrown.
-            IEnumerator<Action> todos = actions[stroke.GetCode()].GetEnumerator();
-            while(todos.MoveNext())
+            // make copy of collection b/c otherwise could run into concurrent modification exception
+            LinkedList<Action> todos = new LinkedList<Action>();
+            foreach (Action action in keystrokeActions)
             {
-               Action action = todos.Current;
+               todos.AddFirst(action);
+            }
+            foreach (Action action in todos)
+            {
                action.Invoke();
             }
          }
