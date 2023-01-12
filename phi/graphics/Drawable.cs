@@ -69,7 +69,7 @@ namespace phi.graphics
       {
          if (!base.Equals(obj)) { return false; }
          if (this.GetType() != obj.GetType()) { return false; }
-         return this.displaying == ((Drawable)obj).displaying;
+         return this.GetHashCode() == obj.GetHashCode();
       }
 
       public override string ToString()
