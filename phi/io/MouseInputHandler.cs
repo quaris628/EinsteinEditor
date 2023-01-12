@@ -16,12 +16,14 @@ namespace phi.io
       private FastClickRegions<Action<int, int>> fastRegions;
       // private Dictionary<Rectangle, LinkedList<Action<int, int>>> regionActions;
       private Dictionary<Drawable, LinkedList<Action<int, int>>> drawableActions;
+      private Dictionary<Action, Action<int, int>> wrapIndex;
 
       public MouseInputHandler()
       {
          actions = new LinkedList<Action<int, int>>();
          fastRegions = new FastClickRegions<Action<int, int>>();
          drawableActions = new Dictionary<Drawable, LinkedList<Action<int, int>>>();
+         wrapIndex = new Dictionary<Action, Action<int, int>>();
       }
 
       public void Subscribe(Action<int, int> action) { actions.AddFirst(action); }
@@ -63,7 +65,13 @@ namespace phi.io
       // Subscription overloads for no-parameter actions
       private Action<int, int> Wrap(Action action)
       {
-         return new Action<int, int>((a, b) => { action.Invoke(); });
+         Action<int, int> actionXY;
+         if (!wrapIndex.TryGetValue(action, out actionXY))
+         {
+            actionXY = new Action<int, int>((a, b) => { action.Invoke(); });
+            wrapIndex.Add(action, actionXY);
+         }
+         return actionXY;
       }
       public void Subscribe(Action action) { Subscribe(Wrap(action)); }
       public void Unsubscribe(Action action) { Unsubscribe(Wrap(action)); }
