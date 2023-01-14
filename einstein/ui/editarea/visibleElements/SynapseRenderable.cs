@@ -1,4 +1,5 @@
 ﻿using Einstein.model;
+using Einstein.model.json;
 using Einstein.ui.editarea.visibleElements;
 using phi.graphics;
 using phi.graphics.drawables;
@@ -91,7 +92,10 @@ namespace Einstein.ui.editarea
 
             // set data/properties
             To = to;
-            Synapse = new BaseSynapse(From.Neuron, To.Neuron, DEFAULT_STRENGTH);
+            Synapse = new JsonSynapse(
+                (JsonNeuron)From.Neuron,
+                (JsonNeuron)To.Neuron,
+                DEFAULT_STRENGTH);
 
             // set up strength editing text
             text = (SelectableEditableText) new SelectableEditableText.SETextBuilder(
@@ -201,10 +205,37 @@ namespace Einstein.ui.editarea
             }
         }
 
+        public void SetStrength(float strength)
+        {
+            string msg = strength.ToString();
+            int decimalIndex;
+            if ((decimalIndex = msg.IndexOf(".")) > 0
+                || (decimalIndex = msg.IndexOf(",")) > 0)
+            {
+                int cutoffLength = decimalIndex + 1 + STRENGTH_MAX_DECIMALS;
+                if (cutoffLength < msg.Length)
+                {
+                    msg = msg.Substring(0, cutoffLength);
+                }
+            }
+            if (validateText(msg))
+            {
+                Text textD = (Text)text.GetDrawable();
+                textD.SetMessage(msg);
+                textD.SetBackgroundColor(new SolidBrush(TEXT_UNSELECTED_BACKGROUND_COLOR));
+            }
+            else
+            {
+                throw new ArgumentException("Invalid strength '" + msg
+                    + "' (original float value '" + strength + "')");
+            }
+        }
+
         private bool validateText(string msg)
         {
-            if ((msg.Length > 2 + STRENGTH_MAX_DECIMALS
-                || !float.TryParse(msg, NumberStyles.Any, CultureInfo.InvariantCulture, out float value)
+            float value;
+            if (msg.Length > 2 + STRENGTH_MAX_DECIMALS
+                || (!float.TryParse(msg, NumberStyles.Any, CultureInfo.InvariantCulture, out value)
                 || value < VersionConfig.SYNAPSE_STRENGTH_MIN
                 || VersionConfig.SYNAPSE_STRENGTH_MAX < value
                 ) && !(("-.".Contains(msg) || "-,".Contains(msg)) && text.IsEditingEnabled))
@@ -213,6 +244,7 @@ namespace Einstein.ui.editarea
                     new SolidBrush(TEXT_INVALID_BACKGROUND_COLOR));
                 return false;
             }
+            Synapse.Strength = value; // TODO: this might not be the only place this needs to happen? But I'll probably redo the text editing code anyway so...
             ((Text)(text.GetDrawable())).SetBackgroundColor(
                     new SolidBrush(TEXT_SELECTED_BACKGROUND_COLOR));
             UpdateTextPosition();

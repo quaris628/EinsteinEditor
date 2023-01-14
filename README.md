@@ -7,12 +7,14 @@ To download and use:
  -----
 
 What this can do:
+ - Allow you to create small, weak, inefficient, and dumb bibites to fill your empty worlds
  - Crash, and/or break in a spectacular fashion (consider this a disclaimer)
- - Show/Hide input and output neurons in the brain editor area
+ - Save/Load brain to/from a bibite file (somewhat buggy)
+ - Show/Hide input and output neurons in the editing area
  - Create/Delete hidden neurons (of specified types)
  - View types and descriptions of neurons
  - Create/Delete synapses
- - Set and View synapse strengths
+ - Edit/View synapse strengths (somewhat buggy)
  - Drag neurons around the brain editor area
  - Support window resizing
 
@@ -22,15 +24,16 @@ What this can't do (and probably never will):
  - Make you a milkshake
 
 What this will do (planned features):
- - Allow you to create small, weak, inefficient, and dumb bibites to fill your empty worlds
- - Load brain from a bibite file
- - Save brain to a bibite file
+ - Have fewer bugs in loading/saving
+ - Have fewer bugs in editing synapse strengths
+ - Show a generic error message popup for any internal exceptions instead of crashing
  
 What this might do (ideas for the future):
  - Look pretty
+ - Have the default folder location persist between sessions
  - When neurons are added, have their spawn location staggered
- - Keyboard shortcuts
  - A button to auto-arrange neurons in a prettier and more clean arrangement
+ - Keyboard shortcuts
  - Edit neuron descriptions
  - Edit neuron type
  - Create a blank bibite

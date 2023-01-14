@@ -16,6 +16,7 @@ namespace Einstein
       // in VS, project -> properties -> Output type, set to Windows Application instead of Console Application
 	   
       // Entry point
+      [STAThread]
       public static void Main()
       {
          PhiMain.Main(new EditorScene(null), new EinsteinPhiConfig());

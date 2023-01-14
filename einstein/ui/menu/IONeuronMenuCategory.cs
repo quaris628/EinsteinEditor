@@ -62,5 +62,19 @@ namespace Einstein.ui.menu
             onRemove.Invoke(neuron);
         }
 
+        public void ClearAllOptions()
+        {
+            // must avoid concurrent modification exception
+            LinkedList<BaseNeuron> neuronsToRemove = new LinkedList<BaseNeuron>();
+            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            {
+                neuronsToRemove.AddFirst(neuronDrawable.Neuron);
+            }
+            foreach (BaseNeuron neuron in neuronsToRemove)
+            {
+                RemoveOption(neuron);
+            }
+        }
+
     }
 }
