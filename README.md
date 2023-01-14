@@ -7,7 +7,7 @@ To download and use:
  -----
 
 What this can do:
- - Allow you to create small, weak, inefficient, and dumb bibites to fill your empty worlds
+ - Allow you to create and edit small, weak, inefficient, and dumb bibite brains
  - Crash, and/or break in a spectacular fashion (consider this a disclaimer)
  - Save/Load brain to/from a bibite file (somewhat buggy)
  - Show/Hide input and output neurons in the editing area
