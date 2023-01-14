@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using phi.io;
 using phi.graphics;
 using phi.control;
+using System.Windows.Forms;
 
 namespace phi.io
 {
@@ -70,6 +71,15 @@ namespace phi.io
          RENDERER.Clear();
       }
 
+      public static string PromptForFile(string initialDirectory, string defaultName, string extension)
+      {
+         OpenFileDialog dialog = new OpenFileDialog();
+         dialog.InitialDirectory = initialDirectory;
+         dialog.FileName = defaultName;
+         dialog.DefaultExt = extension;
+         dialog.ShowDialog();
+         return dialog.FileName;
+      }
       public static void Exit() { WindowsForm.Exit(); }
    }
 }
