@@ -54,6 +54,11 @@ namespace Einstein.model
                 && Index <= VersionConfig.OUTPUT_NODES_INDEX_MAX;
         }
 
+        public bool IsHidden()
+        {
+            return !IsInput() && !IsOutput();
+        }
+
         public override string ToString()
         {
             return Description + " : " + Type.ToString();
