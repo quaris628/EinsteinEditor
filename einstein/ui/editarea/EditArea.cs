@@ -47,7 +47,8 @@ namespace Einstein.ui.editarea
 
         public void CreateHiddenNeuron(NeuronType type)
         {
-            AddNeuron(new BaseNeuron(hiddenNeuronIndex++, type));
+            AddNeuron(new BaseNeuron(hiddenNeuronIndex++, type,
+                type.ToString() + (hiddenNeuronIndex - VersionConfig.HIDDEN_NODES_INDEX_MIN)));
         }
 
         public void RemoveNeuron(BaseNeuron neuron)
