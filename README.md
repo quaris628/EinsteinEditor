@@ -10,8 +10,9 @@ What this can do:
  - Crash, and/or break in a spectacular fashion (consider this a disclaimer)
  - Show/Hide input and output neurons in the brain editor area
  - Create/Delete hidden neurons (of specified types)
- - Create/Delete synapses
  - View types and descriptions of neurons
+ - Create/Delete synapses
+ - Set and View synapse strengths
  - Drag neurons around the brain editor area
  - Support window resizing
 
@@ -22,7 +23,6 @@ What this can't do (and probably never will):
 
 What this will do (planned features):
  - Allow you to create small, weak, inefficient, and dumb bibites to fill your empty worlds
- - Set and View synapse strengths
  - Load brain from a bibite file
  - Save brain to a bibite file
  
