@@ -53,6 +53,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="control\WindowsForm.Designer.cs" />
+    <Compile Include="graphics\renderables\EditableText.cs" />
     <Compile Include="graphics\drawables\RectangleDrawable.cs" />
     <Compile Include="graphics\drawables\ProgressBar.cs" />
     <Compile Include="graphics\drawables\ProgressCircle.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="graphics\drawables\Sprite.cs" />
     <Compile Include="graphics\drawables\Text.cs" />
     <Compile Include="graphics\drawables\Line.cs" />
+    <Compile Include="graphics\renderables\SelectableEditableText.cs" />
     <Compile Include="io\FastClickRegions.cs" />
     <Compile Include="other\Growable2DArray.cs" />
     <Compile Include="other\GrowableArray.cs" />
