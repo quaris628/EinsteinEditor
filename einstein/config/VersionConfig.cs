@@ -16,6 +16,9 @@ namespace Einstein
         public const int HIDDEN_NODES_INDEX_MIN = 48;
         public const int HIDDEN_NODES_INDEX_MAX = int.MaxValue;
 
+        public const float SYNAPSE_STRENGTH_MIN = -10f;
+        public const float SYNAPSE_STRENGTH_MAX = 10f;
+
         public static readonly string[] DESCRIPTIONS = new string[] {
             // ----- Inputs -----
             "Constant",
@@ -69,7 +72,7 @@ namespace Einstein
             "ImmuneSystem",
         };
 
-        public static readonly NeuronType[] OUTPUT_TYPES = new NeuronType[] {
+        private static readonly NeuronType[] OUTPUT_TYPES = new NeuronType[] {
             NeuronType.TanH,
             NeuronType.TanH,
             NeuronType.TanH,

@@ -2,31 +2,52 @@
 using Einstein.ui.editarea.visibleElements;
 using phi.graphics;
 using phi.graphics.drawables;
+using phi.graphics.renderables;
 using phi.io;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+/* removing a neuron doesn't remove any linked synapse MRs
+(including synapses coming from the neuron but not linked to any To neuron yet)
+
+TODO: create another child class that extends SelectableEditableText specificially
+for the neuron editable text, and be sure to make it resposition right during backspaces,
+and to allow a value to be set if it's deselected while blank (though maybe actually put
+that as an optional default-value-if-deselected-while-blank parameter to SelectableEditableText?)
+*/
 
 namespace Einstein.ui.editarea
 {
     public class SynapseRenderable : MultiRenderable
     {
-        public const float DEFAULT_STRENGTH = 1f;
+        
 
         public const int LAYER = 5;
         public const int LINE_WIDTH = 2 * HALF_LINE_WIDTH;
         public const int HALF_LINE_WIDTH = 3;
-        public static readonly Color LINE_COLOR = Color.Black;
+        public static readonly Color LINE_COLOR = Color.DarkGray;
+        public const float DEFAULT_STRENGTH = 1f;
+        public const string TEXT_DEFAULT_VALUE = "0";
+        public const int STRENGTH_MAX_DECIMALS = 2;
+        public const string TEXT_ALLOWED_CHARS = "1234567890.,-";
+        private static readonly Color TEXT_SELECTED_BACKGROUND_COLOR = Color.CornflowerBlue;
+        private static readonly Color TEXT_UNSELECTED_BACKGROUND_COLOR = Color.DarkGray;
+        private static readonly Color TEXT_INVALID_BACKGROUND_COLOR = Color.LightPink;
 
         public BaseSynapse Synapse { get; private set; }
         public NeuronRenderable From { get; private set; }
         public NeuronRenderable To { get; private set; }
 
+        // drawables
         private Line line;
         private SynapseArrow arrow;
+        private SelectableEditableText text; // technically a renderable
+
         private EditArea editArea;
 
         public SynapseRenderable(EditArea editArea, NeuronRenderable from, int mouseX, int mouseY)
@@ -59,44 +80,59 @@ namespace Einstein.ui.editarea
         }
 
         // sort of a second step of initialization (or will uninitialize)
-        public void SetTipNeuron(NeuronRenderable dragNeuron)
+        public void Finalize(NeuronRenderable to)
         {
-            To = dragNeuron;
-            if (To == null)
+            // if user cancels creation
+            if (to == null)
             {
                 Uninitialize();
                 return;
             }
 
+            // set data/properties
+            To = to;
+            Synapse = new BaseSynapse(From.Neuron, To.Neuron, DEFAULT_STRENGTH);
+
+            // set up strength editing text
+            text = (SelectableEditableText) new SelectableEditableText.SETextBuilder(
+                new Text.TextBuilder(DEFAULT_STRENGTH.ToString()).Build())
+                .WithSelectedBackColor(new SolidBrush(TEXT_SELECTED_BACKGROUND_COLOR))
+                .WithUnselectedBackColor(new SolidBrush(TEXT_UNSELECTED_BACKGROUND_COLOR))
+                .WithDefaultMessage(TEXT_DEFAULT_VALUE)
+                .WithAllowedChars(TEXT_ALLOWED_CHARS)
+                .WithEditingDisabled()
+                .WithValidateMessage(validateText)
+                .Build();
+            text.Initialize();
+
+            // complete initialization
             IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
             IO.MOUSE.MID_CLICK_UP.SubscribeOnDrawable(RemoveIfExactlyContainsClick, line);
             To.SubscribeOnDrag(UpdateTipPosition);
+            
             UpdateTipPosition();
 
-            // TODO allow setting a different strength besides the default
-            Synapse = new BaseSynapse(From.Neuron, To.Neuron, DEFAULT_STRENGTH);
             editArea.FinishSynapse(Synapse);
         }
 
         private void UpdateBasePosition()
         {
-            UpdateBasePositionXY(From.NeuronDrawable.GetCircleCenterX(),
-                               From.NeuronDrawable.GetCircleCenterY());
-            if (To != null)
-            {
-                UpdateTipPosition();
-            }
-        }
-        private void UpdateBasePositionXY(int x, int y)
-        {
+            int x = From.NeuronDrawable.GetCircleCenterX();
+            int y = From.NeuronDrawable.GetCircleCenterY();
             line.SetXY1(x, y);
             arrow.SetDirection(
                 line.GetX2() - x,
                 line.GetY2() - y);
+
+            if (To != null)
+            {
+                UpdateTipPosition();
+            }
+            UpdateTextPosition();
         }
 
-        // Only use if To is set
+        // Only use after running Finalize
         private void UpdateTipPosition()
         {
             int circleCenterX = To.NeuronDrawable.GetCircleCenterX();
@@ -116,7 +152,10 @@ namespace Einstein.ui.editarea
             int arrowTipX = (int)(circleCenterX + dX * NeuronDrawable.CIRCLE_RADIUS);
             int arrowTipY = (int)(circleCenterY + dY * NeuronDrawable.CIRCLE_RADIUS);
             UpdateTipPositionXY(arrowTipX, arrowTipY);
+            UpdateTextPosition();
         }
+
+        // intended only for use before Finalize has been run
         private void UpdateTipPositionXY(int x, int y)
         {
             line.SetXY2(x, y);
@@ -126,9 +165,14 @@ namespace Einstein.ui.editarea
                 y - From.NeuronDrawable.GetCircleCenterY());
         }
 
+        private void UpdateTextPosition()
+        {
+            text?.GetDrawable().SetCenterXY(line.GetCenterX(), line.GetCenterY());
+        }
+
         private void FinalizeTipPosition(int x, int y)
         {
-            SetTipNeuron(editArea.HasNeuronAtPosition(x, y));
+            Finalize(editArea.HasNeuronAtPosition(x, y));
         }
 
         private void RemoveIfExactlyContainsClick(int x, int y)
@@ -157,10 +201,32 @@ namespace Einstein.ui.editarea
             }
         }
 
+        private bool validateText(string msg)
+        {
+            if ((msg.Length > 2 + STRENGTH_MAX_DECIMALS
+                || !float.TryParse(msg, NumberStyles.Any, CultureInfo.InvariantCulture, out float value)
+                || value < VersionConfig.SYNAPSE_STRENGTH_MIN
+                || VersionConfig.SYNAPSE_STRENGTH_MAX < value
+                ) && !(("-.".Contains(msg) || "-,".Contains(msg)) && text.IsEditingEnabled))
+            {
+                ((Text)(text.GetDrawable())).SetBackgroundColor(
+                    new SolidBrush(TEXT_INVALID_BACKGROUND_COLOR));
+                return false;
+            }
+            ((Text)(text.GetDrawable())).SetBackgroundColor(
+                    new SolidBrush(TEXT_SELECTED_BACKGROUND_COLOR));
+            UpdateTextPosition();
+            return true;
+        }
+
         public IEnumerable<Drawable> GetDrawables()
         {
             yield return line;
             yield return arrow;
+            if (text != null)
+            {
+                yield return text.GetDrawable();
+            }
         }
     }
 }
