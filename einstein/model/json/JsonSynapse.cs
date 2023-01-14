@@ -13,14 +13,12 @@ namespace Einstein.model.json
         // {"Inov":0,"NodeIn":0,"NodeOut":48,"Weight":1.0,"En":true,"en":true}
 
         private const string JSON_FORMAT =
-            "{" +
             "\"Inov\":{0}," +
             "\"NodeIn\":{1}," +
             "\"NodeOut\":{2}," +
             "\"Weight\":{3}," +
             "\"En\":{4}," +
-            "\"en\":{5}" +
-            "}";
+            "\"en\":{5}";
 
         // unused for now
         private string inov;
@@ -50,13 +48,13 @@ namespace Einstein.model.json
 
         public override string GetSave()
         {
-            return string.Format(JSON_FORMAT,
+            return "{" + string.Format(JSON_FORMAT,
                 inov,
                 From.Index,
                 To.Index,
                 Strength,
                 En,
-                en);
+                en) + "}";
         }
     }
 }
