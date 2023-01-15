@@ -73,19 +73,32 @@ namespace phi.io
          RENDERER.Clear();
       }
 
-      public static string PromptForFile(string initialDirectory, string defaultName, string extension)
+      // example filters:
+      // "XML Files|*.xml"
+      // "Image Files (*.bmp, *.jpg)|*.bmp;*.jpg"
+      // "Text Files (*.txt)|*.txt|All Files (*.*)|*.*"
+
+      public static string PromptForFile(string initialDirectory,
+          string filter, string windowTitle, string defaultName)
       {
-         OpenFileDialog dialog = new OpenFileDialog();
-         dialog.InitialDirectory = initialDirectory;
-         dialog.FileName = defaultName;
-         dialog.DefaultExt = extension;
-         dialog.ShowDialog();
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                InitialDirectory = initialDirectory,
+                Title = windowTitle,
+                Filter = filter,
+                FileName = defaultName,
+            };
+            dialog.ShowDialog();
          return dialog.FileName;
       }
 
       public static void ShowPopup(string title, string content)
       {
          MessageBox.Show(content, title, MessageBoxButtons.OK);
+      }
+      public static void ShowErrorPopup(string title, string content)
+      {
+         MessageBox.Show(content, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
       public static void HandleCrash(Exception e, string popupWindowTitle,
@@ -116,14 +129,14 @@ namespace phi.io
          {
             ProcessStartInfo sInfo = new ProcessStartInfo(githubNewIssueLink);
             Process.Start(sInfo);
-         } catch (Exception e1) { } // if it failed, just continue
+         } catch (Exception) { } // if it failed, just continue
 
          // Write error log file
          try
          {
             File.WriteAllText(logFilepath, errorDetails + stackTrace + extraLog);
          }
-         catch (Exception e1)
+         catch (Exception)
          {
             // presume log file failed to be created, continue without it
             MessageBox.Show(
@@ -143,7 +156,7 @@ namespace phi.io
          try
          {
             Process.Start("notepad.exe", logFilepath);
-         } catch (Exception e1) { } // if it failed, just continue
+         } catch (Exception) { } // if it failed, just continue
 
          MessageBox.Show(
             "To report this crash, submit an issue on github." +
