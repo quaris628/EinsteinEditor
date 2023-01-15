@@ -18,8 +18,6 @@ namespace Einstein
         //  Config
         // ----------------------------------------------------------------
 
-        private const string SAVE_LOAD_BUTTON_IMAGE = EinsteinPhiConfig.RES_DIR + "SmallButtonBackground.png";
-        private const int SAVE_LOAD_BUTTON_WIDTH = 69;
         private static readonly string DEFAULT_SAVE_LOAD_FOLDER =
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
             + "\\AppData\\LocalLow\\The Bibites\\The Bibites";
@@ -82,17 +80,17 @@ namespace Einstein
                 generateHiddenNeurons(),
                 createHiddenNeuronInEditArea);
             loadButton = new Button.ButtonBuilder(
-                new ImageWrapper(SAVE_LOAD_BUTTON_IMAGE),
+                new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
                 EinsteinPhiConfig.PAD,
-                4 * EinsteinPhiConfig.PAD + 3 * NeuronMenuButton.HEIGHT)
-                .withText("Load")
+                5 * EinsteinPhiConfig.PAD + 3 * NeuronMenuButton.HEIGHT)
+                .withText("Load from Bibite")
                 .withOnClick(loadBrain)
                 .Build();
             saveButton = new Button.ButtonBuilder(
-                new ImageWrapper(SAVE_LOAD_BUTTON_IMAGE),
-                2 * EinsteinPhiConfig.PAD + SAVE_LOAD_BUTTON_WIDTH,
-                4 * EinsteinPhiConfig.PAD + 3 * NeuronMenuButton.HEIGHT)
-                .withText("Save")
+                new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
+                EinsteinPhiConfig.PAD,
+                6 * EinsteinPhiConfig.PAD + 4 * NeuronMenuButton.HEIGHT)
+                .withText("Save to Bibite")
                 .withOnClick(saveBrain)
                 .Build();
 
@@ -133,28 +131,65 @@ namespace Einstein
         private void saveBrain()
         {
             string brainJson = ((JsonBrain)editArea.Brain).GetSave();
-            string filepath = IO.PromptForFile(getSavePath(), "", ".bb8");
-            if (filepath == "") { return; }
-            if (!File.Exists(filepath)) { throw new FileNotFoundException(filepath); }
-
+            string filepath = IO.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
+                "Save to Bibite", "");
+            if (filepath == "")
+            {
+                // User cancelled
+                return;
+            }
+            if (!File.Exists(filepath))
+            {
+                IO.ShowErrorPopup("Save Failed", "File not found.");
+                return;
+            }
             string bibiteJson = File.ReadAllText(filepath);
             int startIndex = bibiteJson.IndexOf("\"brain\":") + "\"brain\":".Length;
             int endIndex = bibiteJson.IndexOf("\"immuneSystem\":");
+            if (startIndex < 0 || endIndex < 0)
+            {
+                IO.ShowErrorPopup("Save Failed", "File format is invalid.");
+                return;
+            }
             bibiteJson = bibiteJson.Substring(0, startIndex) + brainJson + bibiteJson.Substring(endIndex);
             File.WriteAllText(filepath, bibiteJson);
-            savePath = filepath.Substring(0, filepath.LastIndexOf("\\"));
+            savePath = Path.GetDirectoryName(filepath);
+            IO.ShowPopup("Save Successful", ""); // TODO change to on-screen message in corner
         }
 
         private void loadBrain()
         {
-            string filepath = IO.PromptForFile(getLoadPath(), "", ".bb8");
+            string filepath = IO.PromptForFile(getLoadPath(), "Bibite Files|*.bb8",
+                "Load from Bibite", "");
             if (filepath == "") { return; }
-            if (!File.Exists(filepath)) { throw new FileNotFoundException(filepath); }
+            if (!File.Exists(filepath))
+            {
+                IO.ShowErrorPopup("Load Failed", "File not found.");
+                return;
+            }
             string json = File.ReadAllText(filepath);
-            JsonBrain brain = new JsonBrain(json, json.IndexOf("\"brain\":"));
+            JsonBrain brain;
+            try
+            {
+                brain = new JsonBrain(json, json.IndexOf("\"brain\":"));
+            }
+            catch (NoNextValueException e)
+            {
+                IO.ShowErrorPopup("Load Failed",
+                    "File format is invalid.\n\nDetails: " + e.Message);
+                return;
+            }
+            catch (BrainException e)
+            {
+                IO.ShowErrorPopup("Load Failed",
+                    "File format is correct but some values are invalid.\n\n" +
+                    e.GetDisplayMessage(": "));
+                return;
+            }
+
             editArea.LoadBrain(brain);
             updateNeuronsInMenu();
-            loadPath = filepath.Substring(0, filepath.LastIndexOf("\\"));
+            loadPath = Path.GetDirectoryName(filepath);
         }
 
         private string getSavePath()
@@ -319,8 +354,8 @@ namespace Einstein
             log += "\ninput = " + input.LogDetailsForCrash();
             log += "\noutput = " + output.LogDetailsForCrash();
             log += "hidden = " + hidden.LogDetailsForCrash();
-            log += "\nsavePath = " + (savePath != null ? savePath : "null");
-            log += "\nloadPath = " + (loadPath != null ? loadPath : "null");
+            log += "\nsavePath = " + (savePath ?? "null");
+            log += "\nloadPath = " + (loadPath ?? "null");
             log += "\nprevWindowWidth = " + prevWindowWidth;
             return log;
         }

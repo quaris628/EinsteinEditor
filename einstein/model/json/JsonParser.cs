@@ -16,7 +16,7 @@ namespace Einstein.model.json
         {
             this.json = json;
             this.index = index;
-            if (index < 0) { index = 0; }
+            if (index < 0) { this.index = 0; }
         }
 
         public string getNextValue()

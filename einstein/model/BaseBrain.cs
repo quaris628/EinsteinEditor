@@ -71,6 +71,12 @@ namespace Einstein.model
                     "This brain already has a synapse that connects '" +
                     synapse.From + "' to '" + synapse.To + "'");
             }
+            if (synapsesIndex.ContainsKey((synapse.To.Index, synapse.From.Index)))
+            {
+                throw new ContainsDuplicateException(
+                    "This brain already has a synapse that connects '" +
+                    synapse.To + "' to '" + synapse.From + "' (in the opposite direction)");
+            }
 
             Synapses.Add(synapse);
             // update indexes
@@ -81,14 +87,15 @@ namespace Einstein.model
 
         public void Remove(BaseNeuron neuron)
         {
-            if (!Neurons.Remove(neuron))
+            if (!neuronsIndex.TryGetValue(neuron.Index, out BaseNeuron neuronToRemove)
+                || !Neurons.Remove(neuronToRemove))
             {
                 throw new ElementNotFoundException(
-                    "This brain does not have the neuron '" +
-                    neuron.ToString() + "'");
+                    "Cannot remove the neuron '" +
+                    neuron.ToString() + "' because it does not exist in the brain.");
             }
             // remove linked synapses
-            // (can't remove inside the for loops over the index b/c would concurrently modify the index
+            // avoid concurrent modification exception
             LinkedList<BaseSynapse> linkedSynapses = new LinkedList<BaseSynapse>();
             foreach (BaseSynapse synapse in synapsesFromIndex[neuron.Index])
             {
@@ -111,11 +118,13 @@ namespace Einstein.model
 
         public void Remove(BaseSynapse synapse)
         {
-            if (!Synapses.Remove(synapse))
+            if (!synapsesIndex.TryGetValue((synapse.From.Index, synapse.To.Index),
+                out BaseSynapse synapseToRemove)
+                || !Synapses.Remove(synapseToRemove))
             {
                 throw new ElementNotFoundException(
-                    "This brain does not have the synapse '" +
-                    synapse.ToString() + "'");
+                    "Cannot remove the synapse '" + synapse +
+                    "' because it does not exist in the brain.");
             }
             // update indexes
             synapsesIndex.Remove((synapse.From.Index, synapse.To.Index));
@@ -166,19 +175,35 @@ namespace Einstein.model
         public virtual string GetSave() { throw new NotSupportedException(); }
     }
 
-    public class ContainsDuplicateException : Exception {
-        public ContainsDuplicateException() : base() { }
-        public ContainsDuplicateException(string message) : base(message) { }
-        public ContainsDuplicateException(string message, Exception innerException)
-            : base(message, innerException) { }
+    public abstract class BrainException : Exception
+    {
+        private string title;
+        protected BrainException(string title) : base() { this.title = title; }
+        protected BrainException(string title, string message) : base(message) { this.title = title; }
+        protected BrainException(string title, string message, Exception innerException)
+            : base(message, innerException) { this.title = title; }
+        public string GetDisplayMessage(string delimiter)
+        {
+            return title + delimiter + Message;
+        }
     }
 
-    public class ElementNotFoundException : Exception
+    public class ContainsDuplicateException : BrainException
     {
-        public ElementNotFoundException() : base() { }
-        public ElementNotFoundException(string message) : base(message) { }
+        public const string TITLE = "Contains duplicate";
+        public ContainsDuplicateException() : base(TITLE) { }
+        public ContainsDuplicateException(string message) : base(TITLE, message) { }
+        public ContainsDuplicateException(string message, Exception innerException)
+            : base(TITLE, message, innerException) { }
+    }
+
+    public class ElementNotFoundException : BrainException
+    {
+        public const string TITLE = "Element not found";
+        public ElementNotFoundException() : base(TITLE) { }
+        public ElementNotFoundException(string message) : base(TITLE, message) { }
         public ElementNotFoundException(string message, Exception innerException)
-            : base(message, innerException) { }
+            : base(TITLE, message, innerException) { }
     }
 
 }

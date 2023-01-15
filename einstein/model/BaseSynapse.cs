@@ -18,7 +18,8 @@ namespace Einstein.model
         {
             if (from == null || to == null) { throw new ArgumentNullException(); }
             if (from.Index == to.Index) { throw new SameNeuronException(
-                "Cannot create a synapse that connects a neuron to itself"); }
+                "Cannot create a synapse that connects any neuron (index " +
+                from.Index + " ) to itself."); }
             strength = Math.Max(-10f, Math.Min(strength, 10f));
 
             From = from;
@@ -34,10 +35,12 @@ namespace Einstein.model
         public virtual string GetSave() { throw new NotSupportedException(); }
     }
 
-    public class SameNeuronException : Exception {
-        public SameNeuronException() : base() { }
-        public SameNeuronException(string message) : base(message) { }
+    public class SameNeuronException : BrainException
+    {
+        public const string TITLE = "Contains duplicate";
+        public SameNeuronException() : base(TITLE) { }
+        public SameNeuronException(string message) : base(TITLE, message) { }
         public SameNeuronException(string message, Exception innerException)
-            : base(message, innerException) { }
+            : base(TITLE, message, innerException) { }
     }
 }

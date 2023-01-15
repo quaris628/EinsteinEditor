@@ -36,7 +36,7 @@ namespace Einstein.model
             if (IsInput() && IsOutput())
             {
                 // This is Leo's fault. Don't blame me.
-                throw new InputOutputConflictException(
+                throw new InputOutputAmbiguityException(
                     "It is unclear whether this neuron is an input or output neuron. " +
                     "Its type (" + Type + ") indicates it is an input neuron, " +
                     "but its index (" + Index + ") indicates it is an output neuron.");
@@ -68,18 +68,21 @@ namespace Einstein.model
 
         public static string GetDefaultDescription(int index) { return "Hidden" + index; }
     }
-    public class InvalidDescriptionException : Exception {
-        public InvalidDescriptionException() : base() { }
-        public InvalidDescriptionException(string message) : base(message) { }
-        public InvalidDescriptionException(string message, Exception innerException)
-            : base(message, innerException) { }
-    }
-    public class InputOutputConflictException : Exception
+    public class InvalidDescriptionException : BrainException
     {
-        public InputOutputConflictException() : base() { }
-        public InputOutputConflictException(string message) : base(message) { }
-        public InputOutputConflictException(string message, Exception innerException)
-            : base(message, innerException) { }
+        public const string TITLE = "Invalid description";
+        public InvalidDescriptionException() : base(TITLE) { }
+        public InvalidDescriptionException(string message) : base(TITLE, message) { }
+        public InvalidDescriptionException(string message, Exception innerException)
+            : base(TITLE, message, innerException) { }
+    }
+    public class InputOutputAmbiguityException : BrainException
+    {
+        public const string TITLE = "Input/Output Ambiguity";
+        public InputOutputAmbiguityException() : base(TITLE) { }
+        public InputOutputAmbiguityException(string message) : base(TITLE, message) { }
+        public InputOutputAmbiguityException(string message, Exception innerException)
+            : base(TITLE, message, innerException) { }
     }
 
 }

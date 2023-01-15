@@ -44,7 +44,7 @@ namespace Einstein.ui
             }
             // in case this neuron gets caught in the crossfire of changes
             // to which neuron indices are output
-            catch (InputOutputConflictException)
+            catch (InputOutputAmbiguityException)
             {
                 // don't show any special icon
             }

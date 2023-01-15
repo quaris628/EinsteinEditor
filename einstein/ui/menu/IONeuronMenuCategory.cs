@@ -12,12 +12,14 @@ namespace Einstein.ui.menu
     public class IONeuronMenuCategory : NeuronMenuCategory
     {
         private Action<BaseNeuron> onRemove;
+        private bool disableOnRemove;
         public IONeuronMenuCategory(NeuronMenuButton button,
             ICollection<BaseNeuron> neuronOptions,
             Action<BaseNeuron> onRemove)
             : base(button, neuronOptions)
         {
             this.onRemove = onRemove;
+            disableOnRemove = false;
         }
 
         public override void Initialize()
@@ -60,7 +62,10 @@ namespace Einstein.ui.menu
             IO.RENDERER.Remove(neuronDrawable);
             RepositionOptions();
 
-            onRemove.Invoke(neuron);
+            if (!disableOnRemove)
+            {
+                onRemove.Invoke(neuron);
+            }
         }
 
         public void ClearAllOptions()
@@ -71,10 +76,12 @@ namespace Einstein.ui.menu
             {
                 neuronsToRemove.AddFirst(neuronDrawable.Neuron);
             }
+            disableOnRemove = true; // kinda hacky but easiest solution, and doesn't add duplicate code
             foreach (BaseNeuron neuron in neuronsToRemove)
             {
                 RemoveOption(neuron);
             }
+            disableOnRemove = false;
         }
 
         public override string LogDetailsForCrash()

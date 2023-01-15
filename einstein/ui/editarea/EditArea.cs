@@ -193,7 +193,7 @@ namespace Einstein.ui.editarea
             try
             {
                 log += "\nBrain = " + Brain.GetSave();
-            } catch (Exception e) { }
+            } catch (Exception) { }
             log += "\ndisplayedNeuronsIndex = ";
             if (displayedNeuronsIndex == null) { log += "null"; }
             else if (displayedNeuronsIndex.Count == 0) { log += "empty"; }
