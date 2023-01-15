@@ -12,6 +12,7 @@ namespace Einstein
     public class EinsteinPhiConfig : DefaultConfig
     {
         public const int PAD = 5;
+        public const string VERSION = "0.0.0";
 
         public new class Window : DefaultConfig.Window
         {

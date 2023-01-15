@@ -5,6 +5,7 @@ using phi.io;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -66,6 +67,25 @@ namespace Einstein.ui.editarea
             {
                 action.Invoke();
             }
+        }
+
+        public override string ToString()
+        {
+            string log = base.ToString() +
+                "Neuron: " + Neuron +
+                "onDrag: ";
+            foreach (Action action in onDrag)
+            {
+                log += "{Name = " + action.Method.Name;
+                log += " GetParameters() = " + string.Join<ParameterInfo>(",", action.Method.GetParameters());
+                log += " ReturnType = " + action.Method.ReturnType;
+                log += " GetMethodBody().LocalVariables = ";
+                if (action.Method.GetMethodBody().LocalVariables == null) { log += "null"; }
+                else if (action.Method.GetMethodBody().LocalVariables.Count == 0) { log += "empty"; }
+                else { log += string.Join(",", action.Method.GetMethodBody().LocalVariables); }
+                log += "},";
+            }
+            return log;
         }
     }
 }

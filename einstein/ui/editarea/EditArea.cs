@@ -7,6 +7,7 @@ using phi.other;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -184,6 +185,36 @@ namespace Einstein.ui.editarea
                 }
             }
             return null;
+        }
+
+        public string LogDetailsForCrash()
+        {
+            string log = "";
+            try
+            {
+                log += "\nBrain = " + Brain.GetSave();
+            } catch (Exception e) { }
+            log += "\ndisplayedNeuronsIndex = ";
+            if (displayedNeuronsIndex == null) { log += "null"; }
+            else if (displayedNeuronsIndex.Count == 0) { log += "empty"; }
+            else { log += string.Join(":", displayedNeuronsIndex); }
+            log += "\nonRemove.Method.Name = " + onRemove.Method.Name;
+            log += "\nonRemove.Method.GetParameters() = " + string.Join<ParameterInfo>(",", onRemove.Method.GetParameters());
+            log += "\nonRemove.Method.ReturnType = " + onRemove.Method.ReturnType;
+            log += "\nonRemove.Method.GetMethodBody().LocalVariables = ";
+            if (onRemove.Method.GetMethodBody().LocalVariables == null) { log += "null"; }
+            else if (onRemove.Method.GetMethodBody().LocalVariables.Count == 0) { log += "empty"; }
+            else { log += string.Join(",", onRemove.Method.GetMethodBody().LocalVariables); }
+            log += "\nonRemove.Method.Name = " + onRemove.Method.Name;
+            log += "\nonRemove.Target = " + onRemove.Target;
+            log += "\ndisableOnRemove = " + disableOnRemove;
+            log += "\ndisplayedSynapsesIndex = ";
+            if (displayedSynapsesIndex == null) { log += "null"; }
+            else if (displayedSynapsesIndex.Count == 0) { log += "empty"; }
+            else { log += string.Join(":", displayedSynapsesIndex); }
+            log += "\nstartedSynapse = " + (startedSynapse != null ? startedSynapse.ToString() : "null");
+            log += "\nhiddenNeuronIndex = " + hiddenNeuronIndex;
+            return log;
         }
     }
 }

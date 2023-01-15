@@ -84,5 +84,12 @@ namespace Einstein.ui.menu
                 yield return neuronDrawable;
             }
         }
+
+        public virtual string LogDetailsForCrash()
+        {
+            string log = "Button.IsSelected() = " + Button.IsSelected();
+            log += "\nneuronDrawables = " + string.Join(",\n\t", neuronDrawables);
+            return log;
+        }
     }
 }

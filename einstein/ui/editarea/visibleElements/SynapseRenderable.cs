@@ -260,5 +260,12 @@ namespace Einstein.ui.editarea
                 yield return text.GetDrawable();
             }
         }
+
+        public override string ToString()
+        {
+            return "SynapseRenderable: " + string.Format(
+                "Synapse = {{0}} From = {{1}} To = {{2}}",
+                Synapse, From, To);
+        }
     }
 }

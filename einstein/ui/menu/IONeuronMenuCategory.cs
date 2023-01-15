@@ -3,6 +3,7 @@ using phi.io;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -76,5 +77,17 @@ namespace Einstein.ui.menu
             }
         }
 
+        public override string LogDetailsForCrash()
+        {
+            string log = base.LogDetailsForCrash();
+            log += "\nonRemove.Method.Name = " + onRemove.Method.Name;
+            log += "\nonRemove.Method.GetParameters() = " + string.Join<ParameterInfo>(",", onRemove.Method.GetParameters());
+            log += "\nonRemove.Method.ReturnType = " + onRemove.Method.ReturnType;
+            log += "\nonRemove.Method.GetMethodBody().LocalVariables = ";
+            if (onRemove.Method.GetMethodBody().LocalVariables == null) { log += "null"; }
+            else if (onRemove.Method.GetMethodBody().LocalVariables.Count == 0) { log += "empty"; }
+            else { log += string.Join(",", onRemove.Method.GetMethodBody().LocalVariables); }
+            return log;
+        }
     }
 }

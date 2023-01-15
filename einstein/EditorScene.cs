@@ -136,6 +136,7 @@ namespace Einstein
             string filepath = IO.PromptForFile(getSavePath(), "", ".bb8");
             if (filepath == "") { return; }
             if (!File.Exists(filepath)) { throw new FileNotFoundException(filepath); }
+
             string bibiteJson = File.ReadAllText(filepath);
             int startIndex = bibiteJson.IndexOf("\"brain\":") + "\"brain\":".Length;
             int endIndex = bibiteJson.IndexOf("\"immuneSystem\":");
@@ -294,5 +295,34 @@ namespace Einstein
             }
         }
 
+        public string LogDetailsForCrash()
+        {
+            string log = "Version = " + EinsteinPhiConfig.VERSION;
+            log += "\nEditorScene.editArea = " + editArea.LogDetailsForCrash();
+            log += "\nselected = ";
+            if (selected == null)
+            {
+                log += "null";
+            }
+            else if (selected == input)
+            {
+                log += "input";
+            }
+            else if (selected == output)
+            {
+                log += "output";
+            }
+            else if (selected == hidden)
+            {
+                log += "hidden";
+            }
+            log += "\ninput = " + input.LogDetailsForCrash();
+            log += "\noutput = " + output.LogDetailsForCrash();
+            log += "hidden = " + hidden.LogDetailsForCrash();
+            log += "\nsavePath = " + (savePath != null ? savePath : "null");
+            log += "\nloadPath = " + (loadPath != null ? loadPath : "null");
+            log += "\nprevWindowWidth = " + prevWindowWidth;
+            return log;
+        }
     }
 }
