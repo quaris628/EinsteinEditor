@@ -9,86 +9,102 @@ using System.Threading.Tasks;
 
 namespace phi.graphics.renderables
 {
-   public class SelectableEditableText : EditableText
+   public class SelectableEditableText : Renderable
    {
       private static readonly Color DEFAULT_SELECTED_BACKGROUND_COLOR = Color.CornflowerBlue;
       private static readonly Color DEFAULT_UNSELECTED_BACKGROUND_COLOR = Color.White;
       private const string DEFAULT_DEFAULT_MESSAGE = "";
 
-      private static SelectableEditableText selected = null; // TODO
+      private static SelectableEditableText selected = null;
 
-      private Brush selectedBackgroundColor;
-      private Brush unselectedBackgroundColor;
+      public EditableText EditableText { get; private set; }
+      private Text text; // just a shortcut reference
+      private Brush selectedBackColor;
+      private Brush unselectedBackColor;
       private string defaultMessage;
 
-      public SelectableEditableText(SETextBuilder b) : base(b)
+      public SelectableEditableText(EditableText et)
+         : this(et, DEFAULT_DEFAULT_MESSAGE) { }
+      public SelectableEditableText(EditableText et, string defaultMessage)
+         : this(et, defaultMessage,
+              DEFAULT_SELECTED_BACKGROUND_COLOR,
+              DEFAULT_UNSELECTED_BACKGROUND_COLOR) { }
+      public SelectableEditableText(EditableText et, Color selectedBackColor, Color unselectedBackColor)
+         : this(et, DEFAULT_DEFAULT_MESSAGE, selectedBackColor, unselectedBackColor) { }
+      public SelectableEditableText(EditableText et, string defaultMessage,
+         Color selectedBackColor, Color unselectedBackColor)
       {
-         this.selectedBackgroundColor = b.selectedBackColor;
-         this.unselectedBackgroundColor = b.unselectedBackColor;
-         this.defaultMessage = b.defaultMessage;
-         text.SetBackgroundColor(this.unselectedBackgroundColor);
+         this.EditableText = et;
+         this.text = (Text)et.GetDrawable();
+         this.defaultMessage = defaultMessage;
+         this.selectedBackColor = new SolidBrush(selectedBackColor);
+         this.unselectedBackColor = new SolidBrush(unselectedBackColor);
       }
 
-      public override void Initialize()
+      public void Initialize()
       {
-         base.Initialize();
-         IO.MOUSE.LEFT_UP.SubscribeOnDrawable(EnableEditing, text);
+         EditableText.Initialize();
+
+         this.text.SetBackgroundColor(this.unselectedBackColor);
+
+         IO.MOUSE.LEFT_UP.SubscribeOnDrawable(Select, text);
       }
 
-      public override void Uninitialize()
+      public void Uninitialize()
       {
-         base.Uninitialize();
-         IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(text);
+         EditableText.Uninitialize();
+         
+         if (IsSelected())
+         {
+            IO.MOUSE.LEFT_DOWN.Unsubscribe(Deselect);
+            IO.KEYS.Unsubscribe(Deselect, Keys.Return);
+         }
+         else
+         {
+            IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(Select, text);
+         }
+         
       }
 
-      public override void EnableEditing()
+      public void Select()
       {
-         base.EnableEditing();
-         selected?.DisableEditing(); // note: not thread-safe
+         // note: not thread-safe
+         if (IsSelected()) { throw new InvalidOperationException(); }
+         selected?.Deselect();
          selected = this;
 
-         text.SetBackgroundColor(selectedBackgroundColor);
-
-         IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(EnableEditing, text);
-         IO.MOUSE.LEFT_DOWN.Subscribe(DisableEditing);
-         IO.KEYS.Subscribe(DisableEditing, Keys.Return);
+         EditableText.EnableEditing();
+         text.SetBackgroundColor(selectedBackColor);
+         
+         IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(Select, text);
+         IO.MOUSE.LEFT_DOWN.Subscribe(Deselect);
+         IO.KEYS.Subscribe(Deselect, Keys.Return);
       }
 
-      public override void DisableEditing()
+      public void Deselect()
       {
-         base.DisableEditing();
+         // note: not thread-safe
+         if (!IsSelected()) { throw new InvalidOperationException(); }
          selected = null;
+         
+         EditableText.DisableEditing();
+         text.SetBackgroundColor(unselectedBackColor);
 
-         if (text.GetMessage() == "" || !validateMessage.Invoke(text.GetMessage()))
+         if (!EditableText.IsMessageValidAsFinal())
          {
             text.SetMessage(defaultMessage);
          }
-         text.SetBackgroundColor(unselectedBackgroundColor);
-
-         IO.MOUSE.LEFT_DOWN.Unsubscribe(DisableEditing); // TODO: does this work?
-         IO.KEYS.Unsubscribe(DisableEditing, Keys.Return);
-         IO.MOUSE.LEFT_UP.SubscribeOnDrawable(EnableEditing, text);
+         
+         IO.MOUSE.LEFT_DOWN.Unsubscribe(Deselect);
+         IO.KEYS.Unsubscribe(Deselect, Keys.Return);
+         IO.MOUSE.LEFT_UP.SubscribeOnDrawable(Select, text);
       }
 
-      public class SETextBuilder : EditableTextBuilder
+      public bool IsSelected()
       {
-         public Brush selectedBackColor { get; private set; }
-         public Brush unselectedBackColor { get; private set; }
-         public string defaultMessage { get; private set; }
-
-         public SETextBuilder(Text text) : base(text)
-         {
-            this.selectedBackColor = new SolidBrush(DEFAULT_SELECTED_BACKGROUND_COLOR);
-            this.unselectedBackColor = new SolidBrush(DEFAULT_UNSELECTED_BACKGROUND_COLOR);
-            this.defaultMessage = DEFAULT_DEFAULT_MESSAGE;
-         }
-
-         public SETextBuilder WithSelectedBackColor(Brush selectedBackColor) { this.selectedBackColor = selectedBackColor; return this; }
-         public SETextBuilder WithUnselectedBackColor(Brush unselectedBackColor) { this.unselectedBackColor = unselectedBackColor; return this; }
-         public SETextBuilder WithDefaultMessage(string defaultMessage) { this.defaultMessage = defaultMessage; return this; }
-
-         public override EditableText Build() { return new SelectableEditableText(this); }
-
+         return selected == this;
       }
+
+      public Drawable GetDrawable() { return EditableText.GetDrawable(); }
    }
 }

@@ -13,14 +13,12 @@ namespace phi.graphics.renderables
 
       protected Text text;
       protected readonly string allowedChars;
-      protected Func<string, bool> validateMessage;
       public bool IsEditingEnabled { get; protected set; }
 
-      public EditableText(EditableTextBuilder b)
+      protected EditableText(EditableTextBuilder b)
       {
          this.text = b.text;
          this.allowedChars = b.allowedChars;
-         this.validateMessage = b.validateMessage;
          this.IsEditingEnabled = b.isEditingEnabled;
       }
 
@@ -58,7 +56,7 @@ namespace phi.graphics.renderables
       {
          if (!IsEditingEnabled) { return; }
          string newMessage = text.GetMessage() + c; // don't forget that ;)
-         if (validateMessage == null || validateMessage.Invoke(newMessage)) {
+         if (IsMessageValidWhileTyping(newMessage)) {
             text.SetMessage(newMessage);
          }
       }
@@ -68,6 +66,16 @@ namespace phi.graphics.renderables
          if (!IsEditingEnabled || text.GetMessage().Length == 0) { return; }
          text.SetMessage(text.GetMessage().Substring(0, text.GetMessage().Length - 1));
       }
+
+      public virtual void Clear()
+      {
+         if (!IsEditingEnabled) { return; }
+         text.SetMessage("");
+      }
+
+      protected virtual bool IsMessageValidWhileTyping(string message) { return true; }
+      protected virtual bool IsMessageValidAsFinalInternal(string message) { return IsMessageValidWhileTyping(message); }
+      public bool IsMessageValidAsFinal() { return IsMessageValidAsFinalInternal(text.GetMessage()); }
 
       public virtual void EnableEditing() { IsEditingEnabled = true; }
       public virtual void DisableEditing() { IsEditingEnabled = false; }
@@ -168,19 +176,16 @@ namespace phi.graphics.renderables
       {
          public Text text { get; private set; }
          public string allowedChars { get; private set; }
-         public Func<string, bool> validateMessage { get; private set; }
          public bool isEditingEnabled { get; private set; }
 
          public EditableTextBuilder(Text text)
          {
             this.text = text;
             this.allowedChars = new string(CHAR_KEY_MAP.Keys.ToArray()); // everything
-            this.validateMessage = null;
             this.isEditingEnabled = true;
          }
 
          public EditableTextBuilder WithAllowedChars(string allowedChars) { this.allowedChars = allowedChars; return this; }
-         public EditableTextBuilder WithValidateMessage(Func<string, bool> validateMessage) { this.validateMessage = validateMessage; return this; }
          public EditableTextBuilder WithEditingEnabled() { this.isEditingEnabled = true; return this; }
          public EditableTextBuilder WithEditingDisabled() { this.isEditingEnabled = false; return this; }
 
