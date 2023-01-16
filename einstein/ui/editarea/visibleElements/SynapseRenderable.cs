@@ -32,10 +32,9 @@ namespace Einstein.ui.editarea
         public const int LINE_WIDTH = 2 * HALF_LINE_WIDTH;
         public const int HALF_LINE_WIDTH = 3;
         public static readonly Color LINE_COLOR = Color.DarkGray;
-        public const float DEFAULT_STRENGTH = 1f;
-        public const string TEXT_DEFAULT_VALUE = "0";
-        public const int STRENGTH_MAX_DECIMALS = 2;
-        public const string TEXT_ALLOWED_CHARS = "1234567890.,-";
+        public const float INITIAL_STRENGTH = 1f;
+        public const string DEFAULT_STRENGTH = "0";
+        public const int SYNAPSE_STRENGTH_MAX_DECIMALS = 2;
         private static readonly Color TEXT_SELECTED_BACKGROUND_COLOR = Color.CornflowerBlue;
         private static readonly Color TEXT_UNSELECTED_BACKGROUND_COLOR = Color.DarkGray;
         private static readonly Color TEXT_INVALID_BACKGROUND_COLOR = Color.LightPink;
@@ -95,18 +94,19 @@ namespace Einstein.ui.editarea
             Synapse = new JsonSynapse(
                 (JsonNeuron)From.Neuron,
                 (JsonNeuron)To.Neuron,
-                DEFAULT_STRENGTH);
+                INITIAL_STRENGTH);
 
             // set up strength editing text
-            text = (SelectableEditableText) new SelectableEditableText.SETextBuilder(
-                new Text.TextBuilder(DEFAULT_STRENGTH.ToString()).Build())
-                .WithSelectedBackColor(new SolidBrush(TEXT_SELECTED_BACKGROUND_COLOR))
-                .WithUnselectedBackColor(new SolidBrush(TEXT_UNSELECTED_BACKGROUND_COLOR))
-                .WithDefaultMessage(TEXT_DEFAULT_VALUE)
-                .WithAllowedChars(TEXT_ALLOWED_CHARS)
-                .WithEditingDisabled()
-                .WithValidateMessage(validateText)
-                .Build();
+            text = new SelectableEditableText(
+                new FloatET.FloatETBuilder(new Text(INITIAL_STRENGTH.ToString()))
+                    .WithEditingDisabled()
+                    .WithMinValue(VersionConfig.SYNAPSE_STRENGTH_MIN)
+                    .WithMaxValue(VersionConfig.SYNAPSE_STRENGTH_MAX)
+                    .WithMaxDecimalPlaces(SYNAPSE_STRENGTH_MAX_DECIMALS)
+                    .Build(),
+                DEFAULT_STRENGTH,
+                TEXT_SELECTED_BACKGROUND_COLOR,
+                TEXT_UNSELECTED_BACKGROUND_COLOR);
             text.Initialize();
 
             // complete initialization
@@ -207,48 +207,16 @@ namespace Einstein.ui.editarea
 
         public void SetStrength(float strength)
         {
-            string msg = strength.ToString();
-            int decimalIndex;
-            if ((decimalIndex = msg.IndexOf(".")) > 0
-                || (decimalIndex = msg.IndexOf(",")) > 0)
+            // easy to do this way b/c validation is all taken care of underneath
+            // somewhat inefficient but it's not worth the trouble
+            bool wasEnabled = text.EditableText.IsEditingEnabled;
+            text.EditableText.EnableEditing();
+            text.EditableText.Clear();
+            foreach (char c in strength.ToString())
             {
-                int cutoffLength = decimalIndex + 1 + STRENGTH_MAX_DECIMALS;
-                if (cutoffLength < msg.Length)
-                {
-                    msg = msg.Substring(0, cutoffLength);
-                }
+                text.EditableText.TypeChar(c);
             }
-            if (validateText(msg))
-            {
-                Text textD = (Text)text.GetDrawable();
-                textD.SetMessage(msg);
-                textD.SetBackgroundColor(new SolidBrush(TEXT_UNSELECTED_BACKGROUND_COLOR));
-            }
-            else
-            {
-                throw new ArgumentException("Invalid strength '" + msg
-                    + "' (original float value '" + strength + "')");
-            }
-        }
-
-        private bool validateText(string msg)
-        {
-            float value;
-            if (msg.Length > 2 + STRENGTH_MAX_DECIMALS
-                || (!float.TryParse(msg, NumberStyles.Any, CultureInfo.InvariantCulture, out value)
-                || value < VersionConfig.SYNAPSE_STRENGTH_MIN
-                || VersionConfig.SYNAPSE_STRENGTH_MAX < value
-                ) && !(("-.".Contains(msg) || "-,".Contains(msg)) && text.IsEditingEnabled))
-            {
-                ((Text)(text.GetDrawable())).SetBackgroundColor(
-                    new SolidBrush(TEXT_INVALID_BACKGROUND_COLOR));
-                return false;
-            }
-            Synapse.Strength = value; // TODO: this might not be the only place this needs to happen? But I'll probably redo the text editing code anyway so...
-            ((Text)(text.GetDrawable())).SetBackgroundColor(
-                    new SolidBrush(TEXT_SELECTED_BACKGROUND_COLOR));
-            UpdateTextPosition();
-            return true;
+            if (!wasEnabled) { text.EditableText.DisableEditing(); }
         }
 
         public IEnumerable<Drawable> GetDrawables()
