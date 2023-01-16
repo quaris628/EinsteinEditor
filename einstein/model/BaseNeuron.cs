@@ -50,8 +50,8 @@ namespace Einstein.model
 
         public bool IsOutput()
         {
-            return VersionConfig.OUTPUT_NODES_INDEX_MIN <= Index
-                && Index <= VersionConfig.OUTPUT_NODES_INDEX_MAX;
+            return BibiteVersionConfig.OUTPUT_NODES_INDEX_MIN <= Index
+                && Index <= BibiteVersionConfig.OUTPUT_NODES_INDEX_MAX;
         }
 
         public bool IsHidden()

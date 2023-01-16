@@ -36,7 +36,7 @@ namespace Einstein.ui.editarea
             this.onRemove = onRemove;
             disableOnRemove = false;
             displayedSynapsesIndex = new Dictionary<(int, int), SynapseRenderable>();
-            hiddenNeuronIndex = VersionConfig.HIDDEN_NODES_INDEX_MIN;
+            hiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
             LoadBrain(brain);
         }
 
@@ -52,7 +52,7 @@ namespace Einstein.ui.editarea
         public void CreateHiddenNeuron(NeuronType type)
         {
             AddNeuron(new JsonNeuron(hiddenNeuronIndex++, type,
-                type.ToString() + (hiddenNeuronIndex - VersionConfig.HIDDEN_NODES_INDEX_MIN)));
+                type.ToString() + (hiddenNeuronIndex - BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN)));
         }
 
         public void RemoveNeuron(BaseNeuron neuron)
@@ -137,7 +137,7 @@ namespace Einstein.ui.editarea
             disableOnRemove = false;
             displayedNeuronsIndex = new Dictionary<int, NeuronRenderable>();
             displayedSynapsesIndex = new Dictionary<(int, int), SynapseRenderable>();
-            hiddenNeuronIndex = VersionConfig.HIDDEN_NODES_INDEX_MIN;
+            hiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
             Brain = null;
 
             // Add all neurons (except neurons that aren't connected to anything)

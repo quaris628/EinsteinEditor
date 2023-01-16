@@ -255,13 +255,13 @@ namespace Einstein
         private static ICollection<BaseNeuron> generateInputNeurons()
         {
             ICollection<BaseNeuron> inputs = new List<BaseNeuron>();
-            for (int i = VersionConfig.INPUT_NODES_INDEX_MIN;
-                i <= VersionConfig.INPUT_NODES_INDEX_MAX; i++)
+            for (int i = BibiteVersionConfig.INPUT_NODES_INDEX_MIN;
+                i <= BibiteVersionConfig.INPUT_NODES_INDEX_MAX; i++)
             {
                 inputs.Add(new JsonNeuron(
                     i,
                     NeuronType.Input,
-                    VersionConfig.DESCRIPTIONS[i]));
+                    BibiteVersionConfig.DESCRIPTIONS[i]));
             }
             return inputs;
         }
@@ -269,13 +269,13 @@ namespace Einstein
         private static ICollection<BaseNeuron> generateOutputNeurons()
         {
             ICollection<BaseNeuron> outputs = new List<BaseNeuron>();
-            for (int i = VersionConfig.OUTPUT_NODES_INDEX_MIN;
-                i <= VersionConfig.OUTPUT_NODES_INDEX_MAX; i++)
+            for (int i = BibiteVersionConfig.OUTPUT_NODES_INDEX_MIN;
+                i <= BibiteVersionConfig.OUTPUT_NODES_INDEX_MAX; i++)
             {
                 outputs.Add(new JsonNeuron(
                     i,
-                    VersionConfig.GetOutputNeuronType(i),
-                    VersionConfig.DESCRIPTIONS[i]));
+                    BibiteVersionConfig.GetOutputNeuronType(i),
+                    BibiteVersionConfig.DESCRIPTIONS[i]));
             }
             return outputs;
         }
@@ -283,7 +283,7 @@ namespace Einstein
         private static ICollection<BaseNeuron> generateHiddenNeurons()
         {
             ICollection<BaseNeuron> hiddens = new List<BaseNeuron>();
-            int index = VersionConfig.HIDDEN_NODES_INDEX_MAX
+            int index = BibiteVersionConfig.HIDDEN_NODES_INDEX_MAX
                 - Enum.GetValues(typeof(NeuronType)).Length;
             foreach (NeuronType neuronType in Enum.GetValues(typeof(NeuronType)))
             {

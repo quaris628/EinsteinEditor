@@ -18,8 +18,8 @@ namespace Einstein.ui.editarea
         public SynapseStrengthET(BaseSynapse synapse)
             : base(new FloatETBuilder(new Text(synapse.Strength.ToString()))
                   .WithEditingDisabled()
-                  .WithMinValue(VersionConfig.SYNAPSE_STRENGTH_MIN)
-                  .WithMaxValue(VersionConfig.SYNAPSE_STRENGTH_MAX)
+                  .WithMinValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MIN)
+                  .WithMaxValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MAX)
                   .WithMaxDecimalPlaces(SYNAPSE_STRENGTH_MAX_DECIMALS))
         {
             Synapse = synapse;

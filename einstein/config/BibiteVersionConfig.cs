@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Einstein
 {
-    public struct VersionConfig
+    public struct BibiteVersionConfig
     {
         public const int INPUT_NODES_INDEX_MIN = 0;
         public const int INPUT_NODES_INDEX_MAX = 32;
