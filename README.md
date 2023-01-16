@@ -31,18 +31,19 @@ What this will do (planned features):
  - Adjust boundary box for edit area
  
 What this might do (ideas for the future):
- - Look pretty
- - Have the default folder location persist between sessions
+ - Sentience (?)
  - When neurons are added, have their spawn location staggered
  - A button to auto-arrange neurons in a prettier and more clean arrangement
+ - Have the default folder location persist between sessions
  - Handle window resizing for larger sizes
  - Create a blank bibite
+ - Allow bibite version to be configured (or auto-adjust?)
  - Keyboard shortcuts
  - Edit neuron descriptions
  - Edit neuron type
  - Get some sort of visual indicator of the flow of any arbitrary input combination? Or allow testing certain input values?
  - Zoom in/out
- - Sentience (?)
+ - Look pretty
  
  -----
 
