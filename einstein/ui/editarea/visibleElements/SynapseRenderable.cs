@@ -26,18 +26,12 @@ namespace Einstein.ui.editarea
 {
     public class SynapseRenderable : MultiRenderable
     {
-        
-
         public const int LAYER = 5;
         public const int LINE_WIDTH = 2 * HALF_LINE_WIDTH;
         public const int HALF_LINE_WIDTH = 3;
         public static readonly Color LINE_COLOR = Color.DarkGray;
         public const float INITIAL_STRENGTH = 1f;
         public const string DEFAULT_STRENGTH = "0";
-        public const int SYNAPSE_STRENGTH_MAX_DECIMALS = 2;
-        private static readonly Color TEXT_SELECTED_BACKGROUND_COLOR = Color.CornflowerBlue;
-        private static readonly Color TEXT_UNSELECTED_BACKGROUND_COLOR = Color.DarkGray;
-        private static readonly Color TEXT_INVALID_BACKGROUND_COLOR = Color.LightPink;
 
         public BaseSynapse Synapse { get; private set; }
         public NeuronRenderable From { get; private set; }
@@ -82,6 +76,13 @@ namespace Einstein.ui.editarea
         // sort of a second step of initialization (or will uninitialize)
         public void Finalize(NeuronRenderable to)
         {
+            Finalize(to, new JsonSynapse(
+                (JsonNeuron)From.Neuron,
+                (JsonNeuron)To.Neuron,
+                INITIAL_STRENGTH));
+        }
+        public void Finalize(NeuronRenderable to, BaseSynapse synapse)
+        {
             // if user cancels creation
             if (to == null)
             {
@@ -91,22 +92,12 @@ namespace Einstein.ui.editarea
 
             // set data/properties
             To = to;
-            Synapse = new JsonSynapse(
-                (JsonNeuron)From.Neuron,
-                (JsonNeuron)To.Neuron,
-                INITIAL_STRENGTH);
+            Synapse = synapse;
 
             // set up strength editing text
             text = new SelectableEditableText(
-                new FloatET.FloatETBuilder(new Text(INITIAL_STRENGTH.ToString()))
-                    .WithEditingDisabled()
-                    .WithMinValue(VersionConfig.SYNAPSE_STRENGTH_MIN)
-                    .WithMaxValue(VersionConfig.SYNAPSE_STRENGTH_MAX)
-                    .WithMaxDecimalPlaces(SYNAPSE_STRENGTH_MAX_DECIMALS)
-                    .Build(),
-                DEFAULT_STRENGTH,
-                TEXT_SELECTED_BACKGROUND_COLOR,
-                TEXT_UNSELECTED_BACKGROUND_COLOR);
+                new SynapseStrengthET(Synapse),
+                DEFAULT_STRENGTH);
             text.Initialize();
 
             // complete initialization
@@ -203,20 +194,6 @@ namespace Einstein.ui.editarea
                 IO.MOUSE.MID_CLICK_UP.UnsubscribeFromDrawable(RemoveIfExactlyContainsClick, line);
                 editArea.RemoveSynapse(Synapse);
             }
-        }
-
-        public void SetStrength(float strength)
-        {
-            // easy to do this way b/c validation is all taken care of underneath
-            // somewhat inefficient but it's not worth the trouble
-            bool wasEnabled = text.EditableText.IsEditingEnabled;
-            text.EditableText.EnableEditing();
-            text.EditableText.Clear();
-            foreach (char c in strength.ToString())
-            {
-                text.EditableText.TypeChar(c);
-            }
-            if (!wasEnabled) { text.EditableText.DisableEditing(); }
         }
 
         public IEnumerable<Drawable> GetDrawables()

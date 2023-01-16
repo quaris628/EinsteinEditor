@@ -171,7 +171,7 @@ namespace Einstein
             JsonBrain brain;
             try
             {
-                brain = new JsonBrain(json, json.IndexOf("\"brain\":"));
+                brain = new JsonBrain(json, json.IndexOf("\"brain\":") + 8);
             }
             catch (NoNextValueException e)
             {

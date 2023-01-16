@@ -51,6 +51,7 @@
     <Compile Include="model\json\JsonSynapse.cs" />
     <Compile Include="model\NeuronType.cs" />
     <Compile Include="ui\editarea\EditArea.cs" />
+    <Compile Include="ui\editarea\SynapseStrengthET.cs" />
     <Compile Include="ui\editarea\visibleElements\NeuronRenderable.cs" />
     <Compile Include="ui\editarea\visibleElements\SynapseArrow.cs" />
     <Compile Include="ui\editarea\visibleElements\SynapseRenderable.cs" />
