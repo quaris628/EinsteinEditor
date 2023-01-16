@@ -8,15 +8,16 @@ To download and use:
 
 What this can do:
  - Allow you to create and edit small, weak, inefficient, and dumb bibite brains
- - Crash, and/or break in a spectacular fashion (consider this a disclaimer)
- - Save/Load brain to/from a bibite file (somewhat buggy)
+ - Crash spectacularly, or otherwise break (consider this a disclaimer)
+ - Handle crashes with a prompt to report them and by logging info to a file
+ - Save/Load brain to/from a bibite file
  - Show/Hide input and output neurons in the editing area
  - Create/Delete hidden neurons (of specified types)
  - View types and descriptions of neurons
  - Create/Delete synapses
- - Edit/View synapse strengths (somewhat buggy)
+ - Edit/View synapse strengths
  - Drag neurons around the brain editor area
- - Support window resizing
+ - Handle window resizing (smaller than 1280 x 720)
 
 What this can't do (and probably never will):
  - Edit bibite genes
@@ -24,19 +25,21 @@ What this can't do (and probably never will):
  - Make you a milkshake
 
 What this will do (planned features):
- - Have fewer bugs in loading/saving
- - Have fewer bugs in editing synapse strengths
- - Show a generic error message popup for any internal exceptions instead of crashing
+ - Bugfix: Don't crash when right-clicking the same neuron twice
+ - Move neurons by click-click instead of dragging
+ - When completing a synapse, don't start a new one
+ - Adjust boundary box for edit area
  
 What this might do (ideas for the future):
  - Look pretty
  - Have the default folder location persist between sessions
  - When neurons are added, have their spawn location staggered
  - A button to auto-arrange neurons in a prettier and more clean arrangement
+ - Handle window resizing for larger sizes
+ - Create a blank bibite
  - Keyboard shortcuts
  - Edit neuron descriptions
  - Edit neuron type
- - Create a blank bibite
  - Get some sort of visual indicator of the flow of any arbitrary input combination? Or allow testing certain input values?
  - Zoom in/out
  - Sentience (?)
