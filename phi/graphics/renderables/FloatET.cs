@@ -17,7 +17,7 @@ namespace phi.graphics.renderables
       private int precisionTypeCode; // 0 = none, 1 = decimal places, 2 = sig figs
       private int precisionAmount; // num of decimal places or sig figs
 
-      private FloatET(FloatETBuilder b) : base(b)
+      protected FloatET(FloatETBuilder b) : base(b)
       {
          minValue = b.minValue;
          maxValue = b.maxValue;
