@@ -76,20 +76,19 @@ namespace Einstein.ui.editarea
         // sort of a second step of initialization (or will uninitialize)
         public void Finalize(NeuronRenderable to)
         {
-            Finalize(to, new JsonSynapse(
-                (JsonNeuron)From.Neuron,
-                (JsonNeuron)To.Neuron,
-                INITIAL_STRENGTH));
-        }
-        public void Finalize(NeuronRenderable to, BaseSynapse synapse)
-        {
             // if user cancels creation
             if (to == null)
             {
                 Uninitialize();
                 return;
             }
-
+            Finalize(to, new JsonSynapse(
+                (JsonNeuron)From.Neuron,
+                (JsonNeuron)to.Neuron,
+                INITIAL_STRENGTH));
+        }
+        public void Finalize(NeuronRenderable to, BaseSynapse synapse)
+        {
             // set data/properties
             To = to;
             Synapse = synapse;
