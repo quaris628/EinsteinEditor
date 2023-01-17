@@ -71,12 +71,6 @@ namespace Einstein.model
                     "This brain already has a synapse that connects '" +
                     synapse.From + "' to '" + synapse.To + "'");
             }
-            if (synapsesIndex.ContainsKey((synapse.To.Index, synapse.From.Index)))
-            {
-                throw new ContainsDuplicateException(
-                    "This brain already has a synapse that connects '" +
-                    synapse.To + "' to '" + synapse.From + "' (in the opposite direction)");
-            }
 
             Synapses.Add(synapse);
             // update indexes
