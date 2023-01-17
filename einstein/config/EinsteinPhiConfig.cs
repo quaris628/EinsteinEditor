@@ -24,6 +24,7 @@ namespace Einstein
         }
         public new class Render : DefaultConfig.Render
         {
+            public new const string DEFAULT_BACKGROUND = RES_DIR + "defaultBackground.png";
             public new const int FPS = 30;
         }
 
@@ -32,6 +33,7 @@ namespace Einstein
         public override int GetWindowWidth() { return Window.WIDTH; }
         public override int GetWindowHeight() { return Window.HEIGHT; }
         public override string GetWindowTitle() { return Window.TITLE; }
+        public override string GetRenderDefaultBackground() { return Render.DEFAULT_BACKGROUND; }
         public override int GetRenderFPS() { return Render.FPS; }
     }
 }
