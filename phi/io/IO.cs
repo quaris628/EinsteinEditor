@@ -111,9 +111,10 @@ namespace phi.io
                "\nName: " + e.GetType().Name +
                "\nMessage: " + e.Message +
                "\nTarget Site: " + e.TargetSite;
+         int indexOfAtSWF = e.StackTrace.IndexOf("at System.Windows.Forms");
          string stackTrace = "\nStack Trace:\n" +
                e.StackTrace.Substring(0,
-               e.StackTrace.IndexOf("at System.Windows.Forms") - 1);
+               indexOfAtSWF > 0 ? indexOfAtSWF - 1 : e.StackTrace.Length);
 
          DialogResult result = MessageBox.Show(
             "This application has crashed." +
