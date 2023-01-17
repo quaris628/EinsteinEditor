@@ -8,11 +8,15 @@ To download:
 
 To use:
  1. Run EinsteinEditor/bin/Einstein.exe
-   Note: Windows will warn you about running this file because I'm not a verified publisher. You'll just have to trust me that I didn't write anything malicious in this.
-   (And if it's any comfort, I do virus scans on all released files.)
- 2. (Optional) If you want a shortcut on your desktop, right-click Einstein.exe in the file explorer > "Send To" > "Desktop (Create Shortcut)"
- - Left-click to add or drag neurons. Middle-click neurons to remove.
- - Right-click neurons to add synapses. Middle-click synapses to remove.
+   
+Note: Windows will warn you about running this file because I'm not a verified publisher. You'll just have to trust me that I didn't write anything malicious in this.
+(And if it's any comfort, I do virus scans on all released files.)
+
+If you want a shortcut on your desktop, right-click Einstein.exe in the file explorer > "Send To" > "Desktop (Create Shortcut)"
+
+Left-click to add or drag neurons. Middle-click neurons to remove.
+
+Right-click neurons to add synapses. Middle-click synapses to remove.
 
  -----
 
