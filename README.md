@@ -33,14 +33,13 @@ What this can't do (and probably never will):
  - Make you a milkshake
 
 What this will do (planned features):
- - Bugfix: Don't crash when right-clicking the same neuron twice
  - Move neurons by click-click instead of dragging
  - When completing a synapse, don't start a new one
  - Adjust boundary box for edit area
  
 What this might do (ideas for the future):
  - Sentience (?)
- - When neurons are added, have their spawn location staggered
+ - When neurons are added, have their spawn location staggered (would probably also fix the synapses always pointing to the upper left when loading from a file)
  - A button to auto-arrange neurons in a prettier and more clean arrangement
  - Have the default folder location persist between sessions
  - Somehow handle neurons with duplicate descriptions (assign new ones?)
