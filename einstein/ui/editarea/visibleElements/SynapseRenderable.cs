@@ -76,8 +76,8 @@ namespace Einstein.ui.editarea
         // sort of a second step of initialization (or will uninitialize)
         public void Finalize(NeuronRenderable to)
         {
-            // if user cancels creation
-            if (to == null)
+            // if user cancels creation, or if would connect the same neuron to itself
+            if (to == null || to.Neuron.Index == From.Neuron.Index)
             {
                 Uninitialize();
                 return;
