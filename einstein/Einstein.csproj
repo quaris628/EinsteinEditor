@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,7 +27,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -60,7 +60,7 @@
     <Compile Include="ui\menu\NeuronMenuCategory.cs" />
     <Compile Include="ui\menu\visibleElements\NeuronMenuButton.cs" />
     <Compile Include="ui\visibleElements\NeuronDrawable.cs" />
-    <Compile Include="config\VersionConfig.cs" />
+    <Compile Include="config\BibiteVersionConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\phi\phi.csproj">

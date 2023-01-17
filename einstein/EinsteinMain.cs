@@ -11,7 +11,7 @@ namespace Einstein
 {
     static class EinsteinMain
     {
-        public const string CRASH_LOG_FILEPATH = "EinsteinErrorLog.txt";
+        public const string CRASH_LOG_FILEPATH = "../EinsteinErrorLog.txt";
 
         // to enable reference to the phi namescape:
         // in VS solution explorer, project -> references -> Add reference
