@@ -184,7 +184,7 @@ namespace Einstein.ui.editarea
             return new Rectangle(
                 NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD * 2,
                 0,
-                IO.WINDOW.GetWidth() - NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD * 2,
+                IO.WINDOW.GetWidth() - NeuronMenuButton.WIDTH - EinsteinPhiConfig.PAD * 2,
                 IO.WINDOW.GetHeight());
         }
 
