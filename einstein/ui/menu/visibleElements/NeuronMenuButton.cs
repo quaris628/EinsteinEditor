@@ -15,7 +15,7 @@ namespace Einstein.ui.menu
             EinsteinPhiConfig.RES_DIR + "ButtonBackground.png";
         public const string SELECTED_IMAGE_PATH =
             EinsteinPhiConfig.RES_DIR + "ButtonBackgroundSelected.png";
-        public const int WIDTH = 128;
+        public const int WIDTH = 160;
         public const int HEIGHT = 32;
 
         public NeuronMenuButton(

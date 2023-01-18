@@ -32,7 +32,7 @@ What this can do:
  - Create/Delete synapses
  - Edit/View synapse strengths
  - Drag neurons around the brain editor area
- - Handle window resizing (smaller than 1280 x 720)
+ - Gracefully handle window resizing (up to 2048x1080)
 
 What this can't do (and probably never will):
  - Edit bibite genes
@@ -43,7 +43,8 @@ What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
  - Whe loading from a file, synapses point to upper left corner
  - Completing a synapse starts a new one
- - Boundary for edit area isn't well aligned
+ - Layers for text, icons, and synapses are ill-defined
+ - Resizing to a smaller window size can hide neurons
 
 What this will do (planned enhancements):
  - Remove neurons and synapses by shift+click instead of middle-click
@@ -54,7 +55,6 @@ What this might do (future ideas):
  - Sentience (?)
  - Have the default folder location persist between sessions
  - Somehow handle neurons with duplicate descriptions (assign new ones?)
- - Handle window resizing for larger sizes
  - Create a blank bibite
  - Allow bibite version to be configured (or auto-adjust?) (Not currently a strong need for this)
  - Keyboard shortcuts

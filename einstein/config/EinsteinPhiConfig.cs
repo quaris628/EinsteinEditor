@@ -19,21 +19,15 @@ namespace Einstein
         public new class Window : DefaultConfig.Window
         {
             public new const string TITLE = "Einstien Bibite Editor";
-            public new const int WIDTH = 1280;
-            public new const int HEIGHT = 720;
         }
         public new class Render : DefaultConfig.Render
         {
-            public new const string DEFAULT_BACKGROUND = RES_DIR + "defaultBackground.png";
-            public new const int FPS = 30;
+            public new const int FPS = 40;
         }
 
         public override string GetHomeDir() { return HOME_DIR; }
         public override string GetResourcesDir() { return RES_DIR; }
-        public override int GetWindowWidth() { return Window.WIDTH; }
-        public override int GetWindowHeight() { return Window.HEIGHT; }
         public override string GetWindowTitle() { return Window.TITLE; }
-        public override string GetRenderDefaultBackground() { return Render.DEFAULT_BACKGROUND; }
         public override int GetRenderFPS() { return Render.FPS; }
     }
 }

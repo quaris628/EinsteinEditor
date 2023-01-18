@@ -40,7 +40,7 @@ namespace Einstein
         private string loadPath;
         private int prevWindowWidth;
 
-        public EditorScene(Scene prevScene) : base(prevScene, new ImageWrapper(EinsteinPhiConfig.Render.DEFAULT_BACKGROUND))
+        public EditorScene(Scene prevScene) : base(prevScene)
         {
             editArea = new EditArea(
                 new JsonBrain(),
@@ -96,7 +96,7 @@ namespace Einstein
 
             savePath = null;
             loadPath = null;
-            prevWindowWidth = EinsteinPhiConfig.Window.WIDTH;
+            prevWindowWidth = EinsteinPhiConfig.Window.INITIAL_WIDTH;
         }
 
         // ----------------------------------------------------------------

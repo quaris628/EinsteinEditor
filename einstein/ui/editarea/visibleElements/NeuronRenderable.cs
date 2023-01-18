@@ -23,7 +23,7 @@ namespace Einstein.ui.editarea
         private EditArea editArea;
 
         public NeuronRenderable(EditArea editArea, BaseNeuron neuron)
-            : base(new NeuronDrawable(neuron, SPAWN_X, SPAWN_Y), EditArea.BOUNDS)
+            : base(new NeuronDrawable(neuron, SPAWN_X, SPAWN_Y), EditArea.GetBounds)
         {
             Neuron = neuron;
             NeuronDrawable.SetCircleCenterXY(SPAWN_X, SPAWN_Y);

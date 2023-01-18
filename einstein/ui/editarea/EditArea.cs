@@ -15,12 +15,6 @@ namespace Einstein.ui.editarea
 {
     public class EditArea
     {
-        public static readonly Rectangle BOUNDS = new Rectangle(
-            NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD,
-            (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3,
-            EinsteinPhiConfig.Window.WIDTH - NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD,
-            EinsteinPhiConfig.Window.HEIGHT - (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3);
-
         public BaseBrain Brain { get; private set; }
 
         private Dictionary<int, NeuronRenderable> displayedNeuronsIndex;
@@ -184,6 +178,14 @@ namespace Einstein.ui.editarea
                 }
             }
             return null;
+        }
+        public static Rectangle GetBounds()
+        {
+            return new Rectangle(
+                NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD * 2,
+                0,
+                IO.WINDOW.GetWidth() - NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD * 2,
+                IO.WINDOW.GetHeight());
         }
 
         public string LogDetailsForCrash()
