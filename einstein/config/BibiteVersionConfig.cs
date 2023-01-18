@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Einstein
 {
+    // 0.5.0
     public struct BibiteVersionConfig
     {
         public const int INPUT_NODES_INDEX_MIN = 0;
@@ -27,20 +28,20 @@ namespace Einstein
             "LifeRatio",
             "Fullness",
             "Speed",
-            "IsGrabbingObjects",
+            "IsGrabbing",
             "AttackedDamage",
-            "BibiteConcentrationWeight",
+            "BibiteCloseness",
             "BibiteAngle",
-            "NVisibleBibites",
-            "PelletConcentrationWeight",
-            "PelletConcentrationAngle",
-            "NVisiblePellets",
-            "MeatConcentrationWeight",
-            "MeatConcentrationAngle",
-            "NVisibleMeat",
-            "ClosestBibiteR",
-            "ClosestBibiteG",
-            "ClosestBibiteB",
+            "NBibites",
+            "PlantCloseness",
+            "PlantAngle",
+            "NPlants",
+            "MeatCloseness",
+            "MeatAngle",
+            "NMeats",
+            "RedBibite",
+            "GreenBibite",
+            "BlueBibite",
             "Tic",
             "Minute",
             "TimeAlive",
