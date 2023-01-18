@@ -15,6 +15,8 @@ namespace phi
       string GetWindowTitle();
       int GetMaxWindowWidth();
       int GetMaxWindowHeight();
+      int GetInitialWindowWidth();
+      int GetInitialWindowHeight();
 
       Color GetRenderDefaultBackground();
       int GetRenderDefaultLayer();

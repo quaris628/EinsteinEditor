@@ -24,24 +24,44 @@ namespace phi
       public class Window
       {
          public static string TITLE = "Phi Engine Application";
-         private static int _width = 600;
-         public static int WIDTH
+         private static int _maxWidth = 600;
+         public static int MAX_WIDTH
          {
-            get => _width;
+            get => _maxWidth;
             set
             {
                if (value <= 0) { throw new ArgumentException("Negative window width"); }
-               _width = value;
+               _maxWidth = value;
             }
          }
-         private static int _height = 600;
-         public static int HEIGHT
+         private static int _maxHeight = 600;
+         public static int MAX_HEIGHT
          {
-            get => _height;
+            get => _maxHeight;
             set
             {
                if (value <= 0) { throw new ArgumentException("Negative window height"); }
-               _height = value;
+               _maxHeight = value;
+            }
+         }
+         private static int _initialWidth = 600;
+         public static int INITIAL_WIDTH
+         {
+            get => _initialWidth;
+            set
+            {
+               if (value <= 0) { throw new ArgumentException("Negative window width"); }
+               _initialWidth = value;
+            }
+         }
+         private static int _initialHeight = 600;
+         public static int INITIAL_HEIGHT
+         {
+            get => _initialHeight;
+            set
+            {
+               if (value <= 0) { throw new ArgumentException("Negative window height"); }
+               _initialHeight = value;
             }
          }
       }
@@ -84,8 +104,8 @@ namespace phi
             f.WriteLine(" ----- Phi Config Save File ----- ");
             f.WriteLine("\nWindow");
             f.WriteLine("title:" + Window.TITLE);
-            f.WriteLine("width:" + Window.WIDTH);
-            f.WriteLine("height:" + Window.HEIGHT);
+            f.WriteLine("width:" + Window.MAX_WIDTH);
+            f.WriteLine("height:" + Window.MAX_HEIGHT);
             f.WriteLine("\nRenderer");
             f.WriteLine("default-layer:" + Render.DEFAULT_LAYER);
             f.WriteLine("fps:" + Render.FPS);
@@ -121,8 +141,8 @@ namespace phi
 
             // parse strings to values
             Window.TITLE = SubstringAfter(titleLine, ':');
-            Window.WIDTH = int.Parse(SubstringAfter(widthLine, ':'));
-            Window.HEIGHT = int.Parse(SubstringAfter(heightLine, ':'));
+            Window.MAX_WIDTH = int.Parse(SubstringAfter(widthLine, ':'));
+            Window.MAX_HEIGHT = int.Parse(SubstringAfter(heightLine, ':'));
             Render.DEFAULT_LAYER = int.Parse(SubstringAfter(layerLine, ':'));
             Render.FPS = int.Parse(SubstringAfter(fpsLine, ':'));
          }
@@ -146,8 +166,8 @@ namespace phi
       {
          //Restores all Default values from the DefaultConfig
          Window.TITLE = DefaultConfig.Window.TITLE;
-         Window.WIDTH = DefaultConfig.Window.WIDTH;
-         Window.HEIGHT = DefaultConfig.Window.HEIGHT;
+         Window.MAX_WIDTH = DefaultConfig.Window.MAX_WIDTH;
+         Window.MAX_HEIGHT = DefaultConfig.Window.MAX_HEIGHT;
          Render.DEFAULT_LAYER = DefaultConfig.Render.DEFAULT_LAYER;
          Render.FPS = DefaultConfig.Render.FPS;
       }
@@ -155,16 +175,19 @@ namespace phi
       public virtual void RestoreDefaultResolution()
       {
          //Restores just the resolution to default
-         Window.WIDTH = DefaultConfig.Window.WIDTH;
-         Window.HEIGHT = DefaultConfig.Window.HEIGHT;
+         Window.MAX_WIDTH = DefaultConfig.Window.MAX_WIDTH;
+         Window.MAX_HEIGHT = DefaultConfig.Window.MAX_HEIGHT;
       }
 
       // Implement Config interface
       public virtual string GetHomeDir() { return HOME_DIR; }
       public virtual string GetResourcesDir() { return RES_DIR; }
       public virtual string GetWindowTitle() { return Window.TITLE; }
-      public virtual int GetMaxWindowWidth() { return Window.WIDTH; }
-      public virtual int GetMaxWindowHeight() { return Window.HEIGHT; }
+      public virtual int GetMaxWindowWidth() { return Window.MAX_WIDTH; }
+      public virtual int GetMaxWindowHeight() { return Window.MAX_HEIGHT; }
+
+      public virtual int GetInitialWindowWidth() { return Window.INITIAL_WIDTH; }
+      public virtual int GetInitialWindowHeight() { return Window.INITIAL_HEIGHT; }
       public virtual Color GetRenderDefaultBackground() { return Render.DEFAULT_BACKGROUND; }
       public virtual int GetRenderDefaultLayer() { return Render.DEFAULT_LAYER; }
       public virtual int GetRenderFPS() { return Render.FPS; }

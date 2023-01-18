@@ -44,8 +44,9 @@ namespace phi.control
 
          // Set window properites
          IO.WINDOW.SetWindowsForm(this);
-         Size = new Size(config.GetMaxWindowWidth() + WIDTH_FUDGE,
-            config.GetMaxWindowHeight() + HEIGHT_FUDGE);
+         Size = new Size(
+            config.GetInitialWindowWidth() + WIDTH_FUDGE,
+            config.GetInitialWindowHeight() + HEIGHT_FUDGE);
          Text = config.GetWindowTitle();
          
          // Set pictureBox properties

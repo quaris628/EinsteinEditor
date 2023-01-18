@@ -16,9 +16,10 @@ namespace phi
       public class Window
       {
          public const string TITLE = "Phi Engine";
-         public const int WIDTH = 2048;
-         public const int HEIGHT = 1080;
-
+         public const int MAX_WIDTH = 2048;
+         public const int MAX_HEIGHT = 1080;
+         public const int INITIAL_WIDTH = 1280;
+         public const int INITIAL_HEIGHT = 720;
       }
       
       public class Render
@@ -32,8 +33,10 @@ namespace phi
       public virtual string GetHomeDir() { return HOME_DIR; }
       public virtual string GetResourcesDir() { return RES_DIR; }
       public virtual string GetWindowTitle() { return Window.TITLE; }
-      public virtual int GetMaxWindowWidth() { return Window.WIDTH; }
-      public virtual int GetMaxWindowHeight() { return Window.HEIGHT; }
+      public virtual int GetMaxWindowWidth() { return Window.MAX_WIDTH; }
+      public virtual int GetMaxWindowHeight() { return Window.MAX_HEIGHT; }
+      public virtual int GetInitialWindowWidth() { return Window.INITIAL_WIDTH; }
+      public virtual int GetInitialWindowHeight() { return Window.INITIAL_HEIGHT; }
       public virtual Color GetRenderDefaultBackground() { return Render.DEFAULT_BACKGROUND; }
       public virtual int GetRenderDefaultLayer() { return Render.DEFAULT_LAYER; }
       public virtual int GetRenderFPS() { return Render.FPS; }
