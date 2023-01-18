@@ -14,7 +14,7 @@ namespace Einstein
         public new const string HOME_DIR = "../";
         public new const string RES_DIR = HOME_DIR + "res/";
         public const int PAD = 5;
-        public const string VERSION = "v0.1.0";
+        public const string VERSION = "v0.1.1";
 
         public new class Window : DefaultConfig.Window
         {
