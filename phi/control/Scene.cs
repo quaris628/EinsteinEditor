@@ -15,25 +15,18 @@ namespace phi.control
    public abstract class Scene
    {
       protected Scene prevScene;
-      protected Image background;
+      protected Color background;
 
       protected Scene(Scene prevScene)
       {
          this.prevScene = prevScene;
-         this.background = (Image)IO.RENDERER.GetBackground().Clone();
+         this.background = IO.RENDERER.GetBackground();
       }
 
-      protected Scene(Scene prevScene, string imageFile)
+      protected Scene(Scene prevScene, Color background)
       {
          this.prevScene = prevScene;
-         this.background = Image.FromFile(imageFile);
-      }
-
-      protected Scene(Scene prevScene, ImageWrapper background)
-      {
-         this.prevScene = prevScene;
-         if (background == null) { throw new ArgumentNullException(); }
-         this.background = background.GetImage();
+         this.background = background;
       }
 
       public void Initialize()

@@ -28,7 +28,7 @@ namespace phi.control
          this.pictureBox = new PictureBox();
 
          // misc configs
-         IO.RENDERER.SetBackground(Image.FromFile(config.GetRenderDefaultBackground()));
+         IO.RENDERER.SetBackground(config.GetRenderDefaultBackground());
          IO.RENDERER.SetDefaultLayer(config.GetRenderDefaultLayer());
          IO.FRAME_TIMER.SetFPS(config.GetRenderFPS());
          IO.FRAME_TIMER.LockedSubscribe(new Random().Next(), RefreshPictureBox);
@@ -39,17 +39,20 @@ namespace phi.control
 
       private void FormLoad(object sender, EventArgs e)
       {
+         Image image = new Bitmap(config.GetMaxWindowWidth(), config.GetMaxWindowHeight());
+         IO.RENDERER.SetOutput(image);
+
          // Set window properites
          IO.WINDOW.SetWindowsForm(this);
-         Size = new Size(config.GetWindowWidth() + WIDTH_FUDGE,
-            config.GetWindowHeight() + HEIGHT_FUDGE);
+         Size = new Size(config.GetMaxWindowWidth() + WIDTH_FUDGE,
+            config.GetMaxWindowHeight() + HEIGHT_FUDGE);
          Text = config.GetWindowTitle();
+         
          // Set pictureBox properties
          pictureBox.Size = Size;
-         pictureBox.Image = Image.FromFile(config.GetRenderDefaultBackground());
+         pictureBox.Image = image;
          Controls.Add(pictureBox); // is this line needed? -- Yes, I think so
-         IO.RENDERER.SetOutput(pictureBox.Image);
-
+         
          // Setup key input event handling
          KeyPreview = true;
          KeyDown += new KeyEventHandler(IO.KEYS.KeyInputEvent);
@@ -83,6 +86,7 @@ namespace phi.control
       private void RefreshPictureBox()
       {
          pictureBox.Image = pictureBox.Image; // Do not delete; forces some sort of update
+         pictureBox.Size = Size;
       }
 
       public static void Exit() { Application.Exit(); }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -47,7 +48,7 @@ namespace phi
 
       public class Render
       {
-         public const string DEFAULT_BACKGROUND = RES_DIR + "defaultBackground.png";
+         public static readonly Color DEFAULT_BACKGROUND = Color.White;
          private static int _default_layer = 0;
          public static int DEFAULT_LAYER
          {
@@ -162,9 +163,9 @@ namespace phi
       public virtual string GetHomeDir() { return HOME_DIR; }
       public virtual string GetResourcesDir() { return RES_DIR; }
       public virtual string GetWindowTitle() { return Window.TITLE; }
-      public virtual int GetWindowWidth() { return Window.WIDTH; }
-      public virtual int GetWindowHeight() { return Window.HEIGHT; }
-      public virtual string GetRenderDefaultBackground() { return Render.DEFAULT_BACKGROUND; }
+      public virtual int GetMaxWindowWidth() { return Window.WIDTH; }
+      public virtual int GetMaxWindowHeight() { return Window.HEIGHT; }
+      public virtual Color GetRenderDefaultBackground() { return Render.DEFAULT_BACKGROUND; }
       public virtual int GetRenderDefaultLayer() { return Render.DEFAULT_LAYER; }
       public virtual int GetRenderFPS() { return Render.FPS; }
 

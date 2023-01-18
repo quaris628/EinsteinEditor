@@ -14,8 +14,9 @@ namespace phi.graphics
       // default layer before any default (for overload Add method) is set
       private const int DEFAULT_DEFAULT_LAYER = 0;
 
+      private Graphics g;
       private Image output;
-      private Image background;
+      private Color background;
       private SortedList<int, LinkedList<Drawable>> layers;
       private int defaultLayer;
 
@@ -26,8 +27,9 @@ namespace phi.graphics
       private int displacementX;
       private int displacementY;
 
-      public Renderer(Image output, Image background)
+      public Renderer(Image output, Color background)
       {
+         this.g = Graphics.FromImage(output);
          this.output = output;
          this.background = background;
          this.layers = new SortedList<int, LinkedList<Drawable>>();
@@ -43,8 +45,9 @@ namespace phi.graphics
 
       public Renderer()
       {
+         this.g = null;
          this.output = null;
-         this.background = null;
+         this.background = Color.White;
          this.layers = new SortedList<int, LinkedList<Drawable>>();
          this.defaultLayer = DEFAULT_DEFAULT_LAYER;
 
@@ -72,8 +75,7 @@ namespace phi.graphics
       {
          if (HasChanged())
          {
-            Graphics g = Graphics.FromImage(output);
-            g.DrawImage(background, 0, 0);
+            g.Clear(background);
             CalculateDisplacement();
 
             foreach (LinkedList<Drawable> drawables in layers.Values)
@@ -86,8 +88,6 @@ namespace phi.graphics
                   }
                }
             }
-
-            g.Dispose();
             UnflagChanges();
          }
       }
@@ -168,18 +168,23 @@ namespace phi.graphics
         * Sets the image to draw images on top of
         * Is also the output (pass by reference)
         */
-      public void SetOutput(Image outputImage) { this.output = outputImage; FlagChange(); }
+      public void SetOutput(Image outputImage)
+      {
+         this.output = outputImage;
+         this.g = Graphics.FromImage(output);
+         FlagChange();
+      }
 
       /**
        * Sets the background that all drawn images are stacked on top of
        */
-      public void SetBackground(Image background)
+      public void SetBackground(Color background)
       {
-         this.background = background ?? throw new ArgumentNullException();
+         this.background = background;
          FlagChange();
       }
 
-      public Image GetBackground()
+      public Color GetBackground()
       {
          return this.background;
       }
