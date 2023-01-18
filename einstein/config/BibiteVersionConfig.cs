@@ -17,8 +17,8 @@ namespace Einstein
         public const int HIDDEN_NODES_INDEX_MIN = 48;
         public const int HIDDEN_NODES_INDEX_MAX = int.MaxValue;
 
-        public const float SYNAPSE_STRENGTH_MIN = -10f;
-        public const float SYNAPSE_STRENGTH_MAX = 10f;
+        public const float SYNAPSE_STRENGTH_MIN = -100f;
+        public const float SYNAPSE_STRENGTH_MAX = 100f;
 
         public static readonly string[] DESCRIPTIONS = new string[] {
             // ----- Inputs -----
