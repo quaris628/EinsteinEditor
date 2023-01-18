@@ -16,8 +16,9 @@ namespace phi.graphics.renderables
       private Drawable drawable;
       private int dragOffsetX;
       private int dragOffsetY;
-      private bool hasBounds;
+      private int boundsType; // 0 = none, 1 = static, 2 = dynamic
       private Rectangle dragBounds;
+      private Func<Rectangle> getDynamicDragBounds;
       private bool useRightMouseButton;
 
       public Draggable(Drawable drawable)
@@ -25,8 +26,7 @@ namespace phi.graphics.renderables
       public Draggable(Drawable drawable, bool useRightMouseButton)
       {
          this.drawable = drawable;
-         this.hasBounds = true;
-         this.dragBounds = new Rectangle(); // null doesn't work
+         this.boundsType = 0;
          this.useRightMouseButton = useRightMouseButton;
       }
       public Draggable(Drawable drawable, Rectangle rectangle)
@@ -38,8 +38,17 @@ namespace phi.graphics.renderables
       public Draggable(Drawable drawable, Rectangle dragBounds, bool useRightMouseButton)
       {
          this.drawable = drawable;
-         this.hasBounds = true;
+         this.boundsType = 1;
          this.dragBounds = dragBounds;
+         this.useRightMouseButton = useRightMouseButton;
+      }
+      public Draggable(Drawable drawable, Func<Rectangle> getDynamicDragBounds)
+         : this(drawable, getDynamicDragBounds, DEFAULT_USE_RIGHT_MOUSE_BUTTON) { }
+      public Draggable(Drawable drawable, Func<Rectangle> getDynamicDragBounds, bool useRightMouseButton)
+      {
+         this.drawable = drawable;
+         this.boundsType = 2;
+         this.getDynamicDragBounds = getDynamicDragBounds;
          this.useRightMouseButton = useRightMouseButton;
       }
 
@@ -86,14 +95,18 @@ namespace phi.graphics.renderables
 
       private void MouseMove(int x, int y)
       {
-         if (hasBounds)
+         if (boundsType == 2)
          {
-            drawable.SetX(ConfineToXBound(x - dragOffsetX));
-            drawable.SetY(ConfineToYBound(y - dragOffsetY));
+            dragBounds = getDynamicDragBounds.Invoke();
          }
-         else
+         if (boundsType != 0)
          {
-            drawable.SetXY(x - dragOffsetX, y - dragOffsetY);
+            drawable.SetX(Math.Max(dragBounds.X,
+               Math.Min(x - dragOffsetX,
+               dragBounds.X + dragBounds.Width - drawable.GetWidth())));
+            drawable.SetY(Math.Max(dragBounds.Y,
+               Math.Min(y - dragOffsetY,
+               dragBounds.Y + dragBounds.Height - drawable.GetHeight())));
          }
          MyMouseMove(x, y);
       }
@@ -117,31 +130,25 @@ namespace phi.graphics.renderables
       protected int GetDragOffsetX() { return dragOffsetX; }
       protected int GetDragOffsetY() { return dragOffsetY; }
 
-      private int ConfineToXBound(int x)
-      {
-         return Math.Max(dragBounds.X, Math.Min(x,
-            dragBounds.X + dragBounds.Width - drawable.GetWidth()));
-      }
-
-      private int ConfineToYBound(int y)
-      {
-         return Math.Max(dragBounds.Y, Math.Min(y,
-            dragBounds.Y + dragBounds.Height - drawable.GetHeight()));
-      }
-
-      public bool HasDragBounds() { return this.hasBounds; }
-      public void SetDragUnbounded() { this.hasBounds = false; }
+      public bool HasDragBounds() { return this.boundsType != 0; }
+      public void SetDragUnbounded() { this.boundsType = 0; }
       
       public void SetDragBounds(Rectangle bounds)
       {
-         this.hasBounds = true;
+         this.boundsType = 1;
          this.dragBounds = bounds;
       }
 
       public void SetDragBounds(int minX, int minY, int maxX, int maxY)
       {
-         this.hasBounds = true;
+         this.boundsType = 1;
          this.dragBounds = new Rectangle(minX, minY, maxX - minX, maxY - minY);
+      }
+
+      public void SetDragBounds(Func<Rectangle> getDynamicDragBounds)
+      {
+         this.boundsType = 2;
+         this.getDynamicDragBounds = getDynamicDragBounds;
       }
 
       public Drawable GetDrawable() { return drawable; }
