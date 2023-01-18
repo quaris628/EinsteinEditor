@@ -151,9 +151,9 @@ namespace Einstein.ui.editarea
                     continue;
                 }
                 AddNeuron(neuron);
-                if (neuron.IsHidden() && neuron.Index > hiddenNeuronIndex)
+                if (neuron.Index > hiddenNeuronIndex)
                 {
-                    hiddenNeuronIndex = neuron.Index;
+                    hiddenNeuronIndex = neuron.Index + 1;
                 }
             }
             foreach (BaseNeuron neuron in neuronsToRemoveFromNewBrain)
