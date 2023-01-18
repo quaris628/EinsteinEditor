@@ -151,7 +151,7 @@ namespace Einstein.ui.editarea
                     continue;
                 }
                 AddNeuron(neuron);
-                if (neuron.Index > hiddenNeuronIndex)
+                if (neuron.Index >= hiddenNeuronIndex)
                 {
                     hiddenNeuronIndex = neuron.Index + 1;
                 }
