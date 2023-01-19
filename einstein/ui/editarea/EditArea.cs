@@ -112,6 +112,8 @@ namespace Einstein.ui.editarea
         // (including you Quaris, if you're unable to remember or focus)
         public void AddSynapse(BaseSynapse synapse)
         {
+            justFinishedSynapse = false;
+            startedSynapse = null;
             StartSynapse(displayedNeuronsIndex[synapse.From.Index],
                 NeuronRenderable.SPAWN_X, NeuronRenderable.SPAWN_Y);
             startedSynapse.Finalize(displayedNeuronsIndex[synapse.To.Index], synapse);
