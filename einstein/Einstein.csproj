@@ -59,6 +59,7 @@
     <Compile Include="ui\menu\IONeuronMenuCategory.cs" />
     <Compile Include="ui\menu\NeuronMenuCategory.cs" />
     <Compile Include="ui\menu\visibleElements\NeuronMenuButton.cs" />
+    <Compile Include="ui\visibleElements\InfoText.cs" />
     <Compile Include="ui\visibleElements\NeuronDrawable.cs" />
     <Compile Include="config\BibiteVersionConfig.cs" />
   </ItemGroup>

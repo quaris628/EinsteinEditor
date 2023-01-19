@@ -2,6 +2,7 @@
 using Einstein.model.json;
 using Einstein.ui.editarea;
 using Einstein.ui.menu;
+using Einstein.ui.visibleElements;
 using phi.control;
 using phi.graphics.drawables;
 using phi.io;
@@ -35,6 +36,7 @@ namespace Einstein
         private NeuronMenuCategory hidden;
         private Button loadButton;
         private Button saveButton;
+        private KeybindsInfoText infoText;
 
         private string savePath;
         private string loadPath;
@@ -93,6 +95,7 @@ namespace Einstein
                 .withText("Save to Bibite")
                 .withOnClick(saveBrain)
                 .Build();
+            infoText = new KeybindsInfoText();
 
             savePath = null;
             loadPath = null;
@@ -112,6 +115,7 @@ namespace Einstein
             saveButton.Initialize();
             IO.RENDERER.Add(loadButton);
             IO.RENDERER.Add(saveButton);
+            infoText.Initialize();
             IO.FRAME_TIMER.Subscribe(checkForResize);
         }
 

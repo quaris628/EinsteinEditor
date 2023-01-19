@@ -45,6 +45,7 @@ What this sucks at doing (known bugs):
  - Completing a synapse starts a new one
  - Layers for text, icons, and synapses are ill-defined
  - Resizing to a smaller window size can hide neurons
+ - Removing a neuron doesn't remove a synapse that has been started from it but not yet attached to another neuron
 
 What this will do (planned enhancements):
  - Display version # somewhere
