@@ -11,20 +11,39 @@ namespace Einstein.model.json
     {
         private string json;
         private int index;
+        private int objEndIndex;
 
         public JsonParser(string json, int index)
         {
             this.json = json;
             this.index = index;
             if (index < 0) { this.index = 0; }
+            
+            // auto-fix a very specific corruption bug from previous versions
+            int enBugIndex = json.IndexOf("\"en\": {activeViruses:");
+            enBugIndex = enBugIndex < 0 ? json.IndexOf("\"en\":{activeViruses:") : enBugIndex;
+            if (enBugIndex < 0) {
+                int endIndex = json.IndexOf('}', enBugIndex);
+                int startIndex = json.IndexOf(':', enBugIndex) + 1;
+                this.json = json.Substring(0, startIndex) + " true" + json.Substring(endIndex);
+            }
+        }
+        
+        public void startParsingNextLeafObj() {
+            index = json.IndexOf('{', index) + 1;
+            objEndIndex = json.IndexOf('}', index);
         }
 
-        public string getNextValue()
+        public string getNextValue(string tag)
         {
-            int indexLeft = json.IndexOf(':', index) + 1;
+            int indexLeft = json.IndexOf('"' + tag + "\":", index) + 1;
             if (indexLeft < 0)
             {
-                throw new NoNextValueException("No ':' found after index " + index);
+                throw new NoNextValueException("No value found for property '" + tag + "' after index " + index);
+            }
+            if (objEndIndex <= indexLeft)
+            {
+                throw new NoNextValueException("No value found for property '" + tag + "' between indices " + index + " and " + objEndIndex);
             }
             int indexRight = Math.Min(json.IndexOf(',', indexLeft),json.IndexOf('}', indexLeft));
             if (indexRight < 0) { indexRight = json.IndexOf('}'); }
@@ -37,6 +56,11 @@ namespace Einstein.model.json
             value = value.Replace("\"", "").Trim();
             index = indexRight;
             return value;
+        }
+        
+        public string endParsingLeafObj() {
+            index = objEndIndex;
+            objEndIndex = -1;
         }
 
         public void parseArray(Action<int> eachItem)
