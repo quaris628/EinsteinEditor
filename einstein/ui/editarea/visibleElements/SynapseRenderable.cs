@@ -79,6 +79,7 @@ namespace Einstein.ui.editarea
             // if user cancels creation, or if would connect the same neuron to itself
             if (to == null || to.Neuron.Index == From.Neuron.Index)
             {
+                editArea.ClearStartedSynapse();
                 Uninitialize();
                 return;
             }

@@ -23,6 +23,7 @@ namespace Einstein.ui.editarea
         private Dictionary<(int, int), SynapseRenderable> displayedSynapsesIndex;
         private SynapseRenderable startedSynapse;
         private int hiddenNeuronIndex;
+        private bool justFinishedSynapse;
 
         public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove)
         {
@@ -31,6 +32,7 @@ namespace Einstein.ui.editarea
             disableOnRemove = false;
             displayedSynapsesIndex = new Dictionary<(int, int), SynapseRenderable>();
             hiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
+            justFinishedSynapse = false;
             LoadBrain(brain);
         }
 
@@ -81,6 +83,12 @@ namespace Einstein.ui.editarea
 
         public void StartSynapse(NeuronRenderable from, int x, int y)
         {
+            if (justFinishedSynapse || startedSynapse != null)
+            {
+                // don't start a new synapse every time you complete one
+                justFinishedSynapse = false;
+                return;
+            }
             startedSynapse = new SynapseRenderable(this, from, x, y);
             startedSynapse.Initialize();
         }
@@ -97,6 +105,7 @@ namespace Einstein.ui.editarea
 
             displayedSynapsesIndex.Add((synapse.From.Index, synapse.To.Index), startedSynapse);
             startedSynapse = null;
+            justFinishedSynapse = true;
         }
 
         // This is a much safer option for anyone who doesn't know what they're doing
@@ -105,7 +114,6 @@ namespace Einstein.ui.editarea
         {
             StartSynapse(displayedNeuronsIndex[synapse.From.Index],
                 NeuronRenderable.SPAWN_X, NeuronRenderable.SPAWN_Y);
-            SynapseRenderable synapseR = startedSynapse;
             startedSynapse.Finalize(displayedNeuronsIndex[synapse.To.Index], synapse);
         }
 
@@ -120,7 +128,7 @@ namespace Einstein.ui.editarea
 
         public void LoadBrain(BaseBrain brain)
         {
-            // CLear any data currently in the brain
+            // Clear any data currently in the brain
             NeuronRenderable[] neuronsToClearFromOldBrain = new NeuronRenderable[displayedNeuronsIndex.Values.Count];
             displayedNeuronsIndex.Values.CopyTo(neuronsToClearFromOldBrain, 0);
             disableOnRemove = true;
@@ -187,6 +195,8 @@ namespace Einstein.ui.editarea
                 IO.WINDOW.GetWidth() - NeuronMenuButton.WIDTH - EinsteinPhiConfig.PAD * 2,
                 IO.WINDOW.GetHeight());
         }
+
+        public void ClearStartedSynapse() { this.startedSynapse = null; }
 
         public string LogDetailsForCrash()
         {

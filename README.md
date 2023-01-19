@@ -41,11 +41,10 @@ What this can't do (and probably never will):
 
 What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
- - Whe loading from a file, synapses point to upper left corner
- - Completing a synapse starts a new one
+ - When loading from a file, synapses point to upper left corner
  - Layers for text, icons, and synapses are ill-defined
  - Resizing to a smaller window size can hide neurons
- - Removing a neuron doesn't remove a synapse that has been started from it but not yet attached to another neuron
+ - Removing a neuron doesn't remove a synapse that has been started from it but not yet attached to another neuron (and then trying to complete one causes a crash)
 
 What this will do (planned enhancements):
  - Display version # somewhere
