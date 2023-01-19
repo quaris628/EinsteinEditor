@@ -29,7 +29,7 @@ namespace phi.graphics.drawables
 
       public Text(string message) : this(new TextBuilder(message)) { }
 
-      private Text(TextBuilder builder) : base(builder.GetX(), builder.GetY(), 0, 0)
+      protected Text(TextBuilder builder) : base(builder.GetX(), builder.GetY(), 0, 0)
       {
          this.message = builder.GetMessage();
          this.font = builder.GetFont();
