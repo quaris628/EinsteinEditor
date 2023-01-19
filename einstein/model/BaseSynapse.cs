@@ -8,20 +8,28 @@ namespace Einstein.model
 {
     public class BaseSynapse
     {
-        public BaseNeuron From { get; set; }
-        public BaseNeuron To { get; set; }
-        public float Strength { get; set; }
+        private BaseNeuron _from;
+        private BaseNeuron _to;
+        private float _strength;
+        public BaseNeuron From {
+            get { return _from; }
+            set { _from = validateFrom(value); }
+        }
+        public BaseNeuron To
+        {
+            get { return _to; }
+            set { _to = validateTo(value); }
+        }
+
+        public float Strength {
+            get { return _strength; }
+            set { _strength = validateStrength(value); }
+        }
 
         protected BaseSynapse() { }
 
         public BaseSynapse(BaseNeuron from, BaseNeuron to, float strength)
         {
-            if (from == null || to == null) { throw new ArgumentNullException(); }
-            if (from.Index == to.Index) { throw new SameNeuronException(
-                "Cannot create a synapse that connects any neuron (index " +
-                from.Index + " ) to itself."); }
-            strength = Math.Max(-10f, Math.Min(strength, 10f));
-
             From = from;
             To = to;
             Strength = strength;
@@ -33,6 +41,40 @@ namespace Einstein.model
         }
 
         public virtual string GetSave() { throw new NotSupportedException(); }
+
+        private BaseNeuron validateFrom(BaseNeuron value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException();
+            }
+            if (To != null && value.Index == To.Index)
+            {
+                throw new SameNeuronException(
+                    "Cannot create a synapse that connects a neuron to itself.");
+            }
+            return value;
+        }
+        private BaseNeuron validateTo(BaseNeuron value)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException();
+            }
+            if (From != null && value.Index == From.Index)
+            {
+                throw new SameNeuronException(
+                    "Cannot create a synapse that connects a neuron to itself.");
+            }
+            return value;
+        }
+        private float validateStrength(float value)
+        {
+            value = Math.Max(BibiteVersionConfig.SYNAPSE_STRENGTH_MIN,
+                Math.Min(value,
+                BibiteVersionConfig.SYNAPSE_STRENGTH_MAX));
+            return value;
+        }
     }
 
     public class SameNeuronException : BrainException

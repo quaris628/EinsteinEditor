@@ -10,17 +10,37 @@ namespace Einstein.model.json
     {
         // Example:
         // {
-        //  "isReady":true,
-        //  "parent":true,
-        //  "Nodes":[{Neuron},{Neuron},...{Neuron}],
-        //  "Synapses":[{Synapse},{Synapse},...{Synapse}]
+        //   "isReady": true,
+        //   "parent": true,
+        //   "Nodes": [
+        //     {
+        //       Neuron
+        //     },
+        //     ...
+        //     {
+        //       Neuron
+        //     }
+        //   ],
+        //   "Synapses": [
+        //     {
+        //       Synapse
+        //     },
+        //     ...
+        //     {
+        //       Synapse
+        //     }
+        //   ]
         // }
 
         private const string JSON_FORMAT =
-            "\"isReady\":{0}," +
-            "\"parent\":\"{1}\"," +
-            "\"Nodes\":[{2}]," +
-            "\"Synapses\":[{3}]";
+            "    \"isReady\": {0},\n" +
+            "    \"parent\": \"{1}\",\n" +
+            "    \"Nodes\": [\n" +
+            "      {2}\n" +
+            "    ],\n" +
+            "    \"Synapses\": [\n" +
+            "      {3}\n" +
+            "    ]\n";
 
         // unused for now, but they're in the json so keep track of them just in case
         private string isReady;
@@ -54,11 +74,11 @@ namespace Einstein.model.json
 
         public override string GetSave()
         {
-            return "{" + string.Format(JSON_FORMAT,
+            return "{\n" + string.Format(JSON_FORMAT,
                 isReady,
                 parent,
                 neuronsToJson(),
-                synapsesToJson()) + "},";
+                synapsesToJson()) + "  },\n";
         }
 
         // these ToJson functions could probably be refactored to be less duplicately
@@ -71,18 +91,18 @@ namespace Einstein.model.json
             {
                 neuronJsons[i++] = neuron.GetSave();
             }
-            return string.Join(",", neuronJsons);
+            return string.Join(",\n      ", neuronJsons);
         }
 
         private string synapsesToJson()
         {
-            string[] neuronJsons = new string[Synapses.Count];
+            string[] synapseJsons = new string[Synapses.Count];
             int i = 0;
             foreach (JsonSynapse synapse in Synapses)
             {
-                neuronJsons[i++] = synapse.GetSave();
+                synapseJsons[i++] = synapse.GetSave();
             }
-            return string.Join(",", neuronJsons);
+            return string.Join(",\n      ", synapseJsons);
         }
     }
 

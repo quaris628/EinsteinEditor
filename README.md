@@ -47,6 +47,8 @@ What this sucks at doing (known bugs):
  - Resizing to a smaller window size can hide neurons
 
 What this will do (planned enhancements):
+ - Display version # somewhere
+ - Show a key/legend for controls
  - Remove neurons and synapses by shift+click instead of middle-click
  - When neurons are added, have their spawn location staggered (would probably also fix the synapses always pointing to the upper left when loading from a file)
  - A button to auto-arrange neurons in a prettier and more clean arrangement
@@ -60,6 +62,7 @@ What this might do (future ideas):
  - Keyboard shortcuts
  - Edit neuron descriptions
  - Edit neuron type
+ - Allow showing multiple icons for input neurons (especially for the Constant)
  - Create color groups for neurons !!!
     - Hide/Show certain color groups, or just make transparent
 	- Drag and drop whole color groups

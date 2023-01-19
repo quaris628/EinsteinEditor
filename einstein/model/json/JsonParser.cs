@@ -33,7 +33,8 @@ namespace Einstein.model.json
                 throw new NoNextValueException("No ',' or '}' found after index " + indexLeft);
             }
             int length = indexRight - indexLeft;
-            string value = json.Substring(indexLeft, length).Trim('"');
+            string value = json.Substring(indexLeft, length);
+            value = value.Replace("\"", "").Trim();
             index = indexRight;
             return value;
         }

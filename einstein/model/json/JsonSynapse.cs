@@ -10,15 +10,22 @@ namespace Einstein.model.json
     {
 
         // Example:
-        // {"Inov":0,"NodeIn":0,"NodeOut":48,"Weight":1.0,"En":true,"en":true}
+        // {
+        //   "Inov":0,
+        //   "NodeIn":0,
+        //   "NodeOut":48,
+        //   "Weight":1.0,
+        //   "En":true,
+        //   "en":true
+        // }
 
         private const string JSON_FORMAT =
-            "\"Inov\":{0}," +
-            "\"NodeIn\":{1}," +
-            "\"NodeOut\":{2}," +
-            "\"Weight\":{3}," +
-            "\"En\":{4}," +
-            "\"en\":{5}";
+            "        \"Inov\": {0},\n" +
+            "        \"NodeIn\": {1},\n" +
+            "        \"NodeOut\": {2},\n" +
+            "        \"Weight\": {3},\n" +
+            "        \"En\": {4},\n" +
+            "        \"en\": {5}\n";
 
         // unused for now
         private string inov;
@@ -48,13 +55,13 @@ namespace Einstein.model.json
 
         public override string GetSave()
         {
-            return "{" + string.Format(JSON_FORMAT,
+            return "{\n" + string.Format(JSON_FORMAT,
                 inov,
                 From.Index,
                 To.Index,
                 Strength,
                 En,
-                en) + "}";
+                en) + "      }";
         }
     }
 }

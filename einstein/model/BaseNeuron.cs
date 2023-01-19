@@ -8,10 +8,20 @@ namespace Einstein.model
 {
     public class BaseNeuron
     {
-        // TODO add verification to setters on properties (on synapses and brain (?) too)
-        public int Index { get; protected set; }
-        public NeuronType Type { get; set; }
-        public string Description { get; set; }
+        private int _index;
+        public int Index {
+            get { return _index; }
+            protected set { _index = validateIndex(value); }
+        }
+        // TODO make setting type public, and when I do that
+        // validate that you can't set the type to (for example)
+        // Input when index is in the hidden neuron range
+        public NeuronType Type { get; protected set; }
+        private string _description;
+        public string Description {
+            get { return _description; }
+            set { _description = validateDescription(value); }
+        }
 
         protected BaseNeuron() { }
 
@@ -21,15 +31,6 @@ namespace Einstein.model
 
         public BaseNeuron(int index, NeuronType type, string description)
         {
-            if (index < 0) {
-                throw new ArgumentOutOfRangeException("Index", index, "cannot be negative");
-            } if (description == null) {
-                description = GetDefaultDescription(index);
-            } else if (!description.All(char.IsLetterOrDigit)) {
-                throw new InvalidDescriptionException(
-                    "Neuron descriptions must be alphanumeric");
-            }
-
             Index = index;
             Type = type;
             Description = description;
@@ -67,6 +68,39 @@ namespace Einstein.model
         public virtual string GetSave() { throw new NotSupportedException(); }
 
         public static string GetDefaultDescription(int index) { return "Hidden" + index; }
+
+        private int validateIndex(int value)
+        {
+            if (value < 0)
+            {
+                throw new InvalidIndexException(
+                    "Index ('" + value + "') cannot be negative");
+            }
+            return value;
+        }
+
+        private string validateDescription(string value)
+        {
+            if (value == null)
+            {
+                return GetDefaultDescription(Index);
+            }
+            else if (!value.All(char.IsLetterOrDigit))
+            {
+                throw new InvalidDescriptionException(
+                    "Neuron descriptions must be alphanumeric");
+            }
+            return value;
+        }
+    }
+
+    public class InvalidIndexException : BrainException
+    {
+        public const string TITLE = "Invalid index";
+        public InvalidIndexException() : base(TITLE) { }
+        public InvalidIndexException(string message) : base(TITLE, message) { }
+        public InvalidIndexException(string message, Exception innerException)
+            : base(TITLE, message, innerException) { }
     }
     public class InvalidDescriptionException : BrainException
     {

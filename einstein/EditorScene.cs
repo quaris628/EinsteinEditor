@@ -151,7 +151,7 @@ namespace Einstein
                 IO.ShowErrorPopup("Save Failed", "File format is invalid.");
                 return;
             }
-            bibiteJson = bibiteJson.Substring(0, startIndex) + brainJson + bibiteJson.Substring(endIndex);
+            bibiteJson = bibiteJson.Substring(0, startIndex) + " " + brainJson + bibiteJson.Substring(endIndex);
             File.WriteAllText(filepath, bibiteJson);
             savePath = Path.GetDirectoryName(filepath);
             IO.ShowPopup("Save Successful", ""); // TODO change to on-screen message in corner
