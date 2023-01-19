@@ -18,7 +18,7 @@ namespace Einstein
 
         public new class Window : DefaultConfig.Window
         {
-            public new const string TITLE = "Einstien Bibite Editor";
+            public new const string TITLE = "Einstien Editor " + VERSION;
         }
         public new class Render : DefaultConfig.Render
         {
