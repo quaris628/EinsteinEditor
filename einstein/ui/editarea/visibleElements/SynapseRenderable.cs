@@ -71,6 +71,8 @@ namespace Einstein.ui.editarea
             IO.RENDERER.Remove(this);
             IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
+            IO.MOUSE.MID_CLICK_UP.UnsubscribeFromDrawable(RemoveIfExactlyContainsClick, line);
+            To.UnsubscribeFromDrag(UpdateTipPosition);
         }
 
         // sort of a second step of initialization (or will uninitialize)
@@ -191,7 +193,6 @@ namespace Einstein.ui.editarea
             if (sqDistanceToLine <= HALF_LINE_WIDTH * HALF_LINE_WIDTH
                 || arrow.TriangleContainsPoint(x, y))
             {
-                IO.MOUSE.MID_CLICK_UP.UnsubscribeFromDrawable(RemoveIfExactlyContainsClick, line);
                 editArea.RemoveSynapse(Synapse);
             }
         }
@@ -208,9 +209,9 @@ namespace Einstein.ui.editarea
 
         public override string ToString()
         {
-            return "SynapseRenderable: " + string.Format(
-                "Synapse = {{0}} From = {{1}} To = {{2}}",
-                Synapse, From, To);
+            return string.Format(
+                "SynapseRenderable: Synapse = [{0}] From = [{1}] To = [{2}]",
+                Synapse.ToString(), From.ToString(), To.ToString());
         }
     }
 }
