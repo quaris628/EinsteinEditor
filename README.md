@@ -49,8 +49,6 @@ What this sucks at doing (known bugs):
  - Brain values and last input/output is reset for neurons (maybe only for input and output neurons?)
 
 What this will do (planned enhancements):
- - Display version # somewhere
- - Show a key/legend for controls
  - Remove neurons and synapses by shift+click instead of middle-click
  - When neurons are added, have their spawn location staggered (would probably also fix the synapses always pointing to the upper left when loading from a file)
  - A button to auto-arrange neurons in a prettier and more clean arrangement
