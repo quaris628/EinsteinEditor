@@ -60,6 +60,14 @@ namespace Einstein.model
             return !IsInput() && !IsOutput();
         }
 
+        public override bool Equals(object obj)
+        {
+            if (this == obj) { return true; }
+            if (!(obj is BaseNeuron)) { return false; }
+            BaseNeuron objNeuron = (BaseNeuron)obj;
+            return this.Index == objNeuron.Index && this.Type == objNeuron.Type;
+        }
+
         public override string ToString()
         {
             return Description + " : " + Type.ToString();

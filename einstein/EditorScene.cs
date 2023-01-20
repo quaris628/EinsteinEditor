@@ -177,7 +177,7 @@ namespace Einstein
             {
                 brain = new JsonBrain(json, json.IndexOf("\"brain\":") + 8);
             }
-            catch (NoNextValueException e)
+            catch (JsonParsingException e)
             {
                 IO.ShowErrorPopup("Load Failed",
                     "File format is invalid.\n\nDetails: " + e.Message);
@@ -256,7 +256,7 @@ namespace Einstein
 
         // ----- Generating neuron options -----
 
-        private static ICollection<BaseNeuron> generateInputNeurons()
+        public static ICollection<BaseNeuron> generateInputNeurons()
         {
             ICollection<BaseNeuron> inputs = new List<BaseNeuron>();
             for (int i = BibiteVersionConfig.INPUT_NODES_INDEX_MIN;
@@ -270,7 +270,7 @@ namespace Einstein
             return inputs;
         }
 
-        private static ICollection<BaseNeuron> generateOutputNeurons()
+        public static ICollection<BaseNeuron> generateOutputNeurons()
         {
             ICollection<BaseNeuron> outputs = new List<BaseNeuron>();
             for (int i = BibiteVersionConfig.OUTPUT_NODES_INDEX_MIN;
@@ -284,7 +284,7 @@ namespace Einstein
             return outputs;
         }
 
-        private static ICollection<BaseNeuron> generateHiddenNeurons()
+        public static ICollection<BaseNeuron> generateHiddenNeurons()
         {
             ICollection<BaseNeuron> hiddens = new List<BaseNeuron>();
             int index = BibiteVersionConfig.HIDDEN_NODES_INDEX_MAX

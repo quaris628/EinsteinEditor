@@ -27,36 +27,40 @@ namespace Einstein.model.json
             "        \"Index\": {2},\n" +
             "        \"Inov\": {3},\n" +
             "        \"Desc\": \"{4}\",\n" +
-            "        \"Value\": \"{5}\",\n" +
+            "        \"Value\": {5},\n" +
             "        \"LastInput\": {6},\n" +
             "        \"LastOutput\": {7}\n";
 
         // unused for now, but they're in the json so keep track of them just in case
         private string inov;
-        private string value;
-        private string lastInput;
-        private string lastOutput;
+        private float value;
+        private float lastInput;
+        private float lastOutput;
 
         public JsonNeuron(int index, NeuronType type, string description)
             : base(index, type, description)
         {
             inov = "0";
-            value = "0";
-            lastInput = "0.0";
-            lastOutput = "0.0";
+            value = 0f;
+            lastInput = 0f;
+            lastOutput = 0f;
         }
 
         public JsonNeuron(string json, int startIndex) : base()
         {
             JsonParser parser = new JsonParser(json, startIndex);
-            Type = (NeuronType)int.Parse(parser.getNextValue());
-            parser.getNextValue(); // skip TypeName
-            Index = int.Parse(parser.getNextValue());
-            inov = parser.getNextValue();
-            Description = parser.getNextValue();
-            value = parser.getNextValue();
-            lastInput = parser.getNextValue();
-            lastOutput = parser.getNextValue();
+            parser.startParsingNextLeafObj();
+
+            Type = (NeuronType)parser.getNextValueInt("Type");
+            // skip TypeName
+            Index = parser.getNextValueInt("Index");
+            inov = "0";
+            Description = parser.getNextValue("Desc");
+            value = parser.getNextValueFloat("Value");
+            lastInput = parser.getNextValueFloat("LastInput");
+            lastOutput = parser.getNextValueFloat("LastOutput");
+            
+            parser.endParsingLeafObj();
         }
 
         public override string GetSave()

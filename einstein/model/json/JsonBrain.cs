@@ -34,7 +34,7 @@ namespace Einstein.model.json
 
         private const string JSON_FORMAT =
             "    \"isReady\": {0},\n" +
-            "    \"parent\": \"{1}\",\n" +
+            "    \"parent\": {1},\n" +
             "    \"Nodes\": [\n" +
             "      {2}\n" +
             "    ],\n" +
@@ -55,8 +55,8 @@ namespace Einstein.model.json
         public JsonBrain(string json, int startIndex) : base()
         {
             JsonParser parser = new JsonParser(json, startIndex);
-            isReady = parser.getNextValue();
-            parent = parser.getNextValue();
+            isReady = "true";
+            parent = "true";
 
             // parse neurons
             parser.parseArray((neuronStartIndex) =>
@@ -85,9 +85,32 @@ namespace Einstein.model.json
         // but I'm too lazy right now and this code smell isn't very strong anyway
         private string neuronsToJson()
         {
-            string[] neuronJsons = new string[Neurons.Count];
+            // I tried using .Union on these but this seriously looked like less work
+            ICollection<BaseNeuron> allNeurons = EditorScene.generateInputNeurons();
+            foreach (BaseNeuron neuron in EditorScene.generateOutputNeurons())
+            {
+                allNeurons.Add(neuron);
+            }
+            foreach (BaseNeuron neuron in Neurons)
+            {
+                bool alreadyInBrain = false;
+                foreach (BaseNeuron neuron1 in allNeurons)
+                {
+                    if (neuron.Equals(neuron1))
+                    {
+                        alreadyInBrain = true;
+                        break;
+                    }
+                }
+                if (!alreadyInBrain)
+                {
+                    allNeurons.Add(neuron);
+                }
+            }
+
+            string[] neuronJsons = new string[allNeurons.Count];
             int i = 0;
-            foreach (JsonNeuron neuron in Neurons)
+            foreach (JsonNeuron neuron in allNeurons)
             {
                 neuronJsons[i++] = neuron.GetSave();
             }

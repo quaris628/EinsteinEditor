@@ -16,7 +16,6 @@ namespace Einstein.model.json
         //   "NodeOut":48,
         //   "Weight":1.0,
         //   "En":true,
-        //   "en":true
         // }
 
         private const string JSON_FORMAT =
@@ -24,33 +23,30 @@ namespace Einstein.model.json
             "        \"NodeIn\": {1},\n" +
             "        \"NodeOut\": {2},\n" +
             "        \"Weight\": {3},\n" +
-            "        \"En\": {4},\n" +
-            "        \"en\": {5}\n";
+            "        \"En\": {4}\n";
 
         // unused for now
         private string inov;
         private string En;
-        private string en;
 
         public JsonSynapse(JsonNeuron from, JsonNeuron to, float strength)
             : base(from, to, strength)
         {
             inov = "0";
             En = "true";
-            en = "true";
         }
 
         public JsonSynapse(string json, int startIndex, JsonBrain brain)
             : base()
         {
             JsonParser parser = new JsonParser(json, startIndex);
-
-            inov = parser.getNextValue();
-            From = brain.GetNeuron(int.Parse(parser.getNextValue()));
-            To = brain.GetNeuron(int.Parse(parser.getNextValue()));
-            Strength = float.Parse(parser.getNextValue());
-            En = parser.getNextValue();
-            en = parser.getNextValue();
+            parser.startParsingNextLeafObj();
+            inov = "0";
+            From = brain.GetNeuron(parser.getNextValueInt("NodeIn"));
+            To = brain.GetNeuron(parser.getNextValueInt("NodeOut"));
+            Strength = parser.getNextValueFloat("Weight");
+            En = "true";
+            parser.endParsingLeafObj();
         }
 
         public override string GetSave()
@@ -60,8 +56,7 @@ namespace Einstein.model.json
                 From.Index,
                 To.Index,
                 Strength,
-                En,
-                en) + "      }";
-        }
+                En) + "      }";
+        } 
     }
 }
