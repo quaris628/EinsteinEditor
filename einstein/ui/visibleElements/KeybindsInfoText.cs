@@ -14,11 +14,11 @@ namespace Einstein.ui.visibleElements
         public const string MESSAGE =
             "------------ Neurons ------------\n" +
             "Add          Menus\n" +
-            "Remove    Middle-click\n" +
+            "Remove    Shift-click\n" +
             "Move        Click and drag\n" +
             "----------- Synapses -----------\n" +
             "Add              Right-click\n" +
-            "Remove        Middle-click\n" +
+            "Remove        Shift-click\n" +
             "Edit strength Click number";
 
         public KeybindsInfoText() : base(

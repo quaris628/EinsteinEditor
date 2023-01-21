@@ -117,6 +117,7 @@ namespace Einstein.ui.editarea
             StartSynapse(displayedNeuronsIndex[synapse.From.Index],
                 NeuronRenderable.SPAWN_X, NeuronRenderable.SPAWN_Y);
             startedSynapse.Finalize(displayedNeuronsIndex[synapse.To.Index], synapse);
+            justFinishedSynapse = false;
         }
 
         public void RemoveSynapse(BaseSynapse synapse)

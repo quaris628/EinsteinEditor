@@ -35,8 +35,11 @@ namespace Einstein.ui.editarea
         {
             base.Initialize();
             IO.RENDERER.Add(this);
-            IO.MOUSE.MID_CLICK.SubscribeOnDrawable(() => {
-                editArea.RemoveNeuron(Neuron);
+            IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(() => {
+                if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
+                {
+                    editArea.RemoveNeuron(Neuron);
+                }
             }, GetDrawable());
             IO.MOUSE.RIGHT_UP.SubscribeOnDrawable((x, y) => {
                 editArea.StartSynapse(this, x, y);
@@ -47,7 +50,7 @@ namespace Einstein.ui.editarea
         {
             base.Uninitialize();
             IO.RENDERER.Remove(this);
-            IO.MOUSE.MID_CLICK.UnsubscribeAllFromDrawable(GetDrawable());
+            IO.MOUSE.LEFT_CLICK.UnsubscribeAllFromDrawable(GetDrawable());
             IO.MOUSE.RIGHT_UP.UnsubscribeAllFromDrawable(GetDrawable());
         }
 

@@ -71,18 +71,21 @@ namespace Einstein.ui.editarea
             IO.RENDERER.Remove(this);
             IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
-            IO.MOUSE.MID_CLICK_UP.UnsubscribeFromDrawable(RemoveIfExactlyContainsClick, line);
+            IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfExactlyContainsClick, line);
+            IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfShiftKeyDown, text.GetDrawable());
             To.UnsubscribeFromDrag(UpdateTipPosition);
         }
 
-        // sort of a second step of initialization (or will uninitialize)
+        // sort of a second step of initialization (or uninitialization)
         public void Finalize(NeuronRenderable to)
         {
             // if user cancels creation, or if would connect the same neuron to itself
             if (to == null || to.Neuron.Index == From.Neuron.Index)
             {
                 editArea.ClearStartedSynapse();
-                Uninitialize();
+                IO.RENDERER.Remove(this);
+                IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
+                IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
                 return;
             }
             Finalize(to, new JsonSynapse(
@@ -105,7 +108,8 @@ namespace Einstein.ui.editarea
             // complete initialization
             IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
-            IO.MOUSE.MID_CLICK_UP.SubscribeOnDrawable(RemoveIfExactlyContainsClick, line);
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfExactlyContainsClick, line);
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfShiftKeyDown, text.GetDrawable());
             To.SubscribeOnDrag(UpdateTipPosition);
             
             UpdateTipPosition();
@@ -172,8 +176,18 @@ namespace Einstein.ui.editarea
             Finalize(editArea.HasNeuronAtPosition(x, y));
         }
 
+        private void RemoveIfShiftKeyDown()
+        {
+            if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
+            {
+                editArea.RemoveSynapse(Synapse);
+            }
+        }
+
         private void RemoveIfExactlyContainsClick(int x, int y)
         {
+            if (!IO.KEYS.IsModifierKeyDown(Keys.Shift)) { return; }
+
             // We only know this click was inside the rectangle that
             // perfectly contains the line, but we only want to remove
             // the synapse if the click was on that line.
