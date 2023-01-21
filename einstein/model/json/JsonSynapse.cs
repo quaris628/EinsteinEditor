@@ -42,8 +42,21 @@ namespace Einstein.model.json
             JsonParser parser = new JsonParser(json, startIndex);
             parser.startParsingNextLeafObj();
             inov = "0";
-            From = brain.GetNeuron(parser.getNextValueInt("NodeIn"));
-            To = brain.GetNeuron(parser.getNextValueInt("NodeOut"));
+
+            int fromIndex = parser.getNextValueInt("NodeIn");
+            if (!brain.ContainsNeuron(fromIndex))
+            {
+                throw new DanglingSynapseException("Brain does not contain a neuron with index " + fromIndex);
+            }
+            From = brain.GetNeuron(fromIndex);
+            
+            int toIndex = parser.getNextValueInt("NodeOut");
+            if (!brain.ContainsNeuron(toIndex))
+            {
+                throw new DanglingSynapseException("Brain does not contain a neuron with index " + toIndex);
+            }
+            To = brain.GetNeuron(toIndex);
+            
             Strength = parser.getNextValueFloat("Weight");
             En = "true";
             parser.endParsingLeafObj();
@@ -58,5 +71,12 @@ namespace Einstein.model.json
                 Strength,
                 En) + "      }";
         } 
+    }
+    public class DanglingSynapseException : JsonParsingException
+    {
+        public DanglingSynapseException() : base() { }
+        public DanglingSynapseException(string message) : base(message) { }
+        public DanglingSynapseException(string message, Exception innerException)
+            : base(message, innerException) { }
     }
 }
