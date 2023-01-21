@@ -63,12 +63,13 @@ What this might do (future ideas):
  - Edit neuron descriptions
  - Edit neuron type
  - Allow showing multiple icons for input neurons (especially for the Constant)
- - Create color groups for neurons !!!
+ - (Credit to Wazzah) Create color groups for neurons !!!
     - Hide/Show certain color groups, or just make transparent
 	- Drag and drop whole color groups
 	- Delete a whole color group
  - Get some sort of visual indicator of the flow of any arbitrary input combination? Or allow testing certain input values?
  - Zoom in/out
+ - (Credit to Lucifer) Make positions of neurons persist between saving/loading by saving position data in Inov or Index or another unused property
  - Look pretty
  
  -----
