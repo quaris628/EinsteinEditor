@@ -24,7 +24,6 @@ namespace phi.graphics.renderables
 
       public virtual void Initialize()
       {
-         IO.RENDERER.Add(this);
          foreach (char c in allowedChars)
          {
             foreach (Keys key in CHAR_KEY_MAP[c])
