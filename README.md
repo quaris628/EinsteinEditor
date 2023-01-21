@@ -41,7 +41,6 @@ What this can't do (and probably never will):
 
 What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
- - *** Whenever a file is saved with gaps in the range of neuron indices, the game considers the synapses to be pointing to a different neuron than they appear to in the file, potentially pointing to no neuron at all. ***
  - When loading from a file, synapses point to upper left corner
  - Layers for text, icons, and synapses are ill-defined
  - Resizing to a smaller window size can hide neurons
