@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace phi.io
 {
@@ -81,6 +82,12 @@ namespace phi.io
                action.Invoke(stroke);
             }
          }
+      }
+
+      public bool IsModifierKeyDown(Keys key)
+      {
+         System.Windows.Forms.Keys formsKey = (System.Windows.Forms.Keys)key;
+         return formsKey == (Control.ModifierKeys & formsKey);
       }
 
    }
