@@ -11,7 +11,9 @@ namespace phi.graphics.renderables
    public class FloatET : EditableText
    {
       public const string ALLOWED_CHARS = "-.,0123456789";
+      public const float DEFAULT_DEFAULT_VALUE = 0f;
 
+      private float defaultValue;
       private float minValue;
       private float maxValue;
       private int precisionTypeCode; // 0 = none, 1 = decimal places, 2 = sig figs
@@ -84,13 +86,21 @@ namespace phi.graphics.renderables
       public override void DisableEditing()
       {
          base.DisableEditing();
-         text.SetMessage(float.Parse(text.GetMessage(),
+         if (IsMessageValidAsFinal())
+         {
+            text.SetMessage(float.Parse(text.GetMessage(),
              NumberStyles.Any, CultureInfo.InvariantCulture).ToString());
+         }
+         else
+         {
+            text.SetMessage(defaultValue.ToString());
+         }
       }
 
       // Wrapper for EditableTextBuilder that just hides the WithValidateMessage option
       public class FloatETBuilder : EditableTextBuilder
       {
+         internal float defaultValue;
          internal float minValue;
          internal float maxValue;
          internal int precisionTypeCode; // 0 = none, 1 = decimal places, 2 = sig figs
@@ -98,6 +108,7 @@ namespace phi.graphics.renderables
 
          public FloatETBuilder(Text text) : base(text)
          {
+            defaultValue = DEFAULT_DEFAULT_VALUE;
             minValue = float.MinValue;
             maxValue = float.MaxValue;
             precisionTypeCode = 0;
@@ -108,6 +119,7 @@ namespace phi.graphics.renderables
          public new FloatETBuilder WithEditingEnabled() { base.WithEditingEnabled(); return this; }
          public new FloatETBuilder WithEditingDisabled() { base.WithEditingDisabled(); return this; }
 
+         public virtual FloatETBuilder WithDefaultValue(float defaultValue) { this.defaultValue = defaultValue; return this; }
          public virtual FloatETBuilder WithMinValue(float minValue) { this.minValue = minValue; return this; }
          public virtual FloatETBuilder WithMaxValue(float maxValue) { this.maxValue = maxValue; return this; }
          // mutually exclusive with having a maximum number of significant figures
