@@ -42,14 +42,13 @@ What this can't do (and probably never will):
 What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
  - When loading from a file, synapses point to upper left corner
- - Brain values and last input/output is reset for neurons when saving brain
  - Resizing to a smaller window size can hide neurons
- - Bug reports don't show very much information
+ - Bug reports don't show very much information (mainly missing the stack trace)
+ - Brain values and last input/output is reset for neurons when saving brain
 
 What this will do (planned enhancements):
  - When neurons are added, have their spawn location staggered (would probably also fix the synapses always pointing to the upper left when loading from a file)
  - A button to auto-arrange neurons in a prettier and more clean arrangement
- - When successfully saving, show a message inside the window instead of a popup
 
 What this might do (future ideas):
  - Sentience (?)
