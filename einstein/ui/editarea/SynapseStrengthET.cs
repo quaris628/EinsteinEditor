@@ -50,6 +50,7 @@ namespace Einstein.ui.editarea
         public override void Backspace()
         {
             if (!IsEditingEnabled) { return; }
+            justEnabledEditing = false;
             base.Backspace();
             UpdateStrengthIfValid();
             ReCenterOnLine();
@@ -58,6 +59,7 @@ namespace Einstein.ui.editarea
         public override void Clear()
         {
             if (!IsEditingEnabled) { return; }
+            justEnabledEditing = false;
             base.Clear();
             UpdateStrengthIfValid();
             ReCenterOnLine();
@@ -80,6 +82,13 @@ namespace Einstein.ui.editarea
         {
             base.EnableEditing();
             justEnabledEditing = true;
+        }
+
+        public override void DisableEditing()
+        {
+            justEnabledEditing = false;
+            base.DisableEditing();
+            ReCenterOnLine();
         }
 
         public void ReCenterOnLine()
