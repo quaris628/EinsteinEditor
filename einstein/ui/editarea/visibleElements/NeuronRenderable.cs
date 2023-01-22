@@ -35,23 +35,29 @@ namespace Einstein.ui.editarea
         {
             base.Initialize();
             IO.RENDERER.Add(this);
-            IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(() => {
-                if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
-                {
-                    editArea.RemoveNeuron(Neuron);
-                }
-            }, GetDrawable());
-            IO.MOUSE.RIGHT_UP.SubscribeOnDrawable((x, y) => {
-                editArea.StartSynapse(this, x, y);
-            }, GetDrawable());
+            IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(RemoveIfShiftIsDown, GetDrawable());
+            IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(StartASynapse, GetDrawable());
         }
 
         public override void Uninitialize()
         {
             base.Uninitialize();
             IO.RENDERER.Remove(this);
-            IO.MOUSE.LEFT_CLICK.UnsubscribeAllFromDrawable(GetDrawable());
-            IO.MOUSE.RIGHT_UP.UnsubscribeAllFromDrawable(GetDrawable());
+            IO.MOUSE.LEFT_CLICK.UnsubscribeFromDrawable(RemoveIfShiftIsDown, GetDrawable());
+            IO.MOUSE.RIGHT_UP.UnsubscribeFromDrawable(StartASynapse, GetDrawable());
+        }
+
+        private void RemoveIfShiftIsDown()
+        {
+            if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
+            {
+                editArea.RemoveNeuron(Neuron);
+            }
+        }
+
+        private void StartASynapse(int x, int y)
+        {
+            editArea.StartSynapse(this, x, y);
         }
 
         public void SubscribeOnDrag(Action action)

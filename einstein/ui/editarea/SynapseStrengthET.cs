@@ -1,8 +1,10 @@
 ﻿using Einstein.model;
+using Einstein.ui.editarea.visibleElements;
 using phi.graphics.drawables;
 using phi.graphics.renderables;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,8 +16,9 @@ namespace Einstein.ui.editarea
         public const int SYNAPSE_STRENGTH_MAX_DECIMALS = 2;
 
         public BaseSynapse Synapse { get; protected set; }
+        private Line line;
 
-        public SynapseStrengthET(BaseSynapse synapse)
+        public SynapseStrengthET(BaseSynapse synapse, Line line)
             : base(new FloatETBuilder(new Text(synapse.Strength.ToString()))
                   .WithEditingDisabled()
                   .WithMinValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MIN)
@@ -23,6 +26,7 @@ namespace Einstein.ui.editarea
                   .WithMaxDecimalPlaces(SYNAPSE_STRENGTH_MAX_DECIMALS))
         {
             Synapse = synapse;
+            this.line = line;
         }
 
         public void SetValue(float strength)
@@ -43,6 +47,7 @@ namespace Einstein.ui.editarea
             if (!IsEditingEnabled) { return; }
             base.Backspace();
             UpdateStrengthIfValid();
+            ReCenterOnLine();
         }
 
         public override void Clear()
@@ -50,6 +55,7 @@ namespace Einstein.ui.editarea
             if (!IsEditingEnabled) { return; }
             base.Clear();
             UpdateStrengthIfValid();
+            ReCenterOnLine();
         }
 
         public override void TypeChar(char c)
@@ -57,6 +63,12 @@ namespace Einstein.ui.editarea
             if (!IsEditingEnabled) { return; }
             base.TypeChar(c);
             UpdateStrengthIfValid();
+            ReCenterOnLine();
+        }
+
+        public void ReCenterOnLine()
+        {
+            GetDrawable().SetCenterXY(line.GetCenterX(), line.GetCenterY());
         }
 
         private void UpdateStrengthIfValid()

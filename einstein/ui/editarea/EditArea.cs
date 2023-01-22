@@ -1,15 +1,11 @@
 ﻿using Einstein.model;
 using Einstein.model.json;
 using Einstein.ui.menu;
-using phi.graphics.renderables;
 using phi.io;
 using phi.other;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Einstein.ui.editarea
 {
@@ -68,6 +64,11 @@ namespace Einstein.ui.editarea
             {
                 RemoveSynapse(synapse);
             }
+            if (startedSynapse != null && startedSynapse.From.Neuron.Equals(neuron))
+            {
+                startedSynapse.Uninitialize();
+                startedSynapse = null;
+            }
 
             Brain.Remove(neuron);
 
@@ -81,6 +82,7 @@ namespace Einstein.ui.editarea
             }
         }
 
+        // For starting to add a synapse via the UI
         public void StartSynapse(NeuronRenderable from, int x, int y)
         {
             if (justFinishedSynapse || startedSynapse != null)
@@ -93,7 +95,8 @@ namespace Einstein.ui.editarea
             startedSynapse.Initialize();
         }
 
-        // be careful using, should probably only be run from Finalize inside SynapseRenderable
+        // For finishing a synapse via the UI
+        // (should probably only be run from Finalize inside SynapseRenderable)
         public void FinishSynapse(BaseSynapse synapse)
         {
             if (startedSynapse == null)
@@ -108,16 +111,21 @@ namespace Einstein.ui.editarea
             justFinishedSynapse = true;
         }
 
-        // This is a much safer option for anyone who doesn't know what they're doing
-        // (including you Quaris, if you're unable to remember or focus)
+        // For programmatically adding a synapse (e.g. during loading)
         public void AddSynapse(BaseSynapse synapse)
         {
-            justFinishedSynapse = false;
-            startedSynapse = null;
-            StartSynapse(displayedNeuronsIndex[synapse.From.Index],
-                NeuronRenderable.SPAWN_X, NeuronRenderable.SPAWN_Y);
-            startedSynapse.Finalize(displayedNeuronsIndex[synapse.To.Index], synapse);
-            justFinishedSynapse = false;
+            Brain?.Add(synapse);
+
+            NeuronRenderable from = displayedNeuronsIndex[synapse.From.Index];
+            NeuronRenderable to = displayedNeuronsIndex[synapse.To.Index];
+            SynapseRenderable sr = new SynapseRenderable(this, synapse, from, to);
+
+            SynapseRenderable oldStartedSynapse = startedSynapse;
+            bool oldJustFinishedSynapse = justFinishedSynapse;
+            startedSynapse = sr;
+            sr.Initialize();
+            startedSynapse = oldStartedSynapse;
+            justFinishedSynapse = oldJustFinishedSynapse;
         }
 
         public void RemoveSynapse(BaseSynapse synapse)
@@ -190,6 +198,7 @@ namespace Einstein.ui.editarea
             }
             return null;
         }
+
         public static Rectangle GetBounds()
         {
             return new Rectangle(
@@ -199,7 +208,11 @@ namespace Einstein.ui.editarea
                 IO.WINDOW.GetHeight());
         }
 
-        public void ClearStartedSynapse() { this.startedSynapse = null; }
+        public void ClearStartedSynapse()
+        {
+            startedSynapse.Uninitialize();
+            this.startedSynapse = null;
+        }
 
         public string LogDetailsForCrash()
         {
@@ -207,7 +220,8 @@ namespace Einstein.ui.editarea
             try
             {
                 log += "\nBrain = " + Brain.GetSave();
-            } catch (Exception) { }
+            }
+            catch (Exception) { }
             log += "\ndisplayedNeuronsIndex = ";
             if (displayedNeuronsIndex == null) { log += "null"; }
             else if (displayedNeuronsIndex.Count == 0) { log += "empty"; }

@@ -16,20 +16,15 @@ using System.Threading.Tasks;
 /* removing a neuron doesn't remove any linked synapse MRs
 (including synapses coming from the neuron but not linked to any To neuron yet)
 
-TODO: create another child class that extends SelectableEditableText specificially
-for the neuron editable text, and be sure to make it resposition right during backspaces,
-and to allow a value to be set if it's deselected while blank (though maybe actually put
-that as an optional default-value-if-deselected-while-blank parameter to SelectableEditableText?)
 */
 
 namespace Einstein.ui.editarea
 {
-    public class SynapseRenderable : MultiRenderable
+    public class SynapseRenderable : LineArrow
     {
-        public const int LAYER = 5;
-        public const int LINE_WIDTH = 2 * HALF_LINE_WIDTH;
-        public const int HALF_LINE_WIDTH = 3;
-        public static readonly Color LINE_COLOR = Color.DarkGray;
+        public const int ARROW_LAYER = 5;
+        public const int TEXT_LAYER = 6;
+        
         public const float INITIAL_STRENGTH = 1f;
         public const string DEFAULT_STRENGTH = "0";
 
@@ -37,189 +32,194 @@ namespace Einstein.ui.editarea
         public NeuronRenderable From { get; private set; }
         public NeuronRenderable To { get; private set; }
 
-        // drawables
-        private Line line;
-        private SynapseArrow arrow;
-        private SelectableEditableText text; // technically a renderable
-
         private EditArea editArea;
+        private bool isFinalized;
+        private bool isUninited; // only for failing fast
+        private SynapseStrengthET sset; // also in text, but kept as a shortcut reference
+        private SelectableEditableText text;
+        
+
+        public SynapseRenderable(EditArea editArea, BaseSynapse synapse,
+            NeuronRenderable from, NeuronRenderable to)
+            : base(from.NeuronDrawable.GetCircleCenterX(),
+                  from.NeuronDrawable.GetCircleCenterY(),
+                  to.NeuronDrawable.GetCircleCenterX(),
+                  to.NeuronDrawable.GetCircleCenterY())
+        {
+            this.editArea = editArea;
+            Synapse = synapse;
+            From = from;
+            To = to;
+            isFinalized = true;
+            sset = new SynapseStrengthET(Synapse, line);
+            text = new SelectableEditableText(sset, DEFAULT_STRENGTH);
+        }
 
         public SynapseRenderable(EditArea editArea, NeuronRenderable from, int mouseX, int mouseY)
+            : base(from.NeuronDrawable.GetCircleCenterX(),
+                  from.NeuronDrawable.GetCircleCenterY(),
+                  mouseX, mouseY)
         {
-            From = from;
-            From.SubscribeOnDrag(UpdateBasePosition);
-            line = new Line(
-                from.NeuronDrawable.GetCircleCenterX(),
-                from.NeuronDrawable.GetCircleCenterY(),
-                mouseX, mouseY);
-            arrow = new SynapseArrow(mouseX, mouseY,
-                mouseX - from.NeuronDrawable.GetCircleCenterX(),
-                mouseY - from.NeuronDrawable.GetCircleCenterY());
-            line.SetPen(new Pen(LINE_COLOR, LINE_WIDTH));
-            arrow.SetPen(new Pen(LINE_COLOR, LINE_WIDTH));
             this.editArea = editArea;
+            Synapse = null;
+            From = from;
+            To = null;
+            isFinalized = false;
+            text = null;
         }
 
+        // ----- Initialize, Finalize, and Uninitialize -----
+
+        private new void Initialize(int layer) { } // hide parent method
         public void Initialize()
         {
-            IO.RENDERER.Add(this, LAYER);
-            IO.MOUSE.MOVE.Subscribe(UpdateTipPositionXY);
-            IO.MOUSE.RIGHT_UP.Subscribe(FinalizeTipPosition);
-        }
-        public void Uninitialize()
-        {
-            IO.RENDERER.Remove(this);
-            IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
-            IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
-            IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfExactlyContainsClick, line);
-            IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfShiftKeyDown, text.GetDrawable());
-            To.UnsubscribeFromDrag(UpdateTipPosition);
+            base.Initialize(ARROW_LAYER);
+            From.SubscribeOnDrag(UpdateBasePositionToFromNeuron);
+            IO.MOUSE.MOVE.Subscribe(UpdateTipXY);
+            IO.MOUSE.RIGHT_UP.Subscribe(TryFinalize);
+            if (isFinalized)
+            {
+                Finalize1();
+            }
         }
 
-        // sort of a second step of initialization (or uninitialization)
-        public void Finalize(NeuronRenderable to)
+        private void TryFinalize(int x, int y)
         {
-            // if user cancels creation, or if would connect the same neuron to itself
-            if (to == null || to.Neuron.Index == From.Neuron.Index)
+            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
+            NeuronRenderable toNeuronR = editArea.HasNeuronAtPosition(x, y);
+            if (toNeuronR == null
+                || toNeuronR.Neuron.Equals(From.Neuron)
+                || !editArea.Brain.ContainsNeuron(toNeuronR.Neuron)
+                || editArea.Brain.ContainsSynapse(From.Neuron.Index, toNeuronR.Neuron.Index))
             {
                 editArea.ClearStartedSynapse();
-                IO.RENDERER.Remove(this);
-                IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
-                IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
-                return;
+                if (!isUninited) { throw new InvalidOperationException("ClearStartedSynapse didn't uninit"); }
             }
-            Finalize(to, new JsonSynapse(
-                (JsonNeuron)From.Neuron,
-                (JsonNeuron)to.Neuron,
-                INITIAL_STRENGTH));
+            else
+            {
+                Finalize(toNeuronR);
+            }
         }
-        public void Finalize(NeuronRenderable to, BaseSynapse synapse)
-        {
-            // set data/properties
-            To = to;
-            Synapse = synapse;
 
-            // set up strength editing text
-            text = new SelectableEditableText(
-                new SynapseStrengthET(Synapse),
-                DEFAULT_STRENGTH);
+        public void Finalize(NeuronRenderable to)
+        {
+            if (to == null) { throw new ArgumentNullException("to"); }
+            To = to;
+            Synapse = new JsonSynapse((JsonNeuron)To.Neuron,
+                (JsonNeuron)From.Neuron, INITIAL_STRENGTH);
+            Finalize1();
+        }
+
+        private void Finalize1()
+        {
+            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
+            isFinalized = true;
+            To.SubscribeOnDrag(UpdateTipPositionToToNeuron);
+
+            sset = new SynapseStrengthET(Synapse, line);
+            text = new SelectableEditableText(sset, DEFAULT_STRENGTH);
+            IO.RENDERER.Add(text, TEXT_LAYER);
             text.Initialize();
 
-            // complete initialization
-            IO.MOUSE.MOVE.Unsubscribe(UpdateTipPositionXY);
-            IO.MOUSE.RIGHT_UP.Unsubscribe(FinalizeTipPosition);
-            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfExactlyContainsClick, line);
-            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfShiftKeyDown, text.GetDrawable());
-            To.SubscribeOnDrag(UpdateTipPosition);
-            
-            UpdateTipPosition();
+            IO.MOUSE.MOVE.Unsubscribe(UpdateTipXY);
+            IO.MOUSE.RIGHT_UP.Unsubscribe(TryFinalize);
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfShiftDownAndExactlyContainsClick, line);
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfShiftDown, text.GetDrawable());
 
+            UpdateTipPositionToToNeuron();
             editArea.FinishSynapse(Synapse);
         }
 
-        private void UpdateBasePosition()
+        public override void Uninitialize()
         {
-            int x = From.NeuronDrawable.GetCircleCenterX();
-            int y = From.NeuronDrawable.GetCircleCenterY();
-            line.SetXY1(x, y);
-            arrow.SetDirection(
-                line.GetX2() - x,
-                line.GetY2() - y);
-
-            if (To != null)
+            isUninited = true;
+            base.Uninitialize();
+            From.UnsubscribeFromDrag(UpdateBasePositionToFromNeuron);
+            if (isFinalized)
             {
-                UpdateTipPosition();
+                To.UnsubscribeFromDrag(UpdateTipPositionToToNeuron);
+
+                IO.RENDERER.Remove(text);
+                text.Uninitialize();
+                IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfShiftDownAndExactlyContainsClick, line);
+                IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfShiftDown, text.GetDrawable());
             }
-            UpdateTextPosition();
+            else
+            {
+                IO.MOUSE.MOVE.Unsubscribe(UpdateTipXY);
+                IO.MOUSE.RIGHT_UP.Unsubscribe(TryFinalize);
+            }
         }
 
-        // Only use after running Finalize
-        private void UpdateTipPosition()
+        // ----- Updating positions -----
+
+        private void UpdateBasePositionToFromNeuron()
         {
+            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
+            int x = From.NeuronDrawable.GetCircleCenterX();
+            int y = From.NeuronDrawable.GetCircleCenterY();
+            UpdateBaseXY(x, y);
+            if (isFinalized)
+            {
+                UpdateTipPositionToToNeuron();
+            }
+        }
+        private void UpdateTipPositionToToNeuron()
+        {
+            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
+            if (!isFinalized) { throw new InvalidOperationException("Finalize before running UpdateTipPOsitionToToNeuron"); }
+            // TODO maybe check if this method implementation is right
             int circleCenterX = To.NeuronDrawable.GetCircleCenterX();
             int circleCenterY = To.NeuronDrawable.GetCircleCenterY();
             float slopeDeltaX = circleCenterX - From.NeuronDrawable.GetCircleCenterX();
             float slopeDeltaY = circleCenterY - From.NeuronDrawable.GetCircleCenterY();
-            if (slopeDeltaX == 0 && slopeDeltaY == 0)
+            
+            int arrowTipX = circleCenterX;
+            int arrowTipY = circleCenterY;
+            // if neurons are not exactly on top of each other
+            if (slopeDeltaX != 0 || slopeDeltaY != 0)
             {
-                // neurons are exactly on top of each other
-                UpdateTipPositionXY(circleCenterX, circleCenterY);
-                return;
-            }
-            float inputSlopeLength = (float)Math.Sqrt(
+                float inputSlopeLength = (float)Math.Sqrt(
                 slopeDeltaX * slopeDeltaX + slopeDeltaY * slopeDeltaY);
-            float dX = -slopeDeltaX / inputSlopeLength;
-            float dY = -slopeDeltaY / inputSlopeLength;
-            int arrowTipX = (int)(circleCenterX + dX * NeuronDrawable.CIRCLE_RADIUS);
-            int arrowTipY = (int)(circleCenterY + dY * NeuronDrawable.CIRCLE_RADIUS);
-            UpdateTipPositionXY(arrowTipX, arrowTipY);
-            UpdateTextPosition();
+                float dX = -slopeDeltaX / inputSlopeLength;
+                float dY = -slopeDeltaY / inputSlopeLength;
+                arrowTipX = (int)(circleCenterX + dX * NeuronDrawable.CIRCLE_RADIUS);
+                arrowTipY = (int)(circleCenterY + dY * NeuronDrawable.CIRCLE_RADIUS);
+            }
+            
+            UpdateTipXY(arrowTipX, arrowTipY);
+            sset.ReCenterOnLine();
         }
 
-        // intended only for use before Finalize has been run
-        private void UpdateTipPositionXY(int x, int y)
-        {
-            line.SetXY2(x, y);
-            arrow.SetXY(x, y);
-            arrow.SetDirection(
-                x - From.NeuronDrawable.GetCircleCenterX(),
-                y - From.NeuronDrawable.GetCircleCenterY());
-        }
+        // ----- Removing -----
 
-        private void UpdateTextPosition()
+        private void RemoveIfShiftDown()
         {
-            text?.GetDrawable().SetCenterXY(line.GetCenterX(), line.GetCenterY());
-        }
-
-        private void FinalizeTipPosition(int x, int y)
-        {
-            Finalize(editArea.HasNeuronAtPosition(x, y));
-        }
-
-        private void RemoveIfShiftKeyDown()
-        {
+            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
             if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
             {
                 editArea.RemoveSynapse(Synapse);
             }
         }
 
-        private void RemoveIfExactlyContainsClick(int x, int y)
+        private void RemoveIfShiftDownAndExactlyContainsClick(int x, int y)
         {
-            if (!IO.KEYS.IsModifierKeyDown(Keys.Shift)) { return; }
-
+            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
             // We only know this click was inside the rectangle that
             // perfectly contains the line, but we only want to remove
-            // the synapse if the click was on that line.
+            // the synapse if the click was on that line,
+            // i.e., if the distance is less than half of the line's width,
+            // or if the click is inside the triangle of the arrow
 
-            // calculate click's distance to line
-            // (derived from solving series of equations for the line and the
-            //  perpendicular line that contains the click point)
-            float m = line.GetHeight() / (float)line.GetWidth();
-            float invM = -1 / m;
-            float intersectX = ((line.GetY() - m * line.GetX()) - (y - invM * x)) / (invM - m);
-            float intersectY = y + invM * (intersectX - x);
-            float dx = x - intersectX;
-            float dy = y - intersectY;
-            double sqDistanceToLine = dx * dx + dy * dy;
-            // if the distance is less than half of the line's width,
-            // or if the click is inside the triangle of the arrow,
-            if (sqDistanceToLine <= HALF_LINE_WIDTH * HALF_LINE_WIDTH
-                || arrow.TriangleContainsPoint(x, y))
+            if (IO.KEYS.IsModifierKeyDown(Keys.Shift)
+                && (line.CalcSqDistanceToLine(x, y) <= HALF_LINE_WIDTH * HALF_LINE_WIDTH
+                || arrow.TriangleContainsPoint(x, y)))
             {
                 editArea.RemoveSynapse(Synapse);
             }
         }
 
-        public IEnumerable<Drawable> GetDrawables()
-        {
-            yield return line;
-            yield return arrow;
-            if (text != null)
-            {
-                yield return text.GetDrawable();
-            }
-        }
+        // ----- overrides -----
 
         public override string ToString()
         {
