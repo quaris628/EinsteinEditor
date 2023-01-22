@@ -59,6 +59,7 @@ namespace phi.graphics.drawables
             calculatedSize = System.Windows.Forms.TextRenderer.MeasureText(message, font);
             calculatedSize.Width = Math.Max(calculatedSize.Width, minWidth);
             calculatedSize.Height = Math.Max(calculatedSize.Height, minHeight);
+            sizeUpToDate = true;
          }
          return calculatedSize;
       }
@@ -85,6 +86,7 @@ namespace phi.graphics.drawables
          private int y;
          public int minWidth { get; private set; }
          public int minHeight { get; private set; }
+         private bool wasMinHeightManuallySet;
 
          public TextBuilder(string message)
          {
@@ -97,17 +99,26 @@ namespace phi.graphics.drawables
             this.backgroundColor = DEFAULT_BACKGROUND_COLOR;
             this.minWidth = DEFAULT_MIN_WIDTH;
             this.minHeight = DEFAULT_MIN_HEIGHT;
+            this.wasMinHeightManuallySet = false;
          }
 
          public TextBuilder WithX(int x) { this.x = x; return this; }
          public TextBuilder WithY(int y) { this.y = y; return this; }
          public TextBuilder WithXY(int x, int y) { this.x = x; this.y = y; return this; }
          public TextBuilder WithFontName(string fontName) { this.fontName = fontName; return this; }
-         public TextBuilder WithFontSize(float fontSize) { this.fontSize = fontSize; return this; }
+         public TextBuilder WithFontSize(float fontSize)
+         {
+            this.fontSize = fontSize;
+            if (!wasMinHeightManuallySet)
+            {
+               minHeight = (int)(fontSize + 0.5f);
+            }
+            return this;
+         }
          public TextBuilder WithColor(Brush color) { this.color = color; return this; }
          public TextBuilder WithBackgroundColor(Brush backgroundColor) { this.backgroundColor = backgroundColor; return this; }
          public TextBuilder WithMinWidth(int minWidth) { this.minWidth = minWidth; return this; }
-         public TextBuilder WithMinHeight(int minHeight) { this.minHeight = minHeight; return this; }
+         public TextBuilder WithMinHeight(int minHeight) { this.minHeight = minHeight; wasMinHeightManuallySet = true; return this; }
 
          public string GetMessage() { return message; }
          public int GetX() { return x; }
