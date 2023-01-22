@@ -17,6 +17,7 @@ namespace Einstein.ui.editarea
 
         public BaseSynapse Synapse { get; protected set; }
         private Line line;
+        private bool justEnabledEditing;
 
         public SynapseStrengthET(BaseSynapse synapse, Line line)
             : base(new FloatETBuilder(new Text(""))
@@ -27,6 +28,7 @@ namespace Einstein.ui.editarea
         {
             Synapse = synapse;
             this.line = line;
+            justEnabledEditing = false;
             SetValue(synapse.Strength);
         }
 
@@ -64,9 +66,20 @@ namespace Einstein.ui.editarea
         public override void TypeChar(char c)
         {
             if (!IsEditingEnabled) { return; }
+            if (justEnabledEditing)
+            {
+                justEnabledEditing = false;
+                Clear();
+            }
             base.TypeChar(c);
             UpdateStrengthIfValid();
             ReCenterOnLine();
+        }
+
+        public override void EnableEditing()
+        {
+            base.EnableEditing();
+            justEnabledEditing = true;
         }
 
         public void ReCenterOnLine()
