@@ -110,23 +110,33 @@ namespace phi.io
          IEnumerable<Action<int, int>> fastRegionsTodos = fastRegions.GetClickItems(e.X, e.Y);
 
          // Drawable Actions
-         foreach (KeyValuePair<Drawable, LinkedList<Action<int, int>>> kvp in drawableActions)
+         // TODO this could be made more efficient by sorting the drawables by their layer in the internal data structure
+         // Only one drawable should be able to be clicked at a time.
+         // And it should be the drawable in the farthest-front layer.
+         int layerOfFurthestFront = -1;
+         Drawable furthestFront = null;
+         foreach (Drawable d in drawableActions.Keys)
          {
-            if (kvp.Key.GetBoundaryRectangle().Contains(e.X, e.Y) && kvp.Key.IsDisplaying())
+            if (d.IsDisplaying() &&
+               layerOfFurthestFront <= IO.RENDERER.GetLayerOf(d) && 
+               d.GetBoundaryRectangle().Contains(e.X, e.Y))
             {
-               foreach (Action<int, int> action in kvp.Value)
-               {
-                  todos.AddLast(action);
-               }
-               // only one drawable should be able to be clicked at a time.
-               break;
+               layerOfFurthestFront = IO.RENDERER.GetLayerOf(d);
+               furthestFront = d;
+            }
+         }
+         if (furthestFront != null)
+         {
+            foreach (Action<int, int> action in drawableActions[furthestFront])
+            {
+               todos.AddLast(action);
             }
          }
 
          // do all the actions after 'deciding which actions to do' is complete
          // so one action does not change a state that 'deciding which actions to do' depends on
          // in the middle of 'deciding which actions to do'
-         
+         /*
          if (fastRegionsTodos != null)
          {
             foreach (Action<int, int> action in fastRegionsTodos)
@@ -134,12 +144,17 @@ namespace phi.io
                action.Invoke(e.X, e.Y);
             }
          }
-         
-         foreach (Action<int, int> action in todos)
-         {
-            action.Invoke(e.X, e.Y);
-         }
+         // */
 
+         void doLaterMouse()
+         {
+            IO.FRAME_TIMER.Unsubscribe(doLaterMouse);
+            foreach (Action<int, int> action in todos)
+            {
+               action.Invoke(e.X, e.Y);
+            }
+         }
+         IO.FRAME_TIMER.Subscribe(doLaterMouse);
       }
    }
 }

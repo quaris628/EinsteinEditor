@@ -94,11 +94,16 @@ namespace phi.io
 
       public void FrameTickEvent(object sender, EventArgs e)
       {
+         LinkedList<Action> todos = new LinkedList<Action>();
+         foreach (Action action in frameActions)
+         {
+            todos.AddLast(action);
+         }
          foreach (Action action in lockedFrameActions.Values)
          {
-            action.Invoke();
+            todos.AddLast(action);
          }
-         foreach (Action action in frameActions)
+         foreach (Action action in todos)
          {
             action.Invoke();
          }

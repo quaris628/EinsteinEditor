@@ -61,27 +61,34 @@ namespace phi.io
 
       public void KeyInputEvent(object sender, KeyEventArgs e)
       {
+         LinkedList<Action> todos = new LinkedList<Action>();
          KeyStroke stroke = new KeyStroke(e.KeyData);
          if (actions.TryGetValue(stroke.GetCode(), out LinkedList<Action> keystrokeActions))
          {
             // make copy of collection b/c otherwise could run into concurrent modification exception
-            LinkedList<Action> todos = new LinkedList<Action>();
+            
             foreach (Action action in keystrokeActions)
             {
-               todos.AddFirst(action);
-            }
-            foreach (Action action in todos)
-            {
-               action.Invoke();
+               todos.AddLast(action);
             }
          }
          if (keyActions.ContainsKey(stroke.GetCode()))
          {
             foreach (Action<KeyStroke> action in keyActions[stroke.GetCode()])
             {
-               action.Invoke(stroke);
+               todos.AddLast(() => { action.Invoke(stroke); });
             }
          }
+
+         void doLaterKeys()
+         {
+            IO.FRAME_TIMER.Unsubscribe(doLaterKeys);
+            foreach (Action action in todos)
+            {
+               action.Invoke();
+            }
+         }
+         IO.FRAME_TIMER.Subscribe(doLaterKeys);
       }
 
       public bool IsModifierKeyDown(Keys key)
