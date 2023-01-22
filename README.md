@@ -43,6 +43,7 @@ What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
  - When loading from a file, synapses point to upper left corner
  - Brain values and last input/output is reset for neurons when saving brain
+ - Synapse strengths can load in with more decimal places than what should be the maximum of 2 (and some other text validation stuff)
  - Layers for text, icons, and synapses are ill-defined
  - Resizing to a smaller window size can hide neurons
  - Bug reports don't show very much information
