@@ -34,6 +34,23 @@ namespace phi.graphics.drawables
       public int GetX2() { return GetX() + GetWidth(); }
       public int GetY2() { return GetY() + GetHeight(); }
 
+      public double CalcDistanceToLine(int x, int y)
+      {
+         return Math.Sqrt(CalcSqDistanceToLine(x, y));
+      }
+      public float CalcSqDistanceToLine(int x, int y)
+      {
+         // (derived from solving series of equations for the line and the
+         //  perpendicular line that contains the click point)
+         float m = GetHeight() / (float)GetWidth();
+         float invM = -1 / m;
+         float intersectX = ((GetY() - m * GetX()) - (y - invM * x)) / (invM - m);
+         float intersectY = y + invM * (intersectX - x);
+         float dx = x - intersectX;
+         float dy = y - intersectY;
+         return dx * dx + dy * dy;
+      }
+
       public override string ToString()
       {
          return "Line " + base.ToString();
