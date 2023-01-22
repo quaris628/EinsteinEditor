@@ -81,6 +81,13 @@ namespace phi.graphics.renderables
          return true;
       }
 
+      public override void DisableEditing()
+      {
+         base.DisableEditing();
+         text.SetMessage(float.Parse(text.GetMessage(),
+             NumberStyles.Any, CultureInfo.InvariantCulture).ToString());
+      }
+
       // Wrapper for EditableTextBuilder that just hides the WithValidateMessage option
       public class FloatETBuilder : EditableTextBuilder
       {
