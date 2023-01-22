@@ -19,7 +19,7 @@ namespace Einstein.ui.editarea
         private Line line;
 
         public SynapseStrengthET(BaseSynapse synapse, Line line)
-            : base(new FloatETBuilder(new Text(synapse.Strength.ToString()))
+            : base(new FloatETBuilder(new Text(""))
                   .WithEditingDisabled()
                   .WithMinValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MIN)
                   .WithMaxValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MAX)
@@ -27,16 +27,19 @@ namespace Einstein.ui.editarea
         {
             Synapse = synapse;
             this.line = line;
+            SetValue(synapse.Strength);
         }
 
         public void SetValue(float strength)
         {
             // easy to do this way b/c validation is all taken care of underneath
             // somewhat inefficient but whatever
+
             bool wasEnabled = IsEditingEnabled;
-            EnableEditing();
+            if (!wasEnabled) { EnableEditing(); }
             Clear();
-            foreach (char c in strength.ToString())
+            string strStr = Math.Round(strength, 2).ToString(); // strength string
+            foreach (char c in strStr)
             {
                 TypeChar(c);
             }
