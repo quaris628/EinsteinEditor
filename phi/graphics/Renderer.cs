@@ -11,6 +11,9 @@ namespace phi.graphics
 {
    public class Renderer : DynamicContainer
    {
+      // lower layer = further back
+      // higher layer = further front
+
       // default layer before any default (for overload Add method) is set
       private const int DEFAULT_DEFAULT_LAYER = 0;
 
@@ -18,6 +21,7 @@ namespace phi.graphics
       private Image output;
       private Color background;
       private SortedList<int, LinkedList<Drawable>> layers;
+      private Dictionary<Drawable, int> layerIndex;
       private int defaultLayer;
 
       private bool isCentered;
@@ -33,6 +37,7 @@ namespace phi.graphics
          this.output = output;
          this.background = background;
          this.layers = new SortedList<int, LinkedList<Drawable>>();
+         this.layerIndex = new Dictionary<Drawable, int>();
          this.defaultLayer = DEFAULT_DEFAULT_LAYER;
 
          this.isCentered = false;
@@ -49,6 +54,7 @@ namespace phi.graphics
          this.output = null;
          this.background = Color.White;
          this.layers = new SortedList<int, LinkedList<Drawable>>();
+         this.layerIndex = new Dictionary<Drawable, int>();
          this.defaultLayer = DEFAULT_DEFAULT_LAYER;
 
          this.isCentered = false;
@@ -100,6 +106,7 @@ namespace phi.graphics
             layers.Add(layer, new LinkedList<Drawable>());
          }
          layers[layer].AddFirst(item);
+         layerIndex[item] = layer;
          item.PutIn(this);
          FlagChange();
       }
@@ -113,6 +120,7 @@ namespace phi.graphics
          foreach (Drawable item in items)
          {
             layers[layer].AddFirst(item);
+            layerIndex[item] = layer;
             item.PutIn(this);
          }
          FlagChange();
@@ -133,22 +141,14 @@ namespace phi.graphics
 
       public bool Remove(Drawable item)
       {
-         bool success = false;
-         // for each layer, or stop if item successfully found
-         IEnumerator<KeyValuePair<int, LinkedList<Drawable>>> enumerator = layers.GetEnumerator();
-         while (enumerator.MoveNext() && !success)
-         {
-            LinkedList<Drawable> drawables = enumerator.Current.Value;
-
-            success = drawables.Remove(item);
-         }
-
-         if (success)
+         if (layerIndex.TryGetValue(item, out int layer) &&
+            layers[layer].Remove(item))
          {
             item.TakeOut(this);
             FlagChange();
+            return true;
          }
-         return success;
+         return false;
       }
       // renderable overloads
       public void Remove(Renderable r) { Remove(r.GetDrawable()); }
@@ -158,6 +158,12 @@ namespace phi.graphics
          {
             Remove(d);
          }
+      }
+
+      // returns -1 if drawable is not contained inside the renderer
+      public int GetLayerOf(Drawable d)
+      {
+         return layerIndex.TryGetValue(d, out int layer) ? layer : -1;
       }
 
       public void ClearLayer(int layer) { layers.Remove(layer); FlagChange(); }
