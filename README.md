@@ -43,14 +43,13 @@ What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
  - When loading from a file, synapses point to upper left corner
  - Brain values and last input/output is reset for neurons when saving brain
- - Synapse strengths can load in with more decimal places than what should be the maximum of 2 (and some other text validation stuff)
- - Layers for text, icons, and synapses are ill-defined
  - Resizing to a smaller window size can hide neurons
  - Bug reports don't show very much information
 
 What this will do (planned enhancements):
  - When neurons are added, have their spawn location staggered (would probably also fix the synapses always pointing to the upper left when loading from a file)
  - A button to auto-arrange neurons in a prettier and more clean arrangement
+ - When successfully saving, show a message inside the window instead of a popup
 
 What this might do (future ideas):
  - Sentience (?)
@@ -67,10 +66,11 @@ What this might do (future ideas):
 	- Drag and drop whole color groups
 	- Delete a whole color group
  - Get some sort of visual indicator of the flow of any arbitrary input combination? Or allow testing certain input values?
+ - Show an explanation of what the input and output neurons do, and the range of values for input neurons
  - Zoom in/out
  - (Credit to Lucifer) Make positions of neurons persist between saving/loading by saving position data in Inov or Index or another unused property
  - Look pretty
- 
+
  -----
 
 To any potential contributors:
