@@ -42,14 +42,12 @@ What this can't do (and probably never will):
 What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
  - When loading from a file, synapses point to upper left corner
+ - Brain values and last input/output is reset for neurons when saving brain
  - Layers for text, icons, and synapses are ill-defined
  - Resizing to a smaller window size can hide neurons
- - Removing a neuron doesn't remove a synapse that has been started from it but not yet attached to another neuron (and then trying to complete one causes a crash)
  - Bug reports don't show very much information
- - Brain values and last input/output is reset for neurons (maybe only for input and output neurons?)
 
 What this will do (planned enhancements):
- - Remove neurons and synapses by shift+click instead of middle-click
  - When neurons are added, have their spawn location staggered (would probably also fix the synapses always pointing to the upper left when loading from a file)
  - A button to auto-arrange neurons in a prettier and more clean arrangement
 
