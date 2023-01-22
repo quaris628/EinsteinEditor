@@ -37,6 +37,7 @@ namespace Einstein
         private Button loadButton;
         private Button saveButton;
         private KeybindsInfoText infoText;
+        private SaveMessageText saveMessageText;
 
         private string savePath;
         private string loadPath;
@@ -95,6 +96,7 @@ namespace Einstein
                 .withText("Save to Bibite")
                 .withOnClick(saveBrain)
                 .Build();
+            saveMessageText = new SaveMessageText();
             infoText = new KeybindsInfoText();
 
             savePath = null;
@@ -158,7 +160,7 @@ namespace Einstein
             bibiteJson = bibiteJson.Substring(0, startIndex) + " " + brainJson + bibiteJson.Substring(endIndex);
             File.WriteAllText(filepath, bibiteJson);
             savePath = Path.GetDirectoryName(filepath);
-            IO.ShowPopup("Save Successful", ""); // TODO change to on-screen message in corner
+            saveMessageText.Show();
         }
 
         private void loadBrain()

@@ -25,7 +25,7 @@ namespace Einstein.ui.visibleElements
             new TextBuilder(MESSAGE)
             .WithFontSize(10f)
             .WithX(EinsteinPhiConfig.PAD)
-            .WithY(EinsteinPhiConfig.PAD * 8 + NeuronMenuButton.HEIGHT * 5)
+            .WithY(20 + EinsteinPhiConfig.PAD * 8 + NeuronMenuButton.HEIGHT * 5)
             ) { }
 
         public void Initialize()

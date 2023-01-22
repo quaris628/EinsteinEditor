@@ -63,6 +63,7 @@
     <Compile Include="ui\visibleElements\KeybindsInfoText.cs" />
     <Compile Include="ui\visibleElements\NeuronDrawable.cs" />
     <Compile Include="config\BibiteVersionConfig.cs" />
+    <Compile Include="ui\visibleElements\SaveMessageText.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\phi\phi.csproj">
