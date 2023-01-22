@@ -24,15 +24,15 @@ Right-click neurons to add synapses. Middle-click synapses to remove.
 What this can do:
  - Allow you to create and edit small, weak, inefficient, and dumb bibite brains
  - Crash spectacularly, or otherwise break (consider this a disclaimer)
- - Handle crashes with a prompt to report them and by logging info to a file
  - Save/Load brain to/from a bibite file
  - Show/Hide input and output neurons in the editing area
- - Create/Delete hidden neurons (of specified types)
+ - Create/Delete hidden neurons
  - View types and descriptions of neurons
  - Create/Delete synapses
  - Edit/View synapse strengths
  - Drag neurons around the brain editor area
  - Gracefully handle window resizing (up to 2048x1080)
+ - Handle crashes with a prompt to report them and by logging info to a file
 
 What this can't do (and probably never will):
  - Edit bibite genes
