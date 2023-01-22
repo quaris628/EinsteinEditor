@@ -22,6 +22,7 @@ namespace phi.graphics.renderables
       private Brush selectedBackColor;
       private Brush unselectedBackColor;
       private string defaultMessage;
+      private bool justUninited; // to fix bug w/ uniniting in the same frame as select is set to run
 
       public SelectableEditableText(EditableText et)
          : this(et, DEFAULT_DEFAULT_MESSAGE) { }
@@ -39,6 +40,7 @@ namespace phi.graphics.renderables
          this.defaultMessage = defaultMessage;
          this.selectedBackColor = new SolidBrush(selectedBackColor);
          this.unselectedBackColor = new SolidBrush(unselectedBackColor);
+         this.justUninited = false;
       }
 
       public void Initialize()
@@ -56,6 +58,7 @@ namespace phi.graphics.renderables
          
          if (IsSelected())
          {
+            selected = null;
             IO.MOUSE.LEFT_DOWN.Unsubscribe(Deselect);
             IO.KEYS.Unsubscribe(Deselect, Keys.Return);
          }
@@ -63,11 +66,12 @@ namespace phi.graphics.renderables
          {
             IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(Select, text);
          }
-         
+         justUninited = true;
       }
 
       public void Select()
       {
+         if (justUninited) { justUninited = false; return; }
          // note: not thread-safe
          if (IsSelected()) { throw new InvalidOperationException(); }
          selected?.Deselect();
@@ -76,13 +80,14 @@ namespace phi.graphics.renderables
          EditableText.EnableEditing();
          text.SetBackgroundColor(selectedBackColor);
          
-         IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(Select, text);
          IO.MOUSE.LEFT_DOWN.Subscribe(Deselect);
          IO.KEYS.Subscribe(Deselect, Keys.Return);
+         IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(Select, text);
       }
 
       public void Deselect()
       {
+         if (justUninited) { justUninited = false; return; }
          // note: not thread-safe
          if (!IsSelected()) { throw new InvalidOperationException(); }
          selected = null;
