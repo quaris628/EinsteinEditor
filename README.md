@@ -44,6 +44,7 @@ What this sucks at doing (known bugs):
  - When loading from a file, synapses point to upper left corner
  - Resizing to a smaller window size can hide neurons
  - Brain values and last input/output is reset for neurons when saving brain
+ - Crash when adding a duplicate synapse (connects the same 'from' neuron to the same 'to' neuron)
 
 What this will do (planned enhancements):
  - When neurons are added, have their spawn location staggered (would probably also fix the synapses always pointing to the upper left when loading from a file)
