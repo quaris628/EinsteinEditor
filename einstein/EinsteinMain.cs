@@ -33,6 +33,10 @@ namespace Einstein
             {
                 string extraLog = "\n\n---------------- Einstein Data State ----------------\n\n" +
                     entryScene?.LogDetailsForCrash();
+                if (e.InnerException != null)
+                {
+                    e = e.InnerException;
+                }
                 IO.HandleCrash(e,
                    EinsteinPhiConfig.Window.TITLE,
                    CRASH_LOG_FILEPATH,

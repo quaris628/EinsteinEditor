@@ -40,7 +40,7 @@ namespace phi
       // I spent 3 damn hours pounding this out
       private static void HandleThreadException(object sender, ThreadExceptionEventArgs e)
       {
-         throw e.Exception;
+         throw new Exception("Exception from phi", e.Exception);
       }
    }
 }

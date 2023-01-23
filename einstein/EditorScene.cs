@@ -165,6 +165,7 @@ namespace Einstein
 
         private void loadBrain()
         {
+            throw new Exception("For science!");
             string filepath = IO.PromptForFile(getLoadPath(), "Bibite Files|*.bb8",
                 "Load from Bibite", "");
             if (filepath == "") { return; }
