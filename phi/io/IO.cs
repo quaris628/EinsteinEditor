@@ -141,8 +141,10 @@ namespace phi.io
          {
             // presume log file failed to be created, continue without it
             MessageBox.Show(
-               "To report this crash, submit an issue on github." +
-               "\n(You will need a github account; alternatively, you can email quaris314@gmail.com.)" +
+               "To report this crash," +
+               "\nsubmit an issue on github (requires an account), or" +
+               "\nemail quaris314@gmail.com, or" +
+               "\ncontact Quaris via carrier pigeon or another available method." +
                "\n\nIn the report, please describe the steps you took " +
                "immediately prior to the crash, and include a screenshot of the technical details below." +
                "\n\nIf github hasn't opened automatically, type in this address: " + githubNewIssueLink +
@@ -160,8 +162,10 @@ namespace phi.io
          } catch (Exception) { } // if it failed, just continue
 
          MessageBox.Show(
-            "To report this crash, submit an issue on github." +
-             "\n(You will need a github account; alternatively, you can email quaris314@gmail.com.)" +
+            "To report this crash," +
+            "\nsubmit an issue on github (requires an account), or" +
+            "\nemail quaris314@gmail.com, or" +
+            "\ncontact Quaris via carrier pigeon or another available method." +
             "\n\nIn the report, please describe the steps you took " +
             "immediately prior to the crash, and paste the contents " +
             "of the error log too." +
