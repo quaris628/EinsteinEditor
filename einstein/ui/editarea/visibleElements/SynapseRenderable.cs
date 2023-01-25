@@ -105,8 +105,8 @@ namespace Einstein.ui.editarea
         {
             if (to == null) { throw new ArgumentNullException("to"); }
             To = to;
-            Synapse = new JsonSynapse((JsonNeuron)To.Neuron,
-                (JsonNeuron)From.Neuron, INITIAL_STRENGTH);
+            Synapse = new JsonSynapse((JsonNeuron)From.Neuron,
+                (JsonNeuron)To.Neuron, INITIAL_STRENGTH);
             Finalize1();
         }
 
