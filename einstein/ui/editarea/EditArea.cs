@@ -208,10 +208,11 @@ namespace Einstein.ui.editarea
                 IO.WINDOW.GetHeight());
         }
 
-        public void ClearStartedSynapse()
+        public void ClearStartedSynapse(bool clickedOnNeuron)
         {
             startedSynapse.Uninitialize();
-            this.startedSynapse = null;
+            startedSynapse = null;
+            justFinishedSynapse = clickedOnNeuron;
         }
 
         public string LogDetailsForCrash()

@@ -92,7 +92,7 @@ namespace Einstein.ui.editarea
                 || !editArea.Brain.ContainsNeuron(toNeuronR.Neuron)
                 || editArea.Brain.ContainsSynapse(From.Neuron.Index, toNeuronR.Neuron.Index))
             {
-                editArea.ClearStartedSynapse();
+                editArea.ClearStartedSynapse(toNeuronR == null);
                 if (!isUninited) { throw new InvalidOperationException("ClearStartedSynapse didn't uninit"); }
             }
             else
