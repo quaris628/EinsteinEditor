@@ -56,9 +56,9 @@ namespace Einstein.ui
 
         public int GetCircleCenterX() { return GetX() + CIRCLE_RADIUS; }
         public int GetCircleCenterY() { return GetY() + CIRCLE_RADIUS; }
-        public void SetCircleCenterX(int x) { SetX(x - CIRCLE_RADIUS); }
-        public void SetCircleCenterY(int y) { SetY(y - CIRCLE_RADIUS); }
-        public void SetCircleCenterXY(int x, int y) { SetXY(x - CIRCLE_RADIUS, y - CIRCLE_RADIUS); }
+        public virtual void SetCircleCenterX(int x) { SetX(x - CIRCLE_RADIUS); }
+        public virtual void SetCircleCenterY(int y) { SetY(y - CIRCLE_RADIUS); }
+        public virtual void SetCircleCenterXY(int x, int y) { SetXY(x - CIRCLE_RADIUS, y - CIRCLE_RADIUS); }
 
         protected override void DrawAt(Graphics g, int x, int y)
         {
