@@ -17,14 +17,14 @@ namespace Einstein.ui.visibleElements
 
         private DateTime hideAt;
 
-        public SaveMessageText() : base(
+        public SaveMessageText(int centerX, int y) : base(
             new TextBuilder(MESSAGE)
             .WithFontSize(10f)
             .WithBackgroundColor(new SolidBrush(Color.LightGreen))
-            .WithY(EinsteinPhiConfig.PAD * 7 + NeuronMenuButton.HEIGHT * 5)
+            .WithY(y)
             )
         {
-            SetCenterX(EinsteinPhiConfig.PAD + NeuronMenuButton.WIDTH / 2);
+            SetCenterX(centerX);
         }
 
         public void Show()

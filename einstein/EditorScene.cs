@@ -36,8 +36,10 @@ namespace Einstein
         private NeuronMenuCategory hidden;
         private Button loadButton;
         private Button saveButton;
-        private KeybindsInfoText infoText;
         private SaveMessageText saveMessageText;
+        private Button autoArrangeButton;
+        private KeybindsInfoText infoText;
+        
 
         private string savePath;
         private string loadPath;
@@ -96,8 +98,19 @@ namespace Einstein
                 .withText("Save to Bibite")
                 .withOnClick(saveBrain)
                 .Build();
-            saveMessageText = new SaveMessageText();
-            infoText = new KeybindsInfoText();
+            saveMessageText = new SaveMessageText(
+                EinsteinPhiConfig.PAD + NeuronMenuButton.WIDTH / 2,
+                7 * EinsteinPhiConfig.PAD + 5 * NeuronMenuButton.HEIGHT);
+            autoArrangeButton = new Button.ButtonBuilder(
+                new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
+                EinsteinPhiConfig.PAD,
+                EinsteinPhiConfig.PAD + saveMessageText.GetY() + saveMessageText.GetHeight())
+                .withText("Auto-Arrange")
+                .withOnClick(editArea.AutoArrange)
+                .Build();
+            infoText = new KeybindsInfoText(
+                EinsteinPhiConfig.PAD,
+                20 + EinsteinPhiConfig.PAD + autoArrangeButton.GetY() + autoArrangeButton.GetHeight());
 
             savePath = null;
             loadPath = null;
@@ -115,8 +128,10 @@ namespace Einstein
             hidden.Initialize();
             loadButton.Initialize();
             saveButton.Initialize();
+            autoArrangeButton.Initialize();
             IO.RENDERER.Add(loadButton);
             IO.RENDERER.Add(saveButton);
+            IO.RENDERER.Add(autoArrangeButton);
             infoText.Initialize();
             IO.FRAME_TIMER.Subscribe(checkForResize);
         }

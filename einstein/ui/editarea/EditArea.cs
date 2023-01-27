@@ -221,6 +221,7 @@ namespace Einstein.ui.editarea
 
             LinkedList<BaseNeuron> inputNeurons = new LinkedList<BaseNeuron>();
             LinkedList<BaseNeuron> outputNeurons = new LinkedList<BaseNeuron>();
+            LinkedList<BaseNeuron> hiddenNeurons = new LinkedList<BaseNeuron>();
             foreach (BaseNeuron neuron in Brain.Neurons)
             {
                 if (neuron.IsInput())
@@ -231,10 +232,19 @@ namespace Einstein.ui.editarea
                 {
                     outputNeurons.AddLast(neuron);
                 }
+                else
+                {
+                    hiddenNeurons.AddLast(neuron);
+                }
             }
 
             // assign layers of hidden neurons
             // note that later assignments overwrite the earlier assignments
+            foreach (BaseNeuron hiddenNeuron in hiddenNeurons)
+            {
+                // kinda fudgy to just assign these unconnected never-outputs to the same layers as the to-input never-outputs, but meh
+                indexToLayer[hiddenNeuron.Index] = (int)LayerType.NeverOutputsToInput;
+            }
             foreach (BaseNeuron inNeuron in inputNeurons)
             {
                 AssignLayersBefore(indexToLayer, inNeuron, ((int)LayerType.NeverOutputsToInput | (int)LayerTypeMasks.MidValue), new HashSet<int>());

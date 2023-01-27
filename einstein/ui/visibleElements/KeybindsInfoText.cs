@@ -21,11 +21,10 @@ namespace Einstein.ui.visibleElements
             "Remove        Shift-click\n" +
             "Edit strength Click number";
 
-        public KeybindsInfoText() : base(
+        public KeybindsInfoText(int x, int y) : base(
             new TextBuilder(MESSAGE)
             .WithFontSize(10f)
-            .WithX(EinsteinPhiConfig.PAD)
-            .WithY(20 + EinsteinPhiConfig.PAD * 8 + NeuronMenuButton.HEIGHT * 5)
+            .WithXY(x, y)
             ) { }
 
         public void Initialize()
