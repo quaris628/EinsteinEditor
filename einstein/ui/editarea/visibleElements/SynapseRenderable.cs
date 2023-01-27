@@ -74,7 +74,6 @@ namespace Einstein.ui.editarea
         public void Initialize()
         {
             base.Initialize(ARROW_LAYER);
-            From.SubscribeOnDrag(UpdateBasePositionToFromNeuron);
             IO.MOUSE.MOVE.Subscribe(UpdateTipXY);
             IO.MOUSE.RIGHT_UP.Subscribe(TryFinalize);
             if (isFinalized)
@@ -114,7 +113,6 @@ namespace Einstein.ui.editarea
         {
             if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
             isFinalized = true;
-            To.SubscribeOnDrag(UpdateTipPositionToToNeuron);
 
             sset = new SynapseStrengthET(Synapse, line);
             text = new SelectableEditableText(sset, DEFAULT_STRENGTH);
@@ -134,11 +132,8 @@ namespace Einstein.ui.editarea
         {
             isUninited = true;
             base.Uninitialize();
-            From.UnsubscribeFromDrag(UpdateBasePositionToFromNeuron);
             if (isFinalized)
             {
-                To.UnsubscribeFromDrag(UpdateTipPositionToToNeuron);
-
                 IO.RENDERER.Remove(text);
                 text.Uninitialize();
                 IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfShiftDownAndExactlyContainsClick, line);
@@ -153,7 +148,7 @@ namespace Einstein.ui.editarea
 
         // ----- Updating positions -----
 
-        private void UpdateBasePositionToFromNeuron()
+        public void UpdateBasePositionToFromNeuron()
         {
             if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
             int x = From.NeuronDrawable.GetCircleCenterX();
@@ -164,7 +159,7 @@ namespace Einstein.ui.editarea
                 UpdateTipPositionToToNeuron();
             }
         }
-        private void UpdateTipPositionToToNeuron()
+        public void UpdateTipPositionToToNeuron()
         {
             if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
             if (!isFinalized) { throw new InvalidOperationException("Finalize before running UpdateTipPOsitionToToNeuron"); }

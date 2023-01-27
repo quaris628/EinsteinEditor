@@ -18,7 +18,6 @@ namespace Einstein.ui.editarea
 
         public BaseNeuron Neuron { get; private set; }
         public NeuronDrawable NeuronDrawable { get { return (NeuronDrawable)GetDrawable(); } }
-        private List<Action> onDrag;
 
         private EditArea editArea;
 
@@ -27,7 +26,6 @@ namespace Einstein.ui.editarea
         {
             Neuron = neuron;
             NeuronDrawable.SetCircleCenterXY(SPAWN_X, SPAWN_Y);
-            onDrag = new List<Action>();
             this.editArea = editArea;
         }
 
@@ -37,6 +35,7 @@ namespace Einstein.ui.editarea
             IO.RENDERER.Add(this);
             IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(RemoveIfShiftIsDown, GetDrawable());
             IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(StartASynapse, GetDrawable());
+            Reposition();
         }
 
         public override void Uninitialize()
@@ -60,40 +59,38 @@ namespace Einstein.ui.editarea
             editArea.StartSynapse(this, x, y);
         }
 
-        public void SubscribeOnDrag(Action action)
-        {
-            onDrag.Add(action);
-        }
-
-        public void UnsubscribeFromDrag(Action action)
-        {
-            onDrag.Remove(action);
-        }
-
         protected override void MyMouseMove(int x, int y)
         {
-            foreach (Action action in onDrag)
+            Reposition();
+        }
+
+        public void Reposition()
+        {
+            Reposition(NeuronDrawable.GetX(), NeuronDrawable.GetY());
+        }
+
+        public void Reposition(int x, int y)
+        {
+            NeuronDrawable.SetCircleCenterXY(x, y);
+            if (editArea.Brain != null)
             {
-                action.Invoke();
+                foreach (BaseSynapse synapseFrom in editArea?.Brain?.GetSynapsesFrom(Neuron))
+                {
+                    editArea.GetSROf(synapseFrom).UpdateBasePositionToFromNeuron();
+                }
+                foreach (BaseSynapse synapseTo in editArea?.Brain?.GetSynapsesTo(Neuron))
+                {
+                    editArea.GetSROf(synapseTo).UpdateTipPositionToToNeuron();
+                }
             }
         }
 
         public override string ToString()
         {
-            string log = base.ToString() +
+            string log = "NR [" +
                 "Neuron: " + Neuron +
-                "onDrag: ";
-            foreach (Action action in onDrag)
-            {
-                log += "{Name = " + action.Method.Name;
-                log += " GetParameters() = " + string.Join<ParameterInfo>(",", action.Method.GetParameters());
-                log += " ReturnType = " + action.Method.ReturnType;
-                log += " GetMethodBody().LocalVariables = ";
-                if (action.Method.GetMethodBody().LocalVariables == null) { log += "null"; }
-                else if (action.Method.GetMethodBody().LocalVariables.Count == 0) { log += "empty"; }
-                else { log += string.Join(",", action.Method.GetMethodBody().LocalVariables); }
-                log += "},";
-            }
+                "NeuronDrawable: " + NeuronDrawable +
+                "]";
             return log;
         }
     }

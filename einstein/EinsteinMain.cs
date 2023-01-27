@@ -23,7 +23,7 @@ namespace Einstein
         [STAThread]
         public static void Main()
         {
-            EditorScene entryScene = null; ;
+            EditorScene entryScene = null;
             try
             {
                 entryScene = new EditorScene(null);

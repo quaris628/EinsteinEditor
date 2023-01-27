@@ -5,6 +5,7 @@ using phi.io;
 using phi.other;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Einstein.ui.editarea
@@ -13,24 +14,27 @@ namespace Einstein.ui.editarea
     {
         public BaseBrain Brain { get; private set; }
 
-        private Dictionary<int, NeuronRenderable> displayedNeuronsIndex;
+        private Dictionary<int, NeuronRenderable> neuronIndexToNR;
         private Action<BaseNeuron> onRemove;
         private bool disableOnRemove;
-        private Dictionary<(int, int), SynapseRenderable> displayedSynapsesIndex;
+        private Dictionary<(int, int), SynapseRenderable> synapseIndicesToSR;
+        Dictionary<int, int> indexToLayer;
         private SynapseRenderable startedSynapse;
         private int hiddenNeuronIndex;
         private bool justFinishedSynapse;
 
         public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove)
         {
-            displayedNeuronsIndex = new Dictionary<int, NeuronRenderable>();
+            neuronIndexToNR = new Dictionary<int, NeuronRenderable>();
             this.onRemove = onRemove;
             disableOnRemove = false;
-            displayedSynapsesIndex = new Dictionary<(int, int), SynapseRenderable>();
+            synapseIndicesToSR = new Dictionary<(int, int), SynapseRenderable>();
             hiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
             justFinishedSynapse = false;
-            LoadBrain(brain);
+            Brain = brain;
         }
+
+        // ----- Manage neurons -----
 
         public void AddNeuron(BaseNeuron neuron)
         {
@@ -38,7 +42,7 @@ namespace Einstein.ui.editarea
 
             NeuronRenderable dragNeuron = new NeuronRenderable(this, neuron);
             dragNeuron.Initialize();
-            displayedNeuronsIndex.Add(neuron.Index, dragNeuron);
+            neuronIndexToNR.Add(neuron.Index, dragNeuron);
         }
 
         public void CreateHiddenNeuron(NeuronType type)
@@ -72,15 +76,17 @@ namespace Einstein.ui.editarea
 
             Brain.Remove(neuron);
 
-            NeuronRenderable dragNeuron = displayedNeuronsIndex[neuron.Index];
+            NeuronRenderable dragNeuron = neuronIndexToNR[neuron.Index];
             dragNeuron.Uninitialize();
-            displayedNeuronsIndex.Remove(neuron.Index);
+            neuronIndexToNR.Remove(neuron.Index);
 
             if (!disableOnRemove)
             {
                 onRemove.Invoke(neuron);
             }
         }
+
+        // ----- Manage synapses -----
 
         // For starting to add a synapse via the UI
         public void StartSynapse(NeuronRenderable from, int x, int y)
@@ -106,7 +112,7 @@ namespace Einstein.ui.editarea
             }
             Brain?.Add(synapse);
 
-            displayedSynapsesIndex.Add((synapse.From.Index, synapse.To.Index), startedSynapse);
+            synapseIndicesToSR.Add((synapse.From.Index, synapse.To.Index), startedSynapse);
             startedSynapse = null;
             justFinishedSynapse = true;
         }
@@ -116,8 +122,8 @@ namespace Einstein.ui.editarea
         {
             Brain?.Add(synapse);
 
-            NeuronRenderable from = displayedNeuronsIndex[synapse.From.Index];
-            NeuronRenderable to = displayedNeuronsIndex[synapse.To.Index];
+            NeuronRenderable from = neuronIndexToNR[synapse.From.Index];
+            NeuronRenderable to = neuronIndexToNR[synapse.To.Index];
             SynapseRenderable sr = new SynapseRenderable(this, synapse, from, to);
 
             SynapseRenderable oldStartedSynapse = startedSynapse;
@@ -133,23 +139,25 @@ namespace Einstein.ui.editarea
             Brain.Remove(synapse);
 
             (int, int) key = (synapse.From.Index, synapse.To.Index);
-            displayedSynapsesIndex[key].Uninitialize();
-            displayedSynapsesIndex.Remove(key);
+            synapseIndicesToSR[key].Uninitialize();
+            synapseIndicesToSR.Remove(key);
         }
+
+        // ----- Manage (i.e. load) brain -----
 
         public void LoadBrain(BaseBrain brain)
         {
             // Clear any data currently in the brain
-            NeuronRenderable[] neuronsToClearFromOldBrain = new NeuronRenderable[displayedNeuronsIndex.Values.Count];
-            displayedNeuronsIndex.Values.CopyTo(neuronsToClearFromOldBrain, 0);
+            NeuronRenderable[] neuronsToClearFromOldBrain = new NeuronRenderable[neuronIndexToNR.Values.Count];
+            neuronIndexToNR.Values.CopyTo(neuronsToClearFromOldBrain, 0);
             disableOnRemove = true;
             foreach (NeuronRenderable nr in neuronsToClearFromOldBrain)
             {
                 RemoveNeuron(nr.Neuron);
             }
             disableOnRemove = false;
-            displayedNeuronsIndex = new Dictionary<int, NeuronRenderable>();
-            displayedSynapsesIndex = new Dictionary<(int, int), SynapseRenderable>();
+            neuronIndexToNR = new Dictionary<int, NeuronRenderable>();
+            synapseIndicesToSR = new Dictionary<(int, int), SynapseRenderable>();
             hiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
             Brain = null;
 
@@ -183,12 +191,184 @@ namespace Einstein.ui.editarea
             // Ensures shallow copies are equal (in case that matters) and more importantly,
             // if any Neuron/Synapse/Brain class is a subclass of the base class, that is preserved
             Brain = brain;
+
+            AutoArrange();
         }
+
+        // ----- Auto-Arrange neuron renderables -----
+
+        private enum LayerType
+        {
+            NeverOutputsToInput = -0x60000000,    // 111
+            Input = -0x40000000,                  // 110
+            NeverOutputsFromInput = -0x20000000,  // 101
+            Main = 0,                             // 000
+            Output = 0x40000000,                  // 010
+            NeverOutputsFromOutput = 0x60000000,  // 011
+        }
+
+        private enum LayerTypeMasks
+        {
+            GetLayer = 0x1fffffff,                // 0001111...
+            GetType = -0x60000000,                // 111
+            MidValue = 0x10000000,                // 0001
+            IsNeverOutputs = 0x20000000,          // 001 (currently unused)
+        }
+
+        public void AutoArrange()
+        {
+            indexToLayer = new Dictionary<int, int>();
+
+            LinkedList<BaseNeuron> inputNeurons = new LinkedList<BaseNeuron>();
+            LinkedList<BaseNeuron> outputNeurons = new LinkedList<BaseNeuron>();
+            foreach (BaseNeuron neuron in Brain.Neurons)
+            {
+                if (neuron.IsInput())
+                {
+                    inputNeurons.AddLast(neuron);
+                }
+                else if (neuron.IsOutput())
+                {
+                    outputNeurons.AddLast(neuron);
+                }
+            }
+
+            // assign layers of hidden neurons
+            // note that later assignments overwrite the earlier assignments
+            foreach (BaseNeuron inNeuron in inputNeurons)
+            {
+                AssignLayersBefore(indexToLayer, inNeuron, ((int)LayerType.NeverOutputsToInput | (int)LayerTypeMasks.MidValue), new HashSet<int>());
+            }
+            foreach (BaseNeuron outNeuron in outputNeurons)
+            {
+                AssignLayersAfter(indexToLayer, outNeuron, ((int)LayerType.NeverOutputsFromOutput | (int)LayerTypeMasks.MidValue), new HashSet<int>());
+            }
+            foreach (BaseNeuron inNeuron in inputNeurons)
+            {
+                AssignLayersAfter(indexToLayer, inNeuron, ((int)LayerType.NeverOutputsFromInput | (int)LayerTypeMasks.MidValue), new HashSet<int>());
+            }
+            foreach (BaseNeuron outNeuron in outputNeurons)
+            {
+                AssignLayersBefore(indexToLayer, outNeuron, ((int)LayerType.Main | (int)LayerTypeMasks.MidValue), new HashSet<int>());
+            }
+            foreach (BaseNeuron outNeuron in outputNeurons)
+            {
+                indexToLayer[outNeuron.Index] = ((int)LayerType.Output | (int)LayerTypeMasks.MidValue);
+            }
+            foreach (BaseNeuron inNeuron in inputNeurons)
+            {
+                indexToLayer[inNeuron.Index] = ((int)LayerType.Input | (int)LayerTypeMasks.MidValue);
+            }
+
+            // Count number of neurons in each layer
+            Dictionary<int, int> layerToTotalNeurons = new Dictionary<int, int>();
+            foreach (BaseNeuron neuron in Brain.Neurons)
+            {
+                int layer = indexToLayer[neuron.Index];
+                layerToTotalNeurons[layer] = layerToTotalNeurons.ContainsKey(layer) ? layerToTotalNeurons[layer] + 1 : 1;
+            }
+
+            int totalWidth = EditArea.GetWidth();
+            int totalHeight = EditArea.GetHeight();
+
+            // TODO? find a better vertical order for each layer to have its neurons be put in?
+
+            // horizontally divide up layers
+            // vertically divide up neurons in each layer
+            if (layerToTotalNeurons.Count == 0) { return; } // avoid divide by 0
+            // used floats to not let rounding make everything get slightly further off from ideal
+            // positions the further down and right you go
+            float eachWidth = totalWidth / (float)layerToTotalNeurons.Count;
+            float x = EditArea.GetX() - eachWidth / 2;
+            List<int> sortedLayers = layerToTotalNeurons.Keys.ToList();
+            sortedLayers.Sort();
+            foreach (int layer in sortedLayers)
+            {
+                if (layerToTotalNeurons[layer] == 0) { continue; }
+                x += eachWidth;
+                float eachHeight = totalHeight / (float)layerToTotalNeurons[layer];
+                float y = EditArea.GetY() - eachHeight / 2;
+
+                // maybe there's a more efficient way but meh, "this is fine"
+                foreach (BaseNeuron neuron in Brain.Neurons)
+                {
+                    if (indexToLayer[neuron.Index] == layer)
+                    {
+                        y += eachHeight;
+                        // position neuron
+                        neuronIndexToNR[neuron.Index].Reposition((int)x, (int)y);
+                    }
+                }
+            }
+        }
+
+        public void AssignLayersBefore(Dictionary<int, int> layers,
+            BaseNeuron toThisNeuron, int thisNeuronLayer,
+            HashSet<int> dontAssign)
+        {
+            int prevLayer = thisNeuronLayer - 1;
+            foreach (BaseSynapse synapse in Brain.GetSynapsesTo(toThisNeuron))
+            {
+                BaseNeuron neuron = synapse.From;
+                // if it's in the don't assign set, never assign it
+                // if it's an input or output, never assign it (just for efficiency)
+                // if it's not already assigned as part of this layer, always assign it
+                // otherwise,
+                // reassign to this layer only if the previous layer assignment is further forwards
+                if (!dontAssign.Contains(neuron.Index) &&
+                    !neuron.IsInput() && !neuron.IsOutput() &&
+                    (!layers.ContainsKey(neuron.Index) ||
+                    (layers[neuron.Index] & (int)LayerTypeMasks.GetType) != (prevLayer & (int)LayerTypeMasks.GetType) ||
+                    prevLayer <= layers[neuron.Index]))
+                {
+                    Console.WriteLine("Assigning into layer "
+                        + (LayerType)(prevLayer & (int)LayerTypeMasks.GetType) +
+                        " / " + ((prevLayer & (int)LayerTypeMasks.GetLayer) - (int)LayerTypeMasks.MidValue) +
+                        " the neuron " + neuron);
+                    layers[neuron.Index] = prevLayer;
+                    dontAssign.Add(neuron.Index);
+                    AssignLayersBefore(layers, neuron, prevLayer, dontAssign);
+                    dontAssign.Remove(neuron.Index);
+                }
+            }
+        }
+        public void AssignLayersAfter(Dictionary<int, int> layers,
+            BaseNeuron fromThisNeuron, int thisNeuronLayer,
+            HashSet<int> dontAssign)
+        {
+            int nextLayer = thisNeuronLayer + 1;
+            foreach (BaseSynapse synapse in Brain.GetSynapsesFrom(fromThisNeuron))
+            {
+                BaseNeuron neuron = synapse.To;
+                // if it's in the don't assign set, never assign it
+                // if it's an input or output, never assign it (just for efficiency)
+                // if it's not already assigned as part of this layer, always assign it
+                // otherwise,
+                // reassign to this layer only if the previous layer assignment is further backwards
+                if (!dontAssign.Contains(neuron.Index) &&
+                    !neuron.IsInput() && !neuron.IsOutput() &&
+                    (!layers.ContainsKey(neuron.Index) ||
+                    (layers[neuron.Index] & (int)LayerTypeMasks.GetType) != (nextLayer & (int)LayerTypeMasks.GetType) ||
+                    layers[neuron.Index] <= nextLayer))
+                {
+                    Console.WriteLine("Assigning into layer "
+                        + (LayerType)(nextLayer & (int)LayerTypeMasks.GetType) +
+                        " / " + (nextLayer & (int)LayerTypeMasks.GetLayer) +
+                        " the neuron " + neuron);
+                    layers[neuron.Index] = nextLayer;
+                    dontAssign.Add(neuron.Index);
+                    AssignLayersAfter(layers, neuron, nextLayer, dontAssign);
+                    dontAssign.Remove(neuron.Index);
+                }
+            }
+        }
+
+        // ----- Misc -----
 
         // if there are none, returns null
         public NeuronRenderable HasNeuronAtPosition(int x, int y)
         {
-            foreach (NeuronRenderable dragNeuron in displayedNeuronsIndex.Values)
+            foreach (NeuronRenderable dragNeuron in neuronIndexToNR.Values)
             {
                 if (dragNeuron.GetDrawable().GetBoundaryRectangle().Contains(x, y)
                     && dragNeuron.GetDrawable().IsDisplaying())
@@ -201,11 +381,23 @@ namespace Einstein.ui.editarea
 
         public static Rectangle GetBounds()
         {
-            return new Rectangle(
-                NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD * 2,
-                0,
-                IO.WINDOW.GetWidth() - NeuronMenuButton.WIDTH - EinsteinPhiConfig.PAD * 2,
-                IO.WINDOW.GetHeight());
+            return new Rectangle(GetX(), GetY(), GetWidth(), GetHeight());
+        }
+        public static int GetWidth()
+        {
+            return IO.WINDOW.GetWidth() - EditArea.GetX();
+        }
+        public static int GetHeight()
+        {
+            return IO.WINDOW.GetHeight() - EditArea.GetY();
+        }
+        public static int GetX()
+        {
+            return NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD * 2;
+        }
+        public static int GetY()
+        {
+            return 0;
         }
 
         public void ClearStartedSynapse(bool clickedOnNeuron)
@@ -214,6 +406,27 @@ namespace Einstein.ui.editarea
             startedSynapse = null;
             justFinishedSynapse = clickedOnNeuron;
         }
+        public NeuronRenderable GetNROf(BaseNeuron neuron)
+        {
+            return GetNROf(neuron.Index);
+        }
+
+        public NeuronRenderable GetNROf(int index)
+        {
+            return neuronIndexToNR[index];
+        }
+
+        public SynapseRenderable GetSROf(BaseSynapse synapse)
+        {
+            return GetSROf(synapse.From.Index, synapse.To.Index);
+        }
+
+        public SynapseRenderable GetSROf(int fromIndex, int toIndex)
+        {
+            return synapseIndicesToSR[(fromIndex, toIndex)];
+        }
+
+        // ----- Logging -----
 
         public string LogDetailsForCrash()
         {
@@ -224,9 +437,9 @@ namespace Einstein.ui.editarea
             }
             catch (Exception) { }
             log += "\ndisplayedNeuronsIndex = ";
-            if (displayedNeuronsIndex == null) { log += "null"; }
-            else if (displayedNeuronsIndex.Count == 0) { log += "empty"; }
-            else { log += string.Join(":", displayedNeuronsIndex); }
+            if (neuronIndexToNR == null) { log += "null"; }
+            else if (neuronIndexToNR.Count == 0) { log += "empty"; }
+            else { log += string.Join(":", neuronIndexToNR); }
             log += "\nonRemove.Method.Name = " + onRemove.Method.Name;
             log += "\nonRemove.Method.GetParameters() = " + string.Join<ParameterInfo>(",", onRemove.Method.GetParameters());
             log += "\nonRemove.Method.ReturnType = " + onRemove.Method.ReturnType;
@@ -238,9 +451,9 @@ namespace Einstein.ui.editarea
             log += "\nonRemove.Target = " + onRemove.Target;
             log += "\ndisableOnRemove = " + disableOnRemove;
             log += "\ndisplayedSynapsesIndex = ";
-            if (displayedSynapsesIndex == null) { log += "null"; }
-            else if (displayedSynapsesIndex.Count == 0) { log += "empty"; }
-            else { log += string.Join(":", displayedSynapsesIndex); }
+            if (synapseIndicesToSR == null) { log += "null"; }
+            else if (synapseIndicesToSR.Count == 0) { log += "empty"; }
+            else { log += string.Join(":", synapseIndicesToSR); }
             log += "\nstartedSynapse = " + (startedSynapse != null ? startedSynapse.ToString() : "null");
             log += "\nhiddenNeuronIndex = " + hiddenNeuronIndex;
             return log;
