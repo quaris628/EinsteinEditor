@@ -82,6 +82,12 @@ namespace phi.io
          frames.Start();
       }
 
+      public void Stop()
+      {
+         frames.Enabled = false;
+         frames.Stop();
+      }
+
       public void SetFPS(int fps)
       {
          if (frames == null)
