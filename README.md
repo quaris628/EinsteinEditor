@@ -31,6 +31,7 @@ What this can do:
  - Create/Delete synapses
  - Edit/View synapse strengths
  - Drag neurons around the brain editor area
+ - Auto-arrange neurons in a cleaner arrangement
  - Gracefully handle window resizing (up to 2048x1080)
  - Handle crashes with a prompt to report them and by logging info to a file
 
@@ -43,10 +44,10 @@ What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
  - Resizing to a smaller window size can hide neurons
  - Brain values and last input/output is reset for neurons when saving brain
+ - Crash when dragging and shift-clicking neuron at the same time (ish)?
 
 What this will do (planned enhancements):
- - When neurons are added, have their spawn location staggered (would probably also fix the synapses always pointing to the upper left when loading from a file)
- - A button to auto-arrange neurons in a prettier and more clean arrangement
+ - When neurons are added, have their spawn location staggered (?)
 
 What this might do (future ideas):
  - Sentience (?)
