@@ -45,7 +45,7 @@ namespace Einstein.ui.menu
             {
                 RemoveOption(neuronDrawable.Neuron);
             }, neuronDrawable);
-            IO.RENDERER.Add(neuronDrawable);
+            IO.RENDERER.Add(neuronDrawable, OPTION_LAYER);
 
             RepositionOptions();
         }

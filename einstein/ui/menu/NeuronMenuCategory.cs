@@ -1,8 +1,10 @@
 ﻿using Einstein.model;
 using phi.graphics;
+using phi.graphics.drawables;
 using phi.io;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +13,12 @@ namespace Einstein.ui.menu
 {
     public class NeuronMenuCategory : MultiRenderable
     {
+        public const int OPTION_LAYER = 15;
+        public const int BACKGROUND_LAYER = 14;
+
         public NeuronMenuButton Button { get; protected set; }
         protected SortedDictionary<int, NeuronDrawable> neuronDrawables;
+        protected RectangleDrawable background;
 
         public NeuronMenuCategory(NeuronMenuButton button,
             ICollection<BaseNeuron> neuronOptions)
@@ -27,18 +33,28 @@ namespace Einstein.ui.menu
                 NeuronDrawable neuronDrawable = new NeuronDrawable(neuron);
                 neuronDrawables.Add(neuron.Index, neuronDrawable);
             }
+
+            // width and height will be set later
+            background = new RectangleDrawable(NeuronMenuButton.WIDTH + 2 * EinsteinPhiConfig.PAD, 0, 0, 0);
+            background.SetPen(new Pen(new SolidBrush(Color.LightGray)));
         }
 
         public virtual void Initialize()
         {
             Button.Initialize();
-            IO.RENDERER.Add(GetDrawables());
+            IO.RENDERER.Add(Button);
+            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            {
+                IO.RENDERER.Add(neuronDrawable, OPTION_LAYER);
+            }
+            IO.RENDERER.Add(background, BACKGROUND_LAYER);
             RepositionOptions();
             HideOptions();
         }
 
         protected virtual void HideOptions()
         {
+            background.SetDisplaying(false);
             foreach (NeuronDrawable neuron in neuronDrawables.Values)
             {
                 neuron.SetDisplaying(false);
@@ -47,10 +63,12 @@ namespace Einstein.ui.menu
 
         protected virtual void ShowOptions()
         {
+            background.SetDisplaying(true);
             foreach (NeuronDrawable neuron in neuronDrawables.Values)
             {
                 neuron.SetDisplaying(true);
             }
+            RepositionOptions();
         }
 
         // places buttons left to right on the screen, wrapping
@@ -74,6 +92,8 @@ namespace Einstein.ui.menu
                 button.SetCircleCenterXY(x + descWidth / 2, y + NeuronDrawable.CIRCLE_RADIUS);
                 x += descWidth + EinsteinPhiConfig.PAD;
             }
+            background.SetHeight(y + deltaY);
+            background.SetWidth(IO.WINDOW.GetWidth() - startX);
         }
 
         public virtual IEnumerable<Drawable> GetDrawables()
@@ -83,6 +103,7 @@ namespace Einstein.ui.menu
             {
                 yield return neuronDrawable;
             }
+            yield return background;
         }
 
         public virtual string LogDetailsForCrash()
