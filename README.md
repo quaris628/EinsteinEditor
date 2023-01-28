@@ -41,10 +41,8 @@ What this can't do (and probably never will):
 
 What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
- - When loading from a file, synapses point to upper left corner
  - Resizing to a smaller window size can hide neurons
  - Brain values and last input/output is reset for neurons when saving brain
- - Crash when adding a duplicate synapse (connects the same 'from' neuron to the same 'to' neuron)
 
 What this will do (planned enhancements):
  - When neurons are added, have their spawn location staggered (would probably also fix the synapses always pointing to the upper left when loading from a file)
@@ -52,6 +50,8 @@ What this will do (planned enhancements):
 
 What this might do (future ideas):
  - Sentience (?)
+ - If loading a file fails, have an option to auto-fix the problem (if a straightforward solution exists)
+ - A clear-the-brain button
  - Have the default folder location persist between sessions
  - Somehow handle neurons with duplicate descriptions (assign new ones?)
  - Create a blank bibite
@@ -68,6 +68,7 @@ What this might do (future ideas):
  - Show an explanation of what the input and output neurons do, and the range of values for input neurons
  - Zoom in/out
  - (Credit to Lucifer) Make positions of neurons persist between saving/loading by saving position data in Inov or Index or another unused property
+ - Can always improve the auto-arrangement algorithm
  - Look pretty
 
  -----
