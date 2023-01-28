@@ -20,5 +20,17 @@ namespace phi.graphics.drawables
       {
          g.FillRectangle(GetPen().Brush, (System.Drawing.Rectangle)GetBoundaryRectangle());
       }
+
+      public void SetWidth(int width)
+      {
+         this.width = width;
+         FlagChange();
+      }
+
+      public void SetHeight(int height)
+      {
+         this.height = height;
+         FlagChange();
+      }
    }
 }
