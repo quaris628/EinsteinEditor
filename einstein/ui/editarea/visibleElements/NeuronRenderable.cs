@@ -66,7 +66,7 @@ namespace Einstein.ui.editarea
 
         public void Reposition()
         {
-            Reposition(NeuronDrawable.GetX(), NeuronDrawable.GetY());
+            Reposition(NeuronDrawable.GetCircleCenterX(), NeuronDrawable.GetCircleCenterY());
         }
 
         public void Reposition(int x, int y)
