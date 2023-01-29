@@ -33,6 +33,7 @@ What this can do:
  - Drag neurons around the brain editor area
  - Auto-arrange neurons in a cleaner arrangement
  - Gracefully handle window resizing (up to 2048x1080)
+ - Auto-fix non-unique neuron descriptions
  - Handle crashes with a prompt to report them and by logging info to a file
 
 What this can't do (and probably never will):
@@ -44,31 +45,30 @@ What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
  - Resizing to a smaller window size can hide neurons
  - Brain values and last input/output is reset for neurons when saving brain
- - Crash when dragging and shift-clicking neuron at the same time (ish)?
+ - Crash when dragging and shift-clicking neuron at the same time (ish? can't replicate...)
 
 What this will do (planned enhancements):
- - When neurons are added, have their spawn location staggered (?)
+ - Display synapse direction by color gradient
 
 What this might do (future ideas):
  - Sentience (?)
- - If loading a file fails, have an option to auto-fix the problem (if a straightforward solution exists)
  - A clear-the-brain button
- - Have the default folder location persist between sessions
- - Somehow handle neurons with duplicate descriptions (assign new ones?)
- - Create a blank bibite
- - Allow bibite version to be configured (or auto-adjust?) (Not currently a strong need for this)
  - Keyboard shortcuts
+ - When neurons are added, have their spawn location staggered (?)
+ - Show an explanation of what the input and output neurons do, and the range of values for input neurons
+ - Zoom in/out
+ - Create a blank bibite
  - Edit neuron descriptions
  - Edit neuron type
+ - Have the default folder location persist between sessions
+ - (Credit to Lucifer) Make positions of neurons persist between saving/loading by saving position data in Inov or Index or another unused property
  - Allow showing multiple icons for input neurons (especially for the Constant)
+ - Get some sort of visual indicator of the flow of any arbitrary input combination? Or allow testing certain input values?
  - (Credit to Wazzah) Create color groups for neurons !!!
     - Hide/Show certain color groups, or just make transparent
 	- Drag and drop whole color groups
 	- Delete a whole color group
- - Get some sort of visual indicator of the flow of any arbitrary input combination? Or allow testing certain input values?
- - Show an explanation of what the input and output neurons do, and the range of values for input neurons
- - Zoom in/out
- - (Credit to Lucifer) Make positions of neurons persist between saving/loading by saving position data in Inov or Index or another unused property
+ - Allow bibite version to be configured (or auto-adjust?) (Not currently a strong need for this but there may be one in the future)
  - Can always improve the auto-arrangement algorithm
  - Look pretty
 
