@@ -243,7 +243,7 @@ namespace Einstein.ui.editarea
             foreach (BaseNeuron hiddenNeuron in hiddenNeurons)
             {
                 // kinda fudgy to just assign these unconnected never-outputs to the same layers as the to-input never-outputs, but meh
-                indexToLayer[hiddenNeuron.Index] = (int)LayerType.NeverOutputsToInput;
+                indexToLayer[hiddenNeuron.Index] = (int)LayerType.NeverOutputsToInput | (int)LayerTypeMasks.MidValue;
             }
             foreach (BaseNeuron inNeuron in inputNeurons)
             {
