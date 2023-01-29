@@ -8,7 +8,7 @@ To download/install:
  4. Exract the zip file to wherever you like (open your downloads folder, right-click the file > "Extract All..." > Select a location > Extract)
 
 To use:
- 1. Run EinsteinEditor/bin/Einstein.exe
+ 1. Run /bin/Einstein.exe
    
 Note: Windows will warn you about running this file because I'm not a verified publisher. You'll just have to trust me that I didn't write anything malicious in this.
 (And if it's any comfort, I do virus scans on all released files.)
