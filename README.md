@@ -15,10 +15,6 @@ Note: Windows will warn you about running this file because I'm not a verified p
 
 If you want a shortcut on your desktop, right-click Einstein.exe in the file explorer > "Send To" > "Desktop (Create Shortcut)"
 
-Left-click to add or drag neurons. Middle-click neurons to remove.
-
-Right-click neurons to add synapses. Middle-click synapses to remove.
-
  -----
 
 What this can do:
@@ -45,6 +41,7 @@ What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
  - Resizing to a smaller window size can hide neurons
  - Brain values and last input/output is reset for neurons when saving brain
+ - Takes a long time to auto-fix duplicate neuron descriptions for large brains (probably won't be fixed)
  - Crash when dragging and shift-clicking neuron at the same time (ish? can't replicate...)
 
 What this will do (planned enhancements):
