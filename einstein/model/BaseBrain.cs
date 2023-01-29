@@ -32,15 +32,11 @@ namespace Einstein.model
         {
             if (neuronsIndex.ContainsKey(neuron.Index))
             {
-                throw new ContainsDuplicateException(
-                    "This brain already has a neuron with index "
-                    + neuron.Index);
+                throw new ContainsDuplicateNeuronIndexException(neuron);
             }
             if (neuronDescriptionIndex.ContainsKey(neuron.Description))
             {
-                throw new ContainsDuplicateException(
-                    "This brain already has a neuron with description '" +
-                    neuron.Description + "'");
+                throw new ContainsDuplicateNeuronDescriptionException(neuron);
             }
 
             Neurons.Add(neuron);
@@ -67,9 +63,7 @@ namespace Einstein.model
             }
             if (synapsesIndex.ContainsKey((synapse.From.Index, synapse.To.Index)))
             {
-                throw new ContainsDuplicateException(
-                    "This brain already has a synapse that connects '" +
-                    synapse.From + "' to '" + synapse.To + "'");
+                throw new ContainsDuplicateSynapseException(synapse);
             }
 
             Synapses.Add(synapse);
@@ -182,15 +176,6 @@ namespace Einstein.model
         }
     }
 
-    public class ContainsDuplicateException : BrainException
-    {
-        public const string TITLE = "Contains duplicate";
-        public ContainsDuplicateException() : base(TITLE) { }
-        public ContainsDuplicateException(string message) : base(TITLE, message) { }
-        public ContainsDuplicateException(string message, Exception innerException)
-            : base(TITLE, message, innerException) { }
-    }
-
     public class ElementNotFoundException : BrainException
     {
         public const string TITLE = "Element not found";
@@ -198,6 +183,45 @@ namespace Einstein.model
         public ElementNotFoundException(string message) : base(TITLE, message) { }
         public ElementNotFoundException(string message, Exception innerException)
             : base(TITLE, message, innerException) { }
+    }
+
+    public abstract class ContainsDuplicateException : BrainException
+    {
+        public const string TITLE = "Contains duplicate";
+        protected ContainsDuplicateException() : base(TITLE) { }
+        protected ContainsDuplicateException(string message) : base(TITLE, message) { }
+        protected ContainsDuplicateException(string message, Exception innerException)
+            : base(TITLE, message, innerException) { }
+    }
+
+    public class ContainsDuplicateNeuronIndexException : ContainsDuplicateException
+    {
+        public BaseNeuron Neuron { get; private set; }
+        public ContainsDuplicateNeuronIndexException(BaseNeuron neuron)
+            : base("This brain already has a neuron with index " + neuron.Index)
+        {
+            Neuron = neuron;
+        }
+    }
+    public class ContainsDuplicateNeuronDescriptionException : ContainsDuplicateException
+    {
+        public BaseNeuron Neuron { get; private set; }
+        public ContainsDuplicateNeuronDescriptionException(BaseNeuron neuron)
+            : base("This brain already has a neuron with description '" + neuron.Description + "'")
+        {
+            Neuron = neuron;
+        }
+    }
+
+    public class ContainsDuplicateSynapseException : ContainsDuplicateException
+    {
+        public BaseSynapse Synapse { get; private set; }
+        public ContainsDuplicateSynapseException(BaseSynapse synapse)
+            : base("This brain already has a synapse that connects {" +
+                    synapse.From + "} to {" + synapse.To + "}")
+        {
+            Synapse = synapse;
+        }
     }
 
 }

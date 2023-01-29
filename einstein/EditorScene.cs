@@ -152,7 +152,7 @@ namespace Einstein
         private void saveBrain()
         {
             string brainJson = ((JsonBrain)editArea.Brain).GetSave();
-            string filepath = IO.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
+            string filepath = IO.POPUPS.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
                 "Save to Bibite", "");
             if (filepath == "")
             {
@@ -161,7 +161,7 @@ namespace Einstein
             }
             if (!File.Exists(filepath))
             {
-                IO.ShowErrorPopup("Save Failed", "File not found.");
+                IO.POPUPS.ShowErrorPopup("Save Failed", "File not found.");
                 return;
             }
             string bibiteJson = File.ReadAllText(filepath);
@@ -169,7 +169,7 @@ namespace Einstein
             int endIndex = bibiteJson.IndexOf("\"immuneSystem\":");
             if (startIndex < 0 || endIndex < 0)
             {
-                IO.ShowErrorPopup("Save Failed", "File format is invalid.");
+                IO.POPUPS.ShowErrorPopup("Save Failed", "File format is invalid.");
                 return;
             }
             bibiteJson = bibiteJson.Substring(0, startIndex) + " " + brainJson + bibiteJson.Substring(endIndex);
@@ -180,32 +180,66 @@ namespace Einstein
 
         private void loadBrain()
         {
-            string filepath = IO.PromptForFile(getLoadPath(), "Bibite Files|*.bb8",
+            string filepath = IO.POPUPS.PromptForFile(getLoadPath(), "Bibite Files|*.bb8",
                 "Load from Bibite", "");
             if (filepath == "") { return; }
             if (!File.Exists(filepath))
             {
-                IO.ShowErrorPopup("Load Failed", "File not found.");
+                IO.POPUPS.ShowErrorPopup("Load Failed", "File not found.");
                 return;
             }
             string json = File.ReadAllText(filepath);
             JsonBrain brain;
-            try
+            bool autoFixNeuronDescriptions = false;
+            while (true)
             {
-                brain = new JsonBrain(json, json.IndexOf("\"brain\":") + 8);
-            }
-            catch (JsonParsingException e)
-            {
-                IO.ShowErrorPopup("Load Failed",
-                    "File format is invalid.\n\nDetails: " + e.Message);
-                return;
-            }
-            catch (BrainException e)
-            {
-                IO.ShowErrorPopup("Load Failed",
-                    "File format is correct but some values are invalid.\n\n" +
-                    e.GetDisplayMessage(": "));
-                return;
+                try
+                {
+                    brain = new JsonBrain(json, json.IndexOf("\"brain\":") + 8);
+                    break;
+                }
+                catch (JsonParsingException e)
+                {
+                    IO.POPUPS.ShowErrorPopup("Load Failed",
+                        "File format is invalid.\n\nDetails: " + e.Message);
+                    return;
+                }
+                catch (ContainsDuplicateNeuronDescriptionException e)
+                {
+                    autoFixNeuronDescriptions = autoFixNeuronDescriptions || IO.POPUPS.ShowYesNoPopup("Load Failed", e.GetDisplayMessage(": ") +
+                        "\n\nDo you want Einstein to fix this by assigning a new description to this neuron and to any other duplicate descriptions that are found?");
+                    if (!autoFixNeuronDescriptions) { return; }
+
+                    string originalDescription = e.Neuron.Description;
+                    string nonNumberDesc = originalDescription.TrimEnd('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+                    string descNumberStr = originalDescription.Substring(nonNumberDesc.Length);
+                    // if last 8 characters of nonNumberDesc are not 'AutoDesc'
+                    if (nonNumberDesc.Length <= 8 || nonNumberDesc.Substring(nonNumberDesc.Length - 8, 8) != "AutoDesc")
+                    {
+                        nonNumberDesc += "AutoDesc";
+                    }
+
+                    int descNumberInt = int.TryParse(descNumberStr, out int parseResult) ? parseResult : 0;
+                    string newDescription = nonNumberDesc + descNumberInt;
+                    while (json.Contains(newDescription))
+                    {
+                        descNumberInt++;
+                        newDescription = nonNumberDesc + descNumberInt;
+                    }
+                    // replace 2nd instance of the original description with the new description
+                    int indexOf2ndInstance = json.IndexOf(originalDescription, json.IndexOf(originalDescription));
+                    json = json.Substring(0, indexOf2ndInstance) +
+                        newDescription +
+                        json.Substring(indexOf2ndInstance + originalDescription.Length);
+                    continue;
+                }
+                catch (BrainException e)
+                {
+                    IO.POPUPS.ShowErrorPopup("Load Failed",
+                        "File format is correct but some values are invalid.\n\n" +
+                        e.GetDisplayMessage(": "));
+                    return;
+                }
             }
 
             editArea.LoadBrain(brain);

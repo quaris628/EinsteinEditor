@@ -37,7 +37,7 @@ namespace Einstein
                 {
                     e = e.InnerException;
                 }
-                IO.HandleCrash(e,
+                IO.POPUPS.HandleCrash(e,
                    EinsteinPhiConfig.Window.TITLE,
                    CRASH_LOG_FILEPATH,
                    "https://github.com/quaris628/EinsteinEditor/issues/new",
