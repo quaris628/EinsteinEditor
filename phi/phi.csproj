@@ -70,6 +70,7 @@
     <Compile Include="graphics\renderables\FloatET.cs" />
     <Compile Include="graphics\renderables\SelectableEditableText.cs" />
     <Compile Include="io\FastClickRegions.cs" />
+    <Compile Include="io\IOPopups.cs" />
     <Compile Include="other\Growable2DArray.cs" />
     <Compile Include="other\GrowableArray.cs" />
     <Compile Include="other\Movable2D.cs" />
