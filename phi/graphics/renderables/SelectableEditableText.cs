@@ -22,7 +22,7 @@ namespace phi.graphics.renderables
       private Brush selectedBackColor;
       private Brush unselectedBackColor;
       private string defaultMessage;
-      private bool justUninited; // to fix bug w/ uniniting in the same frame as select is set to run
+      protected bool isInit;
 
       public SelectableEditableText(EditableText et)
          : this(et, DEFAULT_DEFAULT_MESSAGE) { }
@@ -40,7 +40,6 @@ namespace phi.graphics.renderables
          this.defaultMessage = defaultMessage;
          this.selectedBackColor = new SolidBrush(selectedBackColor);
          this.unselectedBackColor = new SolidBrush(unselectedBackColor);
-         this.justUninited = false;
       }
 
       public void Initialize()
@@ -50,13 +49,16 @@ namespace phi.graphics.renderables
          this.text.SetBackgroundColor(this.unselectedBackColor);
 
          IO.MOUSE.LEFT_UP.SubscribeOnDrawable(Select, text);
+         isInit = true;
       }
 
       public void Uninitialize()
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         isInit = false;
          EditableText.Uninitialize();
          
-         if (IsSelected())
+         if (selected == this)
          {
             selected = null;
             IO.MOUSE.LEFT_DOWN.Unsubscribe(Deselect);
@@ -66,12 +68,11 @@ namespace phi.graphics.renderables
          {
             IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(Select, text);
          }
-         justUninited = true;
       }
 
       public void Select()
       {
-         if (justUninited) { justUninited = false; return; }
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          // note: not thread-safe
          if (IsSelected()) { throw new InvalidOperationException(); }
          selected?.Deselect();
@@ -87,7 +88,7 @@ namespace phi.graphics.renderables
 
       public void Deselect()
       {
-         if (justUninited) { justUninited = false; return; }
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          // note: not thread-safe
          if (!IsSelected()) { throw new InvalidOperationException(); }
          selected = null;
@@ -107,9 +108,13 @@ namespace phi.graphics.renderables
 
       public bool IsSelected()
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          return selected == this;
       }
 
-      public Drawable GetDrawable() { return EditableText.GetDrawable(); }
+      public Drawable GetDrawable()
+      {
+         return EditableText.GetDrawable();
+      }
    }
 }

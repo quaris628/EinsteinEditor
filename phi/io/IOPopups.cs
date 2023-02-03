@@ -49,7 +49,10 @@ namespace phi.io
          public static void HandleCrash(Exception e, string popupWindowTitle,
             string logFilepath, string githubNewIssueLink, string extraLog)
          {
-            IO.FRAME_TIMER.Stop();
+            try {
+               IO.FRAME_TIMER.Stop();
+            } catch (NullReferenceException) { }
+                
             // Show message
             string fullLogFilepath = Path.GetFullPath(logFilepath);
             string errorDetails =

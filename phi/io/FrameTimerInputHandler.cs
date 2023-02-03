@@ -17,6 +17,7 @@ namespace phi.io
    {
       private Timer frames;
       private LinkedList<Action> frameActions;
+      private LinkedList<Action> uninitActions;
       private Dictionary<int, Action> lockedFrameActions;
 
       public FrameTimerInputHandler(int fps)
@@ -27,23 +28,30 @@ namespace phi.io
          //frames = new Timer(1000.0 / Config.RENDER.FPS);
          //frames.Elapsed += new ElapsedEventHandler(FrameTickEvent);
          frameActions = new LinkedList<Action>();
+         uninitActions = new LinkedList<Action>();
          lockedFrameActions = new Dictionary<int, Action>();
       }
       public FrameTimerInputHandler()
       {
          frames = null;
          frameActions = new LinkedList<Action>();
+         uninitActions = new LinkedList<Action>();
          lockedFrameActions = new Dictionary<int, Action>();
       }
 
       public void Subscribe(Action action)
       {
-         frameActions.AddFirst(action);
+         frameActions.AddLast(action);
       }
 
       public void Unsubscribe(Action action)
       {
          frameActions.Remove(action);
+      }
+
+      public void QueueUninit(Action uninitAction)
+      {
+         uninitActions.AddLast(uninitAction);
       }
 
       /**
@@ -84,6 +92,7 @@ namespace phi.io
 
       public void Stop()
       {
+         if (frames == null) { return; }
          frames.Enabled = false;
          frames.Stop();
       }
@@ -113,6 +122,11 @@ namespace phi.io
          {
             action.Invoke();
          }
+         foreach (Action uninitAction in uninitActions)
+         {
+            uninitAction.Invoke();
+         }
+         uninitActions.Clear();
       }
    }
 }

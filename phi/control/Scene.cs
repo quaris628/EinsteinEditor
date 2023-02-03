@@ -16,6 +16,7 @@ namespace phi.control
    {
       protected Scene prevScene;
       protected Color background;
+      protected bool isInit;
 
       protected Scene(Scene prevScene)
       {
@@ -34,30 +35,35 @@ namespace phi.control
          IO.RENDERER.SetBackground(background);
          IO.FRAME_TIMER.Subscribe(IO.RENDERER.Render);
          InitializeMe();
+         isInit = true;
       }
       protected virtual void InitializeMe() { }
 
-      public void Close()
+      public void Uninitialize()
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         isInit = false;
          IO.Clear();
-         CloseMe();
+         UninitializeMe();
       }
-      protected virtual void CloseMe() { }
+      protected virtual void UninitializeMe() { }
 
       protected void SwitchTo(Scene scene)
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          if (scene == null)
          {
             IO.Exit();
          }
          else if (!this.Equals(scene))
          {
-            this.Close();
+            IO.FRAME_TIMER.QueueUninit(this.Uninitialize);
             scene.Initialize();
          }
       }
       protected void Back()
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          SwitchTo(prevScene);
       }
    }

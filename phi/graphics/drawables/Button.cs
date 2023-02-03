@@ -13,6 +13,7 @@ namespace phi.graphics.drawables
       private Sprite sprite;
       private Text text;
       private Action onClick;
+      protected bool isInit;
 
       private Button(ButtonBuilder b) : base(b.GetSprite().GetX(), b.GetSprite().GetY(), b.GetSprite().GetWidth(), b.GetSprite().GetHeight())
       {
@@ -24,10 +25,19 @@ namespace phi.graphics.drawables
       public void Initialize()
       {
          IO.MOUSE.CLICK.SubscribeOnDrawable(onClick, this);
+         isInit = true;
+      }
+
+      public void Uninitialize()
+      {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         isInit = false;
+         IO.MOUSE.CLICK.UnsubscribeFromDrawable(onClick, this);
       }
 
       protected override void DrawAt(Graphics g, int x, int y)
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          sprite.SetCenterXY(GetCenterX(), GetCenterY());
          sprite.Draw(g);
          if (text != null)
@@ -61,6 +71,5 @@ namespace phi.graphics.drawables
 
          public Button Build() { return new Button(this); }
       }
-
    }
 }

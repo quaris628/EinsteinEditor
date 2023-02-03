@@ -14,6 +14,7 @@ namespace phi.graphics.renderables
       protected Text text;
       protected readonly string allowedChars;
       public bool IsEditingEnabled { get; protected set; }
+      protected bool isInit;
 
       protected EditableText(EditableTextBuilder b)
       {
@@ -34,12 +35,15 @@ namespace phi.graphics.renderables
             }
          }
          IO.KEYS.Subscribe(Backspace, Keys.Back);
+         isInit = true;
       }
 
       // warning, will unsubscribe everything from the keys this was subscribed to
       // (because it's so much easier implementation-wise to use a lambda expression when subscribing)
       public virtual void Uninitialize()
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         isInit = false;
          IO.RENDERER.Remove(this);
          foreach (char c in allowedChars)
          {
@@ -53,6 +57,7 @@ namespace phi.graphics.renderables
 
       public virtual void TypeChar(char c)
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          if (!IsEditingEnabled) { return; }
          string newMessage = text.GetMessage() + c; // don't forget that ;)
          if (IsMessageValidWhileTyping(newMessage)) {
@@ -62,24 +67,48 @@ namespace phi.graphics.renderables
 
       public virtual void Backspace()
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          if (!IsEditingEnabled || text.GetMessage().Length == 0) { return; }
          text.SetMessage(text.GetMessage().Substring(0, text.GetMessage().Length - 1));
       }
 
       public virtual void Clear()
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          if (!IsEditingEnabled) { return; }
          text.SetMessage("");
       }
 
-      protected virtual bool IsMessageValidWhileTyping(string message) { return true; }
-      protected virtual bool IsMessageValidAsFinalInternal(string message) { return IsMessageValidWhileTyping(message); }
-      public bool IsMessageValidAsFinal() { return IsMessageValidAsFinalInternal(text.GetMessage()); }
+      protected virtual bool IsMessageValidWhileTyping(string message)
+      {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         return true;
+      }
+      protected virtual bool IsMessageValidAsFinalInternal(string message)
+      {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         return IsMessageValidWhileTyping(message);
+      }
+      public bool IsMessageValidAsFinal()
+      {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         return IsMessageValidAsFinalInternal(text.GetMessage());
+      }
 
-      public virtual void EnableEditing() { IsEditingEnabled = true; }
-      public virtual void DisableEditing() { IsEditingEnabled = false; }
+      public virtual void EnableEditing()
+      {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         IsEditingEnabled = true;
+      }
+      public virtual void DisableEditing() {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         IsEditingEnabled = false;
+      }
 
-      public Drawable GetDrawable() { return text; }
+      public Drawable GetDrawable()
+      {
+         return text;
+      }
 
       public static readonly Dictionary<char, Keys[]> CHAR_KEY_MAP = generateCharKeyMap();
       //public static readonly Dictionary<Keys, char> KEY_CHAR_MAP = generateKeyCharMap();

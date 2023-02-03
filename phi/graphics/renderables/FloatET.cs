@@ -29,12 +29,14 @@ namespace phi.graphics.renderables
 
       protected override bool IsMessageValidWhileTyping(string message)
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          if ("-.".Contains(message) || "-,".Contains(message)) { return true; }
          return IsMessageValidAsFinalInternal(message);
       }
 
       protected override bool IsMessageValidAsFinalInternal(string message)
       {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          float floatValue;
          if (!float.TryParse(message, NumberStyles.Any, CultureInfo.InvariantCulture,
             out floatValue)) { return false; }

@@ -46,19 +46,19 @@ namespace phi.graphics
 
       public virtual int GetHeight() { return height; }
       public virtual int GetWidth() { return width; }
-      public void SetCenterX(int x) { SetX(x - GetWidth() / 2); }
-      public void SetCenterY(int y) { SetY(y - GetHeight() / 2); }
-      public void SetCenterXY(int x, int y) { SetCenterX(x); SetCenterY(y); }
-      public int GetCenterX() { return GetX() + GetWidth() / 2; }
-      public int GetCenterY() { return GetY() + GetHeight() / 2; }
-      public int[] GetCenter() { return new int[] { GetCenterX(), GetCenterY() }; }
-      public phi.other.Rectangle GetBoundaryRectangle()
+      public virtual void SetCenterX(int x) { SetX(x - GetWidth() / 2); }
+      public virtual void SetCenterY(int y) { SetY(y - GetHeight() / 2); }
+      public virtual void SetCenterXY(int x, int y) { SetCenterX(x); SetCenterY(y); }
+      public virtual int GetCenterX() { return GetX() + GetWidth() / 2; }
+      public virtual int GetCenterY() { return GetY() + GetHeight() / 2; }
+      public virtual int[] GetCenter() { return new int[] { GetCenterX(), GetCenterY() }; }
+      public virtual phi.other.Rectangle GetBoundaryRectangle()
       {
          return new phi.other.Rectangle(GetX(), GetY(), GetWidth(), GetHeight());
       }
 
-      public void SetDisplaying(bool displaying) { this.displaying = displaying; FlagChange(); }
-      public bool IsDisplaying() { return displaying; }
+      public virtual void SetDisplaying(bool displaying) { this.displaying = displaying; FlagChange(); }
+      public virtual bool IsDisplaying() { return displaying; }
 
       public override int GetHashCode()
       {
