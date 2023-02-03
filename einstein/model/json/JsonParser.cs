@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -37,7 +38,7 @@ namespace Einstein.model.json
         public int getNextValueInt(string tag)
         {
             string value = getNextValue(tag);
-            if (!int.TryParse(value, out int intValue))
+            if (!int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue))
             {
                 throw new InvalidValueFormatException(
                     "Value is not an integer: '" + value + "'");
@@ -47,7 +48,7 @@ namespace Einstein.model.json
         public float getNextValueFloat(string tag)
         {
             string value = getNextValue(tag);
-            if (!float.TryParse(value, out float floatValue))
+            if (!float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out float floatValue))
             {
                 throw new InvalidValueFormatException(
                     "Value is not a float: '" + value + "'");
