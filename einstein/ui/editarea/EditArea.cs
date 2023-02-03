@@ -70,14 +70,13 @@ namespace Einstein.ui.editarea
             }
             if (startedSynapse != null && startedSynapse.From.Neuron.Equals(neuron))
             {
-                startedSynapse.Uninitialize();
+                IO.FRAME_TIMER.QueueUninit(startedSynapse.Uninitialize);
                 startedSynapse = null;
             }
 
             Brain.Remove(neuron);
 
-            NeuronRenderable dragNeuron = neuronIndexToNR[neuron.Index];
-            dragNeuron.Uninitialize();
+            IO.FRAME_TIMER.QueueUninit(neuronIndexToNR[neuron.Index].Uninitialize);
             neuronIndexToNR.Remove(neuron.Index);
 
             if (!disableOnRemove)
@@ -136,10 +135,11 @@ namespace Einstein.ui.editarea
 
         public void RemoveSynapse(BaseSynapse synapse)
         {
+            if (!Brain.ContainsSynapse(synapse)) { return; } // so that removing a synapse and a linked neuron with 1 shift+click doesn't crash
             Brain.Remove(synapse);
 
             (int, int) key = (synapse.From.Index, synapse.To.Index);
-            synapseIndicesToSR[key].Uninitialize();
+            IO.FRAME_TIMER.QueueUninit(synapseIndicesToSR[key].Uninitialize);
             synapseIndicesToSR.Remove(key);
         }
 
@@ -412,7 +412,7 @@ namespace Einstein.ui.editarea
 
         public void ClearStartedSynapse(bool clickedOnNeuron)
         {
-            startedSynapse.Uninitialize();
+            IO.FRAME_TIMER.QueueUninit(startedSynapse.Uninitialize);
             startedSynapse = null;
             justFinishedSynapse = clickedOnNeuron;
         }

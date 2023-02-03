@@ -26,10 +26,5 @@ namespace Einstein.ui.visibleElements
             .WithFontSize(10f)
             .WithXY(x, y)
             ) { }
-
-        public void Initialize()
-        {
-            IO.RENDERER.Add(this);
-        }
     }
 }

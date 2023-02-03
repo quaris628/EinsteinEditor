@@ -18,6 +18,7 @@ namespace Einstein.ui.editarea.visibleElements
 
         protected Line line;
         protected SynapseArrow arrow;
+        protected bool isInit { get; private set; }
 
         public LineArrow(int startX, int startY, int pointX, int pointY)
         {
@@ -31,15 +32,19 @@ namespace Einstein.ui.editarea.visibleElements
         {
             IO.RENDERER.Add(line, layer);
             IO.RENDERER.Add(arrow, layer);
+            isInit = true;
         }
         public virtual void Uninitialize()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            isInit = false;
             IO.RENDERER.Remove(line);
             IO.RENDERER.Remove(arrow);
         }
 
         protected virtual void UpdateBaseXY(int x, int y)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             int oldX2 = line.GetX2();
             int oldY2 = line.GetY2();
             line.SetXY(x, y);
@@ -49,6 +54,7 @@ namespace Einstein.ui.editarea.visibleElements
 
         protected virtual void UpdateTipXY(int x, int y)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             line.SetXY2(x, y);
             arrow.SetXY(x, y);
             arrow.SetDirection(x - line.GetX(), y - line.GetY());
@@ -56,6 +62,7 @@ namespace Einstein.ui.editarea.visibleElements
 
         public virtual bool ContainsClick(int x, int y)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             // if the distance is less than half of the line's width,
             // or if the click is inside the triangle of the arrow
             return line.CalcSqDistanceToLine(x, y) <= HALF_LINE_WIDTH * HALF_LINE_WIDTH
@@ -64,6 +71,7 @@ namespace Einstein.ui.editarea.visibleElements
 
         public virtual IEnumerable<Drawable> GetDrawables()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             yield return line;
             yield return arrow;
         }

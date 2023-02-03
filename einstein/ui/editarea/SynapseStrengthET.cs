@@ -29,11 +29,17 @@ namespace Einstein.ui.editarea
             Synapse = synapse;
             this.line = line;
             justEnabledEditing = false;
-            SetValue(synapse.Strength);
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            SetValue(Synapse.Strength);
         }
 
         public void SetValue(float strength)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             // easy to do this way b/c validation is all taken care of underneath
             // somewhat inefficient but whatever
 
@@ -49,6 +55,7 @@ namespace Einstein.ui.editarea
         }
         public override void Backspace()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
             justEnabledEditing = false;
             base.Backspace();
@@ -58,6 +65,7 @@ namespace Einstein.ui.editarea
 
         public override void Clear()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
             justEnabledEditing = false;
             base.Clear();
@@ -67,6 +75,7 @@ namespace Einstein.ui.editarea
 
         public override void TypeChar(char c)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
             if (justEnabledEditing)
             {
@@ -93,11 +102,13 @@ namespace Einstein.ui.editarea
 
         public void ReCenterOnLine()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             GetDrawable().SetCenterXY(line.GetCenterX(), line.GetCenterY());
         }
 
         private void UpdateStrengthIfValid()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (float.TryParse(text.GetMessage(), out float strength))
             {
                 Synapse.Strength = strength;

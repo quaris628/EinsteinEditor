@@ -19,13 +19,12 @@ namespace Einstein.ui.menu
         public NeuronMenuButton Button { get; protected set; }
         protected SortedDictionary<int, NeuronDrawable> neuronDrawables;
         protected RectangleDrawable background;
+        protected bool isInit { get; private set; }
 
         public NeuronMenuCategory(NeuronMenuButton button,
             ICollection<BaseNeuron> neuronOptions)
         {
             Button = button;
-            button.SubscribeOnSelect(ShowOptions);
-            button.SubscribeOnDeselect(HideOptions);
 
             neuronDrawables = new SortedDictionary<int, NeuronDrawable>();
             foreach (BaseNeuron neuron in neuronOptions)
@@ -42,18 +41,35 @@ namespace Einstein.ui.menu
         public virtual void Initialize()
         {
             Button.Initialize();
+            Button.SubscribeOnSelect(ShowOptions);
+            Button.SubscribeOnDeselect(HideOptions);
             IO.RENDERER.Add(Button);
             foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
             {
                 IO.RENDERER.Add(neuronDrawable, OPTION_LAYER);
             }
             IO.RENDERER.Add(background, BACKGROUND_LAYER);
+            isInit = true;
             RepositionOptions();
             HideOptions();
         }
 
+        public virtual void Uninitialize()
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            isInit = false;
+            Button.Uninitialize();
+            IO.RENDERER.Remove(Button);
+            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            {
+                IO.RENDERER.Remove(neuronDrawable);
+            }
+            IO.RENDERER.Remove(background);
+        }
+
         protected virtual void HideOptions()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             background.SetDisplaying(false);
             foreach (NeuronDrawable neuron in neuronDrawables.Values)
             {
@@ -63,6 +79,7 @@ namespace Einstein.ui.menu
 
         protected virtual void ShowOptions()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             background.SetDisplaying(true);
             foreach (NeuronDrawable neuron in neuronDrawables.Values)
             {
@@ -76,6 +93,7 @@ namespace Einstein.ui.menu
         // of the screen, just like the words in this comment.
         public virtual void RepositionOptions()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             int startX = Button.GetX() + Button.GetWidth() + EinsteinPhiConfig.PAD;
             int x = startX;
             int y = EinsteinPhiConfig.PAD;
@@ -98,6 +116,7 @@ namespace Einstein.ui.menu
 
         public virtual IEnumerable<Drawable> GetDrawables()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             yield return Button;
             foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
             {
@@ -110,6 +129,7 @@ namespace Einstein.ui.menu
         {
             string log = "Button.IsSelected() = " + Button.IsSelected();
             log += "\nneuronDrawables = " + string.Join(",\n\t", neuronDrawables);
+            log += "\nisInit = " + isInit;
             return log;
         }
     }

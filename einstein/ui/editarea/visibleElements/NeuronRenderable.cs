@@ -20,6 +20,7 @@ namespace Einstein.ui.editarea
         public NeuronDrawable NeuronDrawable { get { return (NeuronDrawable)GetDrawable(); } }
 
         private EditArea editArea;
+        private bool isRemoved;
 
         public NeuronRenderable(EditArea editArea, BaseNeuron neuron)
             : base(new NeuronDrawable(neuron, SPAWN_X, SPAWN_Y), EditArea.GetBounds)
@@ -27,6 +28,7 @@ namespace Einstein.ui.editarea
             Neuron = neuron;
             NeuronDrawable.SetCircleCenterXY(SPAWN_X, SPAWN_Y);
             this.editArea = editArea;
+            isRemoved = false;
         }
 
         public override void Initialize()
@@ -48,29 +50,40 @@ namespace Einstein.ui.editarea
 
         private void RemoveIfShiftIsDown()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            if (isRemoved) { return; }
             if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
             {
                 editArea.RemoveNeuron(Neuron);
+                isRemoved = true;
             }
         }
 
         private void StartASynapse(int x, int y)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            if (isRemoved) { return; }
             editArea.StartSynapse(this, x, y);
         }
 
         protected override void MyMouseMove(int x, int y)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            if (isRemoved) { return; }
             Reposition();
         }
 
         public void Reposition()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            if (isRemoved) { return; }
             Reposition(NeuronDrawable.GetCircleCenterX(), NeuronDrawable.GetCircleCenterY());
         }
 
         public void Reposition(int x, int y)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            if (isRemoved) { return; }
             NeuronDrawable.SetCircleCenterXY(x, y);
             if (editArea.Brain != null)
             {

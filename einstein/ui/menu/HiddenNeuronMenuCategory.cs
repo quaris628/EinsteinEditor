@@ -32,6 +32,15 @@ namespace Einstein.ui.menu
             }
         }
 
+        public override void Uninitialize()
+        {
+            base.Uninitialize();
+            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            {
+                IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(neuronDrawable);
+            }
+        }
+
         public override string LogDetailsForCrash()
         {
             string log = base.LogDetailsForCrash();

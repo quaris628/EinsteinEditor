@@ -34,7 +34,6 @@ namespace Einstein.ui.editarea
 
         private EditArea editArea;
         private bool isFinalized;
-        private bool isUninited; // only for failing fast
         private SynapseStrengthET sset; // also in text, but kept as a shortcut reference
         private SelectableEditableText text;
         
@@ -84,7 +83,7 @@ namespace Einstein.ui.editarea
 
         private void TryFinalize(int x, int y)
         {
-            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             NeuronRenderable toNeuronR = editArea.HasNeuronAtPosition(x, y);
             if (toNeuronR == null
                 || toNeuronR.Neuron.Equals(From.Neuron)
@@ -92,7 +91,6 @@ namespace Einstein.ui.editarea
                 || editArea.Brain.ContainsSynapse(From.Neuron.Index, toNeuronR.Neuron.Index))
             {
                 editArea.ClearStartedSynapse(toNeuronR != null);
-                if (!isUninited) { throw new InvalidOperationException("ClearStartedSynapse didn't uninit"); }
             }
             else
             {
@@ -102,6 +100,7 @@ namespace Einstein.ui.editarea
 
         public void Finalize(NeuronRenderable to)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (to == null) { throw new ArgumentNullException("to"); }
             To = to;
             Synapse = new JsonSynapse((JsonNeuron)From.Neuron,
@@ -111,7 +110,7 @@ namespace Einstein.ui.editarea
 
         private void Finalize1()
         {
-            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             isFinalized = true;
 
             sset = new SynapseStrengthET(Synapse, line);
@@ -121,7 +120,7 @@ namespace Einstein.ui.editarea
 
             IO.MOUSE.MOVE.Unsubscribe(UpdateTipXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(TryFinalize);
-            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfShiftDownAndExactlyContainsClick, line);
+            IO.MOUSE.LEFT_UP.Subscribe(RemoveIfShiftDownAndExactlyContainsClick);
             IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfShiftDown, text.GetDrawable());
 
             UpdateTipPositionToToNeuron();
@@ -130,13 +129,12 @@ namespace Einstein.ui.editarea
 
         public override void Uninitialize()
         {
-            isUninited = true;
             base.Uninitialize();
             if (isFinalized)
             {
                 IO.RENDERER.Remove(text);
                 text.Uninitialize();
-                IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfShiftDownAndExactlyContainsClick, line);
+                IO.MOUSE.LEFT_UP.Unsubscribe(RemoveIfShiftDownAndExactlyContainsClick);
                 IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfShiftDown, text.GetDrawable());
             }
             else
@@ -150,7 +148,7 @@ namespace Einstein.ui.editarea
 
         public void UpdateBasePositionToFromNeuron()
         {
-            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             int x = From.NeuronDrawable.GetCircleCenterX();
             int y = From.NeuronDrawable.GetCircleCenterY();
             UpdateBaseXY(x, y);
@@ -161,7 +159,7 @@ namespace Einstein.ui.editarea
         }
         public void UpdateTipPositionToToNeuron()
         {
-            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!isFinalized) { throw new InvalidOperationException("Finalize before running UpdateTipPOsitionToToNeuron"); }
             // TODO maybe check if this method implementation is right
             int circleCenterX = To.NeuronDrawable.GetCircleCenterX();
@@ -190,7 +188,7 @@ namespace Einstein.ui.editarea
 
         private void RemoveIfShiftDown()
         {
-            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
             {
                 editArea.RemoveSynapse(Synapse);
@@ -199,14 +197,13 @@ namespace Einstein.ui.editarea
 
         private void RemoveIfShiftDownAndExactlyContainsClick(int x, int y)
         {
-            if (isUninited) { throw new InvalidOperationException("Can't call TryFinalize after uninit"); }
-            // We only know this click was inside the rectangle that
-            // perfectly contains the line, but we only want to remove
-            // the synapse if the click was on that line,
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            // We only want to remove the synapse if the click was on this line,
             // i.e., if the distance is less than half of the line's width,
             // or if the click is inside the triangle of the arrow
 
             if (IO.KEYS.IsModifierKeyDown(Keys.Shift)
+                && line.GetBoundaryRectangle().Contains(x, y)
                 && (line.CalcSqDistanceToLine(x, y) <= HALF_LINE_WIDTH * HALF_LINE_WIDTH
                 || arrow.TriangleContainsPoint(x, y)))
             {

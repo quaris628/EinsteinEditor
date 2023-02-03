@@ -33,9 +33,18 @@ namespace Einstein.ui.menu
                 }, neuronDrawable);
             }
         }
+        public override void Uninitialize()
+        {
+            base.Uninitialize();
+            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            {
+                IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(neuronDrawable);
+            }
+        }
 
         public void AddOption(BaseNeuron neuron)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             NeuronDrawable neuronDrawable = new NeuronDrawable(neuron);
             neuronDrawable.SetDisplaying(Button.IsSelected());
 
@@ -52,6 +61,7 @@ namespace Einstein.ui.menu
 
         public void RemoveOption(BaseNeuron neuron)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             NeuronDrawable neuronDrawable = neuronDrawables[neuron.Index];
 
             if (!neuronDrawables.Remove(neuron.Index)) {
@@ -70,6 +80,7 @@ namespace Einstein.ui.menu
 
         public void ClearAllOptions()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             // must avoid concurrent modification exception
             LinkedList<BaseNeuron> neuronsToRemove = new LinkedList<BaseNeuron>();
             foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
@@ -94,6 +105,7 @@ namespace Einstein.ui.menu
             if (onRemove.Method.GetMethodBody().LocalVariables == null) { log += "null"; }
             else if (onRemove.Method.GetMethodBody().LocalVariables.Count == 0) { log += "empty"; }
             else { log += string.Join(",", onRemove.Method.GetMethodBody().LocalVariables); }
+            log += "\nisInit = " + isInit;
             return log;
         }
     }

@@ -132,11 +132,11 @@ namespace Einstein
             IO.RENDERER.Add(loadButton);
             IO.RENDERER.Add(saveButton);
             IO.RENDERER.Add(autoArrangeButton);
-            infoText.Initialize();
+            IO.RENDERER.Add(infoText);
             IO.FRAME_TIMER.Subscribe(checkForResize);
         }
 
-        protected override void CloseMe()
+        protected override void UninitializeMe()
         {
             IO.FRAME_TIMER.Unsubscribe(checkForResize);
         }
@@ -151,6 +151,7 @@ namespace Einstein
 
         private void saveBrain()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             string brainJson = ((JsonBrain)editArea.Brain).GetSave();
             string filepath = IO.POPUPS.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
                 "Save to Bibite", "");
@@ -180,6 +181,7 @@ namespace Einstein
 
         private void loadBrain()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             string filepath = IO.POPUPS.PromptForFile(getLoadPath(), "Bibite Files|*.bb8",
                 "Load from Bibite", "");
             if (filepath == "") { return; }
@@ -249,6 +251,7 @@ namespace Einstein
 
         private string getSavePath()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (savePath != null) { return savePath; }
             if (loadPath != null) { return loadPath; }
             return DEFAULT_SAVE_LOAD_FOLDER;
@@ -256,6 +259,7 @@ namespace Einstein
 
         private string getLoadPath()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (loadPath != null) { return loadPath; }
             if (savePath != null) { return savePath; }
             return DEFAULT_SAVE_LOAD_FOLDER;
@@ -263,6 +267,7 @@ namespace Einstein
 
         private void updateNeuronsInMenu()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             input.ClearAllOptions();
             output.ClearAllOptions();
             foreach (BaseNeuron neuron in generateInputNeurons())
@@ -286,6 +291,7 @@ namespace Einstein
         // upon neuron being removed from edit area
         private void moveNeuronIntoMenu(BaseNeuron neuronRemovedFromEditArea)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (neuronRemovedFromEditArea.IsInput())
             {
                 input.AddOption(neuronRemovedFromEditArea);
@@ -298,10 +304,12 @@ namespace Einstein
 
         private void moveNeuronIntoEditArea(BaseNeuron neuronRemovedFromMenu)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             editArea.AddNeuron(neuronRemovedFromMenu);
         }
         private void createHiddenNeuronInEditArea(BaseNeuron hiddenNeuronToAdd)
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             editArea.CreateHiddenNeuron(hiddenNeuronToAdd.Type);
         }
 
@@ -354,29 +362,45 @@ namespace Einstein
 
         private void onSelectInputs()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             selected?.Button.Deselect();
             selected = input;
         }
         private void onSelectOutputs()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             selected?.Button.Deselect();
             selected = output;
         }
         private void onSelectAdd()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             selected?.Button.Deselect();
             selected = hidden;
         }
 
-        private void onDeselectInputs() { selected = null; }
-        private void onDeselectOutputs() { selected = null; }
-        private void onDeselectAdd() { selected = null; }
+        private void onDeselectInputs()
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            selected = null;
+        }
+        private void onDeselectOutputs()
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            selected = null;
+        }
+        private void onDeselectAdd()
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            selected = null;
+        }
 
 
         // check if the window has been resized
         // if so, we probably need to reposition the menu buttons
         private void checkForResize()
         {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (IO.WINDOW.GetWidth() != prevWindowWidth)
             {
                 input.RepositionOptions();
@@ -412,6 +436,7 @@ namespace Einstein
             log += "\nsavePath = " + (savePath ?? "null");
             log += "\nloadPath = " + (loadPath ?? "null");
             log += "\nprevWindowWidth = " + prevWindowWidth;
+            log += "\nisInit = " + isInit;
             return log;
         }
     }
