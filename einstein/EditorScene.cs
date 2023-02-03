@@ -208,8 +208,11 @@ namespace Einstein
                 }
                 catch (ContainsDuplicateNeuronDescriptionException e)
                 {
-                    autoFixNeuronDescriptions = autoFixNeuronDescriptions || IO.POPUPS.ShowYesNoPopup("Load Failed", e.GetDisplayMessage(": ") +
-                        "\n\nDo you want Einstein to fix this by assigning a new description to this neuron and to any other duplicate descriptions that are found?");
+                    autoFixNeuronDescriptions = autoFixNeuronDescriptions ||
+                        IO.POPUPS.ShowYesNoPopup("Load Failed", e.GetDisplayMessage(": ") +
+                        "\n\nDo you want Einstein to fix this by assigning a new description " +
+                        "to this neuron and to any other duplicate descriptions that are found? " +
+                        "\n(This could take a long time for big brains.)");
                     if (!autoFixNeuronDescriptions) { return; }
 
                     string originalDescription = e.Neuron.Description;
