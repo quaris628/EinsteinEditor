@@ -100,11 +100,12 @@ namespace Einstein.ui.editarea
 
         public override string ToString()
         {
-            string log = "NR [" +
+            return "NR [" +
                 "Neuron: " + Neuron +
                 "NeuronDrawable: " + NeuronDrawable +
+                "isInit: " + isInit +
+                "isRemoved: " + isRemoved +
                 "]";
-            return log;
         }
     }
 }
