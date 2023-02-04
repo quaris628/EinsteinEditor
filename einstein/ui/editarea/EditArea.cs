@@ -446,7 +446,7 @@ namespace Einstein.ui.editarea
                 log += "\nBrain = " + Brain.GetSave();
             }
             catch (Exception) { }
-            log += "\ndisplayedNeuronsIndex = ";
+            log += "\nneuronIndexToNR = ";
             if (neuronIndexToNR == null) { log += "null"; }
             else if (neuronIndexToNR.Count == 0) { log += "empty"; }
             else { log += string.Join(":", neuronIndexToNR); }
