@@ -14,18 +14,18 @@ namespace Einstein.ui.editarea.visibleElements
     {
         public const int LINE_WIDTH = 2 * HALF_LINE_WIDTH;
         public const int HALF_LINE_WIDTH = 3;
-        public static readonly Color LINE_COLOR = Color.DarkGray;
+        public static readonly Color LINE_BASE_COLOR = Color.LightGray;
+        public static readonly Color LINE_TIP_COLOR = Color.FromArgb(-8355712); // #FF808080
 
-        protected Line line;
+        protected GradientLine line;
         protected SynapseArrow arrow;
         protected bool isInit { get; private set; }
 
         public LineArrow(int startX, int startY, int pointX, int pointY)
         {
-            line = new Line(startX, startY, pointX, pointY);
+            line = new GradientLine(startX, startY, pointX, pointY, LINE_BASE_COLOR, LINE_TIP_COLOR, LINE_WIDTH);
             arrow = new SynapseArrow(pointX, pointY, pointX - startX, pointY - startY);
-            line.SetPen(new Pen(LINE_COLOR, LINE_WIDTH));
-            arrow.SetPen(new Pen(LINE_COLOR, LINE_WIDTH));
+            arrow.SetPen(new Pen(LINE_TIP_COLOR, LINE_WIDTH));
         }
 
         public virtual void Initialize(int layer)
