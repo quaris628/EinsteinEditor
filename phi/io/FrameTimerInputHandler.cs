@@ -128,5 +128,27 @@ namespace phi.io
          }
          uninitActions.Clear();
       }
+
+      public string LogDetailsForCrash()
+      {
+         string log = "\n\nFrameTimerInputHandler";
+
+         log += "\nframeActions:";
+         foreach (Action action in frameActions)
+         {
+            log += "\n\t" + action.Method.DeclaringType.FullName + "." + action.Method.Name;
+         }
+         log += "\nlockedFrameActions:";
+         foreach (Action action in lockedFrameActions.Values)
+         {
+            log += "\n\t" + action.Method.DeclaringType.FullName + "." + action.Method.Name;
+         }
+         log += "\nuninitActions:";
+         foreach (Action action in uninitActions)
+         {
+            log += "\n\t" + action.Method.DeclaringType.FullName + "." + action.Method.Name;
+         }
+         return log;
+      }
    }
 }

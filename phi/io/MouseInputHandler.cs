@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using phi.other;
+using System.Reflection;
 
 namespace phi.io
 {
@@ -17,6 +18,7 @@ namespace phi.io
       // private Dictionary<Rectangle, LinkedList<Action<int, int>>> regionActions;
       private Dictionary<Drawable, LinkedList<Action<int, int>>> drawableActions;
       private Dictionary<Action, Action<int, int>> wrapIndex;
+      private LinkedList<Action<int, int>> todos;
 
       public MouseInputHandler()
       {
@@ -24,6 +26,7 @@ namespace phi.io
          fastRegions = new FastClickRegions<Action<int, int>>();
          drawableActions = new Dictionary<Drawable, LinkedList<Action<int, int>>>();
          wrapIndex = new Dictionary<Action, Action<int, int>>();
+         todos = new LinkedList<Action<int, int>>();
       }
 
       public void Subscribe(Action<int, int> action) { actions.AddFirst(action); }
@@ -92,7 +95,7 @@ namespace phi.io
          // Deep copy actions to do after iteration through collections of actions
          // This resolves what should happen if one of those actions edits one of the
          //   collections. (Throws exception if done during iteration.)
-         LinkedList<Action<int, int>> todos = new LinkedList<Action<int, int>>();
+         todos.Clear();
 
          // Actions
          LinkedListNode<Action<int, int>> iter = actions.First;
@@ -155,6 +158,54 @@ namespace phi.io
             }
          }
          IO.FRAME_TIMER.Subscribe(doLaterMouse);
+      }
+
+      public string LogDetailsForCrash()
+      {
+         string log = "";
+         foreach (KeyValuePair<Drawable, LinkedList<Action<int, int>>> kvp in drawableActions)
+         {
+            log += "\nactions for drawable " + kvp.Key;
+            foreach (Action<int, int> actionXY in kvp.Value)
+            {
+               log += "\n\t";
+               MethodInfo method = actionXY.Method;
+               if (wrapIndex.ContainsValue(actionXY))
+               {
+                  // find the wrapped method and log that instead
+                  log += "Wrapped: ";
+                  method = wrapIndex.FirstOrDefault(kvp1 => kvp1.Value == actionXY).Key.Method;
+               }
+               log += method.DeclaringType.FullName + "." + method.Name;
+            }
+         }
+         log += "\nactions:";
+         foreach (Action<int, int> actionXY in actions)
+         {
+            log += "\n\t";
+            MethodInfo method = actionXY.Method;
+            if (wrapIndex.ContainsValue(actionXY))
+            {
+               // find the wrapped method and log that instead
+               log += "Wrapped: ";
+               method = wrapIndex.FirstOrDefault(kvp1 => kvp1.Value == actionXY).Key.Method;
+            }
+            log += method.DeclaringType.FullName + "." + method.Name;
+         }
+         log += "\ntodos:";
+         foreach (Action<int, int> actionXY in todos)
+         {
+            log += "\n\t";
+            MethodInfo method = actionXY.Method;
+            if (wrapIndex.ContainsValue(actionXY))
+            {
+               // find the wrapped method and log that instead
+               log += "Wrapped: ";
+               method = wrapIndex.FirstOrDefault(kvp1 => kvp1.Value == actionXY).Key.Method;
+            }
+            log += method.DeclaringType.FullName + "." + method.Name;
+         }
+         return log;
       }
    }
 }

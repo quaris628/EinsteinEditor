@@ -12,11 +12,13 @@ namespace phi.io
    {
       private Dictionary<int, LinkedList<Action>> actions;
       private Dictionary<int, LinkedList<Action<KeyStroke>>> keyActions;
+      private LinkedList<Action> todos;
 
       public KeyInputHandler()
       {
          actions = new Dictionary<int, LinkedList<Action>>();
          keyActions = new Dictionary<int, LinkedList<Action<KeyStroke>>>();
+         todos = new LinkedList<Action>();
       }
 
       // Subscribe overloads
@@ -61,7 +63,7 @@ namespace phi.io
 
       public void KeyInputEvent(object sender, KeyEventArgs e)
       {
-         LinkedList<Action> todos = new LinkedList<Action>();
+         todos.Clear();
          KeyStroke stroke = new KeyStroke(e.KeyData);
          if (actions.TryGetValue(stroke.GetCode(), out LinkedList<Action> keystrokeActions))
          {
@@ -80,15 +82,16 @@ namespace phi.io
             }
          }
 
-         void doLaterKeys()
-         {
-            IO.FRAME_TIMER.Unsubscribe(doLaterKeys);
-            foreach (Action action in todos)
-            {
-               action.Invoke();
-            }
-         }
          IO.FRAME_TIMER.Subscribe(doLaterKeys);
+      }
+
+      private void doLaterKeys()
+      {
+         IO.FRAME_TIMER.Unsubscribe(doLaterKeys);
+         foreach (Action action in todos)
+         {
+            action.Invoke();
+         }
       }
 
       public bool IsModifierKeyDown(Keys key)
@@ -97,5 +100,31 @@ namespace phi.io
          return formsKey == (Control.ModifierKeys & formsKey);
       }
 
+      public string LogDetailsForCrash()
+      {
+         string log = "\n\nKeyInputHandler";
+         foreach (KeyValuePair<int, LinkedList<Action>> kvp in actions)
+         {
+            log += "\nactions for " + (Keys)(kvp.Key);
+            foreach (Action action in kvp.Value)
+            {
+               log += "\n\t" + action.Method.DeclaringType.FullName + "." + action.Method.Name;
+            }
+         }
+         foreach (KeyValuePair<int, LinkedList<Action<KeyStroke>>> kvp in keyActions)
+         {
+            log += "\nkeyActions for " + (Keys)(kvp.Key);
+            foreach (Action<KeyStroke> action in kvp.Value)
+            {
+               log += "\n\t" + action.Method.DeclaringType.FullName + "." + action.Method.Name;
+            }
+         }
+         log += "\ntodos:";
+         foreach (Action action in todos)
+         {
+            log += "\n\t" + action.Method.DeclaringType.FullName + "." + action.Method.Name;
+         }
+         return log;
+      }
    }
 }

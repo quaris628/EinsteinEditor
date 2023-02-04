@@ -45,7 +45,6 @@ namespace phi.io
             return dialog.FileName;
          }
 
-
          public static void HandleCrash(Exception e, string popupWindowTitle,
             string logFilepath, string githubNewIssueLink, string extraLog)
          {
@@ -54,7 +53,6 @@ namespace phi.io
             } catch (NullReferenceException) { }
                 
             // Show message
-            string fullLogFilepath = Path.GetFullPath(logFilepath);
             string errorDetails =
                   "\n\n---------------- Technical Details ----------------" +
                   "\nName: " + e.GetType().Name +
@@ -64,6 +62,8 @@ namespace phi.io
             string stackTrace = "\nStack Trace:\n" +
                   e.StackTrace.Substring(0,
                   indexOfAtSWF > 0 ? indexOfAtSWF - 1 : e.StackTrace.Length);
+            string phiDetails = IO.LogDetailsForCrash();
+            string fullLog = errorDetails + stackTrace + extraLog + phiDetails;
 
             DialogResult result = MessageBox.Show(
                "This application has crashed." +
@@ -85,7 +85,7 @@ namespace phi.io
             // Write error log file
             try
             {
-               File.WriteAllText(logFilepath, errorDetails + stackTrace + extraLog);
+               File.WriteAllText(logFilepath, fullLog);
             }
             catch (Exception)
             {
@@ -111,7 +111,7 @@ namespace phi.io
                Process.Start("notepad.exe", logFilepath);
             }
             catch (Exception) { } // if it failed, just continue
-
+            
             MessageBox.Show(
                "To report this crash," +
                "\nsubmit an issue on github (requires an account), or" +
@@ -122,7 +122,7 @@ namespace phi.io
                "of the error log too." +
                "\n\nIf github hasn't opened automatically, type in this address: " + githubNewIssueLink +
                "\n\nIf the error log file hasn't opened automatically, " +
-               "you can find it at: " + fullLogFilepath +
+               "you can find it at: " + Path.GetFullPath(logFilepath) +
                errorDetails,
                popupWindowTitle,
                MessageBoxButtons.OK,

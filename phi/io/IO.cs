@@ -74,5 +74,40 @@ namespace phi.io
       }
 
       public static void Exit() { WindowsForm.Exit(); }
+
+      public static string LogDetailsForCrash()
+      {
+         string log = "\n\n ---------------- phi.IO ----------------\n";
+         try { log += FRAME_TIMER.LogDetailsForCrash(); } catch (Exception) { log += "\nFailed to log details for FRAME_TIMER."; }
+         try { log += KEYS.LogDetailsForCrash(); } catch (Exception) { log += "\nFailed to log details for KEYS."; }
+         log += "\nMOUSE.CLICK:";
+         try { log += MOUSE.CLICK.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.CLICK:";
+         try { log += MOUSE.LEFT_CLICK.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.RIGHT_CLICK:";
+         try { log += MOUSE.RIGHT_CLICK.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.MID_CLICK:";
+         try { log += MOUSE.MID_CLICK.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.DOWN:";
+         try { log += MOUSE.DOWN.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.LEFT_DOWN:";
+         try { log += MOUSE.LEFT_DOWN.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.RIGHT_DOWN:";
+         try { log += MOUSE.RIGHT_DOWN.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.MID_CLICK_DOWN:";
+         try { log += MOUSE.MID_CLICK_DOWN.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.UP:";
+         try { log += MOUSE.UP.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.LEFT_UP:";
+         try { log += MOUSE.LEFT_UP.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.RIGHT_UP:";
+         try { log += MOUSE.RIGHT_UP.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.MID_CLICK_UP:";
+         try { log += MOUSE.MID_CLICK_UP.LogDetailsForCrash(); } catch (Exception) { }
+         log += "\nMOUSE.MOVE:";
+         try { log += MOUSE.MOVE.LogDetailsForCrash(); } catch (Exception) { }
+         
+         return log;
+      }
    }
 }
