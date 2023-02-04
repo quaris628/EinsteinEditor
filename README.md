@@ -42,36 +42,36 @@ What this sucks at doing (known bugs):
  - Resizing to a smaller window size can hide neurons
  - Brain values and last input/output is reset for neurons when saving brain
  - Takes a long time to auto-fix duplicate neuron descriptions for large brains (probably won't be fixed)
- - Crash when dragging and shift-clicking neuron at the same time (ish? can't replicate...)
 
 What this will do (planned enhancements):
- - Display synapse direction by color gradient
+ [Nothing currently]
 
 What this might do (future ideas):
- - Sentience (?)
- - A clear-the-brain button
- - Keyboard shortcuts
- - When neurons are added, have their spawn location staggered (?)
- - Show an explanation of what the input and output neurons do, and the range of values for input neurons
- - Zoom in/out
- - Create a blank bibite
- - Edit neuron descriptions
- - Edit neuron type
- - Have the default folder location persist between sessions
- - (Credit to Lucifer) Make positions of neurons persist between saving/loading by saving position data in Inov or Index or another unused property
- - Allow showing multiple icons for input neurons (especially for the Constant)
- - Get some sort of visual indicator of the flow of any arbitrary input combination? Or allow testing certain input values?
- - (Credit to Wazzah) Create color groups for neurons !!!
+  Each feature has an estimated difficultly to create (1-5).
+  You can vote for these features here: https://strawpoll.com/polls/B2ZBE3YYpgJ
+ - 1 - A clear-the-brain button
+ - 1 - Have the default save/load folder location persist between closing and reopening the program
+ - 2 - Keyboard shortcuts (in general)
+ - 2 - Improve auto-arrangement (in general)
+ - 2 - Look pretty (in general)
+ - 2 - Allow multiple instances of just the contstant input neuron (same neuron in the bibite, two or more icons floating around in the diagram)
+ - 3 - Zoom
+ - 3 - Stagger the spawn-in location of neurons (how?)
+ - 3? - Allow multiple instances of all input neurons (same neuron in the bibite, two or more icons floating around in the diagram)
+ - 3 - Edit neuron descriptions
+ - 4 - Edit neuron type
+ - 4 - Have positions of neurons persist between saving/loading brain to a bibite (Credit to Lucifer!)
+ - 4 - Show detailed info about neurons (e.g. range of outputs for an input neuron, description of the effects of an output neuron, description of hidden neuron's behavior...)
+ - 5 - Sentience (?)
+ - 5 - Visualization of the flow of values throughout the network (or allow testing specific input values?)
+ - 5 - Create color groups of neurons and synapses (Credit to Wazzah!)
     - Hide/Show certain color groups, or just make transparent
 	- Drag and drop whole color groups
 	- Delete a whole color group
- - Allow bibite version to be configured (or auto-adjust?) (Not currently a strong need for this but there may be one in the future)
- - Can always improve the auto-arrangement algorithm
- - Look pretty
 
  -----
 
 To any potential contributors:
  - I want to talk with you about what you want to work on! (If it hasn't been too long since I wrote this, anyway.) In order of my preference, Discord: quaris#9905 Reddit: u/quaris628 Email: quaris314@gmail.com Carrier pigeon: Polly usually flies the fastest, but Gary is also pretty good.
- - I've been using Visual Studio 2019 for an IDE. Just FYI so that if you're running into problems with another IDE, you can always try switching to VS 2019 as a workaround.
+ - I've been using Visual Studio 2019 for an IDE. Just FYI so that if you're running into problems with another IDE, you can always try switching as a workaround.
  - This project uses the phi graphics "library"/framework/whatever thing, which is a separate project I partnered in creating a few years ago. It has its own repository (https://github.com/quaris628/PhiGraphicsEngine), so if you spot any issues with or want to contribute to any of the code in the 'phi' folder, consider also going to that repo to write up an issue or pull request (or whatever). If you don't, I'll still try to keep the two in sync myself. [Edit: Given how many small fixes and enhancements I've been making, I'm just giving up on keeping the other repo in sync. I'll do a larger sync sometime around when I do a full release of the Einstein Editor.]
