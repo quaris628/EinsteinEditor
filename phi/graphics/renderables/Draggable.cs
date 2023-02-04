@@ -103,15 +103,18 @@ namespace phi.graphics.renderables
       private void MouseDown(int x, int y)
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-         isMoving = true;
-         IO.MOUSE.MOVE.Subscribe(MouseMove);
-         if (useRightMouseButton)
+         if (!isMoving)
          {
-            IO.MOUSE.RIGHT_UP.Subscribe(MouseUp);
-         }
-         else
-         {
-            IO.MOUSE.LEFT_UP.Subscribe(MouseUp);
+            isMoving = true;
+            IO.MOUSE.MOVE.Subscribe(MouseMove);
+            if (useRightMouseButton)
+            {
+               IO.MOUSE.RIGHT_UP.Subscribe(MouseUp);
+            }
+            else
+            {
+               IO.MOUSE.LEFT_UP.Subscribe(MouseUp);
+            }
          }
          dragOffsetX = x - drawable.GetX();
          dragOffsetY = y - drawable.GetY();
@@ -142,15 +145,18 @@ namespace phi.graphics.renderables
       private void MouseUp(int x, int y)
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-         isMoving = false;
-         IO.MOUSE.MOVE.Unsubscribe(MouseMove);
-         if (useRightMouseButton)
+         if (isMoving)
          {
-            IO.MOUSE.RIGHT_UP.Unsubscribe(MouseUp);
-         }
-         else
-         {
-            IO.MOUSE.LEFT_UP.Unsubscribe(MouseUp);
+            isMoving = false;
+            IO.MOUSE.MOVE.Unsubscribe(MouseMove);
+            if (useRightMouseButton)
+            {
+               IO.MOUSE.RIGHT_UP.Unsubscribe(MouseUp);
+            }
+            else
+            {
+               IO.MOUSE.LEFT_UP.Unsubscribe(MouseUp);
+            }
          }
          MyMouseUp(x, y);
       }
