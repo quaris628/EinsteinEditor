@@ -125,6 +125,10 @@ namespace Einstein.model
         {
             return neuronsIndex.ContainsKey(index);
         }
+        public bool ContainsNeuronDescription(string description)
+        {
+            return neuronDescriptionIndex.ContainsKey(description);
+        }
 
         public bool ContainsSynapse(BaseSynapse synapse) { return ContainsSynapse(synapse.From.Index, synapse.To.Index); }
         public bool ContainsSynapse(int fromIndex, int toIndex)
