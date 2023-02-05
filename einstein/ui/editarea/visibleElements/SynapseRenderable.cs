@@ -77,7 +77,7 @@ namespace Einstein.ui.editarea
             IO.MOUSE.RIGHT_UP.Subscribe(TryFinalize);
             if (isFinalized)
             {
-                Finalize1();
+                FinalizeInternal();
             }
         }
 
@@ -105,10 +105,10 @@ namespace Einstein.ui.editarea
             To = to;
             Synapse = new JsonSynapse((JsonNeuron)From.Neuron,
                 (JsonNeuron)To.Neuron, INITIAL_STRENGTH);
-            Finalize1();
+            FinalizeInternal();
         }
 
-        private void Finalize1()
+        private void FinalizeInternal()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             isFinalized = true;
