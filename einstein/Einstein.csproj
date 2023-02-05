@@ -35,6 +35,9 @@
   <PropertyGroup>
     <StartupObject>Einstein.EinsteinMain</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>res/einstein.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
@@ -76,6 +79,5 @@
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

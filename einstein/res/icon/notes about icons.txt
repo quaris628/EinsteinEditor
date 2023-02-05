@@ -1,0 +1,9 @@
+If you want to re-create the multi-size ico file, I highly recommend
+https://redketchup.io/icon-editor
+
+When creating releases, don't include the /icons/ folder, just because its contents are never used.
+I just wanted to keep the original .pngs around just in case they're needed for some reason.
+
+The current icons were made in good old MS Paint.
+The font for the E is Rage Italic.
+A font I would have slightly preferred but not enough to go changing all of the icons is Book Script MT. So if you're re-doing the icons anyway, please use that font instead!

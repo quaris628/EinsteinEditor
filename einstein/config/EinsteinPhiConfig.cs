@@ -19,6 +19,7 @@ namespace Einstein
         public new class Window : DefaultConfig.Window
         {
             public new const string TITLE = "Einstien Editor " + VERSION;
+            public new const string ICON = RES_DIR + "einstein.ico";
         }
         public new class Render : DefaultConfig.Render
         {
@@ -28,6 +29,7 @@ namespace Einstein
         public override string GetHomeDir() { return HOME_DIR; }
         public override string GetResourcesDir() { return RES_DIR; }
         public override string GetWindowTitle() { return Window.TITLE; }
+        public override string GetWindowIcon() { return Window.ICON; }
         public override int GetRenderFPS() { return Render.FPS; }
     }
 }
