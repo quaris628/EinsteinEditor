@@ -34,12 +34,18 @@ namespace Einstein.ui.editarea.visibleElements
         {
             int x2 = x + GetWidth();
             int y2 = y + GetHeight();
+            // I'm salty about this... apparently an OutOfMemoryException is thrown when
+            // a gradient brush is instantiated with both points being the same.
+            // https://social.msdn.microsoft.com/Forums/en-US/4832853b-bbe5-4a4f-a64d-dc4d045ae87c/pathgradientbrush-and-the-outofmemory-exception?forum=csharpgeneral
+            // In this case, we can just avoid drawing if that's the case
+            if (x == x2 && y == y2) { return; }
             LinearGradientBrush brush = new LinearGradientBrush(
                 new Point(x, y),
                 new Point(x2, y2),
                 StartColor,
                 EndColor);
-            g.DrawLine(new Pen(brush, Width), x, y, x2, y2);
+            base.SetPen(new Pen(brush, Width));
+            g.DrawLine(base.GetPen(), x, y, x2, y2);
         }
 
         // hide unsupported parent members
