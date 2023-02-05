@@ -151,13 +151,18 @@ namespace phi.graphics
          return false;
       }
       // renderable overloads
-      public void Remove(Renderable r) { Remove(r.GetDrawable()); }
-      public void Remove(MultiRenderable mr)
+      public bool Remove(Renderable r) { return Remove(r.GetDrawable()); }
+      public bool Remove(MultiRenderable mr)
       {
+         bool success = true;
          foreach (Drawable d in mr.GetDrawables())
          {
-            Remove(d);
+            if (!Remove(d))
+            {
+               success = false;
+            }
          }
+         return success;
       }
 
       // returns -1 if drawable is not contained inside the renderer
