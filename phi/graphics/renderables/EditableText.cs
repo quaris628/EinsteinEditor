@@ -15,41 +15,52 @@ namespace phi.graphics.renderables
       protected readonly string allowedChars;
       public bool IsEditingEnabled { get; protected set; }
       protected bool isInit;
+      private Dictionary<Keys, Action> subscriptions;
 
       protected EditableText(EditableTextBuilder b)
       {
          this.text = b.text;
          this.allowedChars = b.allowedChars;
          this.IsEditingEnabled = b.isEditingEnabled;
+         this.subscriptions = new Dictionary<Keys, Action>();
       }
 
       public virtual void Initialize()
       {
-         foreach (char c in allowedChars)
-         {
-            foreach (Keys key in CHAR_KEY_MAP[c])
-            {
-               IO.KEYS.Subscribe(() => {
-                  TypeChar(c);
-               }, key);
-            }
-         }
-         IO.KEYS.Subscribe(Backspace, Keys.Back);
          isInit = true;
+         SubscribeChars();
       }
 
-      // warning, will unsubscribe everything from the keys this was subscribed to
-      // (because it's so much easier implementation-wise to use a lambda expression when subscribing)
       public virtual void Uninitialize()
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          isInit = false;
-         IO.RENDERER.Remove(this);
+         UnSubscribeChars();
+         //IO.RENDERER.Remove(this); // commented out b/c I don't think this is necessary? But I haven't checked
+      }
+
+      protected void SubscribeChars()
+      {
          foreach (char c in allowedChars)
          {
             foreach (Keys key in CHAR_KEY_MAP[c])
             {
-               IO.KEYS.UnsubscribeAll(key);
+               Action a = () => { TypeChar(c); };
+               IO.KEYS.Subscribe(a, key);
+               subscriptions[key] = a;
+            }
+         }
+         IO.KEYS.Subscribe(Backspace, Keys.Back);
+      }
+
+      protected void UnSubscribeChars()
+      {
+         foreach (char c in allowedChars)
+         {
+            foreach (Keys key in CHAR_KEY_MAP[c])
+            {
+               IO.KEYS.Unsubscribe(subscriptions[key], key);
+               subscriptions.Remove(key);
             }
          }
          IO.KEYS.Unsubscribe(Backspace, Keys.Back);
