@@ -16,6 +16,7 @@ namespace phi
       public class Window
       {
          public const string TITLE = "Phi Engine";
+         public const string ICON = "icon.ico"; // TODO set up in base phi project
          public const int MAX_WIDTH = 2048;
          public const int MAX_HEIGHT = 1080;
          public const int INITIAL_WIDTH = 1280;
@@ -33,6 +34,7 @@ namespace phi
       public virtual string GetHomeDir() { return HOME_DIR; }
       public virtual string GetResourcesDir() { return RES_DIR; }
       public virtual string GetWindowTitle() { return Window.TITLE; }
+      public virtual string GetWindowIcon() { return Window.ICON; }
       public virtual int GetMaxWindowWidth() { return Window.MAX_WIDTH; }
       public virtual int GetMaxWindowHeight() { return Window.MAX_HEIGHT; }
       public virtual int GetInitialWindowWidth() { return Window.INITIAL_WIDTH; }

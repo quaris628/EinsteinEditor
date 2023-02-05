@@ -34,6 +34,7 @@ namespace phi.control
          IO.FRAME_TIMER.LockedSubscribe(new Random().Next(), RefreshPictureBox);
 
          InitializeComponent();
+         try { Icon = new Icon(config.GetWindowIcon()); } catch (Exception) { }
          Load += new EventHandler(FormLoad);
       }
 

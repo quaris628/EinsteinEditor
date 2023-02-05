@@ -183,6 +183,7 @@ namespace phi
       public virtual string GetHomeDir() { return HOME_DIR; }
       public virtual string GetResourcesDir() { return RES_DIR; }
       public virtual string GetWindowTitle() { return Window.TITLE; }
+      public virtual string GetWindowIcon() { return ""; } // TODO
       public virtual int GetMaxWindowWidth() { return Window.MAX_WIDTH; }
       public virtual int GetMaxWindowHeight() { return Window.MAX_HEIGHT; }
 

@@ -13,6 +13,7 @@ namespace phi
       string GetResourcesDir();
 
       string GetWindowTitle();
+      string GetWindowIcon();
       int GetMaxWindowWidth();
       int GetMaxWindowHeight();
       int GetInitialWindowWidth();
