@@ -42,6 +42,7 @@ What this sucks at doing (known bugs):
  - Resizing to a smaller window size can hide neurons
  - Brain values and last input/output is reset for neurons when saving brain
  - Takes a long time to auto-fix duplicate neuron descriptions for large brains (probably won't be fixed)
+ - Synapse arrows don't always point their tips to the right place just after being created (moving either neuron it's attached to repositions it correctly)
 
 What this will do (planned enhancements):
  [Nothing currently]
@@ -61,6 +62,7 @@ What this might do (future ideas):
  - 3 - Edit neuron descriptions
  - 4 - Edit neuron type
  - 4 - Have positions of neurons persist between saving/loading brain to a bibite (Credit to Lucifer!)
+ - 4 - Save/Load sub-assemblies of neurons and synapses. Could load multiple subassemblies into one brain.
  - 4 - Show detailed info about neurons (e.g. range of outputs for an input neuron, description of the effects of an output neuron, description of hidden neuron's behavior...)
  - 5 - Sentience (?)
  - 5 - Visualization of the flow of values throughout the network (or allow testing specific input values?)
@@ -68,6 +70,7 @@ What this might do (future ideas):
     - Hide/Show certain color groups, or just make transparent
 	- Drag and drop whole color groups
 	- Delete a whole color group
+ - 5 - Write notes/comments inside the diagram (like post-its)
 
  -----
 
