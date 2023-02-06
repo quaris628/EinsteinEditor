@@ -27,6 +27,8 @@ namespace Einstein.ui.editarea
         
         public const float INITIAL_STRENGTH = 1f;
         public const string DEFAULT_STRENGTH = "0";
+        public static readonly Color STRENGTH_BACK_COLOR_UNSELECTED = EditorScene.BACKGROUND_COLOR;
+        public static readonly Color STRENGTH_BACK_COLOR_SELECTED = Color.FromArgb(24, 24, 128);
 
         public BaseSynapse Synapse { get; private set; }
         public NeuronRenderable From { get; private set; }
@@ -51,7 +53,7 @@ namespace Einstein.ui.editarea
             To = to;
             isFinalized = true;
             sset = new SynapseStrengthET(Synapse, line);
-            text = new SelectableEditableText(sset, DEFAULT_STRENGTH);
+            text = new SelectableEditableText(sset, DEFAULT_STRENGTH, STRENGTH_BACK_COLOR_SELECTED, STRENGTH_BACK_COLOR_UNSELECTED);
         }
 
         public SynapseRenderable(EditArea editArea, NeuronRenderable from, int mouseX, int mouseY)
@@ -114,7 +116,7 @@ namespace Einstein.ui.editarea
             isFinalized = true;
 
             sset = new SynapseStrengthET(Synapse, line);
-            text = new SelectableEditableText(sset, DEFAULT_STRENGTH);
+            text = new SelectableEditableText(sset, DEFAULT_STRENGTH, STRENGTH_BACK_COLOR_SELECTED, STRENGTH_BACK_COLOR_UNSELECTED);
             IO.RENDERER.Add(text, TEXT_LAYER);
             text.Initialize();
 

@@ -8,6 +8,7 @@ using phi.graphics.drawables;
 using phi.io;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 
@@ -22,6 +23,7 @@ namespace Einstein
         private static readonly string DEFAULT_SAVE_LOAD_FOLDER =
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
             + "\\AppData\\LocalLow\\The Bibites\\The Bibites";
+        public static readonly Color BACKGROUND_COLOR = Color.FromArgb(24, 24, 24); // A dark, dark gray
         
         // ----------------------------------------------------------------
         //  Data/Constructor
@@ -45,7 +47,7 @@ namespace Einstein
         private string loadPath;
         private int prevWindowWidth;
 
-        public EditorScene(Scene prevScene) : base(prevScene)
+        public EditorScene(Scene prevScene) : base(prevScene, BACKGROUND_COLOR)
         {
             editArea = new EditArea(
                 new JsonBrain(),

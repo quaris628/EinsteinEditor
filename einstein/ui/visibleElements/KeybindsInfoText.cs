@@ -3,6 +3,7 @@ using phi.graphics.drawables;
 using phi.io;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace Einstein.ui.visibleElements
 
         public KeybindsInfoText(int x, int y) : base(
             new TextBuilder(MESSAGE)
+            .WithColor(new SolidBrush(EinsteinPhiConfig.TEXT_COLOR))
             .WithFontSize(10f)
             .WithXY(x, y)
             ) { }

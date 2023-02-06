@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace Einstein
         public new const string RES_DIR = HOME_DIR + "res/";
         public const int PAD = 5;
         public const string VERSION = "v0.2.4 - dev";
+        public static readonly Color TEXT_COLOR = Color.LightGray;
 
         public new class Window : DefaultConfig.Window
         {

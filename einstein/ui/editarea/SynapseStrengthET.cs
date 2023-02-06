@@ -13,18 +13,19 @@ namespace Einstein.ui.editarea
 {
     public class SynapseStrengthET : FloatET
     {
-        public const int SYNAPSE_STRENGTH_MAX_DECIMALS = 2;
+        public const int MAX_DECIMALS = 2;
+        public static readonly Color TEXT_COLOR = EinsteinPhiConfig.TEXT_COLOR;
 
         public BaseSynapse Synapse { get; protected set; }
         private Line line;
         private bool justEnabledEditing;
 
         public SynapseStrengthET(BaseSynapse synapse, Line line)
-            : base(new FloatETBuilder(new Text(""))
+            : base(new FloatETBuilder(new Text.TextBuilder("").WithColor(new SolidBrush(TEXT_COLOR)).Build())
                   .WithEditingDisabled()
                   .WithMinValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MIN)
                   .WithMaxValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MAX)
-                  .WithMaxDecimalPlaces(SYNAPSE_STRENGTH_MAX_DECIMALS))
+                  .WithMaxDecimalPlaces(MAX_DECIMALS))
         {
             Synapse = synapse;
             this.line = line;

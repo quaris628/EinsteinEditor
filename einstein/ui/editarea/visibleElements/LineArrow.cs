@@ -14,8 +14,8 @@ namespace Einstein.ui.editarea.visibleElements
     {
         public const int LINE_WIDTH = 2 * HALF_LINE_WIDTH;
         public const int HALF_LINE_WIDTH = 3;
-        public static readonly Color LINE_BASE_COLOR = Color.LightGray;
-        public static readonly Color LINE_TIP_COLOR = Color.FromArgb(-8355712); // #FF808080
+        public static readonly Color LINE_TIP_COLOR = Color.FromArgb(127, 127, 127);
+        public static readonly Color LINE_BASE_COLOR = Color.FromArgb(64, 64, 64);
 
         protected GradientLine line;
         protected SynapseArrow arrow;

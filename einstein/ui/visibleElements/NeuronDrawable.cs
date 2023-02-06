@@ -15,10 +15,11 @@ namespace Einstein.ui
     public class NeuronDrawable : Drawable
     {
         private const string BASE_DIR = EinsteinPhiConfig.RES_DIR + "neurons/";
-        public const string BASE_IMAGE = BASE_DIR + "NeuronBase.png";
+        public const string BASE_IMAGE = BASE_DIR + "Base.png";
         public const int CIRCLE_RADIUS = 16;
         public const int CIRCLE_DIAMETER = 2 * CIRCLE_RADIUS;
         public const int FONT_SIZE = 10;
+        public static readonly Color FONT_COLOR = EinsteinPhiConfig.TEXT_COLOR;
         public const int DEFAULT_X = 0;
         public const int DEFAULT_Y = 0;
 
@@ -49,6 +50,7 @@ namespace Einstein.ui
                 // don't show any special icon
             }
             desc = new Text.TextBuilder(neuron.Description)
+                .WithColor(new SolidBrush(FONT_COLOR))
                 .WithFontSize(FONT_SIZE).Build();
         }
 
