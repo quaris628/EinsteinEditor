@@ -1,4 +1,5 @@
-﻿using Einstein.model;
+﻿using Einstein.config;
+using Einstein.model;
 using Einstein.ui.editarea.visibleElements;
 using phi.graphics.drawables;
 using phi.graphics.renderables;
@@ -14,7 +15,7 @@ namespace Einstein.ui.editarea
     public class SynapseStrengthET : FloatET
     {
         public const int MAX_DECIMALS = 2;
-        public static readonly Color TEXT_COLOR = EinsteinPhiConfig.TEXT_COLOR;
+        public static readonly Color TEXT_COLOR = EinsteinPhiConfig.COLOR_MODE.Text;
 
         public BaseSynapse Synapse { get; protected set; }
         private Line line;

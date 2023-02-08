@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Einstein.ui;
 using phi;
 
-namespace Einstein
+namespace Einstein.config
 {
     // pass this object to the PhiMain method to set it to be used as the phi config settings
     public class EinsteinPhiConfig : DefaultConfig
@@ -16,7 +16,8 @@ namespace Einstein
         public new const string RES_DIR = HOME_DIR + "res/";
         public const int PAD = 5;
         public const string VERSION = "v0.2.4 - dev";
-        public static readonly Color TEXT_COLOR = Color.LightGray;
+
+        public static ColorScheme COLOR_MODE = new ColorScheme(ColorScheme.Mode.Dark);
 
         public new class Window : DefaultConfig.Window
         {

@@ -1,4 +1,5 @@
-﻿using phi.graphics;
+﻿using Einstein.config;
+using phi.graphics;
 using phi.graphics.drawables;
 using phi.io;
 using System;
@@ -14,8 +15,6 @@ namespace Einstein.ui.editarea.visibleElements
     {
         public const int LINE_WIDTH = 2 * HALF_LINE_WIDTH;
         public const int HALF_LINE_WIDTH = 3;
-        public static readonly Color LINE_TIP_COLOR = Color.FromArgb(127, 127, 127);
-        public static readonly Color LINE_BASE_COLOR = Color.FromArgb(64, 64, 64);
 
         protected GradientLine line;
         protected SynapseArrow arrow;
@@ -23,9 +22,11 @@ namespace Einstein.ui.editarea.visibleElements
 
         public LineArrow(int startX, int startY, int pointX, int pointY)
         {
-            line = new GradientLine(startX, startY, pointX, pointY, LINE_BASE_COLOR, LINE_TIP_COLOR, LINE_WIDTH);
+            line = new GradientLine(startX, startY, pointX, pointY,
+                EinsteinPhiConfig.COLOR_MODE.SynapseBase,
+                EinsteinPhiConfig.COLOR_MODE.SynapseTip, LINE_WIDTH);
             arrow = new SynapseArrow(pointX, pointY, pointX - startX, pointY - startY);
-            arrow.SetPen(new Pen(LINE_TIP_COLOR, LINE_WIDTH));
+            arrow.SetPen(new Pen(EinsteinPhiConfig.COLOR_MODE.SynapseTip, LINE_WIDTH));
         }
 
         public virtual void Initialize(int layer)

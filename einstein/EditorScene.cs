@@ -1,4 +1,5 @@
-﻿using Einstein.model;
+﻿using Einstein.config;
+using Einstein.model;
 using Einstein.model.json;
 using Einstein.ui.editarea;
 using Einstein.ui.menu;
@@ -23,7 +24,6 @@ namespace Einstein
         private static readonly string DEFAULT_SAVE_LOAD_FOLDER =
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
             + "\\AppData\\LocalLow\\The Bibites\\The Bibites";
-        public static readonly Color BACKGROUND_COLOR = Color.FromArgb(24, 24, 24); // A dark, dark gray
         
         // ----------------------------------------------------------------
         //  Data/Constructor
@@ -47,7 +47,7 @@ namespace Einstein
         private string loadPath;
         private int prevWindowWidth;
 
-        public EditorScene(Scene prevScene) : base(prevScene, BACKGROUND_COLOR)
+        public EditorScene(Scene prevScene) : base(prevScene, EinsteinPhiConfig.COLOR_MODE.Background)
         {
             editArea = new EditArea(
                 new JsonBrain(),

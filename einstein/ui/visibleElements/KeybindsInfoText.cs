@@ -1,4 +1,5 @@
-﻿using Einstein.ui.menu;
+﻿using Einstein.config;
+using Einstein.ui.menu;
 using phi.graphics.drawables;
 using phi.io;
 using System;
@@ -24,7 +25,7 @@ namespace Einstein.ui.visibleElements
 
         public KeybindsInfoText(int x, int y) : base(
             new TextBuilder(MESSAGE)
-            .WithColor(new SolidBrush(EinsteinPhiConfig.TEXT_COLOR))
+            .WithColor(new SolidBrush(EinsteinPhiConfig.COLOR_MODE.Text))
             .WithFontSize(10f)
             .WithXY(x, y)
             ) { }

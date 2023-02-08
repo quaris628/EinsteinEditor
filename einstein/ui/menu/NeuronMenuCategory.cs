@@ -1,4 +1,5 @@
 ﻿using Einstein.model;
+using Einstein.config;
 using phi.graphics;
 using phi.graphics.drawables;
 using phi.io;
@@ -15,7 +16,6 @@ namespace Einstein.ui.menu
     {
         public const int OPTION_LAYER = 15;
         public const int BACKGROUND_LAYER = 14;
-        public static readonly Color BACKGROUND_COLOR = Color.FromArgb(192, 48, 48, 48); // A slightly transparent dark gray
 
         public NeuronMenuButton Button { get; protected set; }
         protected SortedDictionary<int, NeuronDrawable> neuronDrawables;
@@ -36,7 +36,7 @@ namespace Einstein.ui.menu
 
             // width and height will be set later
             background = new RectangleDrawable(NeuronMenuButton.WIDTH + 2 * EinsteinPhiConfig.PAD, 0, 0, 0);
-            background.SetPen(new Pen(new SolidBrush(BACKGROUND_COLOR)));
+            background.SetPen(new Pen(new SolidBrush(EinsteinPhiConfig.COLOR_MODE.MenuBackground)));
         }
 
         public virtual void Initialize()

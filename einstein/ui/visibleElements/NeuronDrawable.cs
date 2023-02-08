@@ -1,4 +1,5 @@
-﻿using Einstein.model;
+﻿using Einstein.config;
+using Einstein.model;
 using phi.graphics;
 using phi.graphics.drawables;
 using phi.io;
@@ -15,11 +16,11 @@ namespace Einstein.ui
     public class NeuronDrawable : Drawable
     {
         private const string BASE_DIR = EinsteinPhiConfig.RES_DIR + "neurons/";
-        public const string BASE_IMAGE = BASE_DIR + "Base.png";
+        public static readonly string BASE_IMAGE = BASE_DIR + EinsteinPhiConfig.COLOR_MODE.NeuronBaseFile;
         public const int CIRCLE_RADIUS = 16;
         public const int CIRCLE_DIAMETER = 2 * CIRCLE_RADIUS;
         public const int FONT_SIZE = 10;
-        public static readonly Color FONT_COLOR = EinsteinPhiConfig.TEXT_COLOR;
+        public static readonly Color FONT_COLOR = EinsteinPhiConfig.COLOR_MODE.Text;
         public const int DEFAULT_X = 0;
         public const int DEFAULT_Y = 0;
 
