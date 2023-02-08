@@ -47,7 +47,7 @@ namespace Einstein
         private string loadPath;
         private int prevWindowWidth;
 
-        public EditorScene(Scene prevScene) : base(prevScene, EinsteinPhiConfig.COLOR_MODE.Background)
+        public EditorScene(Scene prevScene) : base(prevScene, EinsteinConfig.COLOR_MODE.Background)
         {
             editArea = new EditArea(
                 new JsonBrain(),
@@ -55,8 +55,8 @@ namespace Einstein
 
             selected = null;
             NeuronMenuButton inputButton = new NeuronMenuButton(
-                EinsteinPhiConfig.PAD,
-                EinsteinPhiConfig.PAD,
+                EinsteinConfig.PAD,
+                EinsteinConfig.PAD,
                 "Input Neurons",
                 onSelectInputs,
                 onDeselectInputs);
@@ -66,8 +66,8 @@ namespace Einstein
                 moveNeuronIntoEditArea);
 
             NeuronMenuButton outputButton = new NeuronMenuButton(
-                EinsteinPhiConfig.PAD,
-                2 * EinsteinPhiConfig.PAD + NeuronMenuButton.HEIGHT,
+                EinsteinConfig.PAD,
+                2 * EinsteinConfig.PAD + NeuronMenuButton.HEIGHT,
                 "Output Neurons",
                 onSelectOutputs,
                 onDeselectOutputs);
@@ -77,8 +77,8 @@ namespace Einstein
                 moveNeuronIntoEditArea);
 
             NeuronMenuButton hiddenButton = new NeuronMenuButton(
-                EinsteinPhiConfig.PAD,
-                3 * EinsteinPhiConfig.PAD + 2 * NeuronMenuButton.HEIGHT,
+                EinsteinConfig.PAD,
+                3 * EinsteinConfig.PAD + 2 * NeuronMenuButton.HEIGHT,
                 "Hidden Neurons",
                 onSelectAdd,
                 onDeselectAdd);
@@ -88,35 +88,35 @@ namespace Einstein
                 createHiddenNeuronInEditArea);
             loadButton = new Button.ButtonBuilder(
                 new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
-                EinsteinPhiConfig.PAD,
-                5 * EinsteinPhiConfig.PAD + 3 * NeuronMenuButton.HEIGHT)
+                EinsteinConfig.PAD,
+                5 * EinsteinConfig.PAD + 3 * NeuronMenuButton.HEIGHT)
                 .withText("Load from Bibite")
                 .withOnClick(loadBrain)
                 .Build();
             saveButton = new Button.ButtonBuilder(
                 new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
-                EinsteinPhiConfig.PAD,
-                6 * EinsteinPhiConfig.PAD + 4 * NeuronMenuButton.HEIGHT)
+                EinsteinConfig.PAD,
+                6 * EinsteinConfig.PAD + 4 * NeuronMenuButton.HEIGHT)
                 .withText("Save to Bibite")
                 .withOnClick(saveBrain)
                 .Build();
             saveMessageText = new SaveMessageText(
-                EinsteinPhiConfig.PAD + NeuronMenuButton.WIDTH / 2,
-                7 * EinsteinPhiConfig.PAD + 5 * NeuronMenuButton.HEIGHT);
+                EinsteinConfig.PAD + NeuronMenuButton.WIDTH / 2,
+                7 * EinsteinConfig.PAD + 5 * NeuronMenuButton.HEIGHT);
             autoArrangeButton = new Button.ButtonBuilder(
                 new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
-                EinsteinPhiConfig.PAD,
-                EinsteinPhiConfig.PAD + saveMessageText.GetY() + saveMessageText.GetHeight())
+                EinsteinConfig.PAD,
+                EinsteinConfig.PAD + saveMessageText.GetY() + saveMessageText.GetHeight())
                 .withText("Auto-Arrange")
                 .withOnClick(editArea.AutoArrange)
                 .Build();
             infoText = new KeybindsInfoText(
-                EinsteinPhiConfig.PAD,
-                20 + EinsteinPhiConfig.PAD + autoArrangeButton.GetY() + autoArrangeButton.GetHeight());
+                EinsteinConfig.PAD,
+                20 + EinsteinConfig.PAD + autoArrangeButton.GetY() + autoArrangeButton.GetHeight());
 
             savePath = null;
             loadPath = null;
-            prevWindowWidth = EinsteinPhiConfig.Window.INITIAL_WIDTH;
+            prevWindowWidth = EinsteinConfig.Window.INITIAL_WIDTH;
         }
 
         // ----------------------------------------------------------------
@@ -416,7 +416,7 @@ namespace Einstein
 
         public string LogDetailsForCrash()
         {
-            string log = "Version = " + EinsteinPhiConfig.VERSION;
+            string log = "Version = " + EinsteinConfig.VERSION;
             log += "\nEditorScene.editArea = " + editArea.LogDetailsForCrash();
             log += "\nselected = ";
             if (selected == null)

@@ -13,9 +13,9 @@ namespace Einstein.ui.menu
     public class NeuronMenuButton : SelectableButton
     {
         public const string UNSELECTED_IMAGE_PATH =
-            EinsteinPhiConfig.RES_DIR + "ButtonBackground.png";
+            EinsteinConfig.RES_DIR + "ButtonBackground.png";
         public const string SELECTED_IMAGE_PATH =
-            EinsteinPhiConfig.RES_DIR + "ButtonBackgroundSelected.png";
+            EinsteinConfig.RES_DIR + "ButtonBackgroundSelected.png";
         public const int WIDTH = 160;
         public const int HEIGHT = 32;
 

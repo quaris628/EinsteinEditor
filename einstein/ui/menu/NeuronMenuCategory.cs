@@ -35,8 +35,8 @@ namespace Einstein.ui.menu
             }
 
             // width and height will be set later
-            background = new RectangleDrawable(NeuronMenuButton.WIDTH + 2 * EinsteinPhiConfig.PAD, 0, 0, 0);
-            background.SetPen(new Pen(new SolidBrush(EinsteinPhiConfig.COLOR_MODE.MenuBackground)));
+            background = new RectangleDrawable(NeuronMenuButton.WIDTH + 2 * EinsteinConfig.PAD, 0, 0, 0);
+            background.SetPen(new Pen(new SolidBrush(EinsteinConfig.COLOR_MODE.MenuBackground)));
         }
 
         public virtual void Initialize()
@@ -95,21 +95,21 @@ namespace Einstein.ui.menu
         public virtual void RepositionOptions()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            int startX = Button.GetX() + Button.GetWidth() + EinsteinPhiConfig.PAD;
+            int startX = Button.GetX() + Button.GetWidth() + EinsteinConfig.PAD;
             int x = startX;
-            int y = EinsteinPhiConfig.PAD;
+            int y = EinsteinConfig.PAD;
             // assumes all neuron option buttons are the same height
-            int deltaY = NeuronDrawable.CIRCLE_DIAMETER + NeuronDrawable.FONT_SIZE + EinsteinPhiConfig.PAD * 2;
+            int deltaY = NeuronDrawable.CIRCLE_DIAMETER + NeuronDrawable.FONT_SIZE + EinsteinConfig.PAD * 2;
             foreach (NeuronDrawable button in neuronDrawables.Values)
             {
                 int descWidth = button.GetDescriptionText().GetWidth();
-                if (x + descWidth + EinsteinPhiConfig.PAD > IO.WINDOW.GetWidth())
+                if (x + descWidth + EinsteinConfig.PAD > IO.WINDOW.GetWidth())
                 {
                     x = startX;
                     y += deltaY;
                 }
                 button.SetCircleCenterXY(x + descWidth / 2, y + NeuronDrawable.CIRCLE_RADIUS);
-                x += descWidth + EinsteinPhiConfig.PAD;
+                x += descWidth + EinsteinConfig.PAD;
             }
             background.SetHeight(y + deltaY);
             background.SetWidth(IO.WINDOW.GetWidth() - startX);

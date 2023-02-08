@@ -28,7 +28,7 @@ namespace Einstein
             try
             {
                 entryScene = new EditorScene(null);
-                PhiMain.Main(entryScene, new EinsteinPhiConfig());
+                PhiMain.Main(entryScene, new EinsteinConfig());
             }
             catch (Exception e)
             {
@@ -39,7 +39,7 @@ namespace Einstein
                     e = e.InnerException;
                 }
                 IO.POPUPS.HandleCrash(e,
-                   EinsteinPhiConfig.Window.TITLE,
+                   EinsteinConfig.Window.TITLE,
                    CRASH_LOG_FILEPATH,
                    "https://github.com/quaris628/EinsteinEditor/issues/new",
                    extraLog);

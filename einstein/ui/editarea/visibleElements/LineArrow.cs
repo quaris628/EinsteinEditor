@@ -23,10 +23,10 @@ namespace Einstein.ui.editarea.visibleElements
         public LineArrow(int startX, int startY, int pointX, int pointY)
         {
             line = new GradientLine(startX, startY, pointX, pointY,
-                EinsteinPhiConfig.COLOR_MODE.SynapseBase,
-                EinsteinPhiConfig.COLOR_MODE.SynapseTip, LINE_WIDTH);
+                EinsteinConfig.COLOR_MODE.SynapseBase,
+                EinsteinConfig.COLOR_MODE.SynapseTip, LINE_WIDTH);
             arrow = new SynapseArrow(pointX, pointY, pointX - startX, pointY - startY);
-            arrow.SetPen(new Pen(EinsteinPhiConfig.COLOR_MODE.SynapseTip, LINE_WIDTH));
+            arrow.SetPen(new Pen(EinsteinConfig.COLOR_MODE.SynapseTip, LINE_WIDTH));
         }
 
         public virtual void Initialize(int layer)

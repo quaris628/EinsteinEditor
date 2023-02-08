@@ -15,7 +15,7 @@ namespace Einstein.ui.editarea
     public class SynapseStrengthET : FloatET
     {
         public const int MAX_DECIMALS = 2;
-        public static readonly Color TEXT_COLOR = EinsteinPhiConfig.COLOR_MODE.Text;
+        public static readonly Color TEXT_COLOR = EinsteinConfig.COLOR_MODE.Text;
 
         public BaseSynapse Synapse { get; protected set; }
         private Line line;

@@ -410,7 +410,7 @@ namespace Einstein.ui.editarea
         }
         public static int GetX()
         {
-            return NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD * 2;
+            return NeuronMenuButton.WIDTH + EinsteinConfig.PAD * 2;
         }
         public static int GetY()
         {

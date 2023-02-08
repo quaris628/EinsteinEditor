@@ -10,7 +10,7 @@ using phi;
 namespace Einstein.config
 {
     // pass this object to the PhiMain method to set it to be used as the phi config settings
-    public class EinsteinPhiConfig : DefaultConfig
+    public class EinsteinConfig : DefaultConfig
     {
         public new const string HOME_DIR = "../";
         public new const string RES_DIR = HOME_DIR + "res/";

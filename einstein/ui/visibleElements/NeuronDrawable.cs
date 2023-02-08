@@ -15,12 +15,12 @@ namespace Einstein.ui
 {
     public class NeuronDrawable : Drawable
     {
-        private const string BASE_DIR = EinsteinPhiConfig.RES_DIR + "neurons/";
-        public static readonly string BASE_IMAGE = BASE_DIR + EinsteinPhiConfig.COLOR_MODE.NeuronBaseFile;
+        private const string BASE_DIR = EinsteinConfig.RES_DIR + "neurons/";
+        public static readonly string BASE_IMAGE = BASE_DIR + EinsteinConfig.COLOR_MODE.NeuronBaseFile;
         public const int CIRCLE_RADIUS = 16;
         public const int CIRCLE_DIAMETER = 2 * CIRCLE_RADIUS;
         public const int FONT_SIZE = 10;
-        public static readonly Color FONT_COLOR = EinsteinPhiConfig.COLOR_MODE.Text;
+        public static readonly Color FONT_COLOR = EinsteinConfig.COLOR_MODE.Text;
         public const int DEFAULT_X = 0;
         public const int DEFAULT_Y = 0;
 

@@ -25,7 +25,7 @@ namespace Einstein.ui.visibleElements
 
         public KeybindsInfoText(int x, int y) : base(
             new TextBuilder(MESSAGE)
-            .WithColor(new SolidBrush(EinsteinPhiConfig.COLOR_MODE.Text))
+            .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
             .WithFontSize(10f)
             .WithXY(x, y)
             ) { }

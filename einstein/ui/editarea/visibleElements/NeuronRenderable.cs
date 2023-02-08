@@ -14,8 +14,8 @@ namespace Einstein.ui.editarea
 {
     public class NeuronRenderable : Draggable
     {
-        public const int SPAWN_X = 250 + NeuronMenuButton.WIDTH + EinsteinPhiConfig.PAD;
-        public const int SPAWN_Y = 200 + (NeuronMenuButton.HEIGHT + EinsteinPhiConfig.PAD) * 3;
+        public const int SPAWN_X = 250 + NeuronMenuButton.WIDTH + EinsteinConfig.PAD;
+        public const int SPAWN_Y = 200 + (NeuronMenuButton.HEIGHT + EinsteinConfig.PAD) * 3;
 
         public BaseNeuron Neuron { get; private set; }
         public NeuronDrawable NeuronDrawable { get { return (NeuronDrawable)GetDrawable(); } }

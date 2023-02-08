@@ -53,8 +53,8 @@ namespace Einstein.ui.editarea
             isFinalized = true;
             sset = new SynapseStrengthET(Synapse, line);
             text = new SelectableEditableText(sset, DEFAULT_STRENGTH,
-                EinsteinPhiConfig.COLOR_MODE.SynapseTextBackgroundSelected,
-                EinsteinPhiConfig.COLOR_MODE.SynapseTextBackgroundUnselected);
+                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundSelected,
+                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundUnselected);
         }
 
         public SynapseRenderable(EditArea editArea, NeuronRenderable from, int mouseX, int mouseY)
@@ -118,8 +118,8 @@ namespace Einstein.ui.editarea
 
             sset = new SynapseStrengthET(Synapse, line);
             text = new SelectableEditableText(sset, DEFAULT_STRENGTH,
-                EinsteinPhiConfig.COLOR_MODE.SynapseTextBackgroundSelected,
-                EinsteinPhiConfig.COLOR_MODE.SynapseTextBackgroundUnselected);
+                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundSelected,
+                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundUnselected);
             IO.RENDERER.Add(text, TEXT_LAYER);
             text.Initialize();
 
