@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="config\ColorScheme.cs" />
     <Compile Include="EinsteinMain.cs" />
-    <Compile Include="config\EinsteinPhiConfig.cs" />
+    <Compile Include="config\EinsteinConfig.cs" />
     <Compile Include="EditorScene.cs" />
     <Compile Include="model\BaseBrain.cs" />
     <Compile Include="model\BaseNeuron.cs" />
@@ -56,19 +56,19 @@
     <Compile Include="model\NeuronType.cs" />
     <Compile Include="ui\editarea\EditArea.cs" />
     <Compile Include="ui\editarea\SynapseStrengthET.cs" />
-    <Compile Include="ui\editarea\visibleElements\GradientLine.cs" />
-    <Compile Include="ui\editarea\visibleElements\NeuronRenderable.cs" />
-    <Compile Include="ui\editarea\visibleElements\LineArrow.cs" />
-    <Compile Include="ui\editarea\visibleElements\SynapseArrow.cs" />
-    <Compile Include="ui\editarea\visibleElements\SynapseRenderable.cs" />
+    <Compile Include="ui\editarea\GradientLine.cs" />
+    <Compile Include="ui\editarea\NeuronRenderable.cs" />
+    <Compile Include="ui\editarea\LineArrow.cs" />
+    <Compile Include="ui\editarea\SynapseArrow.cs" />
+    <Compile Include="ui\editarea\SynapseRenderable.cs" />
     <Compile Include="ui\menu\HiddenNeuronMenuCategory.cs" />
     <Compile Include="ui\menu\IONeuronMenuCategory.cs" />
     <Compile Include="ui\menu\NeuronMenuCategory.cs" />
-    <Compile Include="ui\menu\visibleElements\NeuronMenuButton.cs" />
-    <Compile Include="ui\visibleElements\KeybindsInfoText.cs" />
-    <Compile Include="ui\visibleElements\NeuronDrawable.cs" />
+    <Compile Include="ui\menu\NeuronMenuButton.cs" />
+    <Compile Include="ui\menu\KeybindsInfoText.cs" />
+    <Compile Include="ui\NeuronDrawable.cs" />
     <Compile Include="config\BibiteVersionConfig.cs" />
-    <Compile Include="ui\visibleElements\SaveMessageText.cs" />
+    <Compile Include="ui\menu\SaveMessageText.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\phi\phi.csproj">

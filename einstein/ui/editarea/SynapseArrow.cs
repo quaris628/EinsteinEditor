@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Einstein.ui.editarea.visibleElements
+namespace Einstein.ui.editarea
 {
     public class SynapseArrow : PenDrawable 
     {

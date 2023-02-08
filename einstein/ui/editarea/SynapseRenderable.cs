@@ -1,7 +1,6 @@
 ﻿using Einstein.config;
 using Einstein.model;
 using Einstein.model.json;
-using Einstein.ui.editarea.visibleElements;
 using phi.graphics;
 using phi.graphics.drawables;
 using phi.graphics.renderables;

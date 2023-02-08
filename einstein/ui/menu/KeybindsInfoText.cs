@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Einstein.ui.visibleElements
+namespace Einstein.ui
 {
     public class KeybindsInfoText : Text
     {

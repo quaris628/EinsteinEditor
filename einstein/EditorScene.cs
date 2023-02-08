@@ -1,9 +1,9 @@
 ﻿using Einstein.config;
 using Einstein.model;
 using Einstein.model.json;
+using Einstein.ui;
 using Einstein.ui.editarea;
 using Einstein.ui.menu;
-using Einstein.ui.visibleElements;
 using phi.control;
 using phi.graphics.drawables;
 using phi.io;
