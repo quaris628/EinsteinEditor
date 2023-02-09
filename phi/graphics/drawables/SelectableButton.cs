@@ -24,8 +24,14 @@ namespace phi.graphics.drawables
          : base(unselectedButton.Build().GetBoundaryRectangle()) {
          onSelect = new List<Action>();
          onDeselect = new List<Action>();
-         onSelect.Add(unselectedButton.GetOnClick());
-         onDeselect.Add(selectedButton.GetOnClick());
+         if (unselectedButton.GetOnClick() != null)
+         {
+            onSelect.Add(unselectedButton.GetOnClick());
+         }
+         if (selectedButton.GetOnClick() != null)
+         {
+            onDeselect.Add(selectedButton.GetOnClick());
+         }
          unselectedButton.withOnClick(Select);
          selectedButton.withOnClick(Deselect);
          this.unselectedButton = unselectedButton.Build();
@@ -49,7 +55,7 @@ namespace phi.graphics.drawables
          unselectedButton.Uninitialize();
       }
 
-      public void Select()
+      public virtual void Select()
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          selectedButton.SetDisplaying(true);
@@ -61,7 +67,7 @@ namespace phi.graphics.drawables
                action.Invoke();
          }
       }
-      public void Deselect()
+      public virtual void Deselect()
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          selectedButton.SetDisplaying(false);
