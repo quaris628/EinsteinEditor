@@ -45,7 +45,7 @@ What this sucks at doing (known bugs):
  - Synapse arrows don't always point their tips to the right place just after being created (moving either neuron it's attached to repositions it correctly)
 
 What this will do (planned enhancements):
- [Nothing currently]
+ - Allow connecting a neuron to itself
 
 What this might do (future ideas):
   Each feature has an estimated difficultly to create (1-5).
@@ -56,9 +56,10 @@ What this might do (future ideas):
  - 2 - Improve auto-arrangement (in general)
  - 2 - Look pretty (in general)
  - 2 - Allow multiple instances of just the contstant input neuron (same neuron in the bibite, two or more icons floating around in the diagram)
- - 3 - Zoom
- - 3 - Stagger the spawn-in location of neurons (how?)
  - 3? - Allow multiple instances of all input neurons (same neuron in the bibite, two or more icons floating around in the diagram)
+ - 3 - Zoom
+ - 3 - Toggle darkmode/lightmode
+ - 3 - Stagger the spawn-in location of neurons (how?)
  - 3 - Edit neuron descriptions
  - 4 - Edit neuron type
  - 4 - Have positions of neurons persist between saving/loading brain to a bibite (Credit to Lucifer!)
