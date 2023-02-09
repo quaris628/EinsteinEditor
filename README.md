@@ -4,11 +4,11 @@ An artful way to edit your bibite's brains!
 To download/install:
  1. Go to https://github.com/quaris628/EinsteinEditor/releases/
  2. Select a version
- 3. Download the EinsteinEditor.zip file
+ 3. Download the EinsteinEditor_vX_X_X.zip file
  4. Exract the zip file to wherever you like (open your downloads folder, right-click the file > "Extract All..." > Select a location > Extract)
 
 To use:
- 1. Run /bin/Einstein.exe
+ 1. Run /bin/Einstein.exe (or use the shortcut in the main folder)
    
 Note: Windows will warn you about running this file because I'm not a verified publisher. You'll just have to trust me that I didn't write anything malicious in this.
 (And if it's any comfort, I do virus scans on all released files.)
