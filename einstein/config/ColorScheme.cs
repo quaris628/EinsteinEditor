@@ -45,7 +45,7 @@ namespace Einstein.config
                 NeuronBaseFile = "BaseDark.png";
                 SynapseBase = Color.FromArgb(64, 64, 64);
                 SynapseTip = Color.FromArgb(127, 127, 127);
-                SynapseTextBackgroundSelected = Color.FromArgb(24, 24, 128);
+                SynapseTextBackgroundSelected = Color.FromArgb(64, 64, 128);
                 SynapseTextBackgroundUnselected = Background;
             }
         }
