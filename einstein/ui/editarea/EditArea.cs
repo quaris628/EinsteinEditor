@@ -285,8 +285,8 @@ namespace Einstein.ui.editarea
                 layerToTotalNeurons[layer] = layerToTotalNeurons.ContainsKey(layer) ? layerToTotalNeurons[layer] + 1 : 1;
             }
 
-            int totalWidth = EditArea.GetWidth();
-            int totalHeight = EditArea.GetHeight();
+            int totalWidth = EditArea.GetWidth() - NeuronDrawable.CIRCLE_DIAMETER;
+            int totalHeight = EditArea.GetHeight() - NeuronDrawable.CIRCLE_DIAMETER;
 
             // TODO? find a better vertical order for each layer to have its neurons be put in?
 
@@ -296,7 +296,7 @@ namespace Einstein.ui.editarea
             // used floats to not let rounding make everything get slightly further off from ideal
             // positions the further down and right you go
             float eachWidth = totalWidth / (float)layerToTotalNeurons.Count;
-            float x = EditArea.GetX() - eachWidth / 2;
+            float x = EditArea.GetX() + NeuronDrawable.CIRCLE_RADIUS - eachWidth / 2;
             List<int> sortedLayers = layerToTotalNeurons.Keys.ToList();
             sortedLayers.Sort();
             foreach (int layer in sortedLayers)
@@ -304,7 +304,7 @@ namespace Einstein.ui.editarea
                 if (layerToTotalNeurons[layer] == 0) { continue; }
                 x += eachWidth;
                 float eachHeight = totalHeight / (float)layerToTotalNeurons[layer];
-                float y = EditArea.GetY() - eachHeight / 2;
+                float y = EditArea.GetY() + NeuronDrawable.CIRCLE_RADIUS - eachHeight / 2;
 
                 // maybe there's a more efficient way but meh, "this is fine"
                 foreach (BaseNeuron neuron in Brain.Neurons)
