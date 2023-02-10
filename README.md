@@ -1,19 +1,21 @@
 # EinsteinEditor
 An artful way to edit your bibite's brains!
 
-To download/install:
+__To download/install:__
  1. Go to https://github.com/quaris628/EinsteinEditor/releases/
  2. Select a version
  3. Download the EinsteinEditor_vX_X_X.zip file
  4. Exract the zip file to wherever you like (open your downloads folder, right-click the file > "Extract All..." > Select a location > Extract)
 
-To use:
+__To use:__
  1. Run /bin/Einstein.exe (or use the shortcut in the main folder)
-   
-Note: Windows will warn you about running this file because I'm not a verified publisher. You'll just have to trust me that I didn't write anything malicious in this.
-(And if it's any comfort, I do virus scans on all released files.)
+    - Note: Windows will warn you about running this file because I'm not a verified publisher. You'll just have to trust me that I didn't write anything malicious in this. (And if it's any comfort, I do virus scans on all released files.)
+    - If you want a shortcut on your desktop, right-click Einstein.exe in the file explorer > "Send To" > "Desktop (Create Shortcut)"
 
-If you want a shortcut on your desktop, right-click Einstein.exe in the file explorer > "Send To" > "Desktop (Create Shortcut)"
+__To report bugs:__
+ 1. Create an issue here: https://github.com/quaris628/EinsteinEditor/issues/
+ 2. OR message me on reddit: u/quaris628
+ 3. OR email me: quaris314@gmail.com
 
  -----
 
