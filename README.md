@@ -29,6 +29,7 @@ What this can do:
  - Create/Delete synapses
  - Edit/View synapse strengths
  - Drag neurons around the brain editor area
+ - Zoom in and out, and pan around the diagram
  - Auto-arrange neurons in a cleaner arrangement
  - Gracefully handle window resizing (up to 2048x1080)
  - Auto-fix non-unique neuron descriptions
@@ -41,15 +42,14 @@ What this can't do (and probably never will):
 
 What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
- - Resizing to a smaller window size can hide neurons
  - Brain values and last input/output is reset for neurons when saving brain
  - Takes a long time to auto-fix duplicate neuron descriptions for large brains (probably won't be fixed)
  - Synapse arrows don't always point their tips to the right place just after being created (moving either neuron it's attached to repositions it correctly)
 
 What this will do (planned enhancements):
  - Allow connecting a neuron to itself
- - Dragging background
  - Buttons to control zoom
+ - Move keybinds info under a help button (and allow displaying it alongside the rest of the program)
 
 What this might do (future ideas):
   Each feature has an estimated difficultly to create (1-5).
