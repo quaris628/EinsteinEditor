@@ -21,7 +21,7 @@ namespace Einstein.config
 
         public new class Window : DefaultConfig.Window
         {
-            public new const string TITLE = "Einstien Editor " + VERSION;
+            public new const string TITLE = "Einstein Editor " + VERSION;
             public new const string ICON = RES_DIR + "einstein.ico";
         }
         public new class Render : DefaultConfig.Render

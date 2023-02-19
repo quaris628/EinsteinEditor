@@ -27,6 +27,9 @@ namespace Einstein.ui.editarea
         private int nextHiddenNeuronIndex;
         private bool justFinishedSynapse;
         private int zoomLevel;
+        private bool shiftView;
+        private int shiftViewInitX;
+        private int shiftViewInitY;
 
         public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove)
         {
@@ -38,6 +41,25 @@ namespace Einstein.ui.editarea
             justFinishedSynapse = false;
             Brain = brain;
             zoomLevel = 0;
+            shiftView = false;
+        }
+
+        public void Initialize()
+        {
+            IO.MOUSE.MID_SCROLL_UP.Subscribe(ZoomIn);
+            IO.MOUSE.MID_SCROLL_DOWN.Subscribe(ZoomOut);
+            IO.MOUSE.LEFT_DOWN.Subscribe(OnLeftDown);
+            IO.MOUSE.MOVE.Subscribe(OnMouseMove);
+            IO.MOUSE.LEFT_UP.Subscribe(OnLeftUp);
+        }
+
+        public void Uninitialize()
+        {
+            IO.MOUSE.MID_SCROLL_UP.Unsubscribe(ZoomIn);
+            IO.MOUSE.MID_SCROLL_DOWN.Unsubscribe(ZoomOut);
+            IO.MOUSE.LEFT_DOWN.Unsubscribe(OnLeftDown);
+            IO.MOUSE.MOVE.Unsubscribe(OnMouseMove);
+            IO.MOUSE.LEFT_UP.Unsubscribe(OnLeftUp);
         }
 
         // ----- Manage neurons -----
@@ -208,6 +230,44 @@ namespace Einstein.ui.editarea
             AutoArrange();
         }
 
+        // ----- Background drag -----
+
+        private void OnLeftDown(int x, int y)
+        {
+            if (shiftView || x < GetX()) { return; } // if click not in edit area
+            shiftView = true;
+            shiftViewInitX = x;
+            shiftViewInitY = y;
+        }
+
+        private void OnMouseMove(int x, int y)
+        {
+            if (!shiftView) { return; }
+            int dx = x - shiftViewInitX;
+            int dy = y - shiftViewInitY;
+            shiftViewInitX = x;
+            shiftViewInitY = y;
+            ShiftView(dx, dy);
+        }
+
+        private void OnLeftUp(int x, int y)
+        {
+            shiftView = false;
+        }
+
+        public void ShiftView(int dx, int dy)
+        {
+            if (dx == 0 && dy == 0) { return; }
+            Console.WriteLine("Shift view dx: " + dx + " dy: " + dy);
+            foreach (NeuronRenderable nr in neuronIndexToNR.Values)
+            {
+                float x = nr.NeuronDrawable.GetCircleCenterXfloat();
+                float y = nr.NeuronDrawable.GetCircleCenterYfloat();
+                nr.NeuronDrawable.SetCircleCenterXY(x + dx, y + dy);
+                nr.Reposition();
+            }
+        }
+
         // ----- Zoom -----
 
         public void ZoomIn(int x, int y)
@@ -219,11 +279,11 @@ namespace Einstein.ui.editarea
                 foreach (NeuronRenderable nr in neuronIndexToNR.Values)
                 {
                     // Make the distance to the mouse pointer a fraction of what it was
-                    float dx = x - nr.NeuronDrawable.GetCircleCenterXfloat();
-                    float dy = y - nr.NeuronDrawable.GetCircleCenterYfloat();
+                    float dx = nr.NeuronDrawable.GetCircleCenterXfloat() - x;
+                    float dy = nr.NeuronDrawable.GetCircleCenterYfloat() - y;
                     dx *= ZOOM_IN_RATIO;
                     dy *= ZOOM_IN_RATIO;
-                    nr.NeuronDrawable.SetCircleCenterXY((int)(x - dx + 0.5f), (int)(y - dy + 0.5f));
+                    nr.NeuronDrawable.SetCircleCenterXY((int)(x + dx + 0.5f), (int)(y + dy + 0.5f));
                     nr.Reposition();
                 }
             }
@@ -232,11 +292,11 @@ namespace Einstein.ui.editarea
                 foreach (NeuronRenderable nr in neuronIndexToNR.Values)
                 {
                     // Make the distance to the mouse pointer a fraction of what it was
-                    float dx = x - nr.NeuronDrawable.GetCircleCenterXfloat();
-                    float dy = y - nr.NeuronDrawable.GetCircleCenterYfloat();
+                    float dx = nr.NeuronDrawable.GetCircleCenterXfloat() - x;
+                    float dy = nr.NeuronDrawable.GetCircleCenterYfloat() - y;
                     dx *= ZOOM_IN_RATIO;
                     dy *= ZOOM_IN_RATIO;
-                    nr.NeuronDrawable.SetCircleCenterXY(x - dx, y - dy);
+                    nr.NeuronDrawable.SetCircleCenterXY(x + dx, y + dy);
                     nr.Reposition();
                 }
             }
@@ -249,11 +309,11 @@ namespace Einstein.ui.editarea
             foreach (NeuronRenderable nr in neuronIndexToNR.Values)
             {
                 // Make the distance to the mouse pointer a fraction of what it was
-                float dx = x - nr.NeuronDrawable.GetCircleCenterXfloat();
-                float dy = y - nr.NeuronDrawable.GetCircleCenterYfloat();
+                float dx = nr.NeuronDrawable.GetCircleCenterXfloat() - x;
+                float dy = nr.NeuronDrawable.GetCircleCenterYfloat() - y;
                 dx *= ZOOM_OUT_RATIO;
                 dy *= ZOOM_OUT_RATIO;
-                nr.NeuronDrawable.SetCircleCenterXY(x - dx, y - dy);
+                nr.NeuronDrawable.SetCircleCenterXY(x + dx, y + dy);
                 nr.Reposition();
             }
         }
@@ -401,10 +461,6 @@ namespace Einstein.ui.editarea
                     (layers[neuron.Index] & (int)LayerTypeMasks.GetType) != (prevLayer & (int)LayerTypeMasks.GetType) ||
                     prevLayer <= layers[neuron.Index]))
                 {
-                    Console.WriteLine("Assigning into layer "
-                        + (LayerType)(prevLayer & (int)LayerTypeMasks.GetType) +
-                        " / " + ((prevLayer & (int)LayerTypeMasks.GetLayer) - (int)LayerTypeMasks.MidValue) +
-                        " the neuron " + neuron);
                     layers[neuron.Index] = prevLayer;
                     dontAssign.Add(neuron.Index);
                     AssignLayersBefore(layers, neuron, prevLayer, dontAssign);
@@ -431,10 +487,6 @@ namespace Einstein.ui.editarea
                     (layers[neuron.Index] & (int)LayerTypeMasks.GetType) != (nextLayer & (int)LayerTypeMasks.GetType) ||
                     layers[neuron.Index] <= nextLayer))
                 {
-                    Console.WriteLine("Assigning into layer "
-                        + (LayerType)(nextLayer & (int)LayerTypeMasks.GetType) +
-                        " / " + (nextLayer & (int)LayerTypeMasks.GetLayer) +
-                        " the neuron " + neuron);
                     layers[neuron.Index] = nextLayer;
                     dontAssign.Add(neuron.Index);
                     AssignLayersAfter(layers, neuron, nextLayer, dontAssign);
