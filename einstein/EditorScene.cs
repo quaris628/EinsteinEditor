@@ -23,8 +23,8 @@ namespace Einstein
 
         private static readonly string DEFAULT_SAVE_LOAD_FOLDER =
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
-            + "\\AppData\\LocalLow\\The Bibites\\The Bibites";
-        
+            + "\\AppData\\LocalLow\\The Bibites\\The Bibites\\Bibites";
+
         // ----------------------------------------------------------------
         //  Data/Constructor
         // ----------------------------------------------------------------
@@ -41,11 +41,12 @@ namespace Einstein
         private SaveMessageText saveMessageText;
         private Button autoArrangeButton;
         private KeybindsInfoText infoText;
-        
+        private ZoomControls zoomControls;
 
         private string savePath;
         private string loadPath;
         private int prevWindowWidth;
+        private int prevWindowHeight;
 
         public EditorScene(Scene prevScene) : base(prevScene, EinsteinConfig.COLOR_MODE.Background)
         {
@@ -113,10 +114,12 @@ namespace Einstein
             infoText = new KeybindsInfoText(
                 EinsteinConfig.PAD,
                 20 + EinsteinConfig.PAD + autoArrangeButton.GetY() + autoArrangeButton.GetHeight());
+            zoomControls = new ZoomControls(editArea);
 
             savePath = null;
             loadPath = null;
             prevWindowWidth = EinsteinConfig.Window.INITIAL_WIDTH;
+            prevWindowHeight = EinsteinConfig.Window.INITIAL_HEIGHT;
         }
 
         // ----------------------------------------------------------------
@@ -132,6 +135,7 @@ namespace Einstein
             loadButton.Initialize();
             saveButton.Initialize();
             autoArrangeButton.Initialize();
+            zoomControls.Initialize();
             IO.RENDERER.Add(loadButton);
             IO.RENDERER.Add(saveButton);
             IO.RENDERER.Add(autoArrangeButton);
@@ -148,6 +152,7 @@ namespace Einstein
             loadButton.Uninitialize();
             saveButton.Uninitialize();
             autoArrangeButton.Uninitialize();
+            zoomControls.Uninitialize();
             IO.RENDERER.Remove(loadButton);
             IO.RENDERER.Remove(saveButton);
             IO.RENDERER.Remove(autoArrangeButton);
@@ -423,6 +428,10 @@ namespace Einstein
                 input.RepositionOptions();
                 output.RepositionOptions();
                 hidden.RepositionOptions();
+            }
+            if (IO.WINDOW.GetHeight() != prevWindowHeight)
+            {
+                zoomControls.Reposition();
             }
         }
 

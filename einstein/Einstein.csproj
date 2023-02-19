@@ -66,6 +66,7 @@
     <Compile Include="ui\menu\NeuronMenuCategory.cs" />
     <Compile Include="ui\menu\NeuronMenuButton.cs" />
     <Compile Include="ui\menu\KeybindsInfoText.cs" />
+    <Compile Include="ui\menu\ZoomControls.cs" />
     <Compile Include="ui\NeuronDrawable.cs" />
     <Compile Include="config\BibiteVersionConfig.cs" />
     <Compile Include="ui\menu\SaveMessageText.cs" />

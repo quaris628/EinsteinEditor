@@ -67,6 +67,13 @@ namespace Einstein.ui.editarea
             editArea.StartSynapse(this, x, y);
         }
 
+        protected override void MyMouseDown(int x, int y)
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            if (isRemoved) { return; }
+            editArea.DisableShiftingView();
+        }
+
         protected override void MyMouseMove(int x, int y)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
