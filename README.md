@@ -48,10 +48,13 @@ What this sucks at doing (known bugs):
 
 What this will do (planned enhancements):
  - Allow connecting a neuron to itself
+ - Dragging background
+ - Buttons to control zoom
 
 What this might do (future ideas):
   Each feature has an estimated difficultly to create (1-5).
   You can vote for these features here: https://strawpoll.com/polls/B2ZBE3YYpgJ
+ - Selecting neurons?
  - 1 - A clear-the-brain button
  - 1 - Have the default save/load folder location persist between closing and reopening the program
  - 2 - Keyboard shortcuts (in general)
