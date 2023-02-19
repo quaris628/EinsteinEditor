@@ -29,6 +29,8 @@ namespace Einstein.ui
         private Sprite baseSprite;
         private Sprite icon;
         private Text desc;
+        private float circleCenterX;
+        private float circleCenterY;
 
         public NeuronDrawable(int index, NeuronType type) :
             this(new BaseNeuron(index, type), DEFAULT_X, DEFAULT_Y) { }
@@ -53,15 +55,23 @@ namespace Einstein.ui
             desc = new Text.TextBuilder(neuron.Description)
                 .WithColor(new SolidBrush(FONT_COLOR))
                 .WithFontSize(FONT_SIZE).Build();
+            circleCenterX = x + CIRCLE_RADIUS;
+            circleCenterY = y + CIRCLE_RADIUS;
         }
 
         public Text GetDescriptionText() { return desc; }
 
         public int GetCircleCenterX() { return GetX() + CIRCLE_RADIUS; }
         public int GetCircleCenterY() { return GetY() + CIRCLE_RADIUS; }
-        public virtual void SetCircleCenterX(int x) { SetX(x - CIRCLE_RADIUS); }
-        public virtual void SetCircleCenterY(int y) { SetY(y - CIRCLE_RADIUS); }
-        public virtual void SetCircleCenterXY(int x, int y) { SetXY(x - CIRCLE_RADIUS, y - CIRCLE_RADIUS); }
+        public virtual void SetCircleCenterX(int x) { SetX(x - CIRCLE_RADIUS); circleCenterX = x + CIRCLE_RADIUS; }
+        public virtual void SetCircleCenterY(int y) { SetY(y - CIRCLE_RADIUS); circleCenterY = y + CIRCLE_RADIUS; }
+        public virtual void SetCircleCenterXY(int x, int y) { SetCircleCenterX(x); SetCircleCenterY(y); }
+
+        public float GetCircleCenterXfloat() { return circleCenterX; }
+        public float GetCircleCenterYfloat() { return circleCenterY; }
+        public virtual void SetCircleCenterX(float x) { circleCenterX = x; SetX((int)(x - CIRCLE_RADIUS)); }
+        public virtual void SetCircleCenterY(float y) { circleCenterY = y; SetY((int)(y - CIRCLE_RADIUS)); }
+        public virtual void SetCircleCenterXY(float x, float y) { SetCircleCenterX(x); SetCircleCenterY(y); }
 
         protected override void DrawAt(Graphics g, int x, int y)
         {

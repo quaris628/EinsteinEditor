@@ -12,6 +12,10 @@ namespace Einstein.ui.editarea
 {
     public class EditArea
     {
+        // must be exact reciprocals of each other
+        public const float ZOOM_IN_RATIO = 1.25f;
+        public const float ZOOM_OUT_RATIO = 0.8f;
+
         public BaseBrain Brain { get; private set; }
 
         private Dictionary<int, NeuronRenderable> neuronIndexToNR;
@@ -22,6 +26,7 @@ namespace Einstein.ui.editarea
         private SynapseRenderable startedSynapse;
         private int nextHiddenNeuronIndex;
         private bool justFinishedSynapse;
+        private int zoomLevel;
 
         public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove)
         {
@@ -32,6 +37,7 @@ namespace Einstein.ui.editarea
             nextHiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
             justFinishedSynapse = false;
             Brain = brain;
+            zoomLevel = 0;
         }
 
         // ----- Manage neurons -----
@@ -202,6 +208,62 @@ namespace Einstein.ui.editarea
             AutoArrange();
         }
 
+        // ----- Zoom -----
+
+        public void ZoomIn(int x, int y)
+        {
+            if (x < GetX()) { return; }
+            zoomLevel++;
+            if (zoomLevel == 0)
+            {
+                foreach (NeuronRenderable nr in neuronIndexToNR.Values)
+                {
+                    // Make the distance to the mouse pointer a fraction of what it was
+                    float dx = x - nr.NeuronDrawable.GetCircleCenterXfloat();
+                    float dy = y - nr.NeuronDrawable.GetCircleCenterYfloat();
+                    dx *= ZOOM_IN_RATIO;
+                    dy *= ZOOM_IN_RATIO;
+                    nr.NeuronDrawable.SetCircleCenterXY((int)(x - dx + 0.5f), (int)(y - dy + 0.5f));
+                    nr.Reposition();
+                }
+            }
+            else
+            {
+                foreach (NeuronRenderable nr in neuronIndexToNR.Values)
+                {
+                    // Make the distance to the mouse pointer a fraction of what it was
+                    float dx = x - nr.NeuronDrawable.GetCircleCenterXfloat();
+                    float dy = y - nr.NeuronDrawable.GetCircleCenterYfloat();
+                    dx *= ZOOM_IN_RATIO;
+                    dy *= ZOOM_IN_RATIO;
+                    nr.NeuronDrawable.SetCircleCenterXY(x - dx, y - dy);
+                    nr.Reposition();
+                }
+            }
+        }
+
+        public void ZoomOut(int x, int y)
+        {
+            if (x < GetX()) { return; }
+            zoomLevel--;
+            foreach (NeuronRenderable nr in neuronIndexToNR.Values)
+            {
+                // Make the distance to the mouse pointer a fraction of what it was
+                float dx = x - nr.NeuronDrawable.GetCircleCenterXfloat();
+                float dy = y - nr.NeuronDrawable.GetCircleCenterYfloat();
+                dx *= ZOOM_OUT_RATIO;
+                dy *= ZOOM_OUT_RATIO;
+                nr.NeuronDrawable.SetCircleCenterXY(x - dx, y - dy);
+                nr.Reposition();
+            }
+        }
+
+        public void ResetZoomLevel()
+        {
+            zoomLevel = 0;
+
+        }
+
         // ----- Auto-Arrange neuron renderables -----
 
         private enum LayerType
@@ -224,6 +286,7 @@ namespace Einstein.ui.editarea
 
         public void AutoArrange()
         {
+            ResetZoomLevel();
             indexToLayer = new Dictionary<int, int>();
 
             LinkedList<BaseNeuron> inputNeurons = new LinkedList<BaseNeuron>();

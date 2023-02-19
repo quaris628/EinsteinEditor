@@ -135,11 +135,25 @@ namespace Einstein
             IO.RENDERER.Add(saveButton);
             IO.RENDERER.Add(autoArrangeButton);
             IO.RENDERER.Add(infoText);
+            IO.MOUSE.MID_SCROLL_UP.Subscribe(editArea.ZoomIn);
+            IO.MOUSE.MID_SCROLL_DOWN.Subscribe(editArea.ZoomOut);
             IO.FRAME_TIMER.Subscribe(checkForResize);
         }
 
         protected override void UninitializeMe()
         {
+            input.Uninitialize();
+            output.Uninitialize();
+            hidden.Uninitialize();
+            loadButton.Uninitialize();
+            saveButton.Uninitialize();
+            autoArrangeButton.Uninitialize();
+            IO.RENDERER.Remove(loadButton);
+            IO.RENDERER.Remove(saveButton);
+            IO.RENDERER.Remove(autoArrangeButton);
+            IO.RENDERER.Remove(infoText);
+            IO.MOUSE.MID_SCROLL_UP.Unsubscribe(editArea.ZoomIn);
+            IO.MOUSE.MID_SCROLL_DOWN.Unsubscribe(editArea.ZoomOut);
             IO.FRAME_TIMER.Unsubscribe(checkForResize);
         }
 
