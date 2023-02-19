@@ -31,8 +31,9 @@ namespace phi.io
          public static readonly MouseInputHandler LEFT_UP = new MouseInputHandler();
          public static readonly MouseInputHandler RIGHT_UP = new MouseInputHandler();
          public static readonly MouseInputHandler MID_CLICK_UP = new MouseInputHandler();
-         //public static readonly MouseInputHandler MID_SCROLL_DOWN = new MouseInputHandler();
-         //public static readonly MouseInputHandler MID_SCROLL_UP = new MouseInputHandler();
+         public static readonly MouseInputHandler MID_SCROLL = new MouseInputHandler();
+         public static readonly MouseInputHandler MID_SCROLL_DOWN = new MouseInputHandler();
+         public static readonly MouseInputHandler MID_SCROLL_UP = new MouseInputHandler();
          public static readonly MouseInputHandler MOVE = new MouseInputHandler();
          public static void Clear()
          {

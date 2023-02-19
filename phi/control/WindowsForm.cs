@@ -77,7 +77,11 @@ namespace phi.control
             else if (e1.Button == MouseButtons.Right) { IO.MOUSE.RIGHT_UP.Event(sender1, e1); }
             else if (e1.Button == MouseButtons.Middle) { IO.MOUSE.MID_CLICK_UP.Event(sender1, e1); }
          });
-         // pictureBox.MouseWheel += new MouseEventHandler(IO.MOUSE.MID_SCROLL_DOWN.Event); // TODO
+         pictureBox.MouseWheel += new MouseEventHandler((sender1, e1) => {
+             IO.MOUSE.MID_SCROLL.Event(sender1, e1);
+             if (e1.Delta > 0) { IO.MOUSE.MID_SCROLL_UP.Event(sender1, e1); }
+             else { IO.MOUSE.MID_SCROLL_DOWN.Event(sender1, e1); }
+         });
          pictureBox.MouseMove += new MouseEventHandler(IO.MOUSE.MOVE.Event);
 
          // Let's go!
