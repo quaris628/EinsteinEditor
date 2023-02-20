@@ -23,15 +23,15 @@ What this can do:
  - Allow you to create and edit small, weak, inefficient, and dumb bibite brains
  - Crash spectacularly, or otherwise break (consider this a disclaimer)
  - Save/Load brain to/from a bibite file
- - Show/Hide input and output neurons in the editing area
+ - Show/Hide input and output neurons in the diagram
  - Create/Delete hidden neurons
- - View types and descriptions of neurons
+ - View types and descriptions of neurons in the diagram
  - Create/Delete synapses
  - Edit/View synapse strengths
- - Drag neurons around the brain editor area
- - Zoom in and out, and pan around the diagram
+ - Zoom and pan around the diagram
+ - Drag neurons around the diagram
+ - Handle window resizing (up to 2048x1080)
  - Auto-arrange neurons in a cleaner arrangement
- - Gracefully handle window resizing (up to 2048x1080)
  - Auto-fix non-unique neuron descriptions
  - Handle crashes with a prompt to report them and by logging info to a file
 
@@ -48,7 +48,6 @@ What this sucks at doing (known bugs):
 
 What this will do (planned enhancements):
  - Allow connecting a neuron to itself
- - Buttons to control zoom
  - Move keybinds info under a help button (and allow displaying it alongside the rest of the program)
 
 What this might do (future ideas):
@@ -62,7 +61,6 @@ What this might do (future ideas):
  - 2 - Look pretty (in general)
  - 2 - Allow multiple instances of just the contstant input neuron (same neuron in the bibite, two or more icons floating around in the diagram)
  - 3? - Allow multiple instances of all input neurons (same neuron in the bibite, two or more icons floating around in the diagram)
- - 3 - Zoom
  - 3 - Toggle darkmode/lightmode
  - 3 - Stagger the spawn-in location of neurons (how?)
  - 3 - Edit neuron descriptions
@@ -83,4 +81,4 @@ What this might do (future ideas):
 To any potential contributors:
  - I want to talk with you about what you want to work on! (If it hasn't been too long since I wrote this, anyway.) In order of my preference, Discord: quaris#9905 Reddit: u/quaris628 Email: quaris314@gmail.com Carrier pigeon: Polly usually flies the fastest, but Gary is also pretty good.
  - I've been using Visual Studio 2019 for an IDE. Just FYI so that if you're running into problems with another IDE, you can always try switching as a workaround.
- - This project uses the phi graphics "library"/framework/whatever thing, which is a separate project I partnered in creating a few years ago. It has its own repository (https://github.com/quaris628/PhiGraphicsEngine), so if you spot any issues with or want to contribute to any of the code in the 'phi' folder, consider also going to that repo to write up an issue or pull request (or whatever). If you don't, I'll still try to keep the two in sync myself. [Edit: Given how many small fixes and enhancements I've been making, I'm just giving up on keeping the other repo in sync. I'll do a larger sync sometime around when I do a full release of the Einstein Editor.]
+ - This project uses the phi graphics "library"/framework/whatever thing, which is a separate project I partnered in creating a few years ago. It has its own repository (https://github.com/quaris628/PhiGraphicsEngine), so if you spot any issues with or want to contribute to any of the code in the 'phi' folder, consider also going to that repo to write up an issue or pull request (or whatever). If you don't, I'll still try to keep the two in sync myself. [Edit: Given how many small fixes and enhancements I've been making, I'm just giving up on keeping the other repo in sync. I'll do a larger sync 'sometime later'.]
