@@ -3,7 +3,7 @@ An artful way to edit your bibite's brains!
 
 __To download/install:__
  1. Go to https://github.com/quaris628/EinsteinEditor/releases/
- 2. Select a version
+ 2. Select a version (1st number = release vs. pre-release, 2nd = enhancements, 3rd = bugfixes only)
  3. Download the EinsteinEditor_vX_X_X.zip file
  4. Exract the zip file to wherever you like (open your downloads folder, right-click the file > "Extract All..." > Select a location > Extract)
 
