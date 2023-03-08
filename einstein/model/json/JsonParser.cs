@@ -55,6 +55,16 @@ namespace Einstein.model.json
             }
             return floatValue;
         }
+        public double getNextValueDouble(string tag)
+        {
+            string value = getNextValue(tag);
+            if (!double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue))
+            {
+                throw new InvalidValueFormatException(
+                    "Value is not a double: '" + value + "'");
+            }
+            return doubleValue;
+        }
         public bool getNextValueBool(string tag)
         {
             string value = getNextValue(tag);

@@ -32,7 +32,7 @@ namespace Einstein.model.json
             "        \"LastOutput\": {7}\n";
 
         // unused for now, but they're in the json so keep track of them just in case
-        private string inov;
+        private double inov;
         private float value;
         private float lastInput;
         private float lastOutput;
@@ -40,7 +40,7 @@ namespace Einstein.model.json
         public JsonNeuron(int index, NeuronType type, string description)
             : base(index, type, description)
         {
-            inov = "0";
+            inov = 0;
             value = 0f;
             lastInput = 0f;
             lastOutput = 0f;
@@ -54,7 +54,7 @@ namespace Einstein.model.json
             Type = (NeuronType)parser.getNextValueInt("Type");
             // skip TypeName
             Index = parser.getNextValueInt("Index");
-            inov = "0";
+            inov = parser.getNextValueDouble("Inov");
             Description = parser.getNextValue("Desc");
             value = parser.getNextValueFloat("Value");
             lastInput = parser.getNextValueFloat("LastInput");

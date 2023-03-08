@@ -25,15 +25,15 @@ namespace Einstein.model.json
             "        \"Weight\": {3},\n" +
             "        \"En\": {4}\n";
 
-        // unused for now
-        private string inov;
-        private string En;
+        // unused for now, but keep track of between loading and saving just in case
+        private double inov;
+        private bool En;
 
         public JsonSynapse(JsonNeuron from, JsonNeuron to, float strength)
             : base(from, to, strength)
         {
-            inov = "0";
-            En = "true";
+            inov = 0;
+            En = true;
         }
 
         public JsonSynapse(string json, int startIndex, JsonBrain brain)
@@ -41,7 +41,8 @@ namespace Einstein.model.json
         {
             JsonParser parser = new JsonParser(json, startIndex);
             parser.startParsingNextLeafObj();
-            inov = "0";
+            
+            inov = parser.getNextValueDouble("Inov");
 
             int fromIndex = parser.getNextValueInt("NodeIn");
             if (!brain.ContainsNeuron(fromIndex))
@@ -58,7 +59,9 @@ namespace Einstein.model.json
             To = brain.GetNeuron(toIndex);
             
             Strength = parser.getNextValueFloat("Weight");
-            En = "true";
+
+            En = parser.getNextValueBool("En");
+
             parser.endParsingLeafObj();
         }
 
@@ -69,7 +72,8 @@ namespace Einstein.model.json
                 From.Index,
                 To.Index,
                 Strength,
-                En) + "      }";
+                En ? "true" : "false")
+                + "      }";
         } 
     }
     public class DanglingSynapseException : JsonParsingException
