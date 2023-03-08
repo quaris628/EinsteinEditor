@@ -42,9 +42,8 @@ What this can't do (and probably never will):
 
 What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
- - Brain values and last input/output is reset for neurons when saving brain
- - Takes a long time to auto-fix duplicate neuron descriptions for large brains (probably won't be fixed)
- - Synapse arrows don't always point their tips to the right place just after being created (moving either neuron it's attached to repositions it correctly)
+ - Synapse arrows don't always point their tips to the right place just after being created (moving either neuron it's attached to repositions it correctly) (probably won't be fixed)
+ - Takes a long time to auto-fix duplicate neuron descriptions for large brains (probably won't be fixed) [technical note: could be improved by avoiding throwing and catching exceptions]
 
 What this will do (planned enhancements):
  - Allow connecting a neuron to itself
@@ -65,6 +64,7 @@ What this might do (future ideas):
  - 3 - Stagger the spawn-in location of neurons (how?)
  - 3 - Edit neuron descriptions
  - 4 - Edit neuron type
+ - 4 - Deactivate/activate synapses
  - 4 - Have positions of neurons persist between saving/loading brain to a bibite (Credit to Lucifer!)
  - 4 - Save/Load sub-assemblies of neurons and synapses. Could load multiple subassemblies into one brain.
  - 4 - Show detailed info about neurons (e.g. range of outputs for an input neuron, description of the effects of an output neuron, description of hidden neuron's behavior...)
