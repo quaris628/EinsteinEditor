@@ -32,7 +32,7 @@ namespace Einstein.model.json
             "        \"LastOutput\": {7}\n";
 
         // unused for now, but they're in the json so keep track of them just in case
-        private double inov;
+        private int inov;
         private float value;
         private float lastInput;
         private float lastOutput;
@@ -54,7 +54,7 @@ namespace Einstein.model.json
             Type = (NeuronType)parser.getNextValueInt("Type");
             // skip TypeName
             Index = parser.getNextValueInt("Index");
-            inov = parser.getNextValueDouble("Inov");
+            inov = parser.getNextValueInt("Inov");
             Description = parser.getNextValue("Desc");
             value = parser.getNextValueFloat("Value");
             lastInput = parser.getNextValueFloat("LastInput");
@@ -73,7 +73,8 @@ namespace Einstein.model.json
                 Description,
                 value,
                 lastInput,
-                lastOutput) + "      }";
+                lastOutput)
+                + "      }";
         }
     }
 }

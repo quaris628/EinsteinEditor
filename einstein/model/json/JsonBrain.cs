@@ -45,11 +45,13 @@ namespace Einstein.model.json
         // unused for now, but they're in the json so keep track of them just in case
         private string isReady;
         private string parent;
+        private Dictionary<int, int> oldNewNeuronIndicesMap;
 
         public JsonBrain() : base()
         {
             isReady = "true";
             parent = "true";
+            oldNewNeuronIndicesMap = new Dictionary<int, int>();
         }
 
         public JsonBrain(string json, int startIndex) : base()
@@ -70,6 +72,8 @@ namespace Einstein.model.json
                 BaseSynapse synapse = new JsonSynapse(json, synapseStartIndex, this);
                 Add(synapse);
             });
+
+            oldNewNeuronIndicesMap = new Dictionary<int, int>();
         }
 
         public override string GetSave()
@@ -112,7 +116,8 @@ namespace Einstein.model.json
             int i = 0;
             foreach (JsonNeuron neuron in allNeurons)
             {
-                neuronJsons[i] = neuron.GetSave();
+                oldNewNeuronIndicesMap[neuron.Index] = i;
+                neuronJsons[i] = new JsonNeuron(i, neuron.Type, neuron.Description).GetSave();
                 i++;
             }
             return string.Join(",\n      ", neuronJsons);
@@ -124,7 +129,9 @@ namespace Einstein.model.json
             int i = 0;
             foreach (JsonSynapse synapse in Synapses)
             {
-                synapseJsons[i++] = synapse.GetSave();
+                int toIndex = oldNewNeuronIndicesMap[synapse.To.Index];
+                int fromIndex = oldNewNeuronIndicesMap[synapse.From.Index];
+                synapseJsons[i++] = synapse.GetSave(fromIndex, toIndex);
             }
             return string.Join(",\n      ", synapseJsons);
         }
