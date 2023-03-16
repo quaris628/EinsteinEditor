@@ -65,6 +65,20 @@ namespace Einstein.model.json
             parser.endParsingLeafObj();
         }
 
+        // Created as a workaround to an in-game bug
+        // Only use this if you know what you're doing
+        // Saves this synapse but with the specified neuron index values
+        public string GetSave(int fromIndex, int toIndex)
+        {
+            return "{\n" + string.Format(JSON_FORMAT,
+                inov,
+                fromIndex,
+                toIndex,
+                Strength,
+                En ? "true" : "false")
+                + "      }";
+        }
+
         public override string GetSave()
         {
             return "{\n" + string.Format(JSON_FORMAT,
