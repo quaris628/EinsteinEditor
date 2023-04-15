@@ -30,6 +30,7 @@ What this can do:
  - Edit/View synapse strengths
  - Zoom and pan around the diagram
  - Drag neurons around the diagram
+ - Have positions of neurons in the diagram persist between saving/loading (Credit to Lucifer!)
  - Handle window resizing (up to 2048x1080)
  - Auto-arrange neurons in a cleaner arrangement
  - Auto-fix non-unique neuron descriptions
@@ -65,7 +66,6 @@ What this might do (future ideas):
  - 3 - Edit neuron descriptions
  - 4 - Edit neuron type
  - 4 - Deactivate/activate synapses
- - 4 - Have positions of neurons persist between saving/loading brain to a bibite (Credit to Lucifer!)
  - 4 - Save/Load sub-assemblies of neurons and synapses. Could load multiple subassemblies into one brain.
  - 4 - Show detailed info about neurons (e.g. range of outputs for an input neuron, description of the effects of an output neuron, description of hidden neuron's behavior...)
  - 5 - Sentience (?)
