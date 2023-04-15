@@ -31,8 +31,9 @@ namespace Einstein.model.json
             "        \"LastInput\": {6},\n" +
             "        \"LastOutput\": {7}\n";
 
+        public int Inov { protected set; get; }
+
         // unused for now, but they're in the json so keep track of them just in case
-        private int inov;
         private float value;
         private float lastInput;
         private float lastOutput;
@@ -40,10 +41,19 @@ namespace Einstein.model.json
         public JsonNeuron(int index, NeuronType type, string description)
             : base(index, type, description)
         {
-            inov = 0;
+            Inov = 0;
             value = 0f;
             lastInput = 0f;
             lastOutput = 0f;
+        }
+
+        public JsonNeuron(JsonNeuron jsonNeuron)
+            : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Description)
+        {
+            Inov = jsonNeuron.Inov;
+            value = jsonNeuron.value;
+            lastInput = jsonNeuron.lastInput;
+            lastOutput = jsonNeuron.lastOutput;
         }
 
         public JsonNeuron(string json, int startIndex) : base()
@@ -54,7 +64,7 @@ namespace Einstein.model.json
             Type = (NeuronType)parser.getNextValueInt("Type");
             // skip TypeName
             Index = parser.getNextValueInt("Index");
-            inov = parser.getNextValueInt("Inov");
+            Inov = parser.getNextValueInt("Inov");
             Description = parser.getNextValue("Desc");
             value = parser.getNextValueFloat("Value");
             lastInput = parser.getNextValueFloat("LastInput");
@@ -63,13 +73,28 @@ namespace Einstein.model.json
             parser.endParsingLeafObj();
         }
 
+        public int GetInovX()
+        {
+            return Inov >> 16;
+        }
+
+        public int GetInovY()
+        {
+            return (Inov & 0xffff) - 32768;
+        }
+
+        public void SetInovXY(int x, int y)
+        {
+            Inov = (x << 16) | (y + 32768);
+        }
+
         public override string GetSave()
         {
             return "{\n" + string.Format(JSON_FORMAT,
                 (int)Type,
                 Type.ToString(),
                 Index,
-                inov,
+                Inov,
                 Description,
                 value,
                 lastInput,

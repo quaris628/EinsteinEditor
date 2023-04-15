@@ -21,6 +21,7 @@ namespace Einstein.ui.editarea
         public BaseBrain Brain { get; private set; }
 
         private Dictionary<int, NeuronRenderable> neuronIndexToNR;
+        public IEnumerable<NeuronRenderable> NeuronRenderables { get { return neuronIndexToNR.Values; } }
         private Action<BaseNeuron> onRemove;
         private bool disableOnRemove;
         private Dictionary<(int, int), SynapseRenderable> synapseIndicesToSR;
@@ -230,6 +231,21 @@ namespace Einstein.ui.editarea
             Brain = brain;
 
             AutoArrange();
+
+            if (neuronIndexToNR.First().Value.Neuron is JsonNeuron)
+            {
+                foreach (NeuronRenderable nr in neuronIndexToNR.Values)
+                {
+                    JsonNeuron jn = (JsonNeuron)nr.Neuron;
+                    if (jn.Inov != 0)
+                    {
+                        int x = jn.GetInovX();
+                        int y = jn.GetInovY();
+                        nr.Reposition(x, y);
+                    }
+                }
+            }
+
         }
 
         // ----- Background drag -----

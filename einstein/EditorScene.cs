@@ -171,6 +171,12 @@ namespace Einstein
         private void saveBrain()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            foreach (NeuronRenderable nr in editArea.NeuronRenderables)
+            {
+                int x = nr.NeuronDrawable.GetCenterX();
+                int y = nr.NeuronDrawable.GetCenterY();
+                ((JsonNeuron)nr.Neuron).SetInovXY(x, y);
+            }
             string brainJson = ((JsonBrain)editArea.Brain).GetSave();
             string filepath = IO.POPUPS.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
                 "Save to Bibite", "");

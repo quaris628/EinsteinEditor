@@ -100,6 +100,12 @@ namespace Einstein.model
             }
             return value;
         }
+
+        // Don't use this unless you know what you're doing.
+        public void YesImReallyAbsolutelyDefinitelySureIWantToChangeTheIndex(int newIndex)
+        {
+            _index = newIndex;
+        }
     }
 
     public class InvalidIndexException : BrainException

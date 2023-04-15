@@ -90,25 +90,34 @@ namespace Einstein.model.json
         private string neuronsToJson()
         {
             // I tried using .Union on these but this seriously looked like less work
-            ICollection<BaseNeuron> allNeurons = EditorScene.generateInputNeurons();
+            List<BaseNeuron> allNeurons = new List<BaseNeuron>();
+            foreach (BaseNeuron neuron in EditorScene.generateInputNeurons())
+            {
+                allNeurons.Add(neuron);
+            }
             foreach (BaseNeuron neuron in EditorScene.generateOutputNeurons())
             {
                 allNeurons.Add(neuron);
             }
-            foreach (BaseNeuron neuron in Neurons)
+            foreach (BaseNeuron newNeuron in Neurons)
             {
                 bool alreadyInBrain = false;
-                foreach (BaseNeuron neuron1 in allNeurons)
+                foreach (BaseNeuron oldNeuron in allNeurons)
                 {
-                    if (neuron.Equals(neuron1))
+                    if (newNeuron.Equals(oldNeuron))
                     {
+                        // Remove and replace b/c there may be hidden properties we
+                        // want to preserve in the save, e.g. Inov
+                        int indexOfOld = allNeurons.IndexOf(oldNeuron);
+                        allNeurons.Remove(oldNeuron);
+                        allNeurons.Insert(indexOfOld, newNeuron);
                         alreadyInBrain = true;
                         break;
                     }
                 }
                 if (!alreadyInBrain)
                 {
-                    allNeurons.Add(neuron);
+                    allNeurons.Add(newNeuron);
                 }
             }
 
@@ -117,7 +126,9 @@ namespace Einstein.model.json
             foreach (JsonNeuron neuron in allNeurons)
             {
                 oldNewNeuronIndicesMap[neuron.Index] = i;
-                neuronJsons[i] = new JsonNeuron(i, neuron.Type, neuron.Description).GetSave();
+                JsonNeuron neuronCopy = new JsonNeuron(neuron);
+                neuronCopy.YesImReallyAbsolutelyDefinitelySureIWantToChangeTheIndex(i);
+                neuronJsons[i] = neuronCopy.GetSave();
                 i++;
             }
             return string.Join(",\n      ", neuronJsons);
