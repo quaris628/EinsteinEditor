@@ -44,6 +44,7 @@ What this can't do (and probably never will):
 What this sucks at doing (known bugs):
  - Counterproductive at helping you get a life
  - Synapse arrows don't always point their tips to the right place just after being created (moving either neuron it's attached to repositions it correctly) (probably won't be fixed)
+ - Synapse arrows that don't yet have a 'To' neuron don't move their base when its parent neuron is dragged (probably won't be fixed)
  - Takes a long time to auto-fix duplicate neuron descriptions for large brains (probably won't be fixed) [technical note: could be improved by avoiding throwing and catching exceptions]
 
 What this will do (planned enhancements):
