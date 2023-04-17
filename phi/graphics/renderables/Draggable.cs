@@ -80,10 +80,12 @@ namespace phi.graphics.renderables
             if (useRightMouseButton)
             {
                IO.MOUSE.RIGHT_UP.Unsubscribe(MouseUp);
+               IO.MOUSE.RIGHT_DOWN.UnsubscribeFromDrawable(MouseDown, drawable);
             }
             else
             {
                IO.MOUSE.LEFT_UP.Unsubscribe(MouseUp);
+               IO.MOUSE.LEFT_DOWN.UnsubscribeFromDrawable(MouseDown, drawable);
             }
          }
          else
