@@ -19,8 +19,8 @@ namespace phi
          public const string ICON = "icon.ico"; // TODO set up in base phi project
          public const int MAX_WIDTH = 2048;
          public const int MAX_HEIGHT = 1080;
-         public const int INITIAL_WIDTH = 1280;
-         public const int INITIAL_HEIGHT = 720;
+         public const int INITIAL_WIDTH = 800;
+         public const int INITIAL_HEIGHT = 600;
       }
       
       public class Render
