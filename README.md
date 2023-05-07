@@ -26,7 +26,7 @@ What this can do:
  - Show/Hide input and output neurons in the diagram
  - Create/Delete hidden neurons
  - View types and descriptions of neurons in the diagram
- - Create/Delete synapses
+ - Create/Delete synapses (including connecting a neuron to itself)
  - Edit/View synapse strengths
  - Zoom and pan around the diagram
  - Drag neurons around the diagram
@@ -48,7 +48,6 @@ What this sucks at doing (known bugs):
  - Takes a long time to auto-fix duplicate neuron descriptions for large brains (probably won't be fixed) [technical note: could be improved by avoiding throwing and catching exceptions]
 
 What this will do (planned enhancements):
- - Allow connecting a neuron to itself
  - Move keybinds info under a help button (and allow displaying it alongside the rest of the program)
 
 What this might do (future ideas):
