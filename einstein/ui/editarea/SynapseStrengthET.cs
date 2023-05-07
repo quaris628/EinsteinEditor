@@ -17,10 +17,11 @@ namespace Einstein.ui.editarea
         public static readonly Color TEXT_COLOR = EinsteinConfig.COLOR_MODE.Text;
 
         public BaseSynapse Synapse { get; protected set; }
-        private Line line;
+        private int anchorX;
+        private int anchorY;
         private bool justEnabledEditing;
 
-        public SynapseStrengthET(BaseSynapse synapse, Line line)
+        public SynapseStrengthET(BaseSynapse synapse, int anchorX, int anchorY)
             : base(new FloatETBuilder(new Text.TextBuilder("").WithColor(new SolidBrush(TEXT_COLOR)).Build())
                   .WithEditingDisabled()
                   .WithMinValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MIN)
@@ -28,7 +29,8 @@ namespace Einstein.ui.editarea
                   .WithMaxDecimalPlaces(MAX_DECIMALS))
         {
             Synapse = synapse;
-            this.line = line;
+            this.anchorX = anchorX;
+            this.anchorY = anchorY;
             justEnabledEditing = false;
         }
 
@@ -61,7 +63,7 @@ namespace Einstein.ui.editarea
             justEnabledEditing = false;
             base.Backspace();
             UpdateStrengthIfValid();
-            ReCenterOnLine();
+            RecenterOnAnchor();
         }
 
         public override void Clear()
@@ -71,7 +73,7 @@ namespace Einstein.ui.editarea
             justEnabledEditing = false;
             base.Clear();
             UpdateStrengthIfValid();
-            ReCenterOnLine();
+            RecenterOnAnchor();
         }
 
         public override void TypeChar(char c)
@@ -85,7 +87,7 @@ namespace Einstein.ui.editarea
             }
             base.TypeChar(c);
             UpdateStrengthIfValid();
-            ReCenterOnLine();
+            RecenterOnAnchor();
         }
 
         public override void EnableEditing()
@@ -98,13 +100,21 @@ namespace Einstein.ui.editarea
         {
             justEnabledEditing = false;
             base.DisableEditing();
-            ReCenterOnLine();
+            RecenterOnAnchor();
         }
 
-        public void ReCenterOnLine()
+        public void SetAnchor(int x, int y)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            GetDrawable().SetCenterXY(line.GetCenterX(), line.GetCenterY());
+            anchorX = x;
+            anchorY = y;
+            RecenterOnAnchor();
+        }
+
+        public void RecenterOnAnchor()
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            GetDrawable().SetCenterXY(anchorX, anchorY);
         }
 
         private void UpdateStrengthIfValid()

@@ -18,7 +18,7 @@ namespace Einstein.ui.editarea
 
         protected GradientLine line;
         protected SynapseArrow arrow;
-        protected bool isInit { get; private set; }
+        protected bool isInit;
 
         public LineArrow(int startX, int startY, int pointX, int pointY)
         {

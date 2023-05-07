@@ -48,11 +48,6 @@ namespace Einstein.model
             {
                 throw new ArgumentNullException();
             }
-            if (To != null && value.Index == To.Index)
-            {
-                throw new SameNeuronException(
-                    "Cannot create a synapse that connects a neuron to itself.");
-            }
             return value;
         }
         private BaseNeuron validateTo(BaseNeuron value)
@@ -60,11 +55,6 @@ namespace Einstein.model
             if (value == null)
             {
                 throw new ArgumentNullException();
-            }
-            if (From != null && value.Index == From.Index)
-            {
-                throw new SameNeuronException(
-                    "Cannot create a synapse that connects a neuron to itself.");
             }
             return value;
         }

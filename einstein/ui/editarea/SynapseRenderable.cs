@@ -13,11 +13,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-/* removing a neuron doesn't remove any linked synapse MRs
-(including synapses coming from the neuron but not linked to any To neuron yet)
-
-*/
-
 namespace Einstein.ui.editarea
 {
     public class SynapseRenderable : LineArrow
@@ -28,15 +23,18 @@ namespace Einstein.ui.editarea
         public const float INITIAL_STRENGTH = 1f;
         public const string DEFAULT_STRENGTH = "0";
 
+        private const string CIRCLE_ARROW_IMAGE = EinsteinConfig.RES_DIR + "CircularSynapse.png";
+
         public BaseSynapse Synapse { get; private set; }
         public NeuronRenderable From { get; private set; }
         public NeuronRenderable To { get; private set; }
 
         private EditArea editArea;
         private bool isFinalized;
-        private SynapseStrengthET sset; // also in text, but kept as a shortcut reference
+        private SynapseStrengthET sset; // also accessible via the text variable, but this is a nice shortcut reference
         private SelectableEditableText text;
-        
+        private Sprite circleArrow;
+
 
         public SynapseRenderable(EditArea editArea, BaseSynapse synapse,
             NeuronRenderable from, NeuronRenderable to)
@@ -50,7 +48,7 @@ namespace Einstein.ui.editarea
             From = from;
             To = to;
             isFinalized = true;
-            sset = new SynapseStrengthET(Synapse, line);
+            sset = new SynapseStrengthET(Synapse, line.GetCenterX(), line.GetCenterY());
             text = new SelectableEditableText(sset, DEFAULT_STRENGTH,
                 EinsteinConfig.COLOR_MODE.SynapseTextBackgroundSelected,
                 EinsteinConfig.COLOR_MODE.SynapseTextBackgroundUnselected);
@@ -88,7 +86,7 @@ namespace Einstein.ui.editarea
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             NeuronRenderable toNeuronR = editArea.HasNeuronAtPosition(x, y);
             if (toNeuronR == null
-                || toNeuronR.Neuron.Equals(From.Neuron)
+                || (From == toNeuronR && From.Neuron.IsInput())
                 || !editArea.Brain.ContainsNeuron(toNeuronR.Neuron)
                 || editArea.Brain.ContainsSynapse(From.Neuron.Index, toNeuronR.Neuron.Index))
             {
@@ -115,7 +113,7 @@ namespace Einstein.ui.editarea
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             isFinalized = true;
 
-            sset = new SynapseStrengthET(Synapse, line);
+            sset = new SynapseStrengthET(Synapse, line.GetCenterX(), line.GetCenterY());
             text = new SelectableEditableText(sset, DEFAULT_STRENGTH,
                 EinsteinConfig.COLOR_MODE.SynapseTextBackgroundSelected,
                 EinsteinConfig.COLOR_MODE.SynapseTextBackgroundUnselected);
@@ -127,15 +125,33 @@ namespace Einstein.ui.editarea
             IO.MOUSE.LEFT_UP.Subscribe(RemoveIfShiftDownAndExactlyContainsClick);
             IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfShiftDown, text.GetDrawable());
 
+            if (From == To)
+            {
+                IO.RENDERER.Remove(line);
+                IO.RENDERER.Remove(arrow);
+                circleArrow = new Sprite(new ImageWrapper(CIRCLE_ARROW_IMAGE), line.GetCenterX(), line.GetCenterY());
+                IO.RENDERER.Add(circleArrow, ARROW_LAYER);
+            }
+
             UpdateTipPositionToToNeuron();
             editArea.FinishSynapse(Synapse);
         }
 
         public override void Uninitialize()
         {
-            base.Uninitialize();
             if (isFinalized)
             {
+                if (From == To)
+                {
+                    if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+                    isInit = false;
+                    IO.RENDERER.Remove(circleArrow);
+                }
+                else
+                {
+                    base.Uninitialize();
+                }
+
                 IO.RENDERER.Remove(text);
                 text.Uninitialize();
                 IO.MOUSE.LEFT_UP.Unsubscribe(RemoveIfShiftDownAndExactlyContainsClick);
@@ -143,6 +159,7 @@ namespace Einstein.ui.editarea
             }
             else
             {
+                base.Uninitialize();
                 IO.MOUSE.MOVE.Unsubscribe(UpdateTipXY);
                 IO.MOUSE.RIGHT_UP.Unsubscribe(TryFinalize);
             }
@@ -153,9 +170,17 @@ namespace Einstein.ui.editarea
         public void UpdateBasePositionToFromNeuron()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+
+            if (From == To)
+            {
+                UpdateCircleArrowPositionToNeuron();
+                return;
+            }
+
             int x = From.NeuronDrawable.GetCircleCenterX();
             int y = From.NeuronDrawable.GetCircleCenterY();
             UpdateBaseXY(x, y);
+
             if (isFinalized)
             {
                 UpdateTipPositionToToNeuron();
@@ -165,6 +190,13 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!isFinalized) { throw new InvalidOperationException("Finalize before running UpdateTipPOsitionToToNeuron"); }
+
+            if (From == To)
+            {
+                UpdateCircleArrowPositionToNeuron();
+                return;
+            }
+
             // TODO maybe check if this method implementation is right
             int circleCenterX = To.NeuronDrawable.GetCircleCenterX();
             int circleCenterY = To.NeuronDrawable.GetCircleCenterY();
@@ -185,7 +217,17 @@ namespace Einstein.ui.editarea
             }
             
             UpdateTipXY(arrowTipX, arrowTipY);
-            sset.ReCenterOnLine();
+            sset.SetAnchor(line.GetCenterX(), line.GetCenterY());
+        }
+
+        public void UpdateCircleArrowPositionToNeuron()
+        {
+            // neuron's circle center is at 43, 45 in the png
+            int arrowUpperLeftX = To.NeuronDrawable.GetCircleCenterX() - 43;
+            int arrowUpperLeftY = To.NeuronDrawable.GetCircleCenterY() - 45;
+            circleArrow.SetXY(arrowUpperLeftX, arrowUpperLeftY);
+            // text's anchor is at 9, 9 in the png
+            sset.SetAnchor(arrowUpperLeftX + 9, arrowUpperLeftY + 9);
         }
 
         // ----- Removing -----
@@ -202,12 +244,27 @@ namespace Einstein.ui.editarea
         private void RemoveIfShiftDownAndExactlyContainsClick(int x, int y)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            // We only want to remove the synapse if the click was on this line,
-            // i.e., if the distance is less than half of the line's width,
-            // or if the click is inside the triangle of the arrow
+            if (!IO.KEYS.IsModifierKeyDown(Keys.Shift)) { return; }
 
-            if (IO.KEYS.IsModifierKeyDown(Keys.Shift)
-                && line.GetBoundaryRectangle().Contains(x, y)
+            // We only want to remove the synapse if the click was on the arrow's shape,
+            if (From == To && circleArrow.GetBoundaryRectangle().Contains(x, y))
+            {
+                // i.e., for circular arrowss, is it inside the circle the arrow makes?
+
+                // neuron's circle center is at 43, 45 in the png
+                // arrow circle's center is at 22, 22 in the png
+                int arrowCircleCenterX = To.NeuronDrawable.GetCircleCenterX() - 43 + 22;
+                int arrowCircleCenterY = To.NeuronDrawable.GetCircleCenterY() - 45 + 22;
+                int dx = x - arrowCircleCenterX;
+                int dy = y - arrowCircleCenterY;
+                if (dx * dx + dy * dy <= 22 * 22)
+                {
+                    editArea.RemoveSynapse(Synapse);
+                }
+            }
+            // i.e. for straight arrows, if the distance is less than half of the line's width,
+            // or if the click is inside the triangle of the arrow
+            else if (line.GetBoundaryRectangle().Contains(x, y)
                 && (line.CalcSqDistanceToLine(x, y) <= HALF_LINE_WIDTH * HALF_LINE_WIDTH
                 || arrow.TriangleContainsPoint(x, y)))
             {
@@ -216,6 +273,20 @@ namespace Einstein.ui.editarea
         }
 
         // ----- overrides -----
+
+        public override IEnumerable<Drawable> GetDrawables()
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            if (From == To)
+            {
+                yield return circleArrow;
+            }
+            else
+            {
+                yield return line;
+                yield return arrow;
+            }
+        }
 
         public override string ToString()
         {
