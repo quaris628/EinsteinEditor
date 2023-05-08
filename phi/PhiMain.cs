@@ -14,9 +14,11 @@ namespace phi
       [STAThread]
       public static void Main(Scene entryScene, DefaultConfig config)
       {
+         #if !DEBUG
          Application.ThreadException += new ThreadExceptionEventHandler(HandleThreadException);
          AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(HandleUnhandledException);
          Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+         #endif
          Application.EnableVisualStyles();
          Application.SetCompatibleTextRenderingDefault(false);
          Application.Run(new WindowsForm(entryScene, config));
@@ -25,9 +27,11 @@ namespace phi
       [STAThread]
       public static void Main(Scene entryScene)
       {
+         #if !DEBUG
          Application.ThreadException += new ThreadExceptionEventHandler(HandleThreadException);
          AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(HandleUnhandledException);
          Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+         #endif
          Application.EnableVisualStyles();
          Application.SetCompatibleTextRenderingDefault(false);
          Application.Run(new WindowsForm(entryScene, new DefaultConfig()));
