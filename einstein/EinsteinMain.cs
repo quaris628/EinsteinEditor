@@ -24,6 +24,9 @@ namespace Einstein
         [STAThread]
         public static void Main()
         {
+            #if DEBUG
+            PhiMain.Main(new EditorScene(null), new EinsteinConfig());
+            #else
             EditorScene entryScene = null;
             try
             {
@@ -44,6 +47,7 @@ namespace Einstein
                    "https://github.com/quaris628/EinsteinEditor/issues/new",
                    extraLog);
             }
+            #endif
         }
     }
 }
