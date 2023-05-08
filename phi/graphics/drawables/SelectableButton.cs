@@ -106,7 +106,6 @@ namespace phi.graphics.drawables
 
       public bool IsSelected()
       {
-         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          return selected;
       }
 
