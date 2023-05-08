@@ -1,8 +1,11 @@
 ﻿using Einstein.config;
 using Einstein.model;
+using Einstein.ui.editarea;
 using phi.graphics;
 using phi.graphics.drawables;
+using phi.graphics.renderables;
 using phi.io;
+using phi.other;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,6 +23,7 @@ namespace Einstein.ui
         public const int CIRCLE_RADIUS = 16;
         public const int CIRCLE_DIAMETER = 2 * CIRCLE_RADIUS;
         public const int FONT_SIZE = 10;
+        public const int TEXT_MIN_HEIGHT = 16;
         public static readonly Color FONT_COLOR = EinsteinConfig.COLOR_MODE.Text;
         public const int DEFAULT_X = 0;
         public const int DEFAULT_Y = 0;
@@ -28,7 +32,9 @@ namespace Einstein.ui
         public BaseNeuron Neuron { get; protected set; }
         private Sprite baseSprite;
         private Sprite icon;
-        private Text desc;
+        private bool descEditable;
+        private Text descText;
+        private SelectableEditableText descSET;
         private float circleCenterX;
         private float circleCenterY;
 
@@ -52,14 +58,38 @@ namespace Einstein.ui
             {
                 // don't show any special icon
             }
-            desc = new Text.TextBuilder(neuron.Description)
+            descText = new Text.TextBuilder(neuron.Description)
                 .WithColor(new SolidBrush(FONT_COLOR))
-                .WithFontSize(FONT_SIZE).Build();
+                .WithFontSize(FONT_SIZE)
+                .WithMinHeight(TEXT_MIN_HEIGHT)
+                .Build();
+            descSET = null;
+
             circleCenterX = x + CIRCLE_RADIUS;
             circleCenterY = y + CIRCLE_RADIUS;
         }
 
-        public Text GetDescriptionText() { return desc; }
+        // If calling this, then you MUST also call DisableEditingDescription when you're done with this drawable... or else!
+        public void EnableEditingDescription(BaseBrain brain)
+        {
+            if (descEditable)
+            {
+                descSET.Uninitialize();
+            }
+            descEditable = true;
+            descSET = new NeuronDescSET(new NeuronDescET(descText, brain, Neuron),
+                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundSelected,
+                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundUnselected);
+            descSET.Initialize();
+        }
+
+        public void DisableEditingDescription()
+        {
+            if (!descEditable) { return; }
+            descEditable = false;
+            descSET.Uninitialize();
+            descSET = null;
+        }
 
         public int GetCircleCenterX() { return GetX() + CIRCLE_RADIUS; }
         public int GetCircleCenterY() { return GetY() + CIRCLE_RADIUS; }
@@ -73,6 +103,8 @@ namespace Einstein.ui
         public virtual void SetCircleCenterY(float y) { circleCenterY = y; SetY((int)(y - CIRCLE_RADIUS)); }
         public virtual void SetCircleCenterXY(float x, float y) { SetCircleCenterX(x); SetCircleCenterY(y); }
 
+        public virtual int GetDescWidth() { return descText.GetWidth(); }
+
         protected override void DrawAt(Graphics g, int x, int y)
         {
             baseSprite.SetXY(x, y);
@@ -81,14 +113,30 @@ namespace Einstein.ui
             icon?.SetXY(x, y);
             icon?.Draw(g);
 
-            desc.SetCenterX(x + CIRCLE_RADIUS);
-            desc.SetY(y + CIRCLE_DIAMETER);
-            desc.Draw(g);
+            descText.SetCenterX(x + CIRCLE_RADIUS);
+            descText.SetY(y + CIRCLE_DIAMETER);
+            descText.Draw(g);
         }
 
         private static string getIconFileName(BaseNeuron neuron)
         {
             return BASE_DIR + neuron.Type.ToString() + ".png";
+        }
+
+        public override void PutIn(DynamicContainer container)
+        {
+            base.PutIn(container);
+            baseSprite.PutIn(container);
+            icon.PutIn(container);
+            descText.PutIn(container);
+        }
+
+        public override void TakeOut(DynamicContainer container)
+        {
+            base.TakeOut(container);
+            baseSprite.TakeOut(container);
+            icon.TakeOut(container);
+            descText.TakeOut(container);
         }
 
         public override string ToString()

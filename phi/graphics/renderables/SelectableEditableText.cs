@@ -74,13 +74,17 @@ namespace phi.graphics.renderables
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          // note: not thread-safe
-         if (IsSelected()) { throw new InvalidOperationException(); }
+         if (IsSelected()) { return; } // TODO make exception (see below TODO)
          selected?.Deselect();
          selected = this;
 
          EditableText.EnableEditing();
          text.SetBackgroundColor(selectedBackColor);
          
+         // TODO: deal with multiple deselects happening in the same frame, from clicking and hitting enter at the same time
+         // will also probably have to check for other instances of this same problem elsewhere in einstein
+         // for now I'm just returning instead of throwing an exception in that case
+
          IO.MOUSE.LEFT_DOWN.Subscribe(Deselect);
          IO.KEYS.Subscribe(Deselect, Keys.Return);
          IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(Select, text);
@@ -90,16 +94,16 @@ namespace phi.graphics.renderables
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          // note: not thread-safe
-         if (!IsSelected()) { throw new InvalidOperationException(); }
+         if (!IsSelected()) { return; } // TODO make exception (see above TODO)
          selected = null;
+         if (!EditableText.IsMessageValidAsFinal())
+         {
+            text.SetMessage(CorrectInvalidMessageOnDeselect(text.GetMessage()));
+         }
          
          EditableText.DisableEditing();
          text.SetBackgroundColor(unselectedBackColor);
 
-         if (!EditableText.IsMessageValidAsFinal())
-         {
-            text.SetMessage(defaultMessage);
-         }
          
          IO.MOUSE.LEFT_DOWN.Unsubscribe(Deselect);
          IO.KEYS.Unsubscribe(Deselect, Keys.Return);
@@ -110,6 +114,11 @@ namespace phi.graphics.renderables
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          return selected == this;
+      }
+
+      protected virtual string CorrectInvalidMessageOnDeselect(string invalidMessage)
+      {
+         return defaultMessage;
       }
 
       public Drawable GetDrawable()

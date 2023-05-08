@@ -38,6 +38,10 @@ namespace Einstein.ui.editarea
             IO.RENDERER.Add(this);
             IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(RemoveIfShiftIsDown, GetDrawable());
             IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(StartASynapse, GetDrawable());
+            if (Neuron.IsHidden())
+            {
+                NeuronDrawable.EnableEditingDescription(editArea.Brain);
+            }
             Reposition();
         }
 
@@ -47,6 +51,10 @@ namespace Einstein.ui.editarea
             IO.RENDERER.Remove(this);
             IO.MOUSE.LEFT_CLICK.UnsubscribeFromDrawable(RemoveIfShiftIsDown, GetDrawable());
             IO.MOUSE.RIGHT_UP.UnsubscribeFromDrawable(StartASynapse, GetDrawable());
+            if (Neuron.IsHidden())
+            {
+                NeuronDrawable.DisableEditingDescription();
+            }
         }
 
         private void RemoveIfShiftIsDown()

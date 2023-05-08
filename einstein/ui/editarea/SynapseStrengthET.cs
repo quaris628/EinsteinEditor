@@ -17,8 +17,6 @@ namespace Einstein.ui.editarea
         public static readonly Color TEXT_COLOR = EinsteinConfig.COLOR_MODE.Text;
 
         public BaseSynapse Synapse { get; protected set; }
-        private int anchorX;
-        private int anchorY;
         private bool justEnabledEditing;
 
         public SynapseStrengthET(BaseSynapse synapse, int anchorX, int anchorY)
@@ -29,8 +27,6 @@ namespace Einstein.ui.editarea
                   .WithMaxDecimalPlaces(MAX_DECIMALS))
         {
             Synapse = synapse;
-            this.anchorX = anchorX;
-            this.anchorY = anchorY;
             justEnabledEditing = false;
         }
 
@@ -63,7 +59,6 @@ namespace Einstein.ui.editarea
             justEnabledEditing = false;
             base.Backspace();
             UpdateStrengthIfValid();
-            RecenterOnAnchor();
         }
 
         public override void Clear()
@@ -73,7 +68,6 @@ namespace Einstein.ui.editarea
             justEnabledEditing = false;
             base.Clear();
             UpdateStrengthIfValid();
-            RecenterOnAnchor();
         }
 
         public override void TypeChar(char c)
@@ -86,8 +80,6 @@ namespace Einstein.ui.editarea
                 Clear();
             }
             base.TypeChar(c);
-            UpdateStrengthIfValid();
-            RecenterOnAnchor();
         }
 
         public override void EnableEditing()
@@ -100,18 +92,9 @@ namespace Einstein.ui.editarea
         {
             justEnabledEditing = false;
             base.DisableEditing();
-            RecenterOnAnchor();
         }
-
-        public void SetAnchor(int x, int y)
-        {
-            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            anchorX = x;
-            anchorY = y;
-            RecenterOnAnchor();
-        }
-
-        public void RecenterOnAnchor()
+        
+        public override void RecenterOnAnchor()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             GetDrawable().SetCenterXY(anchorX, anchorY);

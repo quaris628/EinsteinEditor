@@ -146,6 +146,13 @@ namespace Einstein.model
             return neuronDescriptionIndex[description];
         }
 
+        public void UpdateNeuronDescription(BaseNeuron neuron, string newDescription)
+        {
+            neuronDescriptionIndex.Remove(neuron.Description);
+            neuronDescriptionIndex.Add(newDescription, neuron);
+            neuron.Description = newDescription;
+        }
+
         public BaseSynapse GetSynapse(BaseNeuron from, BaseNeuron to) { return GetSynapse(from.Index, to.Index); }
         public BaseSynapse GetSynapse(int fromIndex, int toIndex)
         {

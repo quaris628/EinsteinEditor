@@ -18,6 +18,9 @@ namespace Einstein.model
         // Input when index is in the hidden neuron range
         public NeuronType Type { get; protected set; }
         private string _description;
+        // IMPORTANT if this neuron is in a brain,
+        // then use Brain's UpdateNeuronDescription method instead of setting the description directly.
+        // Otherwise some Brain description stuff will start having problems.
         public string Description {
             get { return _description; }
             set { _description = validateDescription(value); }

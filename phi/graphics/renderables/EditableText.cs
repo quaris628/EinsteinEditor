@@ -10,12 +10,17 @@ namespace phi.graphics.renderables
 {
    public class EditableText : Renderable
    {
+      public const string ALPHABET_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      public const string NUMBER_CHARS = "0123456789";
+
 
       protected Text text;
       protected readonly string allowedChars;
       public bool IsEditingEnabled { get; protected set; }
       protected bool isInit;
       private Dictionary<Keys, Action> subscriptions;
+      protected int anchorX { get; private set; }
+      protected int anchorY { get; private set; }
 
       protected EditableText(EditableTextBuilder b)
       {
@@ -23,12 +28,15 @@ namespace phi.graphics.renderables
          this.allowedChars = b.allowedChars;
          this.IsEditingEnabled = b.isEditingEnabled;
          this.subscriptions = new Dictionary<Keys, Action>();
+         this.anchorX = b.anchorX;
+         this.anchorY = b.anchorY;
       }
 
       public virtual void Initialize()
       {
          isInit = true;
          SubscribeChars();
+         RecenterOnAnchor();
       }
 
       public virtual void Uninitialize()
@@ -73,6 +81,7 @@ namespace phi.graphics.renderables
          string newMessage = text.GetMessage() + c; // don't forget that ;)
          if (IsMessageValidWhileTyping(newMessage)) {
             text.SetMessage(newMessage);
+            RecenterOnAnchor();
          }
       }
 
@@ -81,6 +90,7 @@ namespace phi.graphics.renderables
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          if (!IsEditingEnabled || text.GetMessage().Length == 0) { return; }
          text.SetMessage(text.GetMessage().Substring(0, text.GetMessage().Length - 1));
+         RecenterOnAnchor();
       }
 
       public virtual void Clear()
@@ -88,6 +98,7 @@ namespace phi.graphics.renderables
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          if (!IsEditingEnabled) { return; }
          text.SetMessage("");
+         RecenterOnAnchor();
       }
 
       protected virtual bool IsMessageValidWhileTyping(string message)
@@ -114,6 +125,21 @@ namespace phi.graphics.renderables
       public virtual void DisableEditing() {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          IsEditingEnabled = false;
+         RecenterOnAnchor();
+      }
+
+      public void SetAnchor(int x, int y)
+      {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         anchorX = x;
+         anchorY = y;
+         RecenterOnAnchor();
+      }
+
+      public virtual void RecenterOnAnchor()
+      {
+         if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+         GetDrawable().SetXY(anchorX, anchorY);
       }
 
       public Drawable GetDrawable()
@@ -128,14 +154,14 @@ namespace phi.graphics.renderables
          Dictionary<char, Keys[]> map = new Dictionary<char, Keys[]>();
 
          // letters (just uppercase, lowercase can be added later if really needed)
-         foreach (char c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+         foreach (char c in ALPHABET_CHARS)
          {
             Keys key = (Keys)Enum.Parse(typeof(Keys), c.ToString());
             map.Add(c, new Keys[] { key });
          }
 
          // numbers
-         foreach (char c in "1234567890")
+         foreach (char c in NUMBER_CHARS)
          {
             Keys key1 = (Keys)Enum.Parse(typeof(Keys), "D" + c.ToString());
             Keys key2 = (Keys)Enum.Parse(typeof(Keys), "NumPad" + c.ToString());
@@ -170,14 +196,14 @@ namespace phi.graphics.renderables
          Dictionary<Keys, char> map = new Dictionary<Keys, char>();
 
          // letters (just uppercase, lowercase can be added later if really needed)
-         foreach (char c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+         foreach (char c in ALPHABET_CHARS)
          {
             Keys key = (Keys)Enum.Parse(typeof(Keys), c.ToString());
             map.Add(key, c);
          }
 
          // numbers
-         foreach (char c in "1234567890")
+         foreach (char c in NUMBER_CHARS)
          {
             Keys key1 = (Keys)Enum.Parse(typeof(Keys), "D" + c.ToString());
             Keys key2 = (Keys)Enum.Parse(typeof(Keys), "NumPad" + c.ToString());
@@ -216,17 +242,22 @@ namespace phi.graphics.renderables
          public Text text { get; private set; }
          public string allowedChars { get; private set; }
          public bool isEditingEnabled { get; private set; }
+         public int anchorX { get; private set; }
+         public int anchorY { get; private set; }
 
          public EditableTextBuilder(Text text)
          {
             this.text = text;
             this.allowedChars = new string(CHAR_KEY_MAP.Keys.ToArray()); // everything
             this.isEditingEnabled = true;
+            this.anchorX = text.GetX();
+            this.anchorY = text.GetY();
          }
 
          public EditableTextBuilder WithAllowedChars(string allowedChars) { this.allowedChars = allowedChars; return this; }
          public EditableTextBuilder WithEditingEnabled() { this.isEditingEnabled = true; return this; }
          public EditableTextBuilder WithEditingDisabled() { this.isEditingEnabled = false; return this; }
+         public EditableTextBuilder WithAnchor(int x, int y) { this.anchorX = x; this.anchorY = y; return this; }
 
          public virtual EditableText Build() { return new EditableText(this); }
       }

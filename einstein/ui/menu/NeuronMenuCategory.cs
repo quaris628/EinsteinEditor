@@ -102,7 +102,7 @@ namespace Einstein.ui.menu
             int deltaY = NeuronDrawable.CIRCLE_DIAMETER + NeuronDrawable.FONT_SIZE + EinsteinConfig.PAD * 2;
             foreach (NeuronDrawable button in neuronDrawables.Values)
             {
-                int descWidth = button.GetDescriptionText().GetWidth();
+                int descWidth = button.GetDescWidth();
                 if (x + descWidth + EinsteinConfig.PAD > IO.WINDOW.GetWidth())
                 {
                     x = startX;
