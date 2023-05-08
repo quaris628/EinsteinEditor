@@ -69,7 +69,7 @@ namespace Einstein.ui.editarea
 
         public void AddNeuron(BaseNeuron neuron)
         {
-            Brain?.Add(neuron);
+            Brain.Add(neuron);
 
             NeuronRenderable dragNeuron = new NeuronRenderable(this, neuron);
             dragNeuron.Initialize();
@@ -147,7 +147,7 @@ namespace Einstein.ui.editarea
                 throw new InvalidOperationException(
                     "Every FinishSynapse call must be paired with a prior StartSynapse call");
             }
-            Brain?.Add(synapse);
+            Brain.Add(synapse);
 
             synapseIndicesToSR.Add((synapse.From.Index, synapse.To.Index), startedSynapse);
             startedSynapse = null;
@@ -157,8 +157,6 @@ namespace Einstein.ui.editarea
         // For programmatically adding a synapse (e.g. during loading)
         public void AddSynapse(BaseSynapse synapse)
         {
-            Brain?.Add(synapse);
-
             NeuronRenderable from = neuronIndexToNR[synapse.From.Index];
             NeuronRenderable to = neuronIndexToNR[synapse.To.Index];
             SynapseRenderable sr = new SynapseRenderable(this, synapse, from, to);
@@ -166,7 +164,7 @@ namespace Einstein.ui.editarea
             SynapseRenderable oldStartedSynapse = startedSynapse;
             bool oldJustFinishedSynapse = justFinishedSynapse;
             startedSynapse = sr;
-            sr.Initialize();
+            sr.Initialize(); // Calls FinishSynapse, which calls Brain.Add(synapse)
             startedSynapse = oldStartedSynapse;
             justFinishedSynapse = oldJustFinishedSynapse;
         }
@@ -197,19 +195,21 @@ namespace Einstein.ui.editarea
             neuronIndexToNR = new Dictionary<int, NeuronRenderable>();
             synapseIndicesToSR = new Dictionary<(int, int), SynapseRenderable>();
             nextHiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
-            Brain = null;
 
-            // Add all neurons (except neurons that aren't connected to anything)
+            // Ensures shallow copies are equal (in case that matters) and more importantly,
+            // if any Neuron/Synapse/Brain class is a subclass of the base class, that is preserved
+            Brain = brain;
+
+            // Remove neurons that aren't connected to anything
             LinkedList<BaseNeuron> neuronsToRemoveFromNewBrain = new LinkedList<BaseNeuron>(); // avoid concurrent modification
-            foreach (BaseNeuron neuron in brain.Neurons)
+            foreach (BaseNeuron neuron in Brain.Neurons)
             {
-                if (brain.GetSynapsesFrom(neuron).Count == 0
-                    && brain.GetSynapsesTo(neuron).Count == 0)
+                if (Brain.GetSynapsesFrom(neuron).Count == 0
+                    && Brain.GetSynapsesTo(neuron).Count == 0)
                 {
                     neuronsToRemoveFromNewBrain.AddFirst(neuron);
                     continue;
                 }
-                AddNeuron(neuron);
                 if (neuron.Index >= nextHiddenNeuronIndex)
                 {
                     nextHiddenNeuronIndex = neuron.Index + 1;
@@ -217,18 +217,33 @@ namespace Einstein.ui.editarea
             }
             foreach (BaseNeuron neuron in neuronsToRemoveFromNewBrain)
             {
-                brain.Remove(neuron);
+                Brain.Remove(neuron);
             }
 
-            // Add all synapses
-            foreach (BaseSynapse synapse in brain.Synapses)
+            // Remove and re-add everything else, so that the right setup can happen when re-adding them (e.g. indexes are up to date)
+            // deep copy stuff
+            LinkedList<BaseNeuron> neurons = new LinkedList<BaseNeuron>();
+            LinkedList<BaseSynapse> synapses = new LinkedList<BaseSynapse>();
+            foreach (BaseNeuron neuron in Brain.Neurons)
+            {
+                neurons.AddFirst(neuron);
+            }
+            foreach (BaseSynapse synapse in Brain.Synapses)
+            {
+                synapses.AddFirst(synapse);
+            }
+            foreach (BaseNeuron neuron in neurons)
+            {
+                Brain.Remove(neuron); // also removes all synapses
+            }
+            foreach (BaseNeuron neuron in neurons)
+            {
+                AddNeuron(neuron);
+            }
+            foreach (BaseSynapse synapse in synapses)
             {
                 AddSynapse(synapse);
             }
-
-            // Ensures shallow copies are equal (in case that matters) and more importantly,
-            // if any Neuron/Synapse/Brain class is a subclass of the base class, that is preserved
-            Brain = brain;
 
             AutoArrange();
 
@@ -245,7 +260,6 @@ namespace Einstein.ui.editarea
                     }
                 }
             }
-
         }
 
         // ----- Background drag -----
