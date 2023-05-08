@@ -25,11 +25,11 @@ What this can do:
  - Save/Load brain to/from a bibite file
  - Show/Hide input and output neurons in the diagram
  - Create/Delete hidden neurons
- - View types and descriptions of neurons in the diagram
+ - View types and edit/view descriptions of neurons in the diagram
  - Create/Delete synapses (including connecting a neuron to itself)
  - Edit/View synapse strengths
- - Zoom and pan around the diagram
  - Drag neurons around the diagram
+ - Zoom and pan around the diagram
  - Have positions of neurons in the diagram persist between saving/loading (Credit to Lucifer!)
  - Handle window resizing (up to 2048x1080)
  - Auto-arrange neurons in a cleaner arrangement
@@ -63,7 +63,6 @@ What this might do (future ideas):
  - 3? - Allow multiple instances of all input neurons (same neuron in the bibite, two or more icons floating around in the diagram)
  - 3 - Toggle darkmode/lightmode
  - 3 - Stagger the spawn-in location of neurons (how?)
- - 3 - Edit neuron descriptions
  - 4 - Edit neuron type
  - 4 - Deactivate/activate synapses
  - 4 - Save/Load sub-assemblies of neurons and synapses. Could load multiple subassemblies into one brain.
