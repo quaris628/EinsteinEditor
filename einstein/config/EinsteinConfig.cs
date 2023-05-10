@@ -15,7 +15,7 @@ namespace Einstein.config
         public new const string HOME_DIR = "../";
         public new const string RES_DIR = HOME_DIR + "res/";
         public const int PAD = 5;
-        public const string VERSION = "v1.4.0";
+        public const string VERSION = "v1.4.0 - dev";
 
         public static ColorScheme COLOR_MODE = new ColorScheme(ColorScheme.Mode.Dark);
 
