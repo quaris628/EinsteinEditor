@@ -91,7 +91,10 @@ namespace Einstein.model
             }
             foreach (BaseSynapse synapse in synapsesToIndex[neuron.Index])
             {
-                linkedSynapses.AddFirst(synapse);
+                if (synapse.From != synapse.To)
+                {
+                    linkedSynapses.AddFirst(synapse);
+                }
             }
             foreach (BaseSynapse synapse in linkedSynapses)
             {
