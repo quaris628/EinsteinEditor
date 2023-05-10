@@ -80,6 +80,7 @@ namespace Einstein.ui.editarea
                 Clear();
             }
             base.TypeChar(c);
+            UpdateStrengthIfValid();
         }
 
         public override void EnableEditing()
