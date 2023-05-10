@@ -57,11 +57,6 @@ namespace Einstein.model.json
                 throw new DanglingSynapseException("Brain does not contain a neuron with index " + toIndex);
             }
             To = brain.GetNeuron(toIndex);
-
-            if (From.Index == To.Index && !From.IsHidden())
-            {
-                throw new InvalidOperationException();
-            }
             
             Strength = parser.getNextValueFloat("Weight");
 
