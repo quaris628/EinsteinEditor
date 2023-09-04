@@ -8,10 +8,10 @@ namespace Bibyte
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Building brain...");
-            Brain brain = BrainCreator.GenerateBrain();
+            Console.WriteLine("Creating brain...");
+            BrainCreator.CreateBrain();
             Console.WriteLine("Saving brain...");
-            SaveBrain(brain, BrainCreator.BB8_FILE_TO_SAVE_TO);
+            SaveBrain(BackgroundBrainBuilder.GetBrain(), BrainCreator.BB8_FILE_TO_SAVE_TO);
         }
 
         public static void SaveBrain(Brain brain, string filepath)

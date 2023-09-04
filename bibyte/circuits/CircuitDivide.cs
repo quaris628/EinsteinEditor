@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Bibyte.circuits
 {
+    /// <summary>
+    /// Approximates numerator / denominator.
+    /// </summary>
     public class CircuitDivide : Circuit1OverX
     {
         Neuron numerator;
@@ -17,7 +20,8 @@ namespace Bibyte.circuits
             : base(denominator)
         {
             this.numerator = numerator;
-            synapses = synapses.Append(new Synapse(numerator, GetQuotient(), 1)).ToArray();
+
+            BackgroundBrainBuilder.AddToBrain(new Synapse(numerator, GetQuotient(), 1));
         }
 
         public Neuron GetNumerator() { return numerator; }
