@@ -7,25 +7,6 @@ namespace Bibyte
 {
    public static partial class BrainCreator
    {
-      // these functions are optional to use,
-      // but should reduce the amount of code you need to write
-
-      private static int hiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
-      
-      private static Neuron createNeuron(NeuronType type)
-      {
-         return createNeuron(type, "Hidden" + hiddenNeuronIndex);
-      }
-
-      private static Neuron createNeuron(NeuronType type, string description)
-      {
-         if (type == NeuronType.Input)
-         {
-            throw new ArgumentException("You tried to create a new input neuron. That's not allowed, silly!");
-         }
-         return new Neuron(hiddenNeuronIndex++, type, description);
-      }
-
       private static Brain buildBrainFrom(params Synapse[][] synapseArrays)
       {
          Brain brain = new Brain();
