@@ -34,6 +34,5 @@ namespace Bibyte
          File.WriteAllText(filepath, bibiteJson);
          Console.WriteLine("Brain saved");
       }
-
    }
 }
