@@ -49,10 +49,10 @@
     <Compile Include="model\BaseBrain.cs" />
     <Compile Include="model\BaseNeuron.cs" />
     <Compile Include="model\BaseSynapse.cs" />
-    <Compile Include="model\json\JsonBrain.cs" />
-    <Compile Include="model\json\JsonNeuron.cs" />
+    <Compile Include="model\json\Brain.cs" />
+    <Compile Include="model\json\Neuron.cs" />
     <Compile Include="model\json\JsonParser.cs" />
-    <Compile Include="model\json\JsonSynapse.cs" />
+    <Compile Include="model\json\Synapse.cs" />
     <Compile Include="model\NeuronType.cs" />
     <Compile Include="ui\editarea\EditArea.cs" />
     <Compile Include="ui\editarea\NeuronDescET.cs" />

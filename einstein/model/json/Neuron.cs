@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Einstein.model.json
 {
-    public class JsonNeuron : BaseNeuron
+    public class Neuron : BaseNeuron
     {
 
         // Example:
@@ -38,7 +38,7 @@ namespace Einstein.model.json
         private float lastInput;
         private float lastOutput;
 
-        public JsonNeuron(int index, NeuronType type, string description)
+        public Neuron(int index, NeuronType type, string description)
             : base(index, type, description)
         {
             Inov = 0;
@@ -47,7 +47,7 @@ namespace Einstein.model.json
             lastOutput = 0f;
         }
 
-        public JsonNeuron(JsonNeuron jsonNeuron)
+        public Neuron(Neuron jsonNeuron)
             : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Description)
         {
             Inov = jsonNeuron.Inov;
@@ -56,7 +56,7 @@ namespace Einstein.model.json
             lastOutput = jsonNeuron.lastOutput;
         }
 
-        public JsonNeuron(string json, int startIndex) : base()
+        public Neuron(string json, int startIndex) : base()
         {
             JsonParser parser = new JsonParser(json, startIndex);
             parser.startParsingNextLeafObj();

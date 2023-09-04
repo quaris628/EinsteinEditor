@@ -12,26 +12,26 @@ namespace Bibyte
       // but should reduce the amount of code you need to write
 
       private static int hiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
-      private static JsonNeuron createNeuron(NeuronType type)
+      private static Neuron createNeuron(NeuronType type)
       {
          return createNeuron(type, "Hidden" + hiddenNeuronIndex);
       }
-      private static JsonNeuron createNeuron(NeuronType type, string description)
+      private static Neuron createNeuron(NeuronType type, string description)
       {
          if (type == NeuronType.Input)
          {
             throw new ArgumentException("You tried to create a new input neuron. That's not allowed, silly!");
          }
-         return new JsonNeuron(hiddenNeuronIndex++, type, description);
+         return new Neuron(hiddenNeuronIndex++, type, description);
       }
 
-      private static JsonBrain buildBrainFrom(params JsonSynapse[][] synapseArrays)
+      private static Brain buildBrainFrom(params Synapse[][] synapseArrays)
       {
-         JsonBrain brain = new JsonBrain();
+         Brain brain = new Brain();
 
-         foreach (JsonSynapse[] synapses in synapseArrays)
+         foreach (Synapse[] synapses in synapseArrays)
          {
-            foreach (JsonSynapse synapse in synapses)
+            foreach (Synapse synapse in synapses)
             {
                AddSynapseAndItsNeurons(brain, synapse);
             }
@@ -39,18 +39,18 @@ namespace Bibyte
          return brain;
       }
 
-      private static JsonBrain buildBrainFrom(params JsonSynapse[] synapses)
+      private static Brain buildBrainFrom(params Synapse[] synapses)
       {
-         JsonBrain brain = new JsonBrain();
+         Brain brain = new Brain();
 
-         foreach (JsonSynapse synapse in synapses)
+         foreach (Synapse synapse in synapses)
          {
             AddSynapseAndItsNeurons(brain, synapse);
          }
          return brain;
       }
 
-      private static void AddSynapseAndItsNeurons(JsonBrain brain, JsonSynapse synapse)
+      private static void AddSynapseAndItsNeurons(Brain brain, Synapse synapse)
       {
          if (!brain.ContainsNeuron(synapse.From))
          {

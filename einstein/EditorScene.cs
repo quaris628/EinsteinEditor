@@ -51,7 +51,7 @@ namespace Einstein
         public EditorScene(Scene prevScene) : base(prevScene, EinsteinConfig.COLOR_MODE.Background)
         {
             editArea = new EditArea(
-                new JsonBrain(),
+                new Brain(),
                 moveNeuronIntoMenu);
 
             selected = null;
@@ -175,9 +175,9 @@ namespace Einstein
             {
                 int x = nr.NeuronDrawable.GetCenterX();
                 int y = nr.NeuronDrawable.GetCenterY();
-                ((JsonNeuron)nr.Neuron).SetInovXY(x, y);
+                ((Neuron)nr.Neuron).SetInovXY(x, y);
             }
-            string brainJson = ((JsonBrain)editArea.Brain).GetSave();
+            string brainJson = ((Brain)editArea.Brain).GetSave();
             string filepath = IO.POPUPS.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
                 "Save to Bibite", "");
             if (filepath == "")
@@ -216,13 +216,13 @@ namespace Einstein
                 return;
             }
             string json = File.ReadAllText(filepath);
-            JsonBrain brain;
+            Brain brain;
             bool autoFixNeuronDescriptions = false;
             while (true)
             {
                 try
                 {
-                    brain = new JsonBrain(json, json.IndexOf("\"brain\":") + 8);
+                    brain = new Brain(json, json.IndexOf("\"brain\":") + 8);
                     break;
                 }
                 catch (JsonParsingException e)
@@ -349,7 +349,7 @@ namespace Einstein
             for (int i = BibiteVersionConfig.INPUT_NODES_INDEX_MIN;
                 i <= BibiteVersionConfig.INPUT_NODES_INDEX_MAX; i++)
             {
-                inputs.Add(new JsonNeuron(
+                inputs.Add(new Neuron(
                     i,
                     NeuronType.Input,
                     BibiteVersionConfig.DESCRIPTIONS[i]));
@@ -363,7 +363,7 @@ namespace Einstein
             for (int i = BibiteVersionConfig.OUTPUT_NODES_INDEX_MIN;
                 i <= BibiteVersionConfig.OUTPUT_NODES_INDEX_MAX; i++)
             {
-                outputs.Add(new JsonNeuron(
+                outputs.Add(new Neuron(
                     i,
                     BibiteVersionConfig.GetOutputNeuronType(i),
                     BibiteVersionConfig.DESCRIPTIONS[i]));

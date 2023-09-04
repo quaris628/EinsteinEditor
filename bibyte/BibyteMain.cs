@@ -9,12 +9,12 @@ namespace Bibyte
       public static void Main(string[] args)
       {
          Console.WriteLine("Building brain...");
-         JsonBrain brain = BrainCreator.GenerateBrain();
+         Brain brain = BrainCreator.GenerateBrain();
          Console.WriteLine("Saving brain...");
          SaveBrain(brain, BrainCreator.BB8_FILE_TO_SAVE_TO);
       }
 
-      public static void SaveBrain(JsonBrain brain, string filepath)
+      public static void SaveBrain(Brain brain, string filepath)
       {
          string brainJson = brain.GetSave();
          if (!File.Exists(filepath))

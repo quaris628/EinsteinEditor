@@ -103,8 +103,8 @@ namespace Einstein.ui.editarea
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (to == null) { throw new ArgumentNullException("to"); }
             To = to;
-            Synapse = new JsonSynapse((JsonNeuron)From.Neuron,
-                (JsonNeuron)To.Neuron, INITIAL_STRENGTH);
+            Synapse = new Synapse((Neuron)From.Neuron,
+                (Neuron)To.Neuron, INITIAL_STRENGTH);
             FinalizeInternal();
         }
 
