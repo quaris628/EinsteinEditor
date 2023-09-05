@@ -3,7 +3,7 @@ using Einstein.model;
 using Einstein.model.json;
 using System;
 
-namespace Bibyte
+namespace Bibyte.neural
 {
     public class Inputs
     {

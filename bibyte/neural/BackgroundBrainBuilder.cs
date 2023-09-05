@@ -5,7 +5,7 @@ using Einstein.model.json;
 using System;
 using System.Collections.Generic;
 
-namespace Bibyte
+namespace Bibyte.neural
 {
     public static class BackgroundBrainBuilder
     {

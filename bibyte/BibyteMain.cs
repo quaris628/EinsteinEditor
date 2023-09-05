@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Bibyte.neural;
 using Einstein.model.json;
 
 namespace Bibyte
@@ -8,10 +9,11 @@ namespace Bibyte
     {
         public static void Main(string[] args)
         {
+            // right now this just goes to the neural brain creator
             Console.WriteLine("Creating brain...");
-            BrainCreator.CreateBrain();
+            NeuralBrainCreator.CreateBrain();
             Console.WriteLine("Saving brain...");
-            SaveBrain(BackgroundBrainBuilder.GetBrain(), BrainCreator.BB8_FILE_TO_SAVE_TO);
+            SaveBrain(BackgroundBrainBuilder.GetBrain(), NeuralBrainCreator.BB8_FILE_TO_SAVE_TO);
         }
 
         public static void SaveBrain(Brain brain, string filepath)

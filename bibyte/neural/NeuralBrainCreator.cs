@@ -1,12 +1,11 @@
 ﻿using Bibyte.circuits;
-using Bibyte.lib;
 using Einstein;
 using Einstein.model;
 using Einstein.model.json;
 
-namespace Bibyte
+namespace Bibyte.neural
 {
-    public static partial class BrainCreator
+    public static partial class NeuralBrainCreator
     {
         public static string BB8_FILE_TO_SAVE_TO =
             "C:/Users/Quaris/AppData/LocalLow/The Bibites/The Bibites/Bibites/bibyteTest.bb8";

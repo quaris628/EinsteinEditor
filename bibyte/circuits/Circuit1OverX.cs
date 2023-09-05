@@ -1,4 +1,4 @@
-﻿using Bibyte.lib;
+﻿using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
 using System;
