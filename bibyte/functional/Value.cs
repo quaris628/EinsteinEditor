@@ -9,9 +9,6 @@ namespace Bibyte.functional
 {
     public interface Value
     {
-
-        // TODO figure out what neural-level things we need to know about an arbitrary value
-
-
+        Synapse[] GetSynapsesTo(Neuron output);
     }
 }

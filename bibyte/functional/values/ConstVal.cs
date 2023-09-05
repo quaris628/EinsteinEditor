@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Bibyte.neural;
+using Einstein.model.json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,11 +13,15 @@ namespace Bibyte.functional.values
     /// </summary>
     public class ConstVal : Value
     {
-
+        private float value;
         public ConstVal(float value)
         {
-            // TODO implement
-            // this should probably be implemented as a synapse from the const node
+            this.value = value;
+        }
+
+        public Synapse[] GetSynapsesTo(Neuron output)
+        {
+            return new Synapse[] { new Synapse(Inputs.CONSTANT, output, value) };
         }
     }
 }

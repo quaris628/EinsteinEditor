@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Bibyte.functional;
 using Bibyte.neural;
 using Einstein.model.json;
 
@@ -9,11 +10,25 @@ namespace Bibyte
     {
         public static void Main(string[] args)
         {
-            // right now this just goes to the neural brain creator
+            // uncomment the section that corresponds to the type of programming you want to use
+
+            // use functional programming
+            //*
+            Console.WriteLine("Building functionally programmed brain");
+            Console.WriteLine("Creating brain...");
+            Brain brain = FunctionalBackgroundBrainBuilder.Build(new MinimalBrain());
+            Console.WriteLine("Saving brain...");
+            SaveBrain(brain, NeuralBrainCreator.BB8_FILE_TO_SAVE_TO);
+            //*/
+
+            // use neural programming
+            /*
+            Console.WriteLine("Building neurally programmed brain");
             Console.WriteLine("Creating brain...");
             NeuralBrainCreator.CreateBrain();
             Console.WriteLine("Saving brain...");
-            SaveBrain(BackgroundBrainBuilder.GetBrain(), NeuralBrainCreator.BB8_FILE_TO_SAVE_TO);
+            SaveBrain(NeuralBackgroundBrainBuilder.GetBrain(), NeuralBrainCreator.BB8_FILE_TO_SAVE_TO);
+            //*/
         }
 
         public static void SaveBrain(Brain brain, string filepath)

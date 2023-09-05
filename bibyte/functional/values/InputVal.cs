@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Bibyte.neural;
+using Einstein.model.json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,10 +44,15 @@ namespace Bibyte.functional
         public static Value PHERO_3_HEADING = new InputVal(31);
         public static Value INFECTION_RATE = new InputVal(32);
 
-
+        private Neuron inputNeuron;
         private InputVal(int inputIndex)
         {
-            // TODO implement
+            inputNeuron = Inputs.ConcstructInputNeuron(inputIndex);
+        }
+
+        public Synapse[] GetSynapsesTo(Neuron output)
+        {
+            return new Synapse[] { new Synapse(inputNeuron, output, 1) };
         }
     }
 }

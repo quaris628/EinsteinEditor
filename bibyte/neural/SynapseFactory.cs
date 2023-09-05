@@ -30,7 +30,7 @@ namespace Bibyte.neural
                     + "'. Must be between -100 and 100");
             }
             Synapse synapse = new Synapse(from, to, strength);
-            BackgroundBrainBuilder.AddToBrain(synapse);
+            NeuralBackgroundBrainBuilder.AddToBrain(synapse);
             return synapse;
         }
     }

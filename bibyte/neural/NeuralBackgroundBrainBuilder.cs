@@ -7,9 +7,14 @@ using System.Collections.Generic;
 
 namespace Bibyte.neural
 {
-    public static class BackgroundBrainBuilder
+    public static class NeuralBackgroundBrainBuilder
     {
         private static Brain brain = new Brain();
+
+        public static void ClearBrain()
+        {
+            brain = new Brain();
+        }
 
         public static void AddToBrain(Synapse[] synapses)
         {

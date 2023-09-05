@@ -25,7 +25,7 @@ namespace Bibyte.circuits
             Neuron gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "DivGauss");
             outputMult = NeuronFactory.CreateNeuron(NeuronType.Mult);
 
-            BackgroundBrainBuilder.AddToBrain(new Synapse[] {
+            NeuralBackgroundBrainBuilder.AddToBrain(new Synapse[] {
                 new Synapse(denominator, gauss, DEFAULT_K),
                 new Synapse(gauss, outputMult, DEFAULT_K),
                 new Synapse(denominator, outputMult, DEFAULT_K),

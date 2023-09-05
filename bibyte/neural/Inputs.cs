@@ -41,7 +41,7 @@ namespace Bibyte.neural
         public static Neuron PHERO_3_HEADING  = ConcstructInputNeuron(31);
         public static Neuron INFECTION_RATE   = ConcstructInputNeuron(32);
       
-        private static Neuron ConcstructInputNeuron(int index)
+        public static Neuron ConcstructInputNeuron(int index)
         {
             if (index < BibiteVersionConfig.INPUT_NODES_INDEX_MIN
             || BibiteVersionConfig.INPUT_NODES_INDEX_MAX < index)

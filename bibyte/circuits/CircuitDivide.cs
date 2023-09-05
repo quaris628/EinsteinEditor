@@ -21,7 +21,7 @@ namespace Bibyte.circuits
         {
             this.numerator = numerator;
 
-            BackgroundBrainBuilder.AddToBrain(new Synapse(numerator, GetQuotient(), 1));
+            NeuralBackgroundBrainBuilder.AddToBrain(new Synapse(numerator, GetQuotient(), 1));
         }
 
         public Neuron GetNumerator() { return numerator; }
