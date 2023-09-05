@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using Bibyte.functional;
 using Bibyte.neural;
@@ -8,8 +9,27 @@ namespace Bibyte
 {
     public class BibyteMain
     {
+        private static string FILE_WITH_SAVE_FILE_PATH = "../../../saveFilePath.txt";
+
         public static void Main(string[] args)
         {
+            // get the file we're saving to
+            if (!File.Exists(FILE_WITH_SAVE_FILE_PATH))
+            {
+                File.CreateText(FILE_WITH_SAVE_FILE_PATH);
+                Process.Start("notepad.exe", FILE_WITH_SAVE_FILE_PATH);
+                Console.WriteLine("Please specify the bibite file to save to. " +
+                    "Entering the filepath into this text file, save it, and run Bibyte again.");
+                return;
+            }
+            string saveFilePath = File.ReadAllText(FILE_WITH_SAVE_FILE_PATH);
+            if (!File.Exists(saveFilePath))
+            {
+                Process.Start("notepad.exe", FILE_WITH_SAVE_FILE_PATH);
+                Console.WriteLine("This bibite file does not exist. " +
+                    "Look for errors or try a different filepath, then save the text file and run Bibyte again.");
+            }
+
             // uncomment the section that corresponds to the type of programming you want to use
 
             // use functional programming
@@ -18,7 +38,7 @@ namespace Bibyte
             Console.WriteLine("Creating brain...");
             Brain brain = FunctionalBackgroundBrainBuilder.Build(new MinimalBrain());
             Console.WriteLine("Saving brain...");
-            SaveBrain(brain, NeuralBrainCreator.BB8_FILE_TO_SAVE_TO);
+            SaveBrain(brain, saveFilePath);
             //*/
 
             // use neural programming
@@ -27,7 +47,7 @@ namespace Bibyte
             Console.WriteLine("Creating brain...");
             NeuralBrainCreator.CreateBrain();
             Console.WriteLine("Saving brain...");
-            SaveBrain(NeuralBackgroundBrainBuilder.GetBrain(), NeuralBrainCreator.BB8_FILE_TO_SAVE_TO);
+            SaveBrain(NeuralBackgroundBrainBuilder.GetBrain(), saveFilePath);
             //*/
         }
 
