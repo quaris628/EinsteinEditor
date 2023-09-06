@@ -16,6 +16,7 @@ namespace Bibyte.functional.values
         private float value;
         public ConstVal(float value)
         {
+            validateFloat(value);
             this.value = value;
         }
 

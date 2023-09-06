@@ -33,13 +33,16 @@ namespace Bibyte.neural
         {
             if (!brain.ContainsNeuron(synapse.From))
             {
-            brain.Add(synapse.From);
+                brain.Add(synapse.From);
             }
             if (!brain.ContainsNeuron(synapse.To))
             {
-            brain.Add(synapse.To);
+                brain.Add(synapse.To);
             }
-            brain.Add(synapse);
+            if (!brain.ContainsSynapse(synapse))
+            {
+                brain.Add(synapse);
+            }
         }
 
         public static Brain GetBrain() { return brain; }

@@ -16,11 +16,11 @@ namespace Bibyte.functional
         }
         public Value Rotate()
         {
-            return new ConstVal(0);
+            return (InputVal.PHERO_SENSE_3 * 3 + InputVal.PHERO_SENSE_2) * 1.5f;
         }
         public Value Herding()
         {
-            return new ConstVal(0);
+            return -InputVal.PLANT_CLOSENESS;
         }
         public Value Want2Lay()
         {
