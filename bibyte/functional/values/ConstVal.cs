@@ -19,7 +19,7 @@ namespace Bibyte.functional.values
             this.value = value;
         }
 
-        public Synapse[] GetSynapsesTo(Neuron output)
+        public override Synapse[] GetSynapsesTo(Neuron output)
         {
             return new Synapse[] { new Synapse(Inputs.CONSTANT, output, value) };
         }

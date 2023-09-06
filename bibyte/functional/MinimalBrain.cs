@@ -12,7 +12,7 @@ namespace Bibyte.functional
     {
         public Value Accelerate()
         {
-            return new ConstVal(0);
+            return InputVal.PHERO_SENSE_1 + InputVal.PHERO_SENSE_2;
         }
         public Value Rotate()
         {
