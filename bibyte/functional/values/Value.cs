@@ -68,6 +68,33 @@ namespace Bibyte.functional
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// This is only an approximation of division and breaks when the denominator is near zero.
+        /// The error is less than 1% when the denominator is farther than 0.1 from zero,
+        /// and the error is less than 10% when the denominator is farther than 0.03 from zero.
+        /// </summary>
+        /// <param name="numerator"></param>
+        /// <param name="denominator"></param>
+        /// <returns></returns>
+        public static Value operator /(Value numerator, Value denominator)
+        {
+            return numerator * new InverseVal(denominator);
+        }
+        public static Value operator /(float numerator, Value denominator)
+        {
+            return numerator * new InverseVal(denominator);
+        }
+        public static Value operator /(Value numerator, float denominator)
+        {
+            return numerator * (1 / denominator);
+        }
+
+        public static Value operator ^(Value baseVal, Value exponent)
+        {
+            // TODO write ExponentVal class, use BibiteBoi's e^x approximation
+            throw new NotImplementedException();
+        }
+
         // value-value comparisons
 
         public static Bool operator ==(Value left, Value right)
