@@ -1,4 +1,6 @@
-﻿using Einstein.model.json;
+﻿using Bibyte.neural;
+using Einstein.model;
+using Einstein.model.json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +22,22 @@ namespace Bibyte.functional.booleans
 
         public override Synapse[] GetSynapsesTo(Neuron output)
         {
-            // TODO figure out a circuit for this
+            Neuron guassianNeuron = NeuronFactory.CreateNeuron(NeuronType.Gaussian);
 
-            throw new NotImplementedException();
+            Neuron latchNeuron = NeuronFactory.CreateNeuron(NeuronType.Latch);
+            Synapse guassianToLatch = SynapseFactory.CreateSynapse(guassianNeuron, latchNeuron, 100);
+            Synapse constToLatch = SynapseFactory.CreateSynapse(Inputs.CONSTANT, latchNeuron, -99);
+            Synapse[] leftSynapses = left.AddSynapsesTo(guassianNeuron);
+            foreach (Synapse synapse in leftSynapses)
+            {
+                synapse.Strength = 100f;
+            }
+            Synapse[] rightSynapses = right.AddSynapsesTo(guassianNeuron);
+            foreach (Synapse synapse in rightSynapses)
+            {
+                synapse.Strength = -100f;
+            }
+            return new Synapse[] { SynapseFactory.CreateSynapse(latchNeuron, output, 1) };
         }
     }
 }

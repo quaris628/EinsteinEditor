@@ -64,8 +64,7 @@ namespace Bibyte.functional
         }
         public static Value operator *(Value left, Value right)
         {
-            // TODO write ProductVal class
-            throw new NotImplementedException();
+            return new ProductVal(new List<Value> { left, right });
         }
 
         /// <summary>
@@ -127,6 +126,13 @@ namespace Bibyte.functional
 
 
         public abstract Synapse[] GetSynapsesTo(Neuron output);
+
+        public Synapse[] AddSynapsesTo(Neuron output)
+        {
+            Synapse[] synapses = this.GetSynapsesTo(output);
+            NeuralBackgroundBrainBuilder.AddToBrain(synapses);
+            return synapses;
+        }
 
         protected void validateFloat(float val)
         {
