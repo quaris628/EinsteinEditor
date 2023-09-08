@@ -102,7 +102,7 @@ namespace Bibyte.functional
         }
         public static Bool operator !=(Value left, Value right)
         {
-            return new ValEqualsValBool(left, right);
+            return !(left == right);
         }
 
         public static Bool operator <(Value left, Value right)
