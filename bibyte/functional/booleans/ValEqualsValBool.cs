@@ -20,13 +20,15 @@ namespace Bibyte.functional.booleans
             this.right = right;
         }
 
-        public override Synapse[] GetSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output)
         {
             Neuron guassianNeuron = NeuronFactory.CreateNeuron(NeuronType.Gaussian);
 
             Neuron latchNeuron = NeuronFactory.CreateNeuron(NeuronType.Latch);
             Synapse guassianToLatch = SynapseFactory.CreateSynapse(guassianNeuron, latchNeuron, 100);
             Synapse constToLatch = SynapseFactory.CreateSynapse(Inputs.CONSTANT, latchNeuron, -99);
+            // TODO fix
+            /*
             Synapse[] leftSynapses = left.AddSynapsesTo(guassianNeuron);
             foreach (Synapse synapse in leftSynapses)
             {
@@ -37,7 +39,8 @@ namespace Bibyte.functional.booleans
             {
                 synapse.Strength = -100f;
             }
-            return new Synapse[] { SynapseFactory.CreateSynapse(latchNeuron, output, 1) };
+            SynapseFactory.CreateSynapse(latchNeuron, output, 1)
+            */
         }
     }
 }

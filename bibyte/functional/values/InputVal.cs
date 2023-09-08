@@ -50,9 +50,9 @@ namespace Bibyte.functional
             inputNeuron = Inputs.ConcstructInputNeuron(inputIndex);
         }
 
-        public override Synapse[] GetSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output)
         {
-            return new Synapse[] { new Synapse(inputNeuron, output, 1) };
+            SynapseFactory.CreateSynapse(inputNeuron, output, 1);
         }
     }
 }

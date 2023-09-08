@@ -14,20 +14,20 @@ namespace Bibyte.functional
         public static Brain Build(IFunctionalProgrammingBrain brain)
         {
             NeuralBackgroundBrainBuilder.ClearBrain();
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.Accelerate().GetSynapsesTo(Outputs.ACCELERATE));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.Rotate().GetSynapsesTo(Outputs.ROTATE));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.Herding().GetSynapsesTo(Outputs.HERDING));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.Want2Lay().GetSynapsesTo(Outputs.WANT_2_LAY));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.Digestion().GetSynapsesTo(Outputs.DIGESTION));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.Grab().GetSynapsesTo(Outputs.GRAB));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.ClkReset().GetSynapsesTo(Outputs.CLK_RESET));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.PhereOut1().GetSynapsesTo(Outputs.PHERE_OUT_1));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.PhereOut2().GetSynapsesTo(Outputs.PHERE_OUT_2));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.PhereOut3().GetSynapsesTo(Outputs.PHERE_OUT_3));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.Want2Grow().GetSynapsesTo(Outputs.WANT_2_GROW));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.Want2Heal().GetSynapsesTo(Outputs.WANT_2_HEAL));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.Want2Attack().GetSynapsesTo(Outputs.WANT_2_ATTACK));
-            NeuralBackgroundBrainBuilder.AddToBrain(brain.ImmuneSystem().GetSynapsesTo(Outputs.IMMUNE_SYSTEM));
+            brain.Accelerate().AddSynapsesTo(Outputs.ACCELERATE);
+            brain.Rotate().AddSynapsesTo(Outputs.ROTATE);
+            brain.Herding().AddSynapsesTo(Outputs.HERDING);
+            brain.Want2Lay().AddSynapsesTo(Outputs.WANT_2_LAY);
+            brain.Digestion().AddSynapsesTo(Outputs.DIGESTION);
+            brain.Grab().AddSynapsesTo(Outputs.GRAB);
+            brain.ClkReset().AddSynapsesTo(Outputs.CLK_RESET);
+            brain.PhereOut1().AddSynapsesTo(Outputs.PHERE_OUT_1);
+            brain.PhereOut2().AddSynapsesTo(Outputs.PHERE_OUT_2);
+            brain.PhereOut3().AddSynapsesTo(Outputs.PHERE_OUT_3);
+            brain.Want2Grow().AddSynapsesTo(Outputs.WANT_2_GROW);
+            brain.Want2Heal().AddSynapsesTo(Outputs.WANT_2_HEAL);
+            brain.Want2Attack().AddSynapsesTo(Outputs.WANT_2_ATTACK);
+            brain.ImmuneSystem().AddSynapsesTo(Outputs.IMMUNE_SYSTEM);
             return NeuralBackgroundBrainBuilder.GetBrain();
         }
     }

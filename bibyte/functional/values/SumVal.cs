@@ -23,29 +23,25 @@ namespace Bibyte.functional.values
             values.Add(val);
         }
 
-        public override Synapse[] GetSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output)
         {
             if (output.Type != NeuronType.Mult)
             {
                 // connect values straight to the output node
-                IEnumerable<Synapse> synapses = new Synapse[] {};
                 foreach (Value val in values)
                 {
-                    synapses = synapses.Concat(val.GetSynapsesTo(output));
+                    val.AddSynapsesTo(output);
                 }
-                return synapses.ToArray();
             }
             else
             {
                 // connect a linear node to the mult, then connect values to that linear node
                 Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear);
-                Synapse linToMult = SynapseFactory.CreateSynapse(linear, output, 1);
-                IEnumerable<Synapse> synapses = new Synapse[] { linToMult };
                 foreach (Value val in values)
                 {
-                    synapses = synapses.Concat(val.GetSynapsesTo(linear));
+                    val.AddSynapsesTo(linear);
                 }
-                return synapses.ToArray();
+                SynapseFactory.CreateSynapse(linear, output, 1);
             }
         }
     }

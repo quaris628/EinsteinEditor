@@ -9,7 +9,6 @@ namespace Bibyte.functional
 {
     public interface INeuralizeable
     {
-        // could change the array to an IEnumerable, ICollection, or even a List or something, idk...
-        Synapse[] GetSynapsesTo(Neuron output);
+        void AddSynapsesTo(Neuron output);
     }
 }

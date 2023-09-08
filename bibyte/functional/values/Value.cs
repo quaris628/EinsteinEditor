@@ -125,14 +125,7 @@ namespace Bibyte.functional
         }
 
 
-        public abstract Synapse[] GetSynapsesTo(Neuron output);
-
-        public Synapse[] AddSynapsesTo(Neuron output)
-        {
-            Synapse[] synapses = this.GetSynapsesTo(output);
-            NeuralBackgroundBrainBuilder.AddToBrain(synapses);
-            return synapses;
-        }
+        public abstract void AddSynapsesTo(Neuron output);
 
         protected void validateFloat(float val)
         {

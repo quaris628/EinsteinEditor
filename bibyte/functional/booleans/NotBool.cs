@@ -16,7 +16,7 @@ namespace Bibyte.functional.booleans
             this.boolean = boolean;
         }
 
-        public override Synapse[] GetSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output)
         {
             // TODO
             throw new NotImplementedException();

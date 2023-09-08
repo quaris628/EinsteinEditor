@@ -20,24 +20,24 @@ namespace Bibyte.functional.values
         {
             values.Add(value);
         }
-        public override Synapse[] GetSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output)
         {
-            IEnumerable<Synapse> synapses = new Synapse[] { };
             if (output.Type == NeuronType.Mult)
             {
                 foreach (Value value in values)
                 {
-                    synapses = synapses.Concat(value.GetSynapsesTo(output));
+                    value.AddSynapsesTo(output);
                 }
-                return synapses.ToArray();
             }
-            Neuron multNeuron = NeuronFactory.CreateNeuron(NeuronType.Mult);
-            Synapse multToOutput = SynapseFactory.CreateSynapse(multNeuron, output, 1f);
-            foreach (Value value in values)
+            else
             {
-                synapses = synapses.Concat(value.GetSynapsesTo(multNeuron));
+                Neuron multNeuron = NeuronFactory.CreateNeuron(NeuronType.Mult);
+                foreach (Value value in values)
+                {
+                    value.AddSynapsesTo(multNeuron);
+                }
+                SynapseFactory.CreateSynapse(multNeuron, output, 1f);
             }
-            return synapses.ToArray();
         }
     }
 }

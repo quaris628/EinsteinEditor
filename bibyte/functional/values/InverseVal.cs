@@ -17,32 +17,28 @@ namespace Bibyte.functional.values
             this.val = val;
         }
 
-        public override Synapse[] GetSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output)
         {
             // could get more and more precise with more parallel nodes
             // (optional, could do later)
 
             Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "DivLinear");
             Neuron gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "DivGauss");
-            Synapse[] synapsesToInput = val.GetSynapsesTo(linear);
+            val.AddSynapsesTo(linear);
 
             if (output.Type == NeuronType.Mult)
             {
-                return synapsesToInput.Concat(new Synapse[] {
-                    SynapseFactory.CreateSynapse(linear, gauss, 100f),
-                    SynapseFactory.CreateSynapse(linear, output, 100f),
-                    SynapseFactory.CreateSynapse(gauss, output, 100f),
-                }).ToArray();
+                SynapseFactory.CreateSynapse(linear, gauss, 100f);
+                SynapseFactory.CreateSynapse(linear, output, 100f);
+                SynapseFactory.CreateSynapse(gauss, output, 100f);
             }
             else
             {
                 Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "DivMult");
-                return synapsesToInput.Concat(new Synapse[] {
-                    SynapseFactory.CreateSynapse(linear, gauss, 100f),
-                    SynapseFactory.CreateSynapse(linear, mult, 100f),
-                    SynapseFactory.CreateSynapse(gauss, mult, 100f),
-                    SynapseFactory.CreateSynapse(mult, output, 1f),
-                }).ToArray();
+                SynapseFactory.CreateSynapse(linear, gauss, 100f);
+                SynapseFactory.CreateSynapse(linear, mult, 100f);
+                SynapseFactory.CreateSynapse(gauss, mult, 100f);
+                SynapseFactory.CreateSynapse(mult, output, 1f);
             }
         }
     }

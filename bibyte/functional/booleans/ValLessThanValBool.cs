@@ -18,7 +18,7 @@ namespace Bibyte.functional.booleans
             this.right = right;
         }
 
-        public override Synapse[] GetSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output)
         {
             // TODO figure out a circuit for this
             

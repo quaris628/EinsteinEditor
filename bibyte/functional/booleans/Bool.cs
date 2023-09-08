@@ -35,6 +35,6 @@ namespace Bibyte.functional.booleans
             return new NotBool(boolean);
         }
 
-        public abstract Synapse[] GetSynapsesTo(Neuron output);
+        public abstract void AddSynapsesTo(Neuron output);
     }
 }

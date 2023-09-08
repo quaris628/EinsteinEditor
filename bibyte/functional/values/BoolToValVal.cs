@@ -16,9 +16,9 @@ namespace Bibyte.functional.values
         {
             this.input = input;
         }
-        public override Synapse[] GetSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output)
         {
-            return input.GetSynapsesTo(output);
+            input.AddSynapsesTo(output);
         }
     }
 }
