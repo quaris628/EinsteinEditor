@@ -22,8 +22,8 @@ namespace Bibyte.functional.values
             // could get more and more precise with more parallel nodes
             // (optional, could do later)
 
-            Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "DivLinear");
-            Neuron gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "DivGauss");
+            Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Inverse");
+            Neuron gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "Inverse");
             val.AddSynapsesTo(linear);
 
             if (output.Type == NeuronType.Mult)
@@ -34,7 +34,7 @@ namespace Bibyte.functional.values
             }
             else
             {
-                Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "DivMult");
+                Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "Inverse");
                 SynapseFactory.CreateSynapse(linear, gauss, 100f);
                 SynapseFactory.CreateSynapse(linear, mult, 100f);
                 SynapseFactory.CreateSynapse(gauss, mult, 100f);

@@ -36,7 +36,7 @@ namespace Bibyte.functional.values
             else
             {
                 // connect a linear node to the mult, then connect values to that linear node
-                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear);
+                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Sum");
                 foreach (Value val in values)
                 {
                     val.AddSynapsesTo(linear);

@@ -39,7 +39,7 @@ namespace Bibyte.functional.values
                     return;
                 }
             }
-            Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear);
+            Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Scalar");
             val.AddSynapsesTo(linear);
             SynapseFactory.CreateSynapse(linear, output, scalar);
         }

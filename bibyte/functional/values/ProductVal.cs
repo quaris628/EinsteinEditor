@@ -31,7 +31,7 @@ namespace Bibyte.functional.values
             }
             else
             {
-                Neuron multNeuron = NeuronFactory.CreateNeuron(NeuronType.Mult);
+                Neuron multNeuron = NeuronFactory.CreateNeuron(NeuronType.Mult, "Product");
                 foreach (Value value in values)
                 {
                     value.AddSynapsesTo(multNeuron);
