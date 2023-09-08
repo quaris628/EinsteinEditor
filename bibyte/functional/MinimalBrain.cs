@@ -1,4 +1,5 @@
 ﻿using Bibyte.functional;
+using Bibyte.functional.booleans;
 using Bibyte.functional.values;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Bibyte.functional
         }
         public Value Rotate()
         {
-            return (InputVal.PHERO_SENSE_3 * 3 + InputVal.PHERO_SENSE_2) * 1.5f;
+            return (new BoolToValVal(new ValEqualsValBool(InputVal.GREEN_BIBITE, InputVal.RED_BIBITE))) * 1.5f;
         }
         public Value Herding()
         {

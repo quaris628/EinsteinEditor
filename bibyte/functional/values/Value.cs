@@ -64,9 +64,9 @@ namespace Bibyte.functional
         }
         public static Value operator *(Value left, Value right)
         {
-            // TODO write ProductVal class
-            throw new NotImplementedException();
+            return new ProductVal(new List<Value> {left, right});
         }
+
 
         /// <summary>
         /// This is only an approximation of division and breaks when the denominator is near zero.
@@ -95,7 +95,7 @@ namespace Bibyte.functional
             throw new NotImplementedException();
         }
 
-        // value-value comparisons
+        // value-value comparison
 
         public static Bool operator ==(Value left, Value right)
         {
@@ -127,6 +127,12 @@ namespace Bibyte.functional
 
 
         public abstract Synapse[] GetSynapsesTo(Neuron output);
+        public Synapse[] AddSynapsesTo(Neuron output)
+        {
+            Synapse[] synapses = this.GetSynapsesTo(output);
+            NeuralBackgroundBrainBuilder.AddToBrain(synapses);
+            return synapses;
+        }
 
         protected void validateFloat(float val)
         {
