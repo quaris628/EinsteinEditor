@@ -21,7 +21,7 @@ namespace Bibyte.neural
         /// <returns>A new hidden neuron.</returns>
         public static Neuron CreateNeuron(NeuronType type)
         {
-            return CreateNeuron(type, "Hidden" + hiddenNeuronIndex);
+            return CreateNeuron(type, "Hidden");
         }
 
         /// <summary>
