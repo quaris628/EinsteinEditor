@@ -11,9 +11,18 @@ namespace Bibyte.functional.booleans
 {
     public class ValEqualsValBool : Bool
     {
+        public static float ERR_AFTER_1 = 0.0000100503781525921f;
+
         private Value left;
         private Value right;
 
+        /// <summary>
+        /// This is only an approximation of a less-than.
+        /// Once the left is less than the right, this will return true until
+        /// the left is more than about 1x10^-5 i.e. 0.00001 greater than the right.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
         public ValEqualsValBool(Value left, Value right)
         {
             this.left = left;

@@ -79,6 +79,15 @@ namespace Bibyte.functional
         {
             return numerator * new InverseVal(denominator);
         }
+
+        /// <summary>
+        /// This is only an approximation of division and breaks when the denominator is near zero.
+        /// The error is less than 1% when the denominator is farther than 0.1 from zero,
+        /// and the error is less than 10% when the denominator is farther than 0.03 from zero.
+        /// </summary>
+        /// <param name="numerator"></param>
+        /// <param name="denominator"></param>
+        /// <returns></returns>
         public static Value operator /(float numerator, Value denominator)
         {
             return numerator * new InverseVal(denominator);
@@ -96,6 +105,13 @@ namespace Bibyte.functional
 
         // value-value comparisons
 
+        /// <summary>
+        /// This is only an approximation of an equals.
+        /// Once the values exactly match, this will return true until the values are
+        /// more than about 1x10^-5 i.e. 0.00001 away from each other.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
         public static Bool operator ==(Value left, Value right)
         {
             return new ValEqualsValBool(left, right);
@@ -104,24 +120,86 @@ namespace Bibyte.functional
         {
             return !(left == right);
         }
-
         public static Bool operator <(Value left, Value right)
         {
             return new ValLessThanValBool(left, right);
         }
         public static Bool operator >(Value left, Value right)
         {
-            return new ValLessThanValBool(right, left);
+            return right < left;
         }
-
         public static Bool operator <=(Value left, Value right)
         {
-            return !(left > right);
+            return new ValLessThanEqValBool(left, right);
         }
-
         public static Bool operator >=(Value left, Value right)
         {
-            return !(left < right);
+            return right <= left;
+        }
+
+        // value-scalar comparisions
+
+        /// <summary>
+        /// This is only an approximation of an equals.
+        /// Once the values exactly match, this will return true until the values are
+        /// more than about 1x10^-5 i.e. 0.00001 away from each other.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        public static Bool operator ==(Value left, float right)
+        {
+            return new ValEqualsValBool(left, new ConstVal(right));
+        }
+        public static Bool operator !=(Value left, float right)
+        {
+            return !(left == right);
+        }
+        public static Bool operator <(Value left, float right)
+        {
+            return new ValLessThanValBool(left, new ConstVal(right));
+        }
+        public static Bool operator >(Value left, float right)
+        {
+            return right < left;
+        }
+        public static Bool operator <=(Value left, float right)
+        {
+            return new ValLessThanEqValBool(left, new ConstVal(right));
+        }
+        public static Bool operator >=(Value left, float right)
+        {
+            return right <= left;
+        }
+        /// <summary>
+        /// This is only an approximation of an equals.
+        /// Once the values exactly match, this will return true until the values are
+        /// more than about 1x10^-5 i.e. 0.00001 away from each other.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        public static Bool operator ==(float left, Value right)
+        {
+            return new ValEqualsValBool(new ConstVal(left), right);
+        }
+        public static Bool operator !=(float left, Value right)
+        {
+            return !(left == right);
+        }
+        public static Bool operator <(float left, Value right)
+        {
+            return new ValLessThanValBool(new ConstVal(left), right);
+        }
+        public static Bool operator >(float left, Value right)
+        {
+            return right < left;
+        }
+        public static Bool operator <=(float left, Value right)
+        {
+            return new ValLessThanEqValBool(new ConstVal(left), right);
+        }
+        public static Bool operator >=(float left, Value right)
+        {
+            return right <= left;
         }
 
 
