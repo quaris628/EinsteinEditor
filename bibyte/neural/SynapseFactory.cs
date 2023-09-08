@@ -13,7 +13,7 @@ namespace Bibyte.neural
         /// <summary>
         /// Creates a new synapse.
         /// Use this instead of new Synapse(...), because this automatically
-        ///     adds the neuron and its synapses to the brain.
+        ///     adds the synapse and its neurons to the brain.
         /// </summary>
         /// <param name="from">Neuron the synapse starts from</param>
         /// <param name="to">Neuron the synapse goes to</param>
