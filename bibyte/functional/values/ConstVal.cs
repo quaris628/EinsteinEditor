@@ -1,4 +1,5 @@
 ﻿using Bibyte.neural;
+using Einstein.model;
 using Einstein.model.json;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,11 @@ namespace Bibyte.functional.values
 
         public override void AddSynapsesTo(Neuron output)
         {
+            if (output.Type == NeuronType.Mult && value == 1f
+                || output.Type != NeuronType.Mult && value == 0f)
+            {
+                return;
+            }
             SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, value);
         }
     }

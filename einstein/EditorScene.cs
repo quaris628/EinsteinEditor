@@ -45,8 +45,14 @@ namespace Einstein
 
         private string savePath;
         private string loadPath;
+        private string initSaveFilePath;
         private int prevWindowWidth;
         private int prevWindowHeight;
+
+        public EditorScene(Scene prevScene, string savefilepath) : this(prevScene)
+        {
+            initSaveFilePath = savefilepath;
+        }
 
         public EditorScene(Scene prevScene) : base(prevScene, EinsteinConfig.COLOR_MODE.Background)
         {
@@ -118,6 +124,7 @@ namespace Einstein
 
             savePath = null;
             loadPath = null;
+            initSaveFilePath = null;
             prevWindowWidth = EinsteinConfig.Window.INITIAL_WIDTH;
             prevWindowHeight = EinsteinConfig.Window.INITIAL_HEIGHT;
         }
@@ -141,6 +148,11 @@ namespace Einstein
             IO.RENDERER.Add(autoArrangeButton);
             IO.RENDERER.Add(infoText);
             IO.FRAME_TIMER.Subscribe(checkForResize);
+            if (initSaveFilePath != null)
+            {
+                isInit = true; // kinda bad design but it works as long as no one extends this EditorScene class
+                loadBrain(initSaveFilePath);
+            }
         }
 
         protected override void UninitializeMe()
@@ -210,6 +222,12 @@ namespace Einstein
             string filepath = IO.POPUPS.PromptForFile(getLoadPath(), "Bibite Files|*.bb8",
                 "Load from Bibite", "");
             if (filepath == "") { return; }
+            loadBrain(filepath);
+        }
+
+        private void loadBrain(string filepath)
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!File.Exists(filepath))
             {
                 IO.POPUPS.ShowErrorPopup("Load Failed", "File not found.");

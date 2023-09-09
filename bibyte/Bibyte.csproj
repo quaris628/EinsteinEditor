@@ -1,12 +1,98 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B73D373A-B2AC-4AAD-B880-086ACA2A1E89}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>bibyte</RootNamespace>
+    <AssemblyName>bibyte</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\einstein\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\einstein\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Bibyte.BibyteMain</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\einstein\Einstein.csproj" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Compile Include="BibyteMain.cs" />
+    <Compile Include="circuits\Circuit1OverX.cs" />
+    <Compile Include="circuits\CircuitDivide.cs" />
+    <Compile Include="functional\booleans\AndBool.cs" />
+    <Compile Include="functional\booleans\Bool.cs" />
+    <Compile Include="functional\booleans\ConstBool.cs" />
+    <Compile Include="functional\booleans\NotBool.cs" />
+    <Compile Include="functional\booleans\ValEqualsValBool.cs" />
+    <Compile Include="functional\booleans\ValLessThanEqValBool.cs" />
+    <Compile Include="functional\booleans\ValLessThanValBool.cs" />
+    <Compile Include="functional\FunctionalBackgroundBrainBuilder.cs" />
+    <Compile Include="functional\IFunctionalProgrammingBrain.cs" />
+    <Compile Include="functional\INeuralizeable.cs" />
+    <Compile Include="functional\MinimalBrain.cs" />
+    <Compile Include="functional\values\BoolToValVal.cs" />
+    <Compile Include="functional\values\ConstVal.cs" />
+    <Compile Include="functional\values\Func.cs" />
+    <Compile Include="functional\values\HiddenNeuronVal.cs" />
+    <Compile Include="functional\values\InputVal.cs" />
+    <Compile Include="functional\values\InverseVal.cs" />
+    <Compile Include="functional\values\ProductVal.cs" />
+    <Compile Include="functional\values\ScalaredVal.cs" />
+    <Compile Include="functional\values\SumVal.cs" />
+    <Compile Include="functional\values\Value.cs" />
+    <Compile Include="memory\StoredBool.cs" />
+    <Compile Include="memory\StoredValue.cs" />
+    <Compile Include="memory\ToggledBool.cs" />
+    <Compile Include="neural\Inputs.cs" />
+    <Compile Include="neural\NeuralBackgroundBrainBuilder.cs" />
+    <Compile Include="neural\NeuralBrainCreator.cs" />
+    <Compile Include="neural\NeuronFactory.cs" />
+    <Compile Include="neural\Outputs.cs" />
+    <Compile Include="neural\SynapseFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\einstein\Einstein.csproj">
+      <Project>{3559262f-a329-4518-a7fc-30aa424d7c66}</Project>
+      <Name>Einstein</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\phi\phi.csproj">
+      <Project>{16A36FCD-07E6-4CAE-B5CB-DB677E33F3FB}</Project>
+      <Name>phi</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

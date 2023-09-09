@@ -3,14 +3,18 @@ using System.Diagnostics;
 using System.IO;
 using Bibyte.functional;
 using Bibyte.neural;
+using Einstein;
+using Einstein.config;
 using Einstein.model.json;
+using phi;
 
 namespace Bibyte
 {
     public class BibyteMain
     {
-        private static string FILE_WITH_SAVE_FILE_PATH = "../../../saveFilePath.txt";
+        private static string FILE_WITH_SAVE_FILE_PATH = "saveFilePath.txt";
 
+        [STAThread] // must be specified in order to call phi
         public static void Main(string[] args)
         {
             // get the file we're saving to
@@ -49,6 +53,8 @@ namespace Bibyte
             Console.WriteLine("Saving brain...");
             SaveBrain(NeuralBackgroundBrainBuilder.GetBrain(), saveFilePath);
             //*/
+
+            PhiMain.Main(new EditorScene(null, saveFilePath), new EinsteinConfig());
         }
 
         public static void SaveBrain(Brain brain, string filepath)

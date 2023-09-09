@@ -10,7 +10,7 @@ using phi.io;
 
 namespace Einstein
 {
-    static class EinsteinMain
+    public static class EinsteinMain
     {
         public const string CRASH_LOG_FILEPATH = "../EinsteinErrorLog.txt";
 
