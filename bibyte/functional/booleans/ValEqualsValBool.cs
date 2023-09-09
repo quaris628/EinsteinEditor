@@ -11,7 +11,7 @@ namespace Bibyte.functional.booleans
 {
     public class ValEqualsValBool : Bool
     {
-        public static float ERR_AFTER_1 = 0.0000100503781525921f;
+        public static float ERR_AFTER_1 = 0.00001f;
 
         private Value left;
         private Value right;
@@ -37,7 +37,7 @@ namespace Bibyte.functional.booleans
 
             Neuron latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "ValEqualsVal");
             SynapseFactory.CreateSynapse(guassian, latch, 100);
-            SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -99);
+            SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -98.99999f);
 
             SynapseFactory.CreateSynapse(latch, output, 1);
         }

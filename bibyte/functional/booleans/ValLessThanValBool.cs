@@ -11,7 +11,7 @@ namespace Bibyte.functional.booleans
 {
     public class ValLessThanValBool : Bool
     {
-        public static float ERR_AFTER_LESS_THAN = -0.00000400053346136992f;
+        public static float ERR_AFTER_LESS_THAN = -0.000004f;
 
         private Value left;
         private Value right;
@@ -37,7 +37,7 @@ namespace Bibyte.functional.booleans
 
             Neuron latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "ValLessThanVal");
             SynapseFactory.CreateSynapse(sigmoid, latch, 100);
-            SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -50f);
+            SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -49.99999f);
 
             SynapseFactory.CreateSynapse(latch, output, 1);
         }
