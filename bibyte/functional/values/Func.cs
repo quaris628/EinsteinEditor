@@ -49,5 +49,9 @@ namespace Bibyte.functional.values
         {
             return new HiddenNeuronVal(val, NeuronType.Differential);
         }
+        public static Value Latch(Value val)
+        {
+            return new HiddenNeuronVal(val, NeuronType.Latch);
+        }
     }
 }
