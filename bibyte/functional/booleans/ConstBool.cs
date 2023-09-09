@@ -1,4 +1,5 @@
-﻿using Einstein.model.json;
+﻿using Bibyte.neural;
+using Einstein.model.json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +19,7 @@ namespace Bibyte.functional.booleans
 
         public override void AddSynapsesTo(Neuron output)
         {
-            // TODO figure out a circuit for this
-
-            throw new NotImplementedException();
+            SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, boolean ? 1 : 0);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Einstein.model.json;
+﻿using Bibyte.neural;
+using Einstein.model;
+using Einstein.model.json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +22,18 @@ namespace Bibyte.functional.booleans
 
         public override void AddSynapsesTo(Neuron output)
         {
-            // TODO
-            throw new NotImplementedException();
+            if (output.Type == NeuronType.Mult)
+            {
+                left.AddSynapsesTo(output);
+                right.AddSynapsesTo(output);
+            }
+            else
+            {
+                Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "And");
+                left.AddSynapsesTo(mult);
+                right.AddSynapsesTo(mult);
+                SynapseFactory.CreateSynapse(mult, output, 1);
+            }
         }
     }
 }

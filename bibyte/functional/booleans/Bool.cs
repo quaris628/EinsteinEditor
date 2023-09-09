@@ -11,7 +11,7 @@ namespace Bibyte.functional.booleans
     {
         public static Bool operator ==(Bool left, Bool right)
         {
-            return new BoolEqualsBoolBool(left, right);
+            return (left & right) | (!left & !right);
         }
 
         public static Bool operator !=(Bool left, Bool right)
