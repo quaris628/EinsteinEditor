@@ -17,7 +17,7 @@ namespace Bibyte.functional
         }
         public Value Rotate()
         {
-            return (new BoolToValVal(new ValEqualsValBool(InputVal.GREEN_BIBITE, InputVal.RED_BIBITE))) * 1.5f;
+            return (new IfVal(InputVal.PHERO_SENSE_1 == InputVal.PHERO_SENSE_2, InputVal.RED_BIBITE, InputVal.GREEN_BIBITE)) * 2f;
         }
         public Value Herding()
         {
