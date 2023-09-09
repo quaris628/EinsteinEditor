@@ -20,10 +20,22 @@ namespace Bibyte.functional.booleans
 
         public override void AddSynapsesTo(Neuron output)
         {
-            Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Not");
-            boolean.AddSynapsesTo(linear);
-            SynapseFactory.CreateSynapse(linear, output, -1);
-            SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, 1);
+            if (output.Type == NeuronType.Mult)
+            {
+                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Not");
+                boolean.AddSynapsesTo(linear);
+                Neuron latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "Not");
+                SynapseFactory.CreateSynapse(linear, latch, -1);
+                SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, 1);
+                SynapseFactory.CreateSynapse(latch, output, 1);
+            }
+            else
+            {
+                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Not");
+                boolean.AddSynapsesTo(linear);
+                SynapseFactory.CreateSynapse(linear, output, -1);
+                SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, 1);
+            }
         }
     }
 }
