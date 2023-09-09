@@ -1,6 +1,7 @@
 ﻿using Bibyte.functional;
 using Bibyte.functional.booleans;
 using Bibyte.functional.values;
+using Bibyte.functional.memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Bibyte.functional
         }
         public Value Rotate()
         {
-            return (new IfVal(InputVal.PHERO_SENSE_1 == InputVal.PHERO_SENSE_2, InputVal.RED_BIBITE, InputVal.GREEN_BIBITE)) * 2f;
+            return (new IfVal(InputVal.PHERO_SENSE_1 == InputVal.RED_BIBITE, new ConstVal(5), new ConstVal(2))) * 2f;
         }
         public Value Herding()
         {
@@ -33,7 +34,7 @@ namespace Bibyte.functional
         }
         public Value Grab()
         {
-            return new ConstVal(0);
+            return new BoolToValVal(new StoredBool(new ConstBool(true), InputVal.RED_BIBITE == InputVal.BLUE_BIBITE));
         }
         public Value ClkReset()
         {

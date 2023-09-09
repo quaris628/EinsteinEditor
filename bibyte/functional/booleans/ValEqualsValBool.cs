@@ -12,7 +12,6 @@ namespace Bibyte.functional.booleans
     public class ValEqualsValBool : Bool
     {
         public static float ERR_AFTER_1 = 0.00001f;
-
         private Value left;
         private Value right;
 

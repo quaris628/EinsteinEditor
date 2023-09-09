@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.memory
+namespace Bibyte.functional.memory
 {
     public class StoredValue : Value
     {
