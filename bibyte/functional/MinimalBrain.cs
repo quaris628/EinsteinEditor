@@ -25,7 +25,7 @@ namespace Bibyte.functional
         }
         public Value Want2Lay()
         {
-            return new ConstVal(0);
+            return Func.Cos(InputVal.BIBITE_ANGLE);
         }
         public Value Digestion()
         {
