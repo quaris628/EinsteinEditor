@@ -290,7 +290,6 @@ namespace Einstein.ui.editarea
         public void ShiftView(int dx, int dy)
         {
             if (dx == 0 && dy == 0) { return; }
-            Console.WriteLine("Shift view dx: " + dx + " dy: " + dy);
             foreach (NeuronRenderable nr in neuronIndexToNR.Values)
             {
                 float x = nr.NeuronDrawable.GetCircleCenterXfloat();
