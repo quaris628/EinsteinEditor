@@ -59,20 +59,21 @@
     <Compile Include="functional\FunctionalBackgroundBrainBuilder.cs" />
     <Compile Include="functional\IFunctionalProgrammingBrain.cs" />
     <Compile Include="functional\INeuralizeable.cs" />
+    <Compile Include="functional\memory\StoredBool.cs" />
+    <Compile Include="functional\memory\StoredValue.cs" />
+    <Compile Include="functional\memory\ToggledBool.cs" />
     <Compile Include="functional\MinimalBrain.cs" />
     <Compile Include="functional\values\BoolToValVal.cs" />
     <Compile Include="functional\values\ConstVal.cs" />
     <Compile Include="functional\values\Func.cs" />
     <Compile Include="functional\values\HiddenNeuronVal.cs" />
+    <Compile Include="functional\values\IfVal.cs" />
     <Compile Include="functional\values\InputVal.cs" />
     <Compile Include="functional\values\InverseVal.cs" />
     <Compile Include="functional\values\ProductVal.cs" />
     <Compile Include="functional\values\ScalaredVal.cs" />
     <Compile Include="functional\values\SumVal.cs" />
     <Compile Include="functional\values\Value.cs" />
-    <Compile Include="memory\StoredBool.cs" />
-    <Compile Include="memory\StoredValue.cs" />
-    <Compile Include="memory\ToggledBool.cs" />
     <Compile Include="neural\Inputs.cs" />
     <Compile Include="neural\NeuralBackgroundBrainBuilder.cs" />
     <Compile Include="neural\NeuralBrainCreator.cs" />
@@ -94,5 +95,6 @@
       <Name>phi</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
