@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using bibyte.functional.booleans;
 
 namespace Bibyte.functional
 {
@@ -38,7 +39,7 @@ namespace Bibyte.functional
         }
         public Value ClkReset()
         {
-            return new ConstVal(0);
+            return new BoolToValVal(new ToggledBool(new RisingBool(InputVal.PLANT_ANGLE == InputVal.BIBITE_ANGLE), false));
         }
         public Value PhereOut1()
         {

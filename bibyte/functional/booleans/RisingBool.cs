@@ -1,4 +1,5 @@
 ﻿using Bibyte.functional.booleans;
+using Bibyte.functional.values;
 using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
@@ -32,6 +33,7 @@ namespace bibyte.functional.booleans
             Neuron latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "RisingBool");
             input.AddSynapsesTo(diff, 100f);
             SynapseFactory.CreateSynapse(diff, latch, 100f);
+            (new ConstVal(-1)).AddSynapsesTo(latch);
             SynapseFactory.CreateSynapse(latch, output, outputSynapseStrengthOverride);
         }
     }
