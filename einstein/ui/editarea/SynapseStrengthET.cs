@@ -13,7 +13,7 @@ namespace Einstein.ui.editarea
 {
     public class SynapseStrengthET : FloatET
     {
-        public const int MAX_DECIMALS = 2;
+        public const int MAX_DECIMALS = 5;
         public static readonly Color TEXT_COLOR = EinsteinConfig.COLOR_MODE.Text;
 
         public BaseSynapse Synapse { get; protected set; }
@@ -39,13 +39,13 @@ namespace Einstein.ui.editarea
         public void SetValue(float strength)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+
             // easy to do this way b/c validation is all taken care of underneath
             // somewhat inefficient but whatever
-
             bool wasEnabled = IsEditingEnabled;
             if (!wasEnabled) { EnableEditing(); }
             Clear();
-            string strStr = Math.Round(strength, 2).ToString(); // strength string
+            string strStr = Math.Round(strength, MAX_DECIMALS).ToString(); // strength string
             foreach (char c in strStr)
             {
                 TypeChar(c);
