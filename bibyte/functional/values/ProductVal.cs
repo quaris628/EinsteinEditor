@@ -11,12 +11,16 @@ namespace Bibyte.functional.values
 {
     internal class ProductVal : Value
     {
-        private List<Value> values = new List<Value>();
+        private List<Value> values;
+        public ProductVal()
+        {
+            this.values = new List<Value>();
+        }
         public ProductVal(List<Value> values)
         {
             this.values = values;
         }
-        public void AddVal(Value value)
+        public void MultiplyBy(Value value)
         {
             values.Add(value);
         }

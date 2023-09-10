@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BibyteMain.cs" />
+    <Compile Include="functional\brains\TestingBrain.cs" />
     <Compile Include="neural\circuits\Circuit1OverX.cs" />
     <Compile Include="neural\circuits\CircuitDivide.cs" />
     <Compile Include="functional\booleans\AndBool.cs" />
@@ -58,7 +59,7 @@
     <Compile Include="functional\booleans\ValLessThanEqValBool.cs" />
     <Compile Include="functional\booleans\ValLessThanValBool.cs" />
     <Compile Include="functional\background\FunctionalBackgroundBrainBuilder.cs" />
-    <Compile Include="functional\background\IFunctionalProgrammingBrain.cs" />
+    <Compile Include="functional\brains\IFunctionalProgrammingBrain.cs" />
     <Compile Include="functional\background\INeuralizeable.cs" />
     <Compile Include="functional\Mem.cs" />
     <Compile Include="functional\booleans\StoredBool.cs" />

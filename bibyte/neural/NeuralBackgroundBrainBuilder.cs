@@ -43,6 +43,13 @@ namespace Bibyte.neural
             {
                 brain.Add(synapse);
             }
+            else
+            {
+                Neuron lin = NeuronFactory.CreateNeuron(NeuronType.Linear, "DupeSyn");
+                brain.Add(lin);
+                brain.Add(new Synapse((Neuron)synapse.From, lin, synapse.Strength));
+                brain.Add(new Synapse(lin, (Neuron)synapse.To, 1));
+            }
         }
 
         public static Brain GetBrain() { return brain; }

@@ -12,7 +12,7 @@ namespace Bibyte
 {
     public class BibyteMain
     {
-        private static IFunctionalProgrammingBrain BRAIN_TO_GENERATE = new MinimalBrain();
+        private static IFunctionalProgrammingBrain BRAIN_TO_GENERATE = new TestingBrain();
 
         private static string FILE_WITH_SAVE_FILE_PATH = "saveFilePath.txt";
 
