@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using bibyte.functional.values;
 
 namespace Bibyte.functional
 {
@@ -23,7 +22,7 @@ namespace Bibyte.functional
         }
         public Value Herding()
         {
-            return -InputVal.PLANT_CLOSENESS;
+            return new StoredValue(InputVal.N_BIBITES > 2, InputVal.BIBITE_CLOSENESS);
         }
         public Value Want2Lay()
         {

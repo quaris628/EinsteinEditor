@@ -26,6 +26,8 @@ namespace bibyte.functional.booleans
                 new ConstBool(false).AddSynapsesTo(output);
                 return;
             }
+            // if you change the number of synapses between the input and output,
+            // then update StoredValue accordingly
             Neuron diff = NeuronFactory.CreateNeuron(NeuronType.Differential, "RisingBool");
             Neuron latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "RisingBool");
             input.AddSynapsesTo(diff, 100f);
