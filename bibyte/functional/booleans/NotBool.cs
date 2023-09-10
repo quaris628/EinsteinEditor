@@ -18,7 +18,7 @@ namespace Bibyte.functional.booleans
             this.boolean = boolean;
         }
 
-        public override void AddSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
         {
             if (output.Type == NeuronType.Mult)
             {
@@ -27,14 +27,14 @@ namespace Bibyte.functional.booleans
                 Neuron latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "Not");
                 SynapseFactory.CreateSynapse(linear, latch, -1);
                 SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, 1);
-                SynapseFactory.CreateSynapse(latch, output, 1);
+                SynapseFactory.CreateSynapse(latch, output, outputSynapseStrengthOverride);
             }
             else
             {
                 Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Not");
                 boolean.AddSynapsesTo(linear);
                 SynapseFactory.CreateSynapse(linear, output, -1);
-                SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, 1);
+                SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, outputSynapseStrengthOverride);
             }
         }
     }

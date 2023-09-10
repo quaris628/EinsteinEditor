@@ -20,7 +20,7 @@ namespace Bibyte.functional.booleans
             this.right = right;
         }
 
-        public override void AddSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
         {
             if (output.Type == NeuronType.Mult)
             {

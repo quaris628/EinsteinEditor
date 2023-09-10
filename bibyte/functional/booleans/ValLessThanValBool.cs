@@ -16,11 +16,6 @@ namespace Bibyte.functional.booleans
         private Value left;
         private Value right;
 
-        public ValLessThanValBool(Value left, Value right)
-        {
-            this.left = left;
-            this.right = right;
-        }
         /// <summary>
         /// This is only an approximation of a less-than.
         /// The left value must be less than the right value by more than about 4x10^-6 or 0.000004
@@ -29,7 +24,13 @@ namespace Bibyte.functional.booleans
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
-        public override void AddSynapsesTo(Neuron output)
+        public ValLessThanValBool(Value left, Value right)
+        {
+            this.left = left;
+            this.right = right;
+        }
+        
+        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
         {
             Neuron sigmoid = NeuronFactory.CreateNeuron(NeuronType.Sigmoid, "ValLessThanVal");
             (left * -100f).AddSynapsesTo(sigmoid);
@@ -39,7 +40,7 @@ namespace Bibyte.functional.booleans
             SynapseFactory.CreateSynapse(sigmoid, latch, 100);
             SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -49.99999f);
 
-            SynapseFactory.CreateSynapse(latch, output, 1);
+            SynapseFactory.CreateSynapse(latch, output, outputSynapseStrengthOverride);
         }
     }
 }

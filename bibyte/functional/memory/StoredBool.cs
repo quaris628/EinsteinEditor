@@ -22,7 +22,7 @@ namespace Bibyte.functional.memory
             this.valueToStoreFrom = valueToStoreFrom;
         }
 
-        public override void AddSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
         {
             Neuron memoryNeuron = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit");
             Neuron shouldStoreNeuron = NeuronFactory.CreateNeuron(NeuronType.Linear, "shouldStoreInput");
@@ -31,7 +31,7 @@ namespace Bibyte.functional.memory
             inputGate.AddSynapsesTo(memoryNeuron);
             (new ConstVal(0.5f)).AddSynapsesTo(memoryNeuron);
             SynapseFactory.CreateSynapse(shouldStoreNeuron, memoryNeuron, -0.5f);
-            SynapseFactory.CreateSynapse(memoryNeuron, output, 1);
+            SynapseFactory.CreateSynapse(memoryNeuron, output, outputSynapseStrengthOverride);
         }
     }
 }

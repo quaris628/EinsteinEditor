@@ -1,4 +1,6 @@
-﻿using Bibyte.neural;
+﻿using bibyte.functional.booleans;
+using Bibyte.functional.booleans;
+using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
 using System;
@@ -11,6 +13,31 @@ namespace Bibyte.functional.values
 {
     public class Func
     {
+
+        // logic
+
+        public static Value If(Bool condition, Value ifTrue, Value ifFalse)
+        {
+            return new IfVal(condition, ifTrue, ifFalse);
+        }
+        public static Value Latch(Value val)
+        {
+            return new HiddenNeuronVal(val, NeuronType.Latch);
+        }
+
+        // non-functions (move to another class eventually?)
+
+        public static Bool Rising(Bool boolean)
+        {
+            return new RisingBool(boolean);
+        }
+        public static Value Differential(Value val)
+        {
+            return new HiddenNeuronVal(val, NeuronType.Differential);
+        }
+
+        // math
+
         public const float TAU = 6.28318530717f;
         public static Value Abs(Value val)
         {
@@ -44,14 +71,6 @@ namespace Bibyte.functional.values
         public static Value Cos(Value val)
         {
             return new HiddenNeuronVal(val + TAU * 0.25f, NeuronType.Sine);
-        }
-        public static Value Differential(Value val)
-        {
-            return new HiddenNeuronVal(val, NeuronType.Differential);
-        }
-        public static Value Latch(Value val)
-        {
-            return new HiddenNeuronVal(val, NeuronType.Latch);
         }
     }
 }

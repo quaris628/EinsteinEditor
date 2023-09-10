@@ -29,7 +29,7 @@ namespace Bibyte.functional.booleans
             this.right = right;
         }
 
-        public override void AddSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
         {
             Neuron sigmoid = NeuronFactory.CreateNeuron(NeuronType.Sigmoid, "ValLessThanEqVal");
             (left * -100f).AddSynapsesTo(sigmoid);
@@ -39,7 +39,7 @@ namespace Bibyte.functional.booleans
             SynapseFactory.CreateSynapse(sigmoid, latch, 100);
             SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -48.99999f);
 
-            SynapseFactory.CreateSynapse(latch, output, 1);
+            SynapseFactory.CreateSynapse(latch, output, outputSynapseStrengthOverride);
         }
     }
 }

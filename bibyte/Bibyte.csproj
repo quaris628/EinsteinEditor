@@ -53,6 +53,7 @@
     <Compile Include="functional\booleans\Bool.cs" />
     <Compile Include="functional\booleans\ConstBool.cs" />
     <Compile Include="functional\booleans\NotBool.cs" />
+    <Compile Include="functional\booleans\RisingBool.cs" />
     <Compile Include="functional\booleans\ValEqualsValBool.cs" />
     <Compile Include="functional\booleans\ValLessThanEqValBool.cs" />
     <Compile Include="functional\booleans\ValLessThanValBool.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="functional\MinimalBrain.cs" />
     <Compile Include="functional\values\BoolToValVal.cs" />
     <Compile Include="functional\values\ConstVal.cs" />
-    <Compile Include="functional\values\Func.cs" />
+    <Compile Include="functional\Func.cs" />
     <Compile Include="functional\values\HiddenNeuronVal.cs" />
     <Compile Include="functional\values\IfVal.cs" />
     <Compile Include="functional\values\InputVal.cs" />

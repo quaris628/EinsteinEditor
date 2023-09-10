@@ -16,7 +16,7 @@ namespace Bibyte.functional.memory
 
         }
 
-        public override void AddSynapsesTo(Neuron output)
+        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
         {
             // TODO
         }
