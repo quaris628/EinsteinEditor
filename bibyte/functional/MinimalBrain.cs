@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using bibyte.functional.values;
 
 namespace Bibyte.functional
 {
@@ -38,7 +39,7 @@ namespace Bibyte.functional
         }
         public Value ClkReset()
         {
-            return new ConstVal(0);
+            return 2f ^ InputVal.SPEED;
         }
         public Value PhereOut1()
         {

@@ -97,10 +97,9 @@ namespace Bibyte.functional
             return numerator * (1 / denominator);
         }
 
-        public static Value operator ^(Value baseVal, Value exponent)
+        public static Value operator ^(double baseVal, Value exponent)
         {
-            // TODO write ExponentVal class, use BibiteBoi's e^x approximation
-            throw new NotImplementedException();
+            return 1 / new HiddenNeuronVal(-exponent * (float)Math.Log(baseVal), NeuronType.Sigmoid) + new ConstVal(-1);
         }
 
         // value-value comparisons
