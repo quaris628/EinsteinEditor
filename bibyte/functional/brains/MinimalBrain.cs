@@ -23,15 +23,15 @@ namespace Bibyte.functional
         }
         public Value Herding()
         {
-            return new ConstVal(0);
+            return 0;
         }
         public Value Want2Lay()
         {
-            return new ConstVal(0);
+            return 0;
         }
         public Value Digestion()
         {
-            return new IfVal(InputVal.ENERGY_RATIO < 0.9f, new ConstVal(2), new ConstVal(-2));
+            return Func.If(InputVal.ENERGY_RATIO < 0.9f, 2, -2);
         }
         public Value Grab()
         {
@@ -43,31 +43,31 @@ namespace Bibyte.functional
         }
         public Value PhereOut1()
         {
-            return new ConstVal(0);
+            return 0;
         }
         public Value PhereOut2()
         {
-            return new ConstVal(0);
+            return 0;
         }
         public Value PhereOut3()
         {
-            return new ConstVal(0);
+            return 0;
         }
         public Value Want2Grow()
         {
-            return new ConstVal(0);
+            return 0;
         }
         public Value Want2Heal()
         {
-            return new ConstVal(0);
+            return 0;
         }
         public Value Want2Attack()
         {
-            return new ConstVal(0);
+            return 0;
         }
         public Value ImmuneSystem()
         {
-            return new ConstVal(0);
+            return 0;
         }
     }
 }

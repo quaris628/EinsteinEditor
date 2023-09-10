@@ -12,6 +12,8 @@ namespace Bibyte
 {
     public class BibyteMain
     {
+        private static IFunctionalProgrammingBrain BRAIN_TO_GENERATE = new MinimalBrain();
+
         private static string FILE_WITH_SAVE_FILE_PATH = "saveFilePath.txt";
 
         [STAThread] // must be specified in order to call phi
@@ -40,7 +42,7 @@ namespace Bibyte
             //*
             Console.WriteLine("Building functionally programmed brain");
             Console.WriteLine("Creating brain...");
-            Brain brain = FunctionalBackgroundBrainBuilder.Build(new MinimalBrain());
+            Brain brain = FunctionalBackgroundBrainBuilder.Build(BRAIN_TO_GENERATE);
             Console.WriteLine("Saving brain...");
             SaveBrain(brain, saveFilePath);
             //*/

@@ -201,6 +201,10 @@ namespace Bibyte.functional
             return right <= left;
         }
 
+        public static implicit operator Value(float scalar)
+        {
+            return new ConstVal(scalar);
+        }
 
         public abstract void AddSynapsesTo(Neuron output);
 

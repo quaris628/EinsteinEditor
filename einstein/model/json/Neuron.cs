@@ -39,12 +39,16 @@ namespace Einstein.model.json
         private float lastOutput;
 
         public Neuron(int index, NeuronType type, string description)
+            : this(index, type, description, 0f, 0f, 0f) { }
+
+        public Neuron(int index, NeuronType type, string description,
+            float value, float lastInput, float lastOutput)
             : base(index, type, description)
         {
             Inov = 0;
-            value = 0f;
-            lastInput = 0f;
-            lastOutput = 0f;
+            this.value = value;
+            this.lastInput = lastInput;
+            this.lastOutput = lastOutput;
         }
 
         public Neuron(Neuron jsonNeuron)

@@ -31,9 +31,7 @@ namespace Bibyte.functional.booleans
             }
             else
             {
-                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Not");
-                boolean.AddSynapsesTo(linear);
-                SynapseFactory.CreateSynapse(linear, output, -1);
+                boolean.AddSynapsesTo(output, -outputSynapseStrengthOverride);
                 SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, outputSynapseStrengthOverride);
             }
         }

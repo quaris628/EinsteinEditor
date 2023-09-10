@@ -14,15 +14,11 @@ namespace Bibyte.functional.values
     public class Func
     {
 
-        // logic
+        // misc logic
 
         public static Value If(Bool condition, Value ifTrue, Value ifFalse)
         {
             return new IfVal(condition, ifTrue, ifFalse);
-        }
-        public static Value Latch(Value val)
-        {
-            return new HiddenNeuronVal(val, NeuronType.Latch);
         }
 
         // non-functions (move to another class eventually?)

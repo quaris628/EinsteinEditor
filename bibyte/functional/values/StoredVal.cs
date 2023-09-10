@@ -16,10 +16,15 @@ namespace Bibyte.functional.memory
     {
         private Bool shouldStore;
         private Value toStore;
-        public StoredValue(Bool shouldStore, Value toStore)
+        private float initialValue;
+
+        public StoredValue(Bool shouldStore, Value toStore) : this(shouldStore, toStore, 0f) { }
+        public StoredValue(Bool shouldStore, Value toStore, float initialValue)
         {
+            validateFloat(initialValue);
             this.shouldStore = shouldStore;
             this.toStore = toStore;
+            this.initialValue = initialValue;
         }
 
         public override void AddSynapsesTo(Neuron output)
@@ -37,7 +42,8 @@ namespace Bibyte.functional.memory
 
             Neuron multIn = NeuronFactory.CreateNeuron(NeuronType.Mult, "StoredValueInput");
             Neuron multReset = NeuronFactory.CreateNeuron(NeuronType.Mult, "StoredValueReset");
-            Neuron loop = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueLoop");
+            Neuron loop = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueLoop",
+                initialValue, initialValue, initialValue);
             toStore.AddSynapsesTo(multIn);
             SynapseFactory.CreateSynapse(resetNeuron, multIn, 1);
             SynapseFactory.CreateSynapse(resetNeuron, multReset, 1);
