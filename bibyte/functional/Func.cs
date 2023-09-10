@@ -34,7 +34,14 @@ namespace Bibyte.functional.values
 
         // math
 
-        public const float TAU = 6.28318530717f;
+        public static Value Min(Value val1, Value val2)
+        {
+            return If(val1 < val2, val1, val2);
+        }
+        public static Value Max(Value val1, Value val2)
+        {
+            return If(val1 > val2, val1, val2);
+        }
         public static Value Abs(Value val)
         {
             return new HiddenNeuronVal(val, NeuronType.Abs);
@@ -60,6 +67,8 @@ namespace Bibyte.functional.values
         {
             return new HiddenNeuronVal(val, NeuronType.Gaussian);
         }
+
+        public const float TAU = 6.28318530717f;
         public static Value Sin(Value val)
         {
             return new HiddenNeuronVal(val, NeuronType.Sine);
