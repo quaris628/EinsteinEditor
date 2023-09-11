@@ -26,15 +26,15 @@ namespace Bibyte.functional.memory
             this.initialValue = initialValue ? 1f : 0f;
         }
 
-        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
+        public override void ConnectTo(Neuron output, float outputSynapseStrengthOverride)
         {
             Neuron memoryNeuron = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit",
                 initialValue, initialValue, initialValue);
             Neuron shouldStoreNeuron = NeuronFactory.CreateNeuron(NeuronType.Linear, "shouldStoreInput");
             Value inputGate = (new BoolToValVal(shouldStore)) * (new BoolToValVal(valueToStoreFrom));
-            shouldStore.AddSynapsesTo(shouldStoreNeuron);
-            inputGate.AddSynapsesTo(memoryNeuron);
-            (new ConstVal(0.5f)).AddSynapsesTo(memoryNeuron);
+            shouldStore.AddOutput(shouldStoreNeuron);
+            inputGate.AddOutput(memoryNeuron);
+            (new ConstVal(0.5f)).AddOutputSynapse(memoryNeuron);
             SynapseFactory.CreateSynapse(shouldStoreNeuron, memoryNeuron, -0.5f);
             SynapseFactory.CreateSynapse(memoryNeuron, output, outputSynapseStrengthOverride);
         }

@@ -24,13 +24,13 @@ namespace Bibyte.functional.values
         {
             values.Add(value);
         }
-        public override void AddSynapsesTo(Neuron output)
+        public override void AddOutputSynapse(Neuron output)
         {
             if (output.Type == NeuronType.Mult)
             {
                 foreach (Value value in values)
                 {
-                    value.AddSynapsesTo(output);
+                    value.AddOutput(output);
                 }
             }
             else
@@ -38,7 +38,7 @@ namespace Bibyte.functional.values
                 Neuron multNeuron = NeuronFactory.CreateNeuron(NeuronType.Mult, "Product");
                 foreach (Value value in values)
                 {
-                    value.AddSynapsesTo(multNeuron);
+                    value.AddOutput(multNeuron);
                 }
                 SynapseFactory.CreateSynapse(multNeuron, output, 1f);
             }

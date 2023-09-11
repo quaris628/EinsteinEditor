@@ -1,4 +1,5 @@
-﻿using Bibyte.functional.booleans;
+﻿using bibyte.functional.background;
+using Bibyte.functional.booleans;
 using Bibyte.functional.values;
 using Bibyte.neural;
 using Einstein;
@@ -13,23 +14,17 @@ using System.Threading.Tasks;
 namespace Bibyte.functional
 {
     // pall functions of subclasses into operator overloads
-    public abstract class Value : INeuralizeable
+    public abstract class Value : Neuralizeable
     {
         // math
 
         public static Value operator +(Value left, Value right)
         {
-            SumVal sum = new SumVal();
-            sum.Add(left);
-            sum.Add(right);
-            return sum;
+            return new SumVal(left, right);
         }
         public static Value operator +(Value left, float right)
         {
-            SumVal sum = new SumVal();
-            sum.Add(left);
-            sum.Add(new ConstVal(right));
-            return sum;
+            return new SumVal(left, right);
         }
         public static Value operator +(float left, Value right)
         {
@@ -204,17 +199,6 @@ namespace Bibyte.functional
         public static implicit operator Value(float scalar)
         {
             return new ConstVal(scalar);
-        }
-
-        public abstract void AddSynapsesTo(Neuron output);
-
-        protected void validateFloat(float val)
-        {
-            if (val < BibiteVersionConfig.SYNAPSE_STRENGTH_MIN
-            || BibiteVersionConfig.SYNAPSE_STRENGTH_MAX < val)
-            {
-                throw new ArgumentException("bad value, must be between -100 and 100");
-            }
         }
     }
 }

@@ -28,11 +28,11 @@ namespace Bibyte.functional.booleans
             this.right = right;
         }
 
-        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
+        public override void ConnectTo(Neuron output, float outputSynapseStrengthOverride)
         {
             Neuron guassian = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "ValEqualsVal");
-            (left * 100f).AddSynapsesTo(guassian);
-            (right * -100f).AddSynapsesTo(guassian);
+            (left * 100f).AddOutput(guassian);
+            (right * -100f).AddOutput(guassian);
 
             Neuron latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "ValEqualsVal");
             SynapseFactory.CreateSynapse(guassian, latch, 100);

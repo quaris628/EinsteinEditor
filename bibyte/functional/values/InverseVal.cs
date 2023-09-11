@@ -25,28 +25,33 @@ namespace Bibyte.functional.values
             this.val = val;
         }
 
-        public override void AddSynapsesTo(Neuron output)
+        protected override void ConnectTo(IEnumerable<Neuron> outputs)
         {
             // could get more and more precise with more parallel nodes
             // (optional, could do later)
 
             Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Inverse");
             Neuron gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "Inverse");
-            val.AddSynapsesTo(linear);
+            val.AddOutput(linear);
+            SynapseFactory.CreateSynapse(linear, gauss, 100f);
 
-            if (output.Type == NeuronType.Mult)
+            if (containsNonMults(outputs))
             {
-                SynapseFactory.CreateSynapse(linear, gauss, 100f);
-                SynapseFactory.CreateSynapse(linear, output, 100f);
-                SynapseFactory.CreateSynapse(gauss, output, 100f);
+                Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "Inverse");
+                SynapseFactory.CreateSynapse(linear, mult, 100f);
+                SynapseFactory.CreateSynapse(gauss, mult, 100f);
+                foreach (Neuron output in outputs)
+                {
+                    SynapseFactory.CreateSynapse(mult, output, 1f);
+                }
             }
             else
             {
-                Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "Inverse");
-                SynapseFactory.CreateSynapse(linear, gauss, 100f);
-                SynapseFactory.CreateSynapse(linear, mult, 100f);
-                SynapseFactory.CreateSynapse(gauss, mult, 100f);
-                SynapseFactory.CreateSynapse(mult, output, 1f);
+                foreach (Neuron output in outputs)
+                {
+                    SynapseFactory.CreateSynapse(linear, output, 100f);
+                    SynapseFactory.CreateSynapse(gauss, output, 100f);
+                }
             }
         }
     }

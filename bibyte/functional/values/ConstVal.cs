@@ -23,7 +23,7 @@ namespace Bibyte.functional.values
 
         public float GetValue() { return value; }
 
-        public override void AddSynapsesTo(Neuron output)
+        public override void AddOutputSynapse(Neuron output)
         {
             if (output.Type == NeuronType.Mult && value == 1f
                 || output.Type != NeuronType.Mult && value == 0f)

@@ -27,11 +27,11 @@ namespace Bibyte.functional.memory
             this.initialValue = initialValue;
         }
 
-        public override void AddSynapsesTo(Neuron output)
+        public override void AddOutputSynapse(Neuron output)
         {
             Bool resetBool = new RisingBool(shouldStore);
             Neuron resetNeuron = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueReset");
-            resetBool.AddSynapsesTo(resetNeuron);
+            resetBool.AddOutput(resetNeuron);
             // the rising bool induces a 2-tick delay (since it has 2 extra synapses)
             // so delay the input value by the same amount
             //Neuron delayLin1 = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueDelay");
@@ -44,7 +44,7 @@ namespace Bibyte.functional.memory
             Neuron multReset = NeuronFactory.CreateNeuron(NeuronType.Mult, "StoredValueReset");
             Neuron loop = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueLoop",
                 initialValue, initialValue, initialValue);
-            toStore.AddSynapsesTo(multIn);
+            toStore.AddOutput(multIn);
             SynapseFactory.CreateSynapse(resetNeuron, multIn, 1);
             SynapseFactory.CreateSynapse(resetNeuron, multReset, 1);
             SynapseFactory.CreateSynapse(multIn, loop, 1);

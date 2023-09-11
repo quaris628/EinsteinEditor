@@ -20,18 +20,18 @@ namespace Bibyte.functional.booleans
             this.right = right;
         }
 
-        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
+        public override void ConnectTo(Neuron output, float outputSynapseStrengthOverride)
         {
             if (output.Type == NeuronType.Mult)
             {
-                left.AddSynapsesTo(output);
-                right.AddSynapsesTo(output);
+                left.AddOutput(output);
+                right.AddOutput(output);
             }
             else
             {
                 Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "And");
-                left.AddSynapsesTo(mult);
-                right.AddSynapsesTo(mult);
+                left.AddOutput(mult);
+                right.AddOutput(mult);
                 SynapseFactory.CreateSynapse(mult, output, 1);
             }
         }

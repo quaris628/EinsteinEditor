@@ -18,7 +18,7 @@ namespace Bibyte.functional.booleans
             this.boolean = boolean;
         }
 
-        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
+        public override void ConnectTo(Neuron output, float outputSynapseStrengthOverride)
         {
             if (output.Type == NeuronType.Mult && boolean
                 || output.Type != NeuronType.Mult && !boolean)

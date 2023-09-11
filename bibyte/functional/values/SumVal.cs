@@ -11,37 +11,36 @@ namespace Bibyte.functional.values
 {
     public class SumVal : Value
     {
-        private List<Value> values;
+        private Value left;
+        private Value right;
 
-        public SumVal()
+        public SumVal(Value left, Value right)
         {
-            values = new List<Value>();
+            this.left = left;
+            this.right = right;
         }
 
-        public void Add(Value val)
+        protected override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            values.Add(val);
-        }
-
-        public override void AddSynapsesTo(Neuron output)
-        {
-            if (output.Type != NeuronType.Mult)
+            if (containsMults(outputs))
             {
-                // connect values straight to the output node
-                foreach (Value val in values)
+                // connect a linear node to the mult, then connect values to that linear node
+                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Sum");
+                left.AddOutput(linear);
+                right.AddOutput(linear);
+                foreach (Neuron output in outputs)
                 {
-                    val.AddSynapsesTo(output);
+                    SynapseFactory.CreateSynapse(linear, output, 1);
                 }
             }
             else
             {
-                // connect a linear node to the mult, then connect values to that linear node
-                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Sum");
-                foreach (Value val in values)
+                // connect values straight to the output node
+                foreach (Neuron output in outputs)
                 {
-                    val.AddSynapsesTo(linear);
+                    left.AddOutput(output);
+                    right.AddOutput(output);
                 }
-                SynapseFactory.CreateSynapse(linear, output, 1);
             }
         }
     }

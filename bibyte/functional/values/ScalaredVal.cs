@@ -21,7 +21,7 @@ namespace Bibyte.functional.values
             this.scalar = scalar;
         }
 
-        public override void AddSynapsesTo(Neuron output)
+        public override void AddOutputSynapse(Neuron output)
         {
             // connect the synapses to a linear, and create a new synapse from that linear and scale it
             if (val is InputVal inputVal)
@@ -40,7 +40,7 @@ namespace Bibyte.functional.values
                 }
             }
             Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Scalar");
-            val.AddSynapsesTo(linear);
+            val.AddOutput(linear);
             SynapseFactory.CreateSynapse(linear, output, scalar);
         }
     }

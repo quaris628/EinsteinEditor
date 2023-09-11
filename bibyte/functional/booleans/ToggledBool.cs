@@ -21,14 +21,14 @@ namespace Bibyte.functional.memory
             this.initalState = initialState;
         }
 
-        public override void AddSynapsesTo(Neuron output, float outputSynapseStrengthOverride)
+        public override void ConnectTo(Neuron output, float outputSynapseStrengthOverride)
         {
             Neuron memoryNeuron = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit");
             Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "memoryGate");
             Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear);
-            shouldToggle.AddSynapsesTo(mult);
-            shouldToggle.AddSynapsesTo(linear);
-            (new ConstVal(0.5f)).AddSynapsesTo(linear);
+            shouldToggle.AddOutput(mult);
+            shouldToggle.AddOutput(linear);
+            (new ConstVal(0.5f)).AddOutputSynapse(linear);
             SynapseFactory.CreateSynapse(memoryNeuron, mult, 1f);
             SynapseFactory.CreateSynapse(mult, linear, -2f);
             SynapseFactory.CreateSynapse(linear, memoryNeuron, 1f);

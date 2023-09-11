@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace Bibyte.functional.values
 {
-    internal class BoolToValVal : Value
+    public class BoolToValVal : Value
     {
-        Bool input;
+        public Bool Input { get; private set; }
         public BoolToValVal(Bool input)
         {
-            this.input = input;
+            Input = input;
         }
-        public override void AddSynapsesTo(Neuron output)
+        protected override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            input.AddSynapsesTo(output);
+            Input.ConnectTo(outputs);
         }
     }
 }

@@ -11,21 +11,16 @@ namespace Bibyte.functional.values
 {
     public class IfVal : Value
     {
-        private Bool inputBool;
-        private Value trueValue;
-        private Value falseValue;
+        private Value finalOutput;
         public IfVal(Bool inputBool, Value trueValue, Value falseValue)
-        {
-            this.inputBool = inputBool;
-            this.trueValue = trueValue;
-            this.falseValue = falseValue;
-        }
-        public override void AddSynapsesTo(Neuron output)
         {
             Value trueValueOutput = new BoolToValVal(inputBool) * trueValue;
             Value falseValueOutput = new BoolToValVal(!(inputBool)) * falseValue;
-            Value finalOutput = trueValueOutput + falseValueOutput;
-            finalOutput.AddSynapsesTo(output);
+            finalOutput = trueValueOutput + falseValueOutput;
+        }
+        public override void AddOutputSynapse(Neuron output)
+        {
+            finalOutput.AddOutput(output);
         }
     }
 }
