@@ -39,7 +39,7 @@ namespace Bibyte.functional
         }
         public Value ClkReset()
         {
-            return new BoolToValVal(new ToggledBool(new RisingBool(InputVal.PLANT_ANGLE == InputVal.BIBITE_ANGLE), false));
+            return 0;
         }
         public Value PhereOut1()
         {
