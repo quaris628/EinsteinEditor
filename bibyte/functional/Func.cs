@@ -77,5 +77,14 @@ namespace Bibyte.functional.values
         {
             return new HiddenNeuronVal(val + TAU * 0.25f, NeuronType.Sine);
         }
+        public static Value Tan(Value val)
+        {
+            return Func.Sin(val) / Func.Cos(val);
+        }
+        // This is an approximation of Arctan, so it is not fully precise. The equation used is here, https://www.desmos.com/calculator/vbnohv5rcd
+        public static Value Arctan(Value val)
+        {
+            return TanH((val / (Abs(0.23 * val) + 1)) / (0.5 * Math.PI)) * (0.5 * Math.PI);
+        }
     }
 }
