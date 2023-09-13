@@ -84,7 +84,7 @@ namespace Bibyte.functional.values
         // This is an approximation of Arctan, so it is not fully precise. The equation used is here, https://www.desmos.com/calculator/vbnohv5rcd
         public static Value Arctan(Value val)
         {
-            return TanH((val / (Abs(0.23 * val) + 1)) / (0.5 * Math.PI)) * (0.5 * Math.PI);
+            return TanH((val / (Abs(0.23f * val) + 1)) / (float)(0.5 * Math.PI)) * (float)(0.5 * Math.PI);
         }
     }
 }
