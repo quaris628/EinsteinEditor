@@ -18,7 +18,7 @@ namespace Bibyte.functional.values
 
         public static Value If(Bool condition, Value ifTrue, Value ifFalse)
         {
-            return new IfVal(condition, ifTrue, ifFalse);
+            return new BoolToValVal(condition) * ifTrue + new BoolToValVal(!(condition)) * ifFalse;
         }
 
         // non-functions (move to another class eventually?)
