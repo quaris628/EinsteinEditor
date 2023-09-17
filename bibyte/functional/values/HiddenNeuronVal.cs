@@ -18,9 +18,12 @@ namespace Bibyte.functional.values
             input.AddOutput(hidden);
         }
 
-        public override void AddOutputSynapse(Neuron output)
+        public override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            SynapseFactory.CreateSynapse(hidden, output, 1);
+            foreach (Neuron output in outputs)
+            {
+                SynapseFactory.CreateSynapse(hidden, output, 1);
+            }
         }
     }
 }

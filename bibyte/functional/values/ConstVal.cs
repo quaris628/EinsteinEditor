@@ -23,14 +23,17 @@ namespace Bibyte.functional.values
 
         public float GetValue() { return value; }
 
-        public override void AddOutputSynapse(Neuron output)
+        public override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            if (output.Type == NeuronType.Mult && value == 1f
-                || output.Type != NeuronType.Mult && value == 0f)
+            foreach (Neuron output in outputs)
             {
-                return;
+                if (output.Type == NeuronType.Mult && value == 1f
+                    || output.Type != NeuronType.Mult && value == 0f)
+                {
+                    continue;
+                }
+                SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, value);
             }
-            SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, value);
         }
     }
 }

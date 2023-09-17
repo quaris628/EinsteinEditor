@@ -16,7 +16,7 @@ namespace Bibyte.functional.values
         {
             Input = input;
         }
-        protected override void ConnectTo(IEnumerable<Neuron> outputs)
+        public override void ConnectTo(IEnumerable<Neuron> outputs)
         {
             Input.ConnectTo(outputs);
         }

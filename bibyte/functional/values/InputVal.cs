@@ -52,9 +52,12 @@ namespace Bibyte.functional
 
         public Neuron GetInputNeuron() { return inputNeuron; }
 
-        public override void AddOutputSynapse(Neuron output)
+        public override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            SynapseFactory.CreateSynapse(inputNeuron, output, 1);
+            foreach (Neuron output in outputs)
+            {
+                SynapseFactory.CreateSynapse(inputNeuron, output, 1);
+            }
         }
     }
 }

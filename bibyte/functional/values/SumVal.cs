@@ -20,11 +20,12 @@ namespace Bibyte.functional.values
             this.right = right;
         }
 
-        protected override void ConnectTo(IEnumerable<Neuron> outputs)
+        public override void ConnectTo(IEnumerable<Neuron> outputs)
         {
             if (containsMults(outputs))
             {
-                // connect a linear node to the mult, then connect values to that linear node
+                // connect a linear node to the mult,
+                // then connect values to that linear node
                 Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Sum");
                 left.AddOutput(linear);
                 right.AddOutput(linear);

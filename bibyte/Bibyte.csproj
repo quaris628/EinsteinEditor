@@ -70,7 +70,6 @@
     <Compile Include="functional\values\ConstVal.cs" />
     <Compile Include="functional\Func.cs" />
     <Compile Include="functional\values\HiddenNeuronVal.cs" />
-    <Compile Include="functional\values\IfVal.cs" />
     <Compile Include="functional\values\InputVal.cs" />
     <Compile Include="functional\values\InverseVal.cs" />
     <Compile Include="functional\values\ProductVal.cs" />

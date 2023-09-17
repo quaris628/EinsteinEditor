@@ -21,7 +21,7 @@ namespace Bibyte.functional.values
             this.scalar = scalar;
         }
 
-        public override void AddOutputSynapse(Neuron output)
+        public override void ConnectTo(IEnumerable<Neuron> outputs)
         {
             // connect the synapses to a linear, and create a new synapse from that linear and scale it
             if (val is InputVal inputVal)

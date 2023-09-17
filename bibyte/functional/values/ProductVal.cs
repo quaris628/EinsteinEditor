@@ -11,36 +11,35 @@ namespace Bibyte.functional.values
 {
     internal class ProductVal : Value
     {
-        private List<Value> values;
-        public ProductVal()
+        private Value left;
+        private Value right;
+        public ProductVal(Value left, Value right)
         {
-            this.values = new List<Value>();
+            this.left = left;
+            this.right = right;
         }
-        public ProductVal(List<Value> values)
+        public override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            this.values = values;
-        }
-        public void MultiplyBy(Value value)
-        {
-            values.Add(value);
-        }
-        public override void AddOutputSynapse(Neuron output)
-        {
-            if (output.Type == NeuronType.Mult)
+            if (containsNonMults(outputs))
             {
-                foreach (Value value in values)
+                // connect a mult node to the neuron,
+                // then connect values to that linear node
+                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Mult, "Product");
+                left.AddOutput(linear);
+                right.AddOutput(linear);
+                foreach (Neuron output in outputs)
                 {
-                    value.AddOutput(output);
+                    SynapseFactory.CreateSynapse(linear, output, 1);
                 }
             }
             else
             {
-                Neuron multNeuron = NeuronFactory.CreateNeuron(NeuronType.Mult, "Product");
-                foreach (Value value in values)
+                // connect values straight to the output node
+                foreach (Neuron output in outputs)
                 {
-                    value.AddOutput(multNeuron);
+                    left.AddOutput(output);
+                    right.AddOutput(output);
                 }
-                SynapseFactory.CreateSynapse(multNeuron, output, 1f);
             }
         }
     }

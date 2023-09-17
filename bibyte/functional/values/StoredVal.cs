@@ -14,21 +14,12 @@ namespace Bibyte.functional.memory
 {
     public class StoredValue : Value
     {
-        private Bool shouldStore;
-        private Value toStore;
-        private float initialValue;
+        private Neuron loop;
 
         public StoredValue(Bool shouldStore, Value toStore) : this(shouldStore, toStore, 0f) { }
         public StoredValue(Bool shouldStore, Value toStore, float initialValue)
         {
             validateFloat(initialValue);
-            this.shouldStore = shouldStore;
-            this.toStore = toStore;
-            this.initialValue = initialValue;
-        }
-
-        public override void AddOutputSynapse(Neuron output)
-        {
             Bool resetBool = new RisingBool(shouldStore);
             Neuron resetNeuron = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueReset");
             resetBool.AddOutput(resetNeuron);
@@ -42,7 +33,7 @@ namespace Bibyte.functional.memory
 
             Neuron multIn = NeuronFactory.CreateNeuron(NeuronType.Mult, "StoredValueInput");
             Neuron multReset = NeuronFactory.CreateNeuron(NeuronType.Mult, "StoredValueReset");
-            Neuron loop = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueLoop",
+            loop = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueLoop",
                 initialValue, initialValue, initialValue);
             toStore.AddOutput(multIn);
             SynapseFactory.CreateSynapse(resetNeuron, multIn, 1);
@@ -51,7 +42,14 @@ namespace Bibyte.functional.memory
             SynapseFactory.CreateSynapse(loop, loop, 1);
             SynapseFactory.CreateSynapse(loop, multReset, -1);
             SynapseFactory.CreateSynapse(multReset, loop, 1);
-            SynapseFactory.CreateSynapse(loop, output, 1);
+        }
+
+        public override void ConnectTo(IEnumerable<Neuron> outputs)
+        {
+            foreach (Neuron output in outputs)
+            {
+                SynapseFactory.CreateSynapse(loop, output, 1);
+            }
         }
     }
 }

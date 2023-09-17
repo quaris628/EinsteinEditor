@@ -25,7 +25,7 @@ namespace Bibyte.functional.values
             this.val = val;
         }
 
-        protected override void ConnectTo(IEnumerable<Neuron> outputs)
+        public override void ConnectTo(IEnumerable<Neuron> outputs)
         {
             // could get more and more precise with more parallel nodes
             // (optional, could do later)

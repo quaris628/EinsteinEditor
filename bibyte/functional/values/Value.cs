@@ -59,7 +59,7 @@ namespace Bibyte.functional
         }
         public static Value operator *(Value left, Value right)
         {
-            return new ProductVal(new List<Value> { left, right });
+            return new ProductVal(left, right);
         }
 
         /// <summary>
