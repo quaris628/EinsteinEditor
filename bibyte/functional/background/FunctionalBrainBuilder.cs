@@ -1,5 +1,4 @@
 ﻿using Bibyte.neural;
-using Einstein;
 using Einstein.model.json;
 using System;
 using System.Collections.Generic;

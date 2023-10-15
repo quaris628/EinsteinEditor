@@ -1,5 +1,4 @@
-﻿using Bibyte.functional;
-using Bibyte.functional.background.booleans;
+﻿using Bibyte.functional.background.booleans;
 using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
@@ -11,12 +10,18 @@ using System.Threading.Tasks;
 
 namespace Bibyte.functional.background.values
 {
-    public class StoredValue : Value
+    /// <summary>
+    /// A number stored in memory.
+    /// Takes 2 inputs:
+    ///  - A boolean that, when true, will overwrite the stored number with the input number to store
+    ///  - The number to be stored when the should-store boolean is true
+    /// </summary>
+    public class StoredNum : Number
     {
         private Neuron loop;
 
-        public StoredValue(Bool shouldStore, Value toStore) : this(shouldStore, toStore, 0f) { }
-        public StoredValue(Bool shouldStore, Value toStore, float initialValue)
+        public StoredNum(Bool shouldStore, Number toStore) : this(shouldStore, toStore, 0f) { }
+        public StoredNum(Bool shouldStore, Number toStore, float initialValue)
         {
             validateFloat(initialValue);
             Bool resetBool = new RisingBool(shouldStore);

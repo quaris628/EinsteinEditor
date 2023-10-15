@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Bibyte.functional.background
 {
-    public abstract class Bool : Neuralizeable
+    public abstract class Bool : Value
     {
         protected internal sealed override void ConnectTo(IEnumerable<Neuron> outputs)
         {

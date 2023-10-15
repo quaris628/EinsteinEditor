@@ -1,5 +1,4 @@
 ﻿using bibyte.functional.background;
-using Bibyte.functional.background.values;
 using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
@@ -11,9 +10,13 @@ using System.Threading.Tasks;
 
 namespace Bibyte.functional.background.booleans
 {
+    /// <summary>
+    /// A boolean that is stored in memory, and its value is toggled when its input boolean is true.
+    /// </summary>
     public class ToggledBool : Bool
     {
         private Neuron memoryBit;
+
         public ToggledBool(Bool shouldToggle, bool initialState)
         {
             // TODO respect the initialState parameter

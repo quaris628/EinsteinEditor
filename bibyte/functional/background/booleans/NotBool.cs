@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Bibyte.functional.background.booleans
 {
     /// <summary>
-    /// A boolean that returns true if its input boolean is false,
+    /// A boolean that is true if its input boolean is false,
     ///   and returns false if its input boolean is true.
     /// </summary>
     public class NotBool : Bool

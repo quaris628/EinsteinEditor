@@ -6,14 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Bibyte.neural;
 using Einstein.model;
-using Bibyte.functional.background.values;
 using bibyte.functional.background;
 
 namespace Bibyte.functional.background.booleans
 {
+    /// <summary>
+    /// A boolean stored in memory.
+    /// Takes 2 inputs:
+    ///  - A boolean that, when true, will overwrite the stored boolean with the input boolean to store
+    ///  - The boolean to be stored when the should-store boolean is true
+    /// </summary>
     public class StoredBool : Bool
     {
         private Neuron memoryBit;
+
         public StoredBool(Bool shouldStore, Bool valueToStoreFrom)
             : this(shouldStore, valueToStoreFrom, false) { }
         public StoredBool(Bool shouldStore, Bool valueToStoreFrom, bool initialValue)
@@ -21,7 +27,7 @@ namespace Bibyte.functional.background.booleans
             float initialValueFloat = initialValue ? 1f : 0f;
             Neuron memoryShouldStoreMult = NeuronFactory.CreateNeuron(NeuronType.Mult, "memoryShouldStoreMult");
 
-            Neuron memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit",
+            this.memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit",
                 initialValueFloat, initialValueFloat, initialValueFloat);
             SynapseFactory.CreateSynapse(memoryShouldStoreMult, memoryBit, 1f);
             SynapseFactory.CreateSynapse(Inputs.CONSTANT, memoryBit, 0.5f);

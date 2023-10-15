@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 namespace Bibyte.functional.background.values
 {
     /// <summary>
-    /// A constant value that does not change.
+    /// A constant number that does not change.
     /// </summary>
-    public class ConstVal : Value
+    public class ConstNum : Number
     {
         private float value;
-        public ConstVal(float value)
+
+        public ConstNum(float value)
         {
             validateFloat(value);
             this.value = value;

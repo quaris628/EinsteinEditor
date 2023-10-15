@@ -10,12 +10,16 @@ using System.Threading.Tasks;
 
 namespace Bibyte.functional.background.values
 {
-    public class ScalaredVal : Value
+    /// <summary>
+    /// A number that's a scalar multiple of an input number
+    /// </summary>
+    public class ScalaredNum : Number
     {
-        private Value val;
+        private Number val;
         private float scalar;
         private Neuron linear;
-        public ScalaredVal(Value val, float scalar)
+
+        public ScalaredNum(Number val, float scalar)
         {
             validateFloat(scalar);
             this.val = val;
@@ -25,7 +29,7 @@ namespace Bibyte.functional.background.values
 
         protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            if (val is InputVal inputVal)
+            if (val is InputNum inputVal)
             {
                 foreach (Neuron output in outputs)
                 {
@@ -33,7 +37,7 @@ namespace Bibyte.functional.background.values
                 }
                 return;
             }
-            else if (val is ConstVal constVal)
+            else if (val is ConstNum constVal)
             {
                 float synapseStrength = constVal.GetValue() * scalar;
                 if (synapseStrength < BibiteVersionConfig.SYNAPSE_STRENGTH_MAX

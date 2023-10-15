@@ -7,35 +7,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional.background
+namespace Bibyte.functional.background.values
 {
-    public class SumVal : Value
+    /// <summary>
+    /// A number composed from a product of 2 input numbers
+    /// </summary>
+    public class ProductNum : Number
     {
-        private Value left;
-        private Value right;
-        private Neuron linear;
+        private Number left;
+        private Number right;
+        private Neuron mult;
 
-        public SumVal(Value left, Value right)
+        public ProductNum(Number left, Number right)
         {
             this.left = left;
             this.right = right;
-            this.linear = null;
+            this.mult = null;
         }
 
         protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            if (containsMults(outputs) || linear != null)
+            if (containsNonMults(outputs) || mult != null)
             {
-                // create a linear node in between the inputs and outputs
-                if (linear == null)
+                // create a mult node in between the inputs and outputs
+                if (this.mult == null)
                 {
-                    linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Sum");
-                    left.ConnectTo(new[] { linear });
-                    right.ConnectTo(new[] { linear });
+                    this.mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "Product");
+                    left.ConnectTo(new[] { mult });
+                    right.ConnectTo(new[] { mult });
                 }
                 foreach (Neuron output in outputs)
                 {
-                    SynapseFactory.CreateSynapse(linear, output, 1);
+                    SynapseFactory.CreateSynapse(mult, output, 1f);
                 }
             }
             else

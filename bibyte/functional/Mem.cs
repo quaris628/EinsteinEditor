@@ -13,9 +13,9 @@ namespace bibyte.functional
     public class Mem
     {
 
-        public static Value Latch(Value val)
+        public static Number Latch(Number val)
         {
-            return new HiddenNeuronVal(val, NeuronType.Latch);
+            return new HiddenNeuronNum(val, NeuronType.Latch);
         }
         public static Bool Store(Bool shouldStore, Bool toStore)
         {
@@ -25,13 +25,13 @@ namespace bibyte.functional
         {
             return new StoredBool(shouldStore, toStore, initialValue);
         }
-        public static Value Store(Bool shouldStore, Value toStore)
+        public static Number Store(Bool shouldStore, Number toStore)
         {
-            return new StoredValue(shouldStore, toStore);
+            return new StoredNum(shouldStore, toStore);
         }
-        public static Value Store(Bool shouldStore, Value toStore, float initialValue)
+        public static Number Store(Bool shouldStore, Number toStore, float initialValue)
         {
-            return new StoredValue(shouldStore, toStore, initialValue);
+            return new StoredNum(shouldStore, toStore, initialValue);
         }
         public static Bool ToggleOf(Bool boolean)
         {

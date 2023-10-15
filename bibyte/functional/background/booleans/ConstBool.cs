@@ -1,7 +1,6 @@
 ﻿using bibyte.functional.background;
 using Bibyte.neural;
 using Einstein.model;
-using Einstein.model.json;
 using System;
 using System.Collections.Generic;
 using System.Linq;

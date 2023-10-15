@@ -1,5 +1,4 @@
 ﻿using Bibyte.functional.background;
-using Bibyte.functional.background.values;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,59 +9,59 @@ namespace Bibyte.functional
 {
     public class MinimalBrain : IFunctionalProgrammingBrain
     {
-        public Value Accelerate()
+        public Number Accelerate()
         {
             return 0;
         }
-        public Value Rotate()
+        public Number Rotate()
         {
             return 0;
         }
-        public Value Herding()
+        public Number Herding()
         {
             return 0;
         }
-        public Value Want2Lay()
+        public Number Want2Lay()
         {
             return 0;
         }
-        public Value Digestion()
+        public Number Digestion()
         {
             return 0;
         }
-        public Value Grab()
+        public Number Grab()
         {
             return 0;
         }
-        public Value ClkReset()
+        public Number ClkReset()
         {
             return 0;
         }
-        public Value PhereOut1()
+        public Number PhereOut1()
         {
             return 0;
         }
-        public Value PhereOut2()
+        public Number PhereOut2()
         {
             return 0;
         }
-        public Value PhereOut3()
+        public Number PhereOut3()
         {
             return 0;
         }
-        public Value Want2Grow()
+        public Number Want2Grow()
         {
             return 0;
         }
-        public Value Want2Heal()
+        public Number Want2Heal()
         {
             return 0;
         }
-        public Value Want2Attack()
+        public Number Want2Attack()
         {
             return 0;
         }
-        public Value ImmuneSystem()
+        public Number ImmuneSystem()
         {
             return 0;
         }

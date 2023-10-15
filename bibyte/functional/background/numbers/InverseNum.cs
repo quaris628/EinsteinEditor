@@ -10,23 +10,26 @@ using System.Threading.Tasks;
 namespace Bibyte.functional.background.values
 {
     /// <summary>
+    /// A number that is 1 / an input number
+    /// 
     /// This is only an approximation of division and breaks when the denominator is near zero.
     /// The error is less than 1% when the denominator is farther than 0.1 from zero,
     /// and the error is less than 10% when the denominator is farther than 0.03 from zero.
     /// </summary>
-    public class InverseVal : Value
+    public class InverseNum : Number
     {
         private Neuron linear;
         private Neuron gauss;
         private Neuron mult;
 
-        public InverseVal(Value val)
+        public InverseNum(Number val)
         {
             // could get more and more precise with more parallel nodes
             // (optional, could do later)
 
             this.linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Inverse");
             this.gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "Inverse");
+            this.mult = null;
             val.ConnectTo(new[] { linear });
             SynapseFactory.CreateSynapse(linear, gauss, 100f);
         }

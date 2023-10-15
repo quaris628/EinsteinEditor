@@ -9,19 +9,19 @@ namespace Bibyte.functional
 {
     public interface IFunctionalProgrammingBrain
     {
-        Value Accelerate();
-        Value Rotate();
-        Value Herding();
-        Value Want2Lay();
-        Value Digestion();
-        Value Grab();
-        Value ClkReset();
-        Value PhereOut1();
-        Value PhereOut2();
-        Value PhereOut3();
-        Value Want2Grow();
-        Value Want2Heal();
-        Value Want2Attack();
-        Value ImmuneSystem();
+        Number Accelerate();
+        Number Rotate();
+        Number Herding();
+        Number Want2Lay();
+        Number Digestion();
+        Number Grab();
+        Number ClkReset();
+        Number PhereOut1();
+        Number PhereOut2();
+        Number PhereOut3();
+        Number Want2Grow();
+        Number Want2Heal();
+        Number Want2Attack();
+        Number ImmuneSystem();
     }
 }

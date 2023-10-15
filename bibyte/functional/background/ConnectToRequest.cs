@@ -12,6 +12,7 @@ namespace bibyte.functional.background
     {
         public Neuron Neuron { get; private set; }
         public float SynapseStrength { get; private set; }
+
         public ConnectToRequest(Neuron neuron, float synapseStrength)
         {
             if (synapseStrength < BibiteVersionConfig.SYNAPSE_STRENGTH_MIN

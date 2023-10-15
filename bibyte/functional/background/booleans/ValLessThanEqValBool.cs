@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 namespace Bibyte.functional.background.booleans
 {
     /// <summary>
+    /// A boolean that is true if and only if the left number is less than or equal to the right number.
+    /// 
     /// This is only an approximation of a less-than-or-equal-to.
     /// Once the left is less than or equal to the right, this will return true until
     /// the left is more than about 4x10^-6 i.e. 0.000004 greater than the right.
@@ -21,7 +23,7 @@ namespace Bibyte.functional.background.booleans
 
         private Neuron latch;
 
-        public ValLessThanEqValBool(Value left, Value right)
+        public ValLessThanEqValBool(Number left, Number right)
         {
             Neuron sigmoid = NeuronFactory.CreateNeuron(NeuronType.Sigmoid, "ValLessThanEqVal");
             (left * -100f).ConnectTo(new[] { sigmoid });

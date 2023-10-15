@@ -1,5 +1,4 @@
 ﻿using bibyte.functional.background;
-using Bibyte.functional.background.values;
 using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 namespace Bibyte.functional.background.booleans
 {
     /// <summary>
-    /// 
+    /// A boolean that is true if and only if its input boolean changes from false to true.
     /// </summary>
     public class RisingBool : Bool
     {
@@ -51,7 +50,6 @@ namespace Bibyte.functional.background.booleans
                 {
                     SynapseFactory.CreateSynapse(latch, outputConn.Neuron, outputConn.SynapseStrength);
                 }
-                
             }
         }
     }

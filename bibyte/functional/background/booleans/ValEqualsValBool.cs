@@ -11,16 +11,17 @@ using System.Threading.Tasks;
 namespace Bibyte.functional.background.booleans
 {
     /// <summary>
-    /// This is only an approximation of a less-than.
-    /// Once the left is less than the right, this will return true until
-    /// the left is more than about 1x10^-5 i.e. 0.00001 greater than the right.
+    /// A boolean that is true if and only if the left number is equal to the right number.
+    /// 
+    /// This is only an approximation of an equals.
+    /// TODO describe the subtleties
     /// </summary>
     public class ValEqualsValBool : Bool
     {
         public static float ERR_AFTER_1 = 0.00001f;
         private Neuron latch;
 
-        public ValEqualsValBool(Value left, Value right)
+        public ValEqualsValBool(Number left, Number right)
         {
             Neuron guassian = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "ValEqualsVal");
             (left * 100f).ConnectTo(new[] { guassian });

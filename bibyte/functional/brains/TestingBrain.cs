@@ -11,59 +11,59 @@ namespace Bibyte.functional
 {
     public class TestingBrain : IFunctionalProgrammingBrain
     {
-        public Value Accelerate()
+        public Number Accelerate()
         {
-            return InputVal.GREEN_BIBITE + InputVal.GREEN_BIBITE + InputVal.GREEN_BIBITE;
+            return InputNum.GREEN_BIBITE + InputNum.GREEN_BIBITE + InputNum.GREEN_BIBITE;
         }
-        public Value Rotate()
+        public Number Rotate()
         {
-            return new BoolToValVal(new ToggledBool(new RisingBool(InputVal.PLANT_ANGLE == InputVal.BIBITE_ANGLE), false));
+            return new BoolToNumNum(new ToggledBool(new RisingBool(InputNum.PLANT_ANGLE == InputNum.BIBITE_ANGLE), false));
         }
-        public Value Herding()
-        {
-            return 0;
-        }
-        public Value Want2Lay()
+        public Number Herding()
         {
             return 0;
         }
-        public Value Digestion()
+        public Number Want2Lay()
         {
             return 0;
         }
-        public Value Grab()
+        public Number Digestion()
         {
             return 0;
         }
-        public Value ClkReset()
+        public Number Grab()
         {
             return 0;
         }
-        public Value PhereOut1()
+        public Number ClkReset()
         {
             return 0;
         }
-        public Value PhereOut2()
+        public Number PhereOut1()
         {
             return 0;
         }
-        public Value PhereOut3()
+        public Number PhereOut2()
         {
             return 0;
         }
-        public Value Want2Grow()
+        public Number PhereOut3()
         {
             return 0;
         }
-        public Value Want2Heal()
+        public Number Want2Grow()
         {
             return 0;
         }
-        public Value Want2Attack()
+        public Number Want2Heal()
         {
             return 0;
         }
-        public Value ImmuneSystem()
+        public Number Want2Attack()
+        {
+            return 0;
+        }
+        public Number ImmuneSystem()
         {
             return 0;
         }

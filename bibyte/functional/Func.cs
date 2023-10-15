@@ -1,7 +1,5 @@
 ﻿using Bibyte.functional.background.booleans;
-using Bibyte.neural;
 using Einstein.model;
-using Einstein.model.json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +13,9 @@ namespace Bibyte.functional.background.values
 
         // misc logic
 
-        public static Value If(Bool condition, Value ifTrue, Value ifFalse)
+        public static Number If(Bool condition, Number ifTrue, Number ifFalse)
         {
-            return new BoolToValVal(condition) * ifTrue + new BoolToValVal(!(condition)) * ifFalse;
+            return new BoolToNumNum(condition) * ifTrue + new BoolToNumNum(!(condition)) * ifFalse;
         }
 
         // non-functions (move to another class eventually?)
@@ -26,62 +24,62 @@ namespace Bibyte.functional.background.values
         {
             return new RisingBool(boolean);
         }
-        public static Value Differential(Value val)
+        public static Number Differential(Number val)
         {
-            return new HiddenNeuronVal(val, NeuronType.Differential);
+            return new HiddenNeuronNum(val, NeuronType.Differential);
         }
 
         // math
 
-        public static Value Min(Value val1, Value val2)
+        public static Number Min(Number val1, Number val2)
         {
             return If(val1 < val2, val1, val2);
         }
-        public static Value Max(Value val1, Value val2)
+        public static Number Max(Number val1, Number val2)
         {
             return If(val1 > val2, val1, val2);
         }
-        public static Value Abs(Value val)
+        public static Number Abs(Number val)
         {
-            return new HiddenNeuronVal(val, NeuronType.Abs);
+            return new HiddenNeuronNum(val, NeuronType.Abs);
         }
-        public static Value ReLu(Value val)
+        public static Number ReLu(Number val)
         {
-            return new HiddenNeuronVal(val, NeuronType.ReLu);
+            return new HiddenNeuronNum(val, NeuronType.ReLu);
         }
-        public static Value Sigmoid(Value val)
+        public static Number Sigmoid(Number val)
         {
-            return new HiddenNeuronVal(val, NeuronType.Sigmoid);
+            return new HiddenNeuronNum(val, NeuronType.Sigmoid);
         }
-        public static Value TanH(Value val)
+        public static Number TanH(Number val)
         {
-            return new HiddenNeuronVal(val, NeuronType.TanH);
+            return new HiddenNeuronNum(val, NeuronType.TanH);
         }
         /// <summary>
         /// The fake gaussian used in the bibites. 1/(1 + x^2).
         /// </summary>
         /// <param name="val"></param>
         /// <returns></returns>
-        public static Value Gauss(Value val)
+        public static Number Gauss(Number val)
         {
-            return new HiddenNeuronVal(val, NeuronType.Gaussian);
+            return new HiddenNeuronNum(val, NeuronType.Gaussian);
         }
 
         public const float TAU = 6.28318530717f;
-        public static Value Sin(Value val)
+        public static Number Sin(Number val)
         {
-            return new HiddenNeuronVal(val, NeuronType.Sine);
+            return new HiddenNeuronNum(val, NeuronType.Sine);
         }
-        public static Value Cos(Value val)
+        public static Number Cos(Number val)
         {
-            return new HiddenNeuronVal(val + TAU * 0.25f, NeuronType.Sine);
+            return new HiddenNeuronNum(val + TAU * 0.25f, NeuronType.Sine);
         }
-        public static Value Tan(Value val)
+        public static Number Tan(Number val)
         {
             return Func.Sin(val) / Func.Cos(val);
         }
         // This is an approximation of Arctan, so it is not fully precise. The equation used is here, https://www.desmos.com/calculator/vbnohv5rcd
-        public static Value Arctan(Value val)
+        public static Number Arctan(Number val)
         {
             return TanH((val / (Abs(0.23f * val) + 1)) / (float)(0.5 * Math.PI)) * (float)(0.5 * Math.PI);
         }
