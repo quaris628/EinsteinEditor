@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional.values
+namespace Bibyte.functional.background.values
 {
     public class HiddenNeuronVal : Value
     {
@@ -15,14 +15,14 @@ namespace Bibyte.functional.values
         public HiddenNeuronVal(Value input, NeuronType type)
         {
             Neuron hidden = NeuronFactory.CreateNeuron(type, type.ToString());
-            input.AddOutput(hidden);
+            input.ConnectTo(new[] { hidden });
         }
 
-        public override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
         {
             foreach (Neuron output in outputs)
             {
-                SynapseFactory.CreateSynapse(hidden, output, 1);
+                SynapseFactory.CreateSynapse(hidden, output, 1f);
             }
         }
     }

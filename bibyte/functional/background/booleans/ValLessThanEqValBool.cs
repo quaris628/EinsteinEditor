@@ -1,4 +1,5 @@
-﻿using Bibyte.neural;
+﻿using bibyte.functional.background;
+using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional.booleans
+namespace Bibyte.functional.background.booleans
 {
     public class ValLessThanEqValBool : Bool
     {
@@ -29,17 +30,20 @@ namespace Bibyte.functional.booleans
             this.right = right;
         }
 
-        public override void ConnectTo(Neuron output, float outputSynapseStrengthOverride)
+        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
             Neuron sigmoid = NeuronFactory.CreateNeuron(NeuronType.Sigmoid, "ValLessThanEqVal");
-            (left * -100f).AddOutput(sigmoid);
-            (right * 100f).AddOutput(sigmoid);
+            (left * -100f).ConnectTo(new[] { sigmoid });
+            (right * 100f).ConnectTo(new[] { sigmoid });
 
             Neuron latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "ValLessThanEqVal");
             SynapseFactory.CreateSynapse(sigmoid, latch, 100);
             SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -48.99999f);
 
-            SynapseFactory.CreateSynapse(latch, output, outputSynapseStrengthOverride);
+            foreach (ConnectToRequest outputConn in outputConns)
+            {
+                SynapseFactory.CreateSynapse(latch, outputConn.Neuron, outputConn.SynapseStrength);
+            }
         }
     }
 }

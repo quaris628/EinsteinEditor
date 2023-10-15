@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using bibyte.functional.brains;
 using Bibyte.functional;
+using Bibyte.functional.background;
 using Bibyte.neural;
 using Einstein;
 using Einstein.config;
@@ -12,7 +14,6 @@ namespace Bibyte
 {
     public class BibyteMain
     {
-        private static IFunctionalProgrammingBrain BRAIN_TO_GENERATE = new TestingBrain();
 
         private static string FILE_WITH_SAVE_FILE_PATH = "saveFilePath.txt";
 
@@ -24,16 +25,16 @@ namespace Bibyte
             {
                 File.CreateText(FILE_WITH_SAVE_FILE_PATH);
                 Process.Start("notepad.exe", FILE_WITH_SAVE_FILE_PATH);
-                Console.WriteLine("Please specify the bibite file to save to. " +
-                    "Entering the filepath into this text file, save it, and run Bibyte again.");
+                Console.WriteLine("Please specify the bibite file to save to.\n"
+                    + "Enter the filepath into this text file, then save the text file and run Bibyte again.\n");
                 return;
             }
             string saveFilePath = File.ReadAllText(FILE_WITH_SAVE_FILE_PATH);
             if (!File.Exists(saveFilePath))
             {
                 Process.Start("notepad.exe", FILE_WITH_SAVE_FILE_PATH);
-                Console.WriteLine("This bibite file does not exist. " +
-                    "Look for errors or try a different filepath, then save the text file and run Bibyte again.");
+                Console.WriteLine("This bibite file does not exist.\n"
+                    + "Look for errors or try a different filepath, then save the text file and run Bibyte again.\n");
             }
 
             // uncomment the section that corresponds to the type of programming you want to use
@@ -42,7 +43,7 @@ namespace Bibyte
             //*
             Console.WriteLine("Building functionally programmed brain");
             Console.WriteLine("Creating brain...");
-            Brain brain = FunctionalBackgroundBrainBuilder.Build(BRAIN_TO_GENERATE);
+            Brain brain = FunctionalBrainBuilder.Build(BrainToGenerate.BRAIN_TO_GENERATE);
             Console.WriteLine("Saving brain...");
             SaveBrain(brain, saveFilePath);
             //*/

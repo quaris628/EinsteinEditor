@@ -1,5 +1,4 @@
-﻿using bibyte.functional.booleans;
-using Bibyte.functional.booleans;
+﻿using Bibyte.functional.background.booleans;
 using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
@@ -9,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional.values
+namespace Bibyte.functional.background.values
 {
     public class Func
     {

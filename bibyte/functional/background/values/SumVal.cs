@@ -7,26 +7,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional.values
+namespace Bibyte.functional.background
 {
-    internal class ProductVal : Value
+    public class SumVal : Value
     {
         private Value left;
         private Value right;
-        public ProductVal(Value left, Value right)
+
+        public SumVal(Value left, Value right)
         {
             this.left = left;
             this.right = right;
         }
-        public override void ConnectTo(IEnumerable<Neuron> outputs)
+
+        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            if (containsNonMults(outputs))
+            if (containsMults(outputs))
             {
-                // connect a mult node to the neuron,
+                // connect a linear node to the mult,
                 // then connect values to that linear node
-                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Mult, "Product");
-                left.AddOutput(linear);
-                right.AddOutput(linear);
+                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Sum");
+                left.ConnectTo(new[] { linear });
+                right.ConnectTo(new[] { linear });
                 foreach (Neuron output in outputs)
                 {
                     SynapseFactory.CreateSynapse(linear, output, 1);
@@ -37,8 +39,8 @@ namespace Bibyte.functional.values
                 // connect values straight to the output node
                 foreach (Neuron output in outputs)
                 {
-                    left.AddOutput(output);
-                    right.AddOutput(output);
+                    left.ConnectTo(new[] { output });
+                    right.ConnectTo(new[] { output });
                 }
             }
         }

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional.values
+namespace Bibyte.functional.background.values
 {
     public class ScalaredVal : Value
     {
@@ -21,12 +21,14 @@ namespace Bibyte.functional.values
             this.scalar = scalar;
         }
 
-        public override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            // connect the synapses to a linear, and create a new synapse from that linear and scale it
             if (val is InputVal inputVal)
             {
-                SynapseFactory.CreateSynapse(inputVal.GetInputNeuron(), output, scalar);
+                foreach (Neuron output in outputs)
+                {
+                    SynapseFactory.CreateSynapse(inputVal.GetInputNeuron(), output, scalar);
+                }
                 return;
             }
             else if (val is ConstVal constVal)
@@ -35,13 +37,20 @@ namespace Bibyte.functional.values
                 if (synapseStrength < BibiteVersionConfig.SYNAPSE_STRENGTH_MAX
                     && BibiteVersionConfig.SYNAPSE_STRENGTH_MIN < synapseStrength)
                 {
-                    SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, synapseStrength);
+                    foreach (Neuron output in outputs)
+                    {
+                        SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, scalar);
+                    }
                     return;
                 }
             }
+            // connect the synapses to a linear, and create a new synapse from that linear and scale it
             Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Scalar");
-            val.AddOutput(linear);
-            SynapseFactory.CreateSynapse(linear, output, scalar);
+            val.ConnectTo(new[] { linear });
+            foreach (Neuron output in outputs)
+            {
+                SynapseFactory.CreateSynapse(linear, output, scalar);
+            }
         }
     }
 }

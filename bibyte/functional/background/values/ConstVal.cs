@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional.values
+namespace Bibyte.functional.background.values
 {
     /// <summary>
     /// A constant value that does not change.
@@ -23,7 +23,7 @@ namespace Bibyte.functional.values
 
         public float GetValue() { return value; }
 
-        public override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
         {
             foreach (Neuron output in outputs)
             {

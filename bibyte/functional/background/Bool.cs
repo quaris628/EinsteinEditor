@@ -1,4 +1,5 @@
 ﻿using bibyte.functional.background;
+using Bibyte.functional.background.booleans;
 using Einstein.model.json;
 using System;
 using System.Collections.Generic;
@@ -6,10 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional.booleans
+namespace Bibyte.functional.background
 {
     public abstract class Bool : Neuralizeable
     {
+        protected internal sealed override void ConnectTo(IEnumerable<Neuron> outputs)
+        {
+            LinkedList<ConnectToRequest> connections =
+                    new LinkedList<ConnectToRequest>();
+            foreach (Neuron output in outputs)
+            {
+                connections.AddLast(new ConnectToRequest(output, 1f));
+            }
+            ConnectTo(outputs);
+        }
+        
+        protected internal abstract void ConnectTo(IEnumerable<ConnectToRequest> outputConns);
+
         public static Bool operator ==(Bool left, Bool right)
         {
             return (left & right) | (!left & !right);
@@ -35,11 +49,5 @@ namespace Bibyte.functional.booleans
         {
             return new NotBool(boolean);
         }
-
-        protected override void ConnectTo(IEnumerable<Neuron> outputs)
-        {
-            ConnectTo(outputs, 1f);
-        }
-        protected abstract void ConnectTo(IEnumerable<Neuron> outputs, float outputSynapseStrengthOverride);
     }
 }

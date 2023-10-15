@@ -1,7 +1,6 @@
-﻿using Bibyte.functional;
-using Bibyte.functional.booleans;
-using Bibyte.functional.memory;
-using Bibyte.functional.values;
+﻿using Bibyte.functional.background;
+using Bibyte.functional.background.booleans;
+using Bibyte.functional.background.values;
 using Einstein.model;
 using System;
 using System.Collections.Generic;

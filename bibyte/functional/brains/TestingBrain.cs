@@ -1,13 +1,11 @@
-﻿using Bibyte.functional;
-using Bibyte.functional.booleans;
-using Bibyte.functional.values;
-using Bibyte.functional.memory;
+﻿using Bibyte.functional.background;
+using Bibyte.functional.background.booleans;
+using Bibyte.functional.background.values;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using bibyte.functional.booleans;
 
 namespace Bibyte.functional
 {

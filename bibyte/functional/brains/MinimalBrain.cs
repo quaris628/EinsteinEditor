@@ -1,13 +1,10 @@
-﻿using Bibyte.functional;
-using Bibyte.functional.booleans;
-using Bibyte.functional.values;
-using Bibyte.functional.memory;
+﻿using Bibyte.functional.background;
+using Bibyte.functional.background.values;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using bibyte.functional.booleans;
 
 namespace Bibyte.functional
 {
@@ -15,11 +12,11 @@ namespace Bibyte.functional
     {
         public Value Accelerate()
         {
-            return Func.Gauss(InputVal.PLANT_ANGLE * 4);
+            return 0;
         }
         public Value Rotate()
         {
-            return InputVal.PLANT_ANGLE * 4;
+            return 0;
         }
         public Value Herding()
         {
@@ -31,11 +28,11 @@ namespace Bibyte.functional
         }
         public Value Digestion()
         {
-            return Func.If(InputVal.ENERGY_RATIO < 0.9f, 2, -2);
+            return 0;
         }
         public Value Grab()
         {
-            return InputVal.FULLNESS;
+            return 0;
         }
         public Value ClkReset()
         {

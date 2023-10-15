@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional
+namespace Bibyte.functional.background.values
 {
     public class InputVal : Value
     {
@@ -52,7 +52,7 @@ namespace Bibyte.functional
 
         public Neuron GetInputNeuron() { return inputNeuron; }
 
-        public override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
         {
             foreach (Neuron output in outputs)
             {

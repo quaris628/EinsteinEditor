@@ -11,19 +11,21 @@ namespace bibyte.functional.background
 {
     public abstract class Neuralizeable
     {
-        private LinkedList<Neuron> outputs;
-        public void AddOutput(Neuron output)
-        {
-            outputs.AddFirst(output);
-        }
-        public void Build()
-        {
-            ConnectTo(outputs);
-        }
-        // this is only public to avoid compiler error CS1540 in BoolToValVal
-        // if not for that, this would be protected
-        public abstract void ConnectTo(IEnumerable<Neuron> outputs);
+        protected internal abstract void ConnectTo(IEnumerable<Neuron> outputs);
 
+        protected static IEnumerable<Neuron> neuronsOf(
+            IEnumerable<ConnectToRequest> outputConns)
+        {
+            foreach (ConnectToRequest conn in outputConns)
+            {
+                yield return conn.Neuron;
+            }
+        }
+
+        protected static bool containsMults(IEnumerable<ConnectToRequest> outputConns)
+        {
+            return containsMults(neuronsOf(outputConns));
+        }
         protected static bool containsMults(IEnumerable<Neuron> neurons)
         {
             foreach (Neuron neuron in neurons)
@@ -34,6 +36,11 @@ namespace bibyte.functional.background
                 }
             }
             return false;
+        }
+
+        protected static bool containsNonMults(IEnumerable<ConnectToRequest> outputConns)
+        {
+            return containsNonMults(neuronsOf(outputConns));
         }
         protected static bool containsNonMults(IEnumerable<Neuron> neurons)
         {
@@ -52,7 +59,8 @@ namespace bibyte.functional.background
             if (val < BibiteVersionConfig.SYNAPSE_STRENGTH_MIN
             || BibiteVersionConfig.SYNAPSE_STRENGTH_MAX < val)
             {
-                throw new ArgumentException("bad value, must be between -100 and 100");
+                throw new ArgumentException(val + " cannot be used as a synapse strength. "
+                    + "Must be between -100 and 100.");
             }
         }
     }

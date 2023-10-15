@@ -1,6 +1,6 @@
 ﻿using bibyte.functional.background;
-using Bibyte.functional.booleans;
-using Bibyte.functional.values;
+using Bibyte.functional.background.booleans;
+using Bibyte.functional.background.values;
 using Bibyte.neural;
 using Einstein;
 using Einstein.model;
@@ -11,11 +11,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional
+namespace Bibyte.functional.background
 {
     // pall functions of subclasses into operator overloads
     public abstract class Value : Neuralizeable
     {
+        public void PlugIntoOutput(Neuron outputNeuron)
+        {
+            if (!outputNeuron.IsOutput())
+            {
+                throw new ArgumentException("A value should only be plugged into an output neuron.");
+            }
+            ConnectTo(new[] { outputNeuron });
+        }
+
         // math
 
         public static Value operator +(Value left, Value right)
@@ -35,6 +44,7 @@ namespace Bibyte.functional
         {
             return new ScalaredVal(value, -1);
         }
+
 
         public static Value operator -(Value left, Value right)
         {
@@ -199,6 +209,10 @@ namespace Bibyte.functional
         public static implicit operator Value(float scalar)
         {
             return new ConstVal(scalar);
+        }
+        public static explicit operator Value(Bool boolean)
+        {
+            return new BoolToValVal(boolean);
         }
     }
 }

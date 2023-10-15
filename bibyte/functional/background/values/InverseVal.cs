@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bibyte.functional.values
+namespace Bibyte.functional.background.values
 {
     public class InverseVal : Value
     {
@@ -25,14 +25,14 @@ namespace Bibyte.functional.values
             this.val = val;
         }
 
-        public override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
         {
             // could get more and more precise with more parallel nodes
             // (optional, could do later)
 
             Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Inverse");
             Neuron gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "Inverse");
-            val.AddOutput(linear);
+            val.ConnectTo(new[] { linear });
             SynapseFactory.CreateSynapse(linear, gauss, 100f);
 
             if (containsNonMults(outputs))
