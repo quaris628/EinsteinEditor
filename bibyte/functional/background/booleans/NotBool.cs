@@ -17,36 +17,31 @@ namespace Bibyte.functional.background.booleans
     public class NotBool : Bool
     {
         private Bool boolean;
+        private Neuron latch;
 
         public NotBool(Bool boolean)
         {
             this.boolean = boolean;
+            this.latch = null;
         }
 
         protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
             LinkedList<ConnectToRequest> connectionsFromBoolean = new LinkedList<ConnectToRequest>();
-            if (containsMults(outputConns))
+            if (latch == null && containsMults(outputConns))
             {
-                Neuron latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "Not");
+                latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "Not");
                 connectionsFromBoolean.AddLast(new ConnectToRequest(latch, -3f));
                 SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, 2);
-                foreach (ConnectToRequest conn in outputConns)
-                {
-                    if (conn.Neuron.Type == NeuronType.Mult)
-                    {
-                        SynapseFactory.CreateSynapse(latch, conn.Neuron, conn.SynapseStrength);
-                    }
-                    else
-                    {
-                        connectionsFromBoolean.AddLast(new ConnectToRequest(conn.Neuron, -conn.SynapseStrength));
-                        SynapseFactory.CreateSynapse(Inputs.CONSTANT, conn.Neuron, conn.SynapseStrength);
-                    }
-                }
             }
-            else
+
+            foreach (ConnectToRequest conn in outputConns)
             {
-                foreach (ConnectToRequest conn in outputConns)
+                if (conn.Neuron.Type == NeuronType.Mult)
+                {
+                    SynapseFactory.CreateSynapse(latch, conn.Neuron, conn.SynapseStrength);
+                }
+                else
                 {
                     connectionsFromBoolean.AddLast(new ConnectToRequest(conn.Neuron, -conn.SynapseStrength));
                     SynapseFactory.CreateSynapse(Inputs.CONSTANT, conn.Neuron, conn.SynapseStrength);

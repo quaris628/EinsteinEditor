@@ -13,24 +13,28 @@ namespace Bibyte.functional.background.values
     {
         private Value left;
         private Value right;
+        private Neuron mult;
         public ProductVal(Value left, Value right)
         {
             this.left = left;
             this.right = right;
+            this.mult = null;
         }
 
         protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            if (containsNonMults(outputs))
+            if (containsNonMults(outputs) || mult != null)
             {
-                // connect a mult node to the neuron,
-                // then connect values to that mult node
-                Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "Product");
-                left.ConnectTo(new[] { mult });
-                right.ConnectTo(new[] { mult });
+                // create a mult node in between the inputs and outputs
+                if (this.mult == null)
+                {
+                    this.mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "Product");
+                    left.ConnectTo(new[] { mult });
+                    right.ConnectTo(new[] { mult });
+                }
                 foreach (Neuron output in outputs)
                 {
-                    SynapseFactory.CreateSynapse(mult, output, 1);
+                    SynapseFactory.CreateSynapse(mult, output, 1f);
                 }
             }
             else

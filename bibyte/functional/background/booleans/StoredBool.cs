@@ -13,24 +13,16 @@ namespace Bibyte.functional.background.booleans
 {
     public class StoredBool : Bool
     {
-        private Bool shouldStore;
-        private Bool valueToStoreFrom;
-        private float initialValue;
+        private Neuron memoryBit;
         public StoredBool(Bool shouldStore, Bool valueToStoreFrom)
             : this(shouldStore, valueToStoreFrom, false) { }
         public StoredBool(Bool shouldStore, Bool valueToStoreFrom, bool initialValue)
         {
-            this.shouldStore = shouldStore;
-            this.valueToStoreFrom = valueToStoreFrom;
-            this.initialValue = initialValue ? 1f : 0f;
-        }
-
-        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
-        {
+            float initialValueFloat = initialValue ? 1f : 0f;
             Neuron memoryShouldStoreMult = NeuronFactory.CreateNeuron(NeuronType.Mult, "memoryShouldStoreMult");
 
             Neuron memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit",
-                initialValue, initialValue, initialValue);
+                initialValueFloat, initialValueFloat, initialValueFloat);
             SynapseFactory.CreateSynapse(memoryShouldStoreMult, memoryBit, 1f);
             SynapseFactory.CreateSynapse(Inputs.CONSTANT, memoryBit, 0.5f);
             shouldStore.ConnectTo(new[]
@@ -42,7 +34,10 @@ namespace Bibyte.functional.background.booleans
             {
                 new ConnectToRequest(memoryShouldStoreMult, 1f),
             });
+        }
 
+        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
+        {
             foreach (ConnectToRequest outputConn in outputConns)
             {
                 SynapseFactory.CreateSynapse(memoryBit, outputConn.Neuron, outputConn.SynapseStrength);

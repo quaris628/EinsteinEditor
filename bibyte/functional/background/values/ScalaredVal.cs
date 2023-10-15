@@ -14,11 +14,13 @@ namespace Bibyte.functional.background.values
     {
         private Value val;
         private float scalar;
+        private Neuron linear;
         public ScalaredVal(Value val, float scalar)
         {
             validateFloat(scalar);
             this.val = val;
             this.scalar = scalar;
+            this.linear = null;
         }
 
         protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
@@ -45,8 +47,12 @@ namespace Bibyte.functional.background.values
                 }
             }
             // connect the synapses to a linear, and create a new synapse from that linear and scale it
-            Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Scalar");
-            val.ConnectTo(new[] { linear });
+            // TODO could optimize with a synapse strength override for values just like how the bools do it
+            if (linear == null)
+            {
+                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Scalar");
+                val.ConnectTo(new[] { linear });
+            }
             foreach (Neuron output in outputs)
             {
                 SynapseFactory.CreateSynapse(linear, output, scalar);

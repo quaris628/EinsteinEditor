@@ -13,17 +13,12 @@ namespace Bibyte.functional.background.booleans
 {
     public class ToggledBool : Bool
     {
-        Bool shouldToggle;
-        bool initalState;
+        private Neuron memoryBit;
         public ToggledBool(Bool shouldToggle, bool initialState)
         {
-            this.shouldToggle = shouldToggle;
-            this.initalState = initialState;
-        }
+            // TODO respect the initialState parameter
 
-        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
-        {
-            Neuron memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit");
+            this.memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit");
             Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "memoryGate");
             Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear);
             shouldToggle.ConnectTo(new[]
@@ -35,7 +30,10 @@ namespace Bibyte.functional.background.booleans
             SynapseFactory.CreateSynapse(memoryBit, mult, 1f);
             SynapseFactory.CreateSynapse(mult, linear, -2f);
             SynapseFactory.CreateSynapse(linear, memoryBit, 1f);
+        }
 
+        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
+        {
             foreach (ConnectToRequest outputConn in outputConns)
             {
                 SynapseFactory.CreateSynapse(memoryBit, outputConn.Neuron, outputConn.SynapseStrength);

@@ -13,22 +13,26 @@ namespace Bibyte.functional.background
     {
         private Value left;
         private Value right;
+        private Neuron linear;
 
         public SumVal(Value left, Value right)
         {
             this.left = left;
             this.right = right;
+            this.linear = null;
         }
 
         protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
         {
-            if (containsMults(outputs))
+            if (containsMults(outputs) || linear != null)
             {
-                // connect a linear node to the mult,
-                // then connect values to that linear node
-                Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Sum");
-                left.ConnectTo(new[] { linear });
-                right.ConnectTo(new[] { linear });
+                // create a linear node in between the inputs and outputs
+                if (linear == null)
+                {
+                    linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Sum");
+                    left.ConnectTo(new[] { linear });
+                    right.ConnectTo(new[] { linear });
+                }
                 foreach (Neuron output in outputs)
                 {
                     SynapseFactory.CreateSynapse(linear, output, 1);

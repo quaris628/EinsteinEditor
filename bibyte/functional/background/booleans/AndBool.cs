@@ -17,20 +17,25 @@ namespace Bibyte.functional.background.booleans
     {
         private Bool left;
         private Bool right;
+        private Neuron mult;
 
         public AndBool(Bool left, Bool right)
         {
             this.left = left;
             this.right = right;
+            this.mult = null;
         }
 
         protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            if (containsNonMults(outputConns))
+            if (containsNonMults(outputConns) || mult != null)
             {
-                Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "And");
-                left.ConnectTo(new[] { new ConnectToRequest(mult, 1f) });
-                right.ConnectTo(new[] { new ConnectToRequest(mult, 1f) });
+                if (mult == null)
+                {
+                    mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "And");
+                    left.ConnectTo(new[] { new ConnectToRequest(mult, 1f) });
+                    right.ConnectTo(new[] { new ConnectToRequest(mult, 1f) });
+                }
                 foreach (ConnectToRequest outputConn in outputConns)
                 {
                     SynapseFactory.CreateSynapse(mult, outputConn.Neuron, outputConn.SynapseStrength);
@@ -38,11 +43,8 @@ namespace Bibyte.functional.background.booleans
             }
             else
             {
-                foreach (ConnectToRequest outputConn in outputConns)
-                {
-                    left.ConnectTo(outputConns);
-                    right.ConnectTo(outputConns);
-                }
+                left.ConnectTo(outputConns);
+                right.ConnectTo(outputConns);
             }
         }
     }

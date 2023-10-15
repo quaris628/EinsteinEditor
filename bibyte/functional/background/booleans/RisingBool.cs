@@ -17,10 +17,12 @@ namespace Bibyte.functional.background.booleans
     public class RisingBool : Bool
     {
         private Bool input;
+        private Neuron latch;
 
         public RisingBool(Bool input)
         {
             this.input = input;
+            this.latch = null;
         }
 
         protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
@@ -36,11 +38,15 @@ namespace Bibyte.functional.background.booleans
                 // then update StoredValue accordingly
                 // (TODO implement constant-timing stuff)
 
-                Neuron diff = NeuronFactory.CreateNeuron(NeuronType.Differential, "RisingBool");
-                Neuron latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "RisingBool");
-                input.ConnectTo(new [] {new ConnectToRequest(diff, 100f)});
-                SynapseFactory.CreateSynapse(diff, latch, 100f);
-                SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -1f);
+                if (latch == null)
+                {
+                    Neuron diff = NeuronFactory.CreateNeuron(NeuronType.Differential, "RisingBool");
+                    latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "RisingBool");
+                    input.ConnectTo(new[] { new ConnectToRequest(diff, 100f) });
+                    SynapseFactory.CreateSynapse(diff, latch, 100f);
+                    SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -1f);
+                }
+                
                 foreach (ConnectToRequest outputConn in outputConns)
                 {
                     SynapseFactory.CreateSynapse(latch, outputConn.Neuron, outputConn.SynapseStrength);

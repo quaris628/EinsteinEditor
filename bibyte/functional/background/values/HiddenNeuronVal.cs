@@ -14,7 +14,7 @@ namespace Bibyte.functional.background.values
         private Neuron hidden;
         public HiddenNeuronVal(Value input, NeuronType type)
         {
-            Neuron hidden = NeuronFactory.CreateNeuron(type, type.ToString());
+            this.hidden = NeuronFactory.CreateNeuron(type, type.ToString());
             input.ConnectTo(new[] { hidden });
         }
 
