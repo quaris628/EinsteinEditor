@@ -29,13 +29,15 @@ namespace BibyteTests.numbers
             // Assert
 
             Brain brain = NeuralBackgroundBrainBuilder.GetBrain();
-            
+
             // there are the input and output neurons
-            Assert.IsTrue(brain.ContainsNeuron(left.GetInputNeuron()));
-            Assert.IsTrue(brain.ContainsNeuron(right.GetInputNeuron()));
-            Assert.IsTrue(brain.ContainsNeuron(output));
+            Neuron[] ioNeurons = new Neuron[] { left.GetInputNeuron(), right.GetInputNeuron(), output };
+            foreach (Neuron neuron in ioNeurons)
+            {
+                Assert.IsTrue(brain.ContainsNeuron(neuron));
+            }
             // and there are no other neurons
-            Assert.AreEqual(3, brain.Neurons.Count);
+            Assert.AreEqual(ioNeurons.Length, brain.Neurons.Count);
 
             // each input has a synapse of strength 1 to the output
             Assert.AreEqual(1f, brain.GetSynapse(left.GetInputNeuron(), output).Strength);
@@ -68,7 +70,7 @@ namespace BibyteTests.numbers
                 Assert.IsTrue(brain.ContainsNeuron(neuron));
             }
             // and there's one other hidden neuron
-            Assert.AreEqual(4, brain.Neurons.Count);
+            Assert.AreEqual(ioNeurons.Length + 1, brain.Neurons.Count);
             // which is a linear
             Neuron hiddenLinear = null;
             foreach (Neuron neuron in brain.Neurons)
@@ -90,6 +92,56 @@ namespace BibyteTests.numbers
             Assert.AreEqual(3, brain.Synapses.Count);
         }
 
-        // TODO combo of mult and non-mult
+        [TestMethod]
+        public void ToMultAndNonMult()
+        {
+            // Arrange
+            NeuralBackgroundBrainBuilder.ClearBrain();
+            InputNum left = InputNum.GREEN_BIBITE;
+            InputNum right = InputNum.RED_BIBITE;
+            Neuron nonMultOutput = Outputs.PHERE_OUT_1;
+            Neuron multOutput = NeuronFactory.CreateNeuron(NeuronType.Mult);
+
+            // Act
+            SumNum sumNum = new SumNum(left, right);
+            ValueConnectionTester.ConnectValueTo(sumNum, new[] { nonMultOutput, multOutput });
+
+            // Assert
+
+            Brain brain = NeuralBackgroundBrainBuilder.GetBrain();
+
+            // there are the input and output neurons
+            Neuron[] ioNeurons = new Neuron[] { left.GetInputNeuron(), right.GetInputNeuron(),
+                nonMultOutput, multOutput };
+            foreach (Neuron neuron in ioNeurons)
+            {
+                Assert.IsTrue(brain.ContainsNeuron(neuron));
+            }
+            // and there's one other hidden neuron
+            Assert.AreEqual(ioNeurons.Length + 1, brain.Neurons.Count);
+            // which is a linear
+            Neuron hiddenLinear = null;
+            foreach (Neuron neuron in brain.Neurons)
+            {
+                if (ioNeurons.Contains(neuron))
+                {
+                    continue;
+                }
+                Assert.AreEqual(NeuronType.Linear, neuron.Type);
+                hiddenLinear = neuron;
+            }
+
+            // each input has a synapse of strength 1 to the hidden linear neuron
+            Assert.AreEqual(1f, brain.GetSynapse(left.GetInputNeuron(), hiddenLinear).Strength);
+            Assert.AreEqual(1f, brain.GetSynapse(right.GetInputNeuron(), hiddenLinear).Strength);
+            // the hidden linear neuron connects to both outputs (with strength 1)
+            Assert.AreEqual(1f, brain.GetSynapse(hiddenLinear, nonMultOutput).Strength);
+            Assert.AreEqual(1f, brain.GetSynapse(hiddenLinear, multOutput).Strength);
+            // and there are no other synapses
+            Assert.AreEqual(4, brain.Synapses.Count);
+        }
+
+        // also test connection to mult then nonmult or vice versa?
+        // i.e. not in the same ConnectTo call
     }
 }
