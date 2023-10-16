@@ -49,6 +49,7 @@
     <Compile Include="BibyteMain.cs" />
     <Compile Include="functional\background\ConnectToRequest.cs" />
     <Compile Include="functional\background\Value.cs" />
+    <Compile Include="functional\background\ValueConnectionTester.cs" />
     <Compile Include="functional\brains\BrainToGenerate.cs" />
     <Compile Include="functional\brains\TestingBrain.cs" />
     <Compile Include="neural\circuits\Circuit1OverX.cs" />

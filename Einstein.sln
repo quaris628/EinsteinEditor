@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Einstein", "einstein\Einste
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bibyte", "bibyte\Bibyte.csproj", "{B73D373A-B2AC-4AAD-B880-086ACA2A1E89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibyteTests", "BibyteTests\BibyteTests.csproj", "{FEDA9C8D-6CAE-4145-BA51-BFC10B6F8768}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B73D373A-B2AC-4AAD-B880-086ACA2A1E89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B73D373A-B2AC-4AAD-B880-086ACA2A1E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B73D373A-B2AC-4AAD-B880-086ACA2A1E89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEDA9C8D-6CAE-4145-BA51-BFC10B6F8768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEDA9C8D-6CAE-4145-BA51-BFC10B6F8768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEDA9C8D-6CAE-4145-BA51-BFC10B6F8768}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEDA9C8D-6CAE-4145-BA51-BFC10B6F8768}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
