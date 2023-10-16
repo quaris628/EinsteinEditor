@@ -89,5 +89,7 @@ namespace BibyteTests.numbers
             // and there are no other synapses
             Assert.AreEqual(3, brain.Synapses.Count);
         }
+
+        // TODO combo of mult and non-mult
     }
 }
