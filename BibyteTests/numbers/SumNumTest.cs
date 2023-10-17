@@ -103,8 +103,8 @@ namespace BibyteTests.numbers
             Neuron multOutput = NeuronFactory.CreateNeuron(NeuronType.Mult);
 
             // Act
-            SumNum sumNum = new SumNum(left, right);
-            ValueConnectionTester.ConnectValueTo(sumNum, new[] { nonMultOutput, multOutput });
+            SumNum num = new SumNum(left, right);
+            ValueConnectionTester.ConnectValueTo(num, new[] { nonMultOutput, multOutput });
 
             // Assert
 

@@ -23,8 +23,8 @@ namespace BibyteTests.numbers
             Neuron output = Outputs.PHERE_OUT_1;
 
             // Act
-            ProductNum prodNum = new ProductNum(left, right);
-            ValueConnectionTester.ConnectValueTo(prodNum, output);
+            ProductNum num = new ProductNum(left, right);
+            ValueConnectionTester.ConnectValueTo(num, output);
 
             // Assert
 
@@ -37,7 +37,7 @@ namespace BibyteTests.numbers
                 Assert.IsTrue(brain.ContainsNeuron(neuron));
             }
             // and there's one other hidden neuron
-            Assert.AreEqual(4, brain.Neurons.Count);
+            Assert.AreEqual(ioNeurons.Length + 1, brain.Neurons.Count);
             // which is a mult
             Neuron hiddenMult = null;
             foreach (Neuron neuron in brain.Neurons)
@@ -69,8 +69,8 @@ namespace BibyteTests.numbers
             Neuron output = NeuronFactory.CreateNeuron(NeuronType.Mult);
 
             // Act
-            ProductNum prodNum = new ProductNum(left, right);
-            ValueConnectionTester.ConnectValueTo(prodNum, output);
+            ProductNum num = new ProductNum(left, right);
+            ValueConnectionTester.ConnectValueTo(num, output);
 
             // Assert
 
@@ -101,8 +101,8 @@ namespace BibyteTests.numbers
             Neuron multOutput = NeuronFactory.CreateNeuron(NeuronType.Mult);
 
             // Act
-            ProductNum prodNum = new ProductNum(left, right);
-            ValueConnectionTester.ConnectValueTo(prodNum, new[] { nonMultOutput, multOutput });
+            ProductNum num = new ProductNum(left, right);
+            ValueConnectionTester.ConnectValueTo(num, new[] { nonMultOutput, multOutput });
 
             // Assert
 
