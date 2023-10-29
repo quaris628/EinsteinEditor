@@ -141,6 +141,71 @@ namespace BibyteTests.numbers
             Assert.AreEqual(4, brain.Synapses.Count);
         }
 
+        [TestMethod]
+        public void AddToItself()
+        {
+            // Arrange
+            NeuralBackgroundBrainBuilder.ClearBrain();
+            InputNum input = InputNum.GREEN_BIBITE;
+            Neuron output = Outputs.PHERE_OUT_1;
+
+            // Act
+            SumNum sumNum = new SumNum(input, input);
+            ValueConnectionTester.ConnectValueTo(sumNum, output);
+
+            // Assert
+
+            Brain brain = NeuralBackgroundBrainBuilder.GetBrain();
+
+            // there are the input and output neurons
+            Neuron[] ioNeurons = new Neuron[] { input.GetInputNeuron(), output };
+            foreach (Neuron neuron in ioNeurons)
+            {
+                Assert.IsTrue(brain.ContainsNeuron(neuron));
+            }
+            // and there are no other neurons
+            Assert.AreEqual(ioNeurons.Length, brain.Neurons.Count);
+
+            // there's a synapse of strength 2 to the output
+            Assert.AreEqual(2f, brain.GetSynapse(input.GetInputNeuron(), output).Strength);
+            // and there are no other synapses
+            Assert.AreEqual(1, brain.Synapses.Count);
+        }
+
+        [TestMethod]
+        public void AddToItselfx3AndSomethingElse()
+        {
+            // Arrange
+            NeuralBackgroundBrainBuilder.ClearBrain();
+            InputNum input123 = InputNum.GREEN_BIBITE;
+            InputNum input4 = InputNum.RED_BIBITE;
+            Neuron output = Outputs.PHERE_OUT_1;
+
+            // Act
+            SumNum sumNum = (SumNum)(input123 + input123 + input123 + input4);
+            ValueConnectionTester.ConnectValueTo(sumNum, output);
+
+            // Assert
+
+            Brain brain = NeuralBackgroundBrainBuilder.GetBrain();
+
+            // there are the input and output neurons
+            Neuron[] ioNeurons = new Neuron[] { input123.GetInputNeuron(), input4.GetInputNeuron(), output };
+            foreach (Neuron neuron in ioNeurons)
+            {
+                Assert.IsTrue(brain.ContainsNeuron(neuron));
+            }
+            // and there are no other neurons
+            Assert.AreEqual(ioNeurons.Length, brain.Neurons.Count);
+
+            // there's a synapse of strength 3 from input123 to the output
+            Assert.AreEqual(3f, brain.GetSynapse(input123.GetInputNeuron(), output).Strength);
+            // there's a synapse of strength 1 from input4 to the output
+            Assert.AreEqual(1f, brain.GetSynapse(input4.GetInputNeuron(), output).Strength);
+            // and there are no other synapses
+            Assert.AreEqual(2, brain.Synapses.Count);
+        }
+
         // TODO add something to itself
 
         // also test connection to mult then nonmult or vice versa?

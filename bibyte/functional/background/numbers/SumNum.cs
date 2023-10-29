@@ -23,7 +23,7 @@ namespace Bibyte.functional.background
         {
             this.left = left;
             this.right = right;
-            this.linear = null;
+            linear = null;
         }
 
         protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
@@ -34,16 +34,40 @@ namespace Bibyte.functional.background
                 if (linear == null)
                 {
                     linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Sum");
-                    left.ConnectTo(new[] { new ConnectToRequest(linear, 1f) });
-                    right.ConnectTo(new[] { new ConnectToRequest(linear, 1f) });
+                    Dictionary<Number, int> leafNumsToSum = new Dictionary<Number, int>();
+                    CalculateLeafSumsToSum(this, leafNumsToSum);
+                    foreach (Number leafNum in leafNumsToSum.Keys)
+                    {
+                        leafNum.ConnectTo(new[] { new ConnectToRequest(linear, leafNumsToSum[leafNum]) });
+                    }
                 }
                 connectAndHandleLargeScalars(linear, outputConns);
             }
             else
             {
-                // connect values straight to the output node
-                left.ConnectTo(outputConns);
-                right.ConnectTo(outputConns);
+                Dictionary<Number, int> leafNumsToSum = new Dictionary<Number, int>();
+                CalculateLeafSumsToSum(this, leafNumsToSum);
+                foreach (Number leafNum in leafNumsToSum.Keys)
+                {
+                    leafNum.ConnectTo(multiplyAllConnsBy(outputConns, leafNumsToSum[leafNum]));
+                }
+            }
+        }
+
+        private static void CalculateLeafSumsToSum(Number num, Dictionary<Number, int> leafNumsToSum)
+        {
+            if (num is SumNum leftSumNum)
+            {
+                CalculateLeafSumsToSum(leftSumNum.left, leafNumsToSum);
+                CalculateLeafSumsToSum(leftSumNum.right, leafNumsToSum);
+            }
+            else if (leafNumsToSum.ContainsKey(num))
+            {
+                leafNumsToSum[num]++;
+            }
+            else
+            {
+                leafNumsToSum[num] = 1;
             }
         }
     }
