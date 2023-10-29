@@ -19,11 +19,13 @@ namespace Bibyte.functional.background.booleans
 
         public ToggledBool(Bool shouldToggle, bool initialState)
         {
-            // TODO respect the initialState parameter
-
-            this.memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit");
-            Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "memoryGate");
-            Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear);
+            float initialStateFloat = initialState ? 1f : 0f;
+            memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "toggledBoolMemoryBit",
+                initialStateFloat, initialStateFloat, initialStateFloat);
+            Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "toggledBool",
+                initialStateFloat, initialStateFloat, initialStateFloat);
+            Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "toggledBool",
+                initialStateFloat, initialStateFloat, initialStateFloat);
             shouldToggle.ConnectTo(new[]
             {
                 new ConnectToRequest(mult, 1f),
