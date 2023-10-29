@@ -51,7 +51,7 @@
   <ItemGroup>
     <Compile Include="booleans\FakeInputBool.cs" />
     <Compile Include="booleans\NotBoolTest.cs" />
-    <Compile Include="numbers\BoolToNumNumTest.cs" />
+    <Compile Include="numbers\ScalaredNumTest.cs" />
     <Compile Include="numbers\InverseNumTest.cs" />
     <Compile Include="numbers\InputNumTest.cs" />
     <Compile Include="numbers\HiddenNeuronNumTest.cs" />
