@@ -29,12 +29,11 @@ namespace Bibyte.functional.background.booleans
             if (input is ConstBool)
             {
                 new ConstBool(false).ConnectTo(outputConns);
-                return;
             }
             else
             {
                 // if you change the number of synapses between the input and output,
-                // then update StoredValue accordingly
+                // then maybe update StoredValue accordingly
                 // (TODO implement constant-timing stuff)
 
                 if (latch == null)
@@ -45,11 +44,8 @@ namespace Bibyte.functional.background.booleans
                     SynapseFactory.CreateSynapse(diff, latch, 100f);
                     SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -1f);
                 }
-                
-                foreach (ConnectToRequest outputConn in outputConns)
-                {
-                    SynapseFactory.CreateSynapse(latch, outputConn.Neuron, outputConn.SynapseStrength);
-                }
+
+                connectAndHandleLargeScalars(latch, outputConns);
             }
         }
     }

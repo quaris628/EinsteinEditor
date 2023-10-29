@@ -24,20 +24,17 @@ namespace Bibyte.functional.background.booleans
         public ValEqualsValBool(Number left, Number right)
         {
             Neuron guassian = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "ValEqualsVal");
-            (left * 100f).ConnectTo(new[] { guassian });
-            (right * -100f).ConnectTo(new[] { guassian });
+            (left * 100f).ConnectTo(new[] { new ConnectToRequest(guassian, 1f) });
+            (right * -100f).ConnectTo(new[] { new ConnectToRequest(guassian, 1f) });
 
-            this.latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "ValEqualsVal");
+            latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "ValEqualsVal");
             SynapseFactory.CreateSynapse(guassian, latch, 100);
             SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -98.99999f);
         }
 
         protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            foreach (ConnectToRequest outputConn in outputConns)
-            {
-                SynapseFactory.CreateSynapse(latch, outputConn.Neuron, outputConn.SynapseStrength);
-            }
+            connectAndHandleLargeScalars(latch, outputConns);
         }
     }
 }

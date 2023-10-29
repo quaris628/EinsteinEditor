@@ -23,6 +23,7 @@ namespace Bibyte.functional.background.booleans
 
         protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
+            LinkedList<ConnectToRequest> filteredConns = new LinkedList<ConnectToRequest>();
             foreach (ConnectToRequest outputConn in outputConns)
             {
                 if (outputConn.Neuron.Type == NeuronType.Mult && boolean
@@ -30,15 +31,15 @@ namespace Bibyte.functional.background.booleans
                 {
                     continue;
                 }
-                // even more optimal would be to remove these output neurons from the brain
-                // but that's hard to do with the current class and methods design
-                // and using constant booleans will probably be rare
-                // so just do this (at least for now)
-                SynapseFactory.CreateSynapse(
-                    Inputs.CONSTANT,
-                    outputConn.Neuron,
-                    boolean ? outputConn.SynapseStrength : 0);
+                filteredConns.AddLast(outputConn);
             }
+            // even more optimal would be to remove the neurons and synapses connected to this
+            // but that's hard to do with the current class and methods design
+            // and using these constant booleans will probably be rare
+            // and it'd probably be even rarer to have such bad brain design like If(False, ...)
+            // so just do this
+            connectAndHandleLargeScalars(Inputs.CONSTANT,
+                multiplyAllConnsBy(filteredConns, boolean ? 1f : 0f));
         }
     }
 }

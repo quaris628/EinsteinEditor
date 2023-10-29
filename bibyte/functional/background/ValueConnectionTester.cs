@@ -21,7 +21,12 @@ namespace bibyte.functional.background
         
         public static void ConnectValueTo(Value val, IEnumerable<Neuron> outputNeurons)
         {
-            val.ConnectTo(outputNeurons);
+            LinkedList<ConnectToRequest> conns = new LinkedList<ConnectToRequest>();
+            foreach (Neuron outputNeuron in outputNeurons)
+            {
+                conns.AddLast(new ConnectToRequest(outputNeuron, 1f));
+            }
+            val.ConnectTo(conns);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Bibyte.functional.background.booleans
             float initialValueFloat = initialValue ? 1f : 0f;
             Neuron memoryShouldStoreMult = NeuronFactory.CreateNeuron(NeuronType.Mult, "memoryShouldStoreMult");
 
-            this.memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit",
+            memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit",
                 initialValueFloat, initialValueFloat, initialValueFloat);
             SynapseFactory.CreateSynapse(memoryShouldStoreMult, memoryBit, 1f);
             SynapseFactory.CreateSynapse(Inputs.CONSTANT, memoryBit, 0.5f);

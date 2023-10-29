@@ -14,21 +14,16 @@ namespace Bibyte.functional.background.values
     /// </summary>
     public class BoolToNumNum : Number
     {
-        public Bool Input { get; private set; }
+        public Bool input { get; private set; }
 
         public BoolToNumNum(Bool input)
         {
-            Input = input;
+            this.input = input;
         }
 
-        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            LinkedList<ConnectToRequest> outputConns = new LinkedList<ConnectToRequest>();
-            foreach (Neuron output in outputs)
-            {
-                outputConns.AddLast(new ConnectToRequest(output, 1f));
-            }
-            Input.ConnectTo(outputConns);
+            input.ConnectTo(outputConns);
         }
     }
 }

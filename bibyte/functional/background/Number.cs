@@ -20,7 +20,7 @@ namespace Bibyte.functional.background
             {
                 throw new ArgumentException("A value should only be plugged into an output neuron.");
             }
-            ConnectTo(new[] { outputNeuron });
+            ConnectTo(new[] { new ConnectToRequest(outputNeuron, 1f) });
         }
 
         // math

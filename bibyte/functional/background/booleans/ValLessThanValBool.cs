@@ -27,10 +27,10 @@ namespace Bibyte.functional.background.booleans
         public ValLessThanValBool(Number left, Number right)
         {
             Neuron sigmoid = NeuronFactory.CreateNeuron(NeuronType.Sigmoid, "ValLessThanVal");
-            (left * -100f).ConnectTo(new[] { sigmoid });
-            (right * 100f).ConnectTo(new[] { sigmoid });
+            (left * -100f).ConnectTo(new[] { new ConnectToRequest(sigmoid, 1f) });
+            (right * 100f).ConnectTo(new[] { new ConnectToRequest(sigmoid, 1f) });
 
-            this.latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "ValLessThanVal");
+            latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "ValLessThanVal");
             SynapseFactory.CreateSynapse(sigmoid, latch, 100);
             SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -49.99999f);
         }

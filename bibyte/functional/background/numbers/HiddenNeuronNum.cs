@@ -1,4 +1,5 @@
-﻿using Bibyte.neural;
+﻿using bibyte.functional.background;
+using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
 using System;
@@ -22,16 +23,13 @@ namespace Bibyte.functional.background.values
             {
                 throw new ArgumentException("Neuron type cannot be 'Input'");
             }
-            this.hidden = NeuronFactory.CreateNeuron(type, type.ToString());
-            input.ConnectTo(new[] { hidden });
+            hidden = NeuronFactory.CreateNeuron(type, type.ToString());
+            input.ConnectTo(new[] { new ConnectToRequest(hidden, 1f) });
         }
 
-        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            foreach (Neuron output in outputs)
-            {
-                SynapseFactory.CreateSynapse(hidden, output, 1f);
-            }
+            connectAndHandleLargeScalars(hidden, outputConns);
         }
     }
 }

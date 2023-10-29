@@ -9,6 +9,7 @@ namespace Bibyte.functional
 {
     public interface IFunctionalProgrammingBrain
     {
+        void InitializeReusedValues();
         Number Accelerate();
         Number Rotate();
         Number Herding();

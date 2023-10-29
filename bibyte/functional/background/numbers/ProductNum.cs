@@ -1,4 +1,5 @@
-﻿using Bibyte.neural;
+﻿using bibyte.functional.background;
+using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
 using System;
@@ -25,31 +26,26 @@ namespace Bibyte.functional.background.values
             this.mult = null;
         }
 
-        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            if (containsNonMults(outputs) || mult != null)
+            if (containsNonMults(outputConns) || mult != null)
             {
                 // create a mult node in between the inputs and outputs
-                if (this.mult == null)
+                if (mult == null)
                 {
-                    this.mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "Product");
-                    left.ConnectTo(new[] { mult });
-                    right.ConnectTo(new[] { mult });
+                    mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "Product");
+                    left.ConnectTo(new[] { new ConnectToRequest(mult, 1f) });
+                    right.ConnectTo(new[] { new ConnectToRequest(mult, 1f) });
                 }
-                foreach (Neuron output in outputs)
-                {
-                    SynapseFactory.CreateSynapse(mult, output, 1f);
-                }
+                connectAndHandleLargeScalars(mult, outputConns);
             }
             else
             {
                 // connect values straight to the output node
-                foreach (Neuron output in outputs)
-                {
-                    left.ConnectTo(new[] { output });
-                    right.ConnectTo(new[] { output });
-                }
+                left.ConnectTo(outputConns);
+                right.ConnectTo(outputConns);
             }
         }
+
     }
 }

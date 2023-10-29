@@ -13,6 +13,7 @@ namespace Bibyte.functional.background
         public static Brain Build(IFunctionalProgrammingBrain brain)
         {
             NeuralBackgroundBrainBuilder.ClearBrain();
+            brain.InitializeReusedValues();
             brain.Accelerate().PlugIntoOutput(Outputs.ACCELERATE);
             brain.Rotate().PlugIntoOutput(Outputs.ROTATE);
             brain.Herding().PlugIntoOutput(Outputs.HERDING);

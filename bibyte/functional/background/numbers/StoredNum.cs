@@ -1,4 +1,5 @@
-﻿using Bibyte.functional.background.booleans;
+﻿using bibyte.functional.background;
+using Bibyte.functional.background.booleans;
 using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
@@ -26,7 +27,7 @@ namespace Bibyte.functional.background.values
             validateFloat(initialValue);
             Bool resetBool = new RisingBool(shouldStore);
             Neuron resetNeuron = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueReset");
-            resetBool.ConnectTo(new[] { resetNeuron });
+            resetBool.ConnectTo(new[] { new ConnectToRequest(resetNeuron, 1f) });
             // the rising bool induces a 2-tick delay (since it has 2 extra synapses)
             // so delay the input value by the same amount
             //Neuron delayLin1 = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueDelay");
@@ -39,21 +40,18 @@ namespace Bibyte.functional.background.values
             Neuron multReset = NeuronFactory.CreateNeuron(NeuronType.Mult, "StoredValueReset");
             loop = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueLoop",
                 initialValue, initialValue, initialValue);
-            toStore.ConnectTo(new[] { multIn });
-            SynapseFactory.CreateSynapse(resetNeuron, multIn, 1);
-            SynapseFactory.CreateSynapse(resetNeuron, multReset, 1);
-            SynapseFactory.CreateSynapse(multIn, loop, 1);
-            SynapseFactory.CreateSynapse(loop, loop, 1);
-            SynapseFactory.CreateSynapse(loop, multReset, -1);
-            SynapseFactory.CreateSynapse(multReset, loop, 1);
+            toStore.ConnectTo(new[] { new ConnectToRequest(multIn, 1f) });
+            SynapseFactory.CreateSynapse(resetNeuron, multIn, 1f);
+            SynapseFactory.CreateSynapse(resetNeuron, multReset, 1f);
+            SynapseFactory.CreateSynapse(multIn, loop, 1f);
+            SynapseFactory.CreateSynapse(loop, loop, 1f);
+            SynapseFactory.CreateSynapse(loop, multReset, -1f);
+            SynapseFactory.CreateSynapse(multReset, loop, 1f);
         }
 
-        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            foreach (Neuron output in outputs)
-            {
-                SynapseFactory.CreateSynapse(loop, output, 1);
-            }
+            connectAndHandleLargeScalars(loop, outputConns);
         }
     }
 }

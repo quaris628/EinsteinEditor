@@ -9,6 +9,10 @@ namespace Bibyte.functional
 {
     public class MinimalBrain : IFunctionalProgrammingBrain
     {
+        public void InitializeReusedValues()
+        {
+            
+        }
         public Number Accelerate()
         {
             return 0;

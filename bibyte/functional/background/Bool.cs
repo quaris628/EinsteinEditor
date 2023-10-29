@@ -11,19 +11,6 @@ namespace Bibyte.functional.background
 {
     public abstract class Bool : Value
     {
-        protected internal sealed override void ConnectTo(IEnumerable<Neuron> outputs)
-        {
-            LinkedList<ConnectToRequest> connections =
-                    new LinkedList<ConnectToRequest>();
-            foreach (Neuron output in outputs)
-            {
-                connections.AddLast(new ConnectToRequest(output, 1f));
-            }
-            ConnectTo(outputs);
-        }
-        
-        protected internal abstract void ConnectTo(IEnumerable<ConnectToRequest> outputConns);
-
         public static Bool operator ==(Bool left, Bool right)
         {
             return (left & right) | (!left & !right);

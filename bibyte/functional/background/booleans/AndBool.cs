@@ -36,10 +36,7 @@ namespace Bibyte.functional.background.booleans
                     left.ConnectTo(new[] { new ConnectToRequest(mult, 1f) });
                     right.ConnectTo(new[] { new ConnectToRequest(mult, 1f) });
                 }
-                foreach (ConnectToRequest outputConn in outputConns)
-                {
-                    SynapseFactory.CreateSynapse(mult, outputConn.Neuron, outputConn.SynapseStrength);
-                }
+                connectAndHandleLargeScalars(mult, outputConns);
             }
             else
             {

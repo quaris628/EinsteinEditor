@@ -37,10 +37,7 @@ namespace Bibyte.functional.background.booleans
 
         protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            foreach (ConnectToRequest outputConn in outputConns)
-            {
-                SynapseFactory.CreateSynapse(memoryBit, outputConn.Neuron, outputConn.SynapseStrength);
-            }
+            connectAndHandleLargeScalars(memoryBit, outputConns);
         }
     }
 }

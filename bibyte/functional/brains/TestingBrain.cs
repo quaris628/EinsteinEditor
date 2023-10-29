@@ -1,4 +1,5 @@
-﻿using Bibyte.functional.background;
+﻿using bibyte.functional;
+using Bibyte.functional.background;
 using Bibyte.functional.background.booleans;
 using Bibyte.functional.background.values;
 using System;
@@ -11,33 +12,43 @@ namespace Bibyte.functional
 {
     public class TestingBrain : IFunctionalProgrammingBrain
     {
+        private static Number risingPlantClose = null;
+        public void InitializeReusedValues()
+        {
+            risingPlantClose = (Number)Func.Rising(InputNum.PLANT_CLOSENESS < 3);
+        }
         public Number Accelerate()
         {
             return InputNum.GREEN_BIBITE + InputNum.GREEN_BIBITE + InputNum.GREEN_BIBITE;
         }
         public Number Rotate()
         {
+            // Bad coding style, constructors feel awkward
             return new BoolToNumNum(new ToggledBool(new RisingBool(InputNum.PLANT_ANGLE == InputNum.BIBITE_ANGLE), false));
         }
         public Number Herding()
         {
-            return 0;
+            // Good coding style, functions and casts look better (imo)
+            return (Number)Mem.ToggleOf(Func.Rising(InputNum.PLANT_ANGLE == InputNum.BIBITE_ANGLE), false);
         }
         public Number Want2Lay()
         {
-            return 0;
+            // Bad brain design to write duplicate expressions twice
+            return (Number)Mem.ToggleOf(Func.Rising(InputNum.PLANT_ANGLE == InputNum.BIBITE_ANGLE), false);
         }
+        
         public Number Digestion()
         {
-            return 0;
+            // Good brain design to initialize a commonly-reused expression once then reference it many times later
+            return risingPlantClose;
         }
         public Number Grab()
         {
-            return 0;
+            return risingPlantClose;
         }
         public Number ClkReset()
         {
-            return 0;
+            return 2 * risingPlantClose;
         }
         public Number PhereOut1()
         {

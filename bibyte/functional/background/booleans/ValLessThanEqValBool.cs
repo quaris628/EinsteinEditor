@@ -26,8 +26,8 @@ namespace Bibyte.functional.background.booleans
         public ValLessThanEqValBool(Number left, Number right)
         {
             Neuron sigmoid = NeuronFactory.CreateNeuron(NeuronType.Sigmoid, "ValLessThanEqVal");
-            (left * -100f).ConnectTo(new[] { sigmoid });
-            (right * 100f).ConnectTo(new[] { sigmoid });
+            (left * -100f).ConnectTo(new[] { new ConnectToRequest(sigmoid, 1f) });
+            (right * 100f).ConnectTo(new[] { new ConnectToRequest(sigmoid, 1f) });
 
             this.latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "ValLessThanEqVal");
             SynapseFactory.CreateSynapse(sigmoid, latch, 100);

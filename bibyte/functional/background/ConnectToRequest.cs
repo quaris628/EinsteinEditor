@@ -15,12 +15,6 @@ namespace bibyte.functional.background
 
         public ConnectToRequest(Neuron neuron, float synapseStrength)
         {
-            if (synapseStrength < BibiteVersionConfig.SYNAPSE_STRENGTH_MIN
-            || BibiteVersionConfig.SYNAPSE_STRENGTH_MAX < synapseStrength)
-            {
-                throw new ArgumentException(synapseStrength + " cannot be used as a synapse strength. "
-                    + "Must be between -100 and 100.");
-            }
             Neuron = neuron;
             SynapseStrength = synapseStrength;
         }

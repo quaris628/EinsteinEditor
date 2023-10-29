@@ -1,4 +1,6 @@
-﻿using Bibyte.neural;
+﻿using bibyte.functional.background;
+using Bibyte.neural;
+using Einstein;
 using Einstein.model;
 using Einstein.model.json;
 using System;
@@ -24,17 +26,19 @@ namespace Bibyte.functional.background.values
 
         public float GetValue() { return value; }
 
-        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            foreach (Neuron output in outputs)
+            IEnumerable<ConnectToRequest> connsWithNetScalars = multiplyAllConnsBy(outputConns, value);
+
+            foreach (ConnectToRequest conn in connsWithNetScalars)
             {
-                if (output.Type == NeuronType.Mult && value == 1f
-                    || output.Type != NeuronType.Mult && value == 0f)
+                if (BibiteVersionConfig.SYNAPSE_STRENGTH_MAX
+                    * BibiteVersionConfig.SYNAPSE_STRENGTH_MAX < Math.Abs(conn.SynapseStrength))
                 {
-                    continue;
+                    throw new ArgumentOutOfRangeException();
                 }
-                SynapseFactory.CreateSynapse(Inputs.CONSTANT, output, value);
             }
+            connectAndHandleLargeScalars(Inputs.CONSTANT, connsWithNetScalars);
         }
     }
 }

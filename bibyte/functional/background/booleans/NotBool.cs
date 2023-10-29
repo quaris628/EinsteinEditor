@@ -27,27 +27,40 @@ namespace Bibyte.functional.background.booleans
 
         protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            LinkedList<ConnectToRequest> connectionsFromBoolean = new LinkedList<ConnectToRequest>();
+            LinkedList<ConnectToRequest> fromBooleanConns = new LinkedList<ConnectToRequest>();
             if (latch == null && containsMults(outputConns))
             {
                 latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "Not");
-                connectionsFromBoolean.AddLast(new ConnectToRequest(latch, -3f));
+                fromBooleanConns.AddLast(new ConnectToRequest(latch, -3f));
                 SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, 2);
             }
 
+            LinkedList<ConnectToRequest> fromLatchConns = new LinkedList<ConnectToRequest>();
+            LinkedList<ConnectToRequest> fromConstantConns = new LinkedList<ConnectToRequest>();
             foreach (ConnectToRequest conn in outputConns)
             {
                 if (conn.Neuron.Type == NeuronType.Mult)
                 {
-                    SynapseFactory.CreateSynapse(latch, conn.Neuron, conn.SynapseStrength);
+                    fromLatchConns.AddLast(conn);
                 }
                 else
                 {
-                    connectionsFromBoolean.AddLast(new ConnectToRequest(conn.Neuron, -conn.SynapseStrength));
-                    SynapseFactory.CreateSynapse(Inputs.CONSTANT, conn.Neuron, conn.SynapseStrength);
+                    fromBooleanConns.AddLast(new ConnectToRequest(conn.Neuron, -conn.SynapseStrength));
+                    fromConstantConns.AddLast(conn);
                 }
             }
-            boolean.ConnectTo(connectionsFromBoolean);
+            if (fromLatchConns.Count > 0)
+            {
+                connectAndHandleLargeScalars(latch, fromLatchConns);
+            }
+            if (fromConstantConns.Count > 0)
+            {
+                connectAndHandleLargeScalars(Inputs.CONSTANT, fromConstantConns);
+            }
+            if (fromBooleanConns.Count > 0)
+            {
+                boolean.ConnectTo(fromBooleanConns);
+            }
         }
     }
 }

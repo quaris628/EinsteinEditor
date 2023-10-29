@@ -1,4 +1,5 @@
-﻿using Bibyte.neural;
+﻿using bibyte.functional.background;
+using Bibyte.neural;
 using Einstein.model.json;
 using System;
 using System.Collections.Generic;
@@ -56,12 +57,9 @@ namespace Bibyte.functional.background.values
 
         public Neuron GetInputNeuron() { return inputNeuron; }
 
-        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            foreach (Neuron output in outputs)
-            {
-                SynapseFactory.CreateSynapse(inputNeuron, output, 1);
-            }
+            connectAndHandleLargeScalars(inputNeuron, outputConns);
         }
     }
 }

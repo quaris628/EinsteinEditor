@@ -1,4 +1,5 @@
-﻿using Bibyte.neural;
+﻿using bibyte.functional.background;
+using Bibyte.neural;
 using Einstein.model;
 using Einstein.model.json;
 using System;
@@ -18,7 +19,7 @@ namespace Bibyte.functional.background.values
     /// </summary>
     public class InverseNum : Number
     {
-        private Neuron linear;
+        private Number val;
         private Neuron gauss;
         private Neuron mult;
 
@@ -27,35 +28,32 @@ namespace Bibyte.functional.background.values
             // could get more and more precise with more parallel nodes
             // (optional, could do later)
 
-            this.linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "Inverse");
-            this.gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "Inverse");
-            this.mult = null;
-            val.ConnectTo(new[] { linear });
-            SynapseFactory.CreateSynapse(linear, gauss, 100f);
+            this.val = val;
+            gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "Inverse");
+            val.ConnectTo(new[] { new ConnectToRequest(gauss, 100f) });
+            mult = null;
         }
 
-        protected internal override void ConnectTo(IEnumerable<Neuron> outputs)
+        protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {
-            if (containsNonMults(outputs) || mult != null)
+            if (containsNonMults(outputConns) || mult != null)
             {
                 if (mult == null)
                 {
-                    Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "Inverse");
-                    SynapseFactory.CreateSynapse(linear, mult, 100f);
+                    mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "Inverse");
+                    val.ConnectTo(new[]
+                    {
+                        new ConnectToRequest(mult, 100f),
+                    });
                     SynapseFactory.CreateSynapse(gauss, mult, 100f);
                 }
-                foreach (Neuron output in outputs)
-                {
-                    SynapseFactory.CreateSynapse(mult, output, 1f);
-                }
+                connectAndHandleLargeScalars(mult, outputConns);
             }
             else
             {
-                foreach (Neuron output in outputs)
-                {
-                    SynapseFactory.CreateSynapse(linear, output, 100f);
-                    SynapseFactory.CreateSynapse(gauss, output, 100f);
-                }
+                IEnumerable<ConnectToRequest> outputConnsX100 = multiplyAllConnsBy(outputConns, 100f);
+                connectAndHandleLargeScalars(gauss, outputConnsX100);
+                val.ConnectTo(outputConnsX100);
             }
         }
     }

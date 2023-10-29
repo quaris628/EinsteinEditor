@@ -141,6 +141,8 @@ namespace BibyteTests.numbers
             Assert.AreEqual(4, brain.Synapses.Count);
         }
 
+        // TODO add something to itself
+
         // also test connection to mult then nonmult or vice versa?
         // i.e. not in the same ConnectTo call
     }
