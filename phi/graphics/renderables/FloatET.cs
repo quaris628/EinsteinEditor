@@ -38,8 +38,8 @@ namespace phi.graphics.renderables
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          float floatValue;
-         if (!float.TryParse(message, NumberStyles.Any, CultureInfo.InvariantCulture,
-            out floatValue)) { return false; }
+         if (!float.TryParse(message, NumberStyles.Float,
+            CultureInfo.GetCultureInfo("en-US"), out floatValue)) { return false; }
          if (floatValue < minValue) { return false; }
          if (floatValue > maxValue) { return false; }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -90,7 +91,8 @@ namespace Einstein.model.json
 
         public override string GetSave()
         {
-            return "{\n" + string.Format(JSON_FORMAT,
+            return "{\n" + string.Format(CultureInfo.GetCultureInfo("en-US"),
+                JSON_FORMAT,
                 (int)Type,
                 Type.ToString(),
                 Index,

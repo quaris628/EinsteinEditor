@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,7 +71,8 @@ namespace Einstein.model.json
         // Saves this synapse but with the specified neuron index values
         public string GetSave(int fromIndex, int toIndex)
         {
-            return "{\n" + string.Format(JSON_FORMAT,
+            return "{\n" + string.Format(CultureInfo.GetCultureInfo("en-US"),
+                JSON_FORMAT,
                 inov,
                 fromIndex,
                 toIndex,
@@ -81,7 +83,8 @@ namespace Einstein.model.json
 
         public override string GetSave()
         {
-            return "{\n" + string.Format(JSON_FORMAT,
+            return "{\n" + string.Format(CultureInfo.GetCultureInfo("en-US"), 
+                JSON_FORMAT,
                 inov,
                 From.Index,
                 To.Index,

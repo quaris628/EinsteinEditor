@@ -5,6 +5,7 @@ using phi.graphics.renderables;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -104,7 +105,8 @@ namespace Einstein.ui.editarea
         private void UpdateStrengthIfValid()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            if (float.TryParse(text.GetMessage(), out float strength))
+            if (float.TryParse(text.GetMessage(), NumberStyles.Float,
+                CultureInfo.GetCultureInfo("en-US"), out float strength))
             {
                 Synapse.Strength = strength;
             }

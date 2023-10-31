@@ -48,7 +48,7 @@ namespace Einstein.model.json
         public float getNextValueFloat(string tag)
         {
             string value = getNextValue(tag);
-            if (!float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out float floatValue))
+            if (!float.TryParse(value, NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out float floatValue))
             {
                 throw new InvalidValueFormatException(
                     "Value is not a float: '" + value + "'");
@@ -58,7 +58,7 @@ namespace Einstein.model.json
         public double getNextValueDouble(string tag)
         {
             string value = getNextValue(tag);
-            if (!double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue))
+            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out double doubleValue))
             {
                 throw new InvalidValueFormatException(
                     "Value is not a double: '" + value + "'");
