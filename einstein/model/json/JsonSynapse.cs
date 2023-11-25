@@ -76,7 +76,7 @@ namespace Einstein.model.json
                 inov,
                 fromIndex,
                 toIndex,
-                Strength,
+                Strength.ToString(CultureInfo.GetCultureInfo("en-US")).Replace(",", "."),
                 En ? "true" : "false")
                 + "      }";
         }
@@ -88,7 +88,7 @@ namespace Einstein.model.json
                 inov,
                 From.Index,
                 To.Index,
-                Strength,
+                Strength.ToString(CultureInfo.GetCultureInfo("en-US")).Replace(",", "."),
                 En ? "true" : "false")
                 + "      }";
         } 
