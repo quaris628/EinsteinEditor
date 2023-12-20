@@ -49,6 +49,7 @@
     <Compile Include="model\BaseBrain.cs" />
     <Compile Include="model\BaseNeuron.cs" />
     <Compile Include="model\BaseSynapse.cs" />
+    <Compile Include="model\json\CustomNumberParser.cs" />
     <Compile Include="model\json\JsonBrain.cs" />
     <Compile Include="model\json\JsonNeuron.cs" />
     <Compile Include="model\json\JsonParser.cs" />
