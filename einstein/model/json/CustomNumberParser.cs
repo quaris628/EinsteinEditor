@@ -12,19 +12,48 @@ namespace Einstein.model.json
         
         public static int StringToInt(string str)
         {
-            int output = 0;
-            foreach (char c in str.Trim())
+            if (str.Length == 0)
             {
-                if (isDigit(c, out int d))
+                throw new ArgumentException("Empty string cannot be parsed to an integer");
+            }
+            int output = 0;
+            bool isNegative = str[0] == '-';
+            if (isNegative)
+            {
+                if (str.Length == 1)
                 {
-                    checked
+                    throw new ArgumentException("Encountered non-digit character when parsing integer: '-'");
+                }
+                for (int i = 1 ; i < str.Length; i++)
+                {
+                    if (isDigit(str[i], out int d))
                     {
-                        output = output * 10 + d;
+                        checked
+                        {
+                            output = output * 10 - d;
+                        }
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Encountered non-digit character when parsing integer: '" + str[i] + "'");
                     }
                 }
-                else
+            }
+            else
+            {
+                foreach (char c in str)
                 {
-                    throw new ArgumentException("Encountered non-digit character when parsing integer: '" + c + "'");
+                    if (isDigit(c, out int d))
+                    {
+                        checked
+                        {
+                            output = output * 10 + d;
+                        }
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Encountered non-digit character when parsing integer: '" + c + "'");
+                    }
                 }
             }
             return output;
@@ -32,7 +61,14 @@ namespace Einstein.model.json
 
         public static string IntToString(int value)
         {
-            bool wasNegative = value > 0;
+            switch (value)
+            {
+                case 0:
+                    return "0";
+                case -2147483648:
+                    return "-2147483648";
+            }
+            bool wasNegative = value < 0;
             value = Math.Abs(value);
             char[] output = new char[33];
             int lastCharIndex = 33;
