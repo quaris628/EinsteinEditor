@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phi", "phi\phi.csproj", "{16A36FCD-07E6-4CAE-B5CB-DB677E33F3FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Einstein", "einstein\Einstein.csproj", "{3559262F-A329-4518-A7FC-30AA424D7C66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EinsteinUnitTests", "EinsteinUnitTests\EinsteinUnitTests.csproj", "{D7057195-0940-49F6-ACF6-2C46AE4A5335}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3559262F-A329-4518-A7FC-30AA424D7C66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3559262F-A329-4518-A7FC-30AA424D7C66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3559262F-A329-4518-A7FC-30AA424D7C66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7057195-0940-49F6-ACF6-2C46AE4A5335}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7057195-0940-49F6-ACF6-2C46AE4A5335}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7057195-0940-49F6-ACF6-2C46AE4A5335}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7057195-0940-49F6-ACF6-2C46AE4A5335}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
