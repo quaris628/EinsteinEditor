@@ -94,8 +94,89 @@ namespace Einstein.model.json
 
         public static float StringToFloat(string str)
         {
-            // TODO
-            return 0f;
+            if (str.Length == 0)
+            {
+                throw new ArgumentException("Empty string cannot be parsed to a float");
+            }
+            float output = 0f;
+            bool isNegative = str[0] == '-';
+            if (isNegative)
+            {
+                if (str.Length == 1)
+                {
+                    throw new ArgumentException("Encountered non-digit character when parsing float: '-'");
+                }
+                int i = 1;
+                for (; i < str.Length; i++)
+                {
+                    if (isDigit(str[i], out int d))
+                    {
+                        output = output * 10 - d;
+                    }
+                    else if (str[i] == '.')
+                    {
+                        i++;
+                        break;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Encountered non-digit character when parsing float: '" + str[i] + "'");
+                    }
+                }
+                float decBase = 0.1f;
+                int maxCharsToParse = Math.Min(i + 40, str.Length);
+                for (; i < maxCharsToParse; i++)
+                {
+                    if (isDigit(str[i], out int d))
+                    {
+                        output -= d * decBase;
+                        decBase *= 0.1f;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Encountered non-digit character when parsing float: '" + str[i] + "'");
+                    }
+                }
+            }
+            else
+            {
+                int i = 0;
+                for (; i < str.Length; i++)
+                {
+                    if (isDigit(str[i], out int d))
+                    {
+                        output = output * 10 + d;
+                    }
+                    else if (str[i] == '.')
+                    {
+                        i++;
+                        break;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Encountered non-digit character when parsing float: '" + str[i] + "'");
+                    }
+                }
+                float decBase = 0.1f;
+                int maxCharsToParse = Math.Min(i + 40, str.Length);
+                for (; i < maxCharsToParse; i++)
+                {
+                    if (isDigit(str[i], out int d))
+                    {
+                        output += d * decBase;
+                        decBase *= 0.1f;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Encountered non-digit character when parsing float: '" + str[i] + "'");
+                    }
+                }
+            }
+            if (float.IsNaN(output) || float.IsInfinity(output))
+            {
+                throw new ArithmeticException("Parsed float evaulated to " + output);
+            }
+            return output;
         }
 
         // ----- single-character stuff -----

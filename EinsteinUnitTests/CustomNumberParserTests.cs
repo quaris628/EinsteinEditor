@@ -57,18 +57,18 @@ namespace EinsteinUnitTests
         [TestMethod]
         public void IntToStringNormal()
         {
-            foreach ((string str, int num) test in NORMAL_INT_TESTS)
+            foreach ((string str, int num) in NORMAL_INT_TESTS)
             {
-                Assert.AreEqual(test.str, CustomNumberParser.IntToString(test.num));
+                Assert.AreEqual(str, CustomNumberParser.IntToString(num));
             }
         }
 
         [TestMethod]
         public void StringToIntNormal()
         {
-            foreach ((string str, int num) test in NORMAL_INT_TESTS)
+            foreach ((string str, int num) in NORMAL_INT_TESTS)
             {
-                Assert.AreEqual(test.num, CustomNumberParser.StringToInt(test.str));
+                Assert.AreEqual(num, CustomNumberParser.StringToInt(str));
             }
         }
 
@@ -126,31 +126,31 @@ namespace EinsteinUnitTests
 
         #region Floats
 
-        private static readonly (string str, float num)[] NORMAL_FLOAT_TESTS = new (string str, float num)[]
+        private static readonly (string str, float num, float epsilon)[] NORMAL_FLOAT_TESTS
+            = new (string str, float num, float epsilon)[]
         {
-            ("0", 0),
-            ("1", 1),
-            ("-1", -1),
-            ("9", 9),
-            ("10", 10),
-            ("11", 11),
-            ("99", 99),
-            ("100", 100),
-            ("101", 101),
-            ("-99", -99),
-            ("-100", -100),
-            ("-101", -101),
-            ("1378314", 1378314),
-            ("-4968451", -4968451),
-            ("2147483600", 2147483600),
-            ("-2147483600", -2147483600),
-            ("2147.483600", 2147.483600f),
-            ("-2147.483600", -2147.483600f),
-            ("340282356779000000000000000000000000000", 340282356779000000000000000000000000000f),
-            ("-340282356779000000000000000000000000000", -340282356779000000000000000000000000000f),
-            //("340282347000000000000000000000000000000", 340282356779733660000000000000000000000f),
-            ("0.3", 0.3f),
-            ("-3.1", -3.1f),
+            ("0", 0, float.Epsilon),
+            ("1", 1, float.Epsilon),
+            ("-1", -1, float.Epsilon),
+            ("9", 9, float.Epsilon),
+            ("10", 10, float.Epsilon),
+            ("11", 11, float.Epsilon),
+            ("99", 99, float.Epsilon),
+            ("100", 100, float.Epsilon),
+            ("101", 101, float.Epsilon),
+            ("-99", -99, float.Epsilon),
+            ("-100", -100, float.Epsilon),
+            ("-101", -101, float.Epsilon),
+            ("1378314", 1378314, float.Epsilon),
+            ("-4968451", -4968451, float.Epsilon),
+            ("2147483600", 2147483600, 1000f),
+            ("-2147483600", -2147483600, 1000f),
+            ("2147.483600", 2147.483600f, 0.001f),
+            ("-2147.483600", -2147.483600f, 0.001f),
+            ("340282356779000000000000000000000000000", 340282356779000000000000000000000000000f, 10000000000000000000000000000f),
+            ("-340282356779000000000000000000000000000", -340282356779000000000000000000000000000f, 10000000000000000000000000000f),
+            ("0.3", 0.3f, float.Epsilon),
+            ("-3.1", -3.1f, float.Epsilon),
         };
 
         private static readonly string[] INVALID_STRING_NOT_A_FLOAT_TESTS = new string[]
@@ -167,25 +167,25 @@ namespace EinsteinUnitTests
 
         private static readonly string[] INVALID_ARITHMETIC_OVERFLOW_FLOAT_TESTS = new string[]
         {
-            "340282356780000000000000000000000000000",
-            "-340282356780000000000000000000000000000",
+            "3402823567800000000000000000000000000000",
+            "-3402823567800000000000000000000000000000",
         };
 
         [TestMethod]
         public void FloatToStringNormal()
         {
-            foreach ((string str, float num) test in NORMAL_FLOAT_TESTS)
+            foreach ((string str, float num, float _) in NORMAL_FLOAT_TESTS)
             {
-                Assert.AreEqual(test.str, CustomNumberParser.FloatToString(test.num));
+                Assert.AreEqual(str, CustomNumberParser.FloatToString(num));
             }
         }
 
         [TestMethod]
         public void StringToFloatNormal()
         {
-            foreach ((string str, int num) test in NORMAL_INT_TESTS)
+            foreach ((string str, float num, float epsilon) in NORMAL_FLOAT_TESTS)
             {
-                Assert.AreEqual(test.num, CustomNumberParser.StringToFloat(test.str));
+                Assert.AreEqual(num, CustomNumberParser.StringToFloat(str), epsilon);
             }
         }
 
