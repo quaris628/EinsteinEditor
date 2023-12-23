@@ -127,11 +127,12 @@ namespace EinsteinUnitTests
         [TestMethod]
         public void PerformanceOfIntToString_10()
         {
-            Console.WriteLine("Performance testing FloatToString");
+            Console.WriteLine("Performance testing IntToString");
             float avgTickCount = PerformanceTest(() =>
             {
                 foreach ((string _, int num) in NORMAL_INT_TESTS)
                 {
+                    //num.ToString(); // ~15 ticks
                     CustomNumberParser.IntToString(num);
                 }
             });
@@ -141,11 +142,12 @@ namespace EinsteinUnitTests
         [TestMethod]
         public void PerformanceOfStringToInt_5()
         {
-            Console.WriteLine("Performance testing StringToFloat");
+            Console.WriteLine("Performance testing StringToInt");
             float avgTickCount = PerformanceTest(() =>
             {
                 foreach ((string str, int _) in NORMAL_INT_TESTS)
                 {
+                    //int.Parse(str); // ~20 ticks
                     CustomNumberParser.StringToInt(str);
                 }
             });
@@ -354,6 +356,7 @@ namespace EinsteinUnitTests
             {
                 foreach ((string _, float num, float _) in NORMAL_FLOAT_TESTS)
                 {
+                    //num.ToString(); // ~ 220 ticks
                     CustomNumberParser.FloatToString(num);
              }
             });
@@ -368,6 +371,7 @@ namespace EinsteinUnitTests
             {
                 foreach ((string str, float _, float _) in NORMAL_FLOAT_TESTS)
                 {
+                    //float.Parse(str); // ~ 80 ticks
                     CustomNumberParser.StringToFloat(str);
                 }
             });
@@ -401,7 +405,7 @@ namespace EinsteinUnitTests
             // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
             Stopwatch stopwatch = new Stopwatch();
-            long seed = Environment.TickCount;  // Prevents the JIT Compiler from optimizing Fkt calls away
+            long _ = Environment.TickCount;  // Prevents the JIT Compiler from optimizing Fkt calls away
 
             Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(2); // Uses the second Core or Processor for the Test
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High; // Prevents "Normal" processes from interrupting Threads

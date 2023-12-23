@@ -117,18 +117,15 @@ namespace Einstein.model.json
             int nonzeroDigitAdded = 0;
 
             // invisible leading zeroes
-            int digit = 0;
             int powerOf10 = 38;
             for (; powerOf10 > 0 && nonzeroDigitAdded == 0; powerOf10--)
             {
-                popDigitFromFloat(value, powerOf10, out digit, ref nonzeroDigitAdded);
+                popDigitFromFloat(value, powerOf10, out _, ref nonzeroDigitAdded);
             }
 
             // digits before decimal point
-            if (digit > 0)
-            {
-                powerOf10++;
-            }
+            int digit;
+            powerOf10 += nonzeroDigitAdded;
             for (; powerOf10 >= 0; powerOf10--)
             {
                 value = popDigitFromFloat(value, powerOf10, out digit, ref nonzeroDigitAdded);
@@ -263,12 +260,8 @@ namespace Einstein.model.json
 
         // ----- single-character stuff -----
 
-        private const byte BYTE0 = (byte)'0';
+        private const byte CHAR_0_AS_BYTE = (byte)'0';
 
-        private static bool isDigit(char c)
-        {
-            return isDigit(c, out _);
-        }
         private static bool isDigit(char c, out int d)
         {
             d = toDigit(c);
@@ -277,17 +270,12 @@ namespace Einstein.model.json
 
         private static int toDigit(char c)
         {
-            return ((byte)c) - BYTE0;
+            return ((byte)c) - CHAR_0_AS_BYTE;
         }
 
         private static char toChar(int digit)
         {
-            return (char)(BYTE0 + digit);
-        }
-
-        private static bool isDecimalPoint(char c)
-        {
-            return c == '.';
+            return (char)(CHAR_0_AS_BYTE + digit);
         }
 
         // ----- float values for powers of 10 -----
