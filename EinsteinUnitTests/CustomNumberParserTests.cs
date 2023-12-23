@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 
 namespace EinsteinUnitTests
 {
@@ -122,6 +124,34 @@ namespace EinsteinUnitTests
             }
         }
 
+        [TestMethod]
+        public void PerformanceOfIntToString_10()
+        {
+            Console.WriteLine("Performance testing FloatToString");
+            float avgTickCount = PerformanceTest(() =>
+            {
+                foreach ((string _, int num) in NORMAL_INT_TESTS)
+                {
+                    CustomNumberParser.IntToString(num);
+                }
+            });
+            Assert.IsTrue(avgTickCount <= 10);
+        }
+
+        [TestMethod]
+        public void PerformanceOfStringToInt_5()
+        {
+            Console.WriteLine("Performance testing StringToFloat");
+            float avgTickCount = PerformanceTest(() =>
+            {
+                foreach ((string str, int _) in NORMAL_INT_TESTS)
+                {
+                    CustomNumberParser.StringToInt(str);
+                }
+            });
+            Assert.IsTrue(avgTickCount <= 5);
+        }
+
         #endregion Integers
 
         #region Floats
@@ -211,6 +241,47 @@ namespace EinsteinUnitTests
         }
 
         [TestMethod]
+        public void FloatToStringInvalid_NotANumber_ArgumentException()
+        {
+            bool exceptionThrown = false;
+            try
+            {
+                CustomNumberParser.FloatToString(float.NaN);
+            }
+            catch (ArgumentException)
+            {
+                exceptionThrown = true;
+            }
+            Assert.IsTrue(exceptionThrown);
+        }
+
+        [TestMethod]
+        public void FloatToStringInvalid_Infinity_ArgumentException()
+        {
+            bool exceptionThrown = false;
+            try
+            {
+                CustomNumberParser.FloatToString(float.PositiveInfinity);
+            }
+            catch (ArgumentException)
+            {
+                exceptionThrown = true;
+            }
+            Assert.IsTrue(exceptionThrown);
+            
+            exceptionThrown = false;
+            try
+            {
+                CustomNumberParser.FloatToString(float.NegativeInfinity);
+            }
+            catch (ArgumentException)
+            {
+                exceptionThrown = true;
+            }
+            Assert.IsTrue(exceptionThrown);
+        }
+
+        [TestMethod]
         public void StringToFloatNormal()
         {
             foreach ((string str, float num, float epsilon) in NORMAL_FLOAT_TESTS)
@@ -275,6 +346,99 @@ namespace EinsteinUnitTests
             }
         }
 
+        [TestMethod]
+        public void PerformanceOfFloatToString_200()
+        {
+            Console.WriteLine("Performance testing FloatToString");
+            float avgTickCount = PerformanceTest(() =>
+            {
+                foreach ((string _, float num, float _) in NORMAL_FLOAT_TESTS)
+                {
+                    CustomNumberParser.FloatToString(num);
+             }
+            });
+            Assert.IsTrue(avgTickCount <= 200);
+        }
+
+        [TestMethod]
+        public void PerformanceOfStringToFloat_20()
+        {
+            Console.WriteLine("Performance testing StringToFloat");
+            float avgTickCount = PerformanceTest(() =>
+            {
+                foreach ((string str, float _, float _) in NORMAL_FLOAT_TESTS)
+                {
+                    CustomNumberParser.StringToFloat(str);
+                }
+            });
+            Assert.IsTrue(avgTickCount <= 20);
+        }
+
         #endregion Floats
+
+        #region Performance
+
+        public float PerformanceTest(Action functionUnderTest)
+        {
+            // This is copied (with modifications) from https://www.codeproject.com/Articles/61964/Performance-Tests-Precise-Run-Time-Measurements-wi
+            // which is copyrighted under a BSD license. https://opensource.org/license/bsd-2-clause/
+            // Since this is only being used for unit testing and is not part of the software released in Einstein,
+            // I belive I only need to include the BSD license here in the source code and not in Einstein releases.
+
+            // Copyright 2010 Thomas Maierhofer
+            // Redistribution and use in source and binary forms, with or without modification, are permitted
+            // provided that the following conditions are met:
+            // 1. Redistributions of source code must retain the above copyright notice, this list of conditions
+            //    and the following disclaimer.
+            // 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
+            //    and the following disclaimer in the documentation and / or other materials provided with the distribution.
+            // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+            // INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+            // DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+            // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+            // SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+            // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+            // USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+            Stopwatch stopwatch = new Stopwatch();
+            long seed = Environment.TickCount;  // Prevents the JIT Compiler from optimizing Fkt calls away
+
+            Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(2); // Uses the second Core or Processor for the Test
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High; // Prevents "Normal" processes from interrupting Threads
+            Thread.CurrentThread.Priority = ThreadPriority.Highest; // Prevents "Normal" Threads from interrupting this thread
+
+            stopwatch.Reset();
+            stopwatch.Start();
+            while (stopwatch.ElapsedMilliseconds < 1200)  // A Warmup of 1000-1500 mS stabilizes the CPU cache and pipeline.
+            {
+                functionUnderTest.Invoke(); // Warmup
+            }
+            stopwatch.Stop();
+
+            long elapsedTicksSum = 0;
+            long elapsedTicksMin = long.MaxValue;
+            long elapsedTicksMax = long.MinValue;
+            for (int repeat = 0; repeat < 20; ++repeat)
+            {
+                stopwatch.Reset();
+                stopwatch.Start();
+                functionUnderTest.Invoke();
+                stopwatch.Stop();
+
+                Console.WriteLine("Ticks: " + stopwatch.ElapsedTicks);
+                elapsedTicksSum += stopwatch.ElapsedTicks;
+                elapsedTicksMin = Math.Min(elapsedTicksMin, stopwatch.ElapsedTicks);
+                elapsedTicksMax = Math.Max(elapsedTicksMax, stopwatch.ElapsedTicks);
+            }
+
+            float avgResult = (elapsedTicksSum - elapsedTicksMax - elapsedTicksMin) / 18;
+            Console.WriteLine("\nMax ticks: " + elapsedTicksMax);
+            Console.WriteLine("Min ticks: " + elapsedTicksMin);
+            Console.WriteLine("Avg ticks of all other runs: " + avgResult);
+
+            return avgResult;
+        }
+
+        #endregion Performance
     }
 }

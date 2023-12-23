@@ -97,6 +97,11 @@ namespace Einstein.model.json
             {
                 case 0f: // also catches negative zero
                     return "0";
+                case float.NaN:
+                    throw new ArgumentException("Cannot parse NaN to string");
+                case float.PositiveInfinity:
+                case float.NegativeInfinity:
+                    throw new ArgumentException("Cannot parse Infinity to string");
             }
             StringBuilder s = new StringBuilder();
 
