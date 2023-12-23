@@ -173,18 +173,23 @@ namespace Einstein.model.json
 
         public static float StringToFloat(string str)
         {
+            switch (str)
+            {
+                case "":
+                    throw new ArgumentException("Empty string cannot be parsed to a float");
+                case ".":
+                case "-":
+                    throw new ArgumentException("Encountered non-digit character when parsing float: '" + str + "'");
+            }
+
             if (str.Length == 0)
             {
-                throw new ArgumentException("Empty string cannot be parsed to a float");
+                
             }
             float output = 0f;
             bool isNegative = str[0] == '-';
             if (isNegative)
             {
-                if (str.Length == 1)
-                {
-                    throw new ArgumentException("Encountered non-digit character when parsing float: '-'");
-                }
                 int i = 1;
                 for (; i < str.Length; i++)
                 {
