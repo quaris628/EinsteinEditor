@@ -68,28 +68,105 @@ namespace Einstein.model.json
                 case -2147483648:
                     return "-2147483648";
             }
-            bool wasNegative = value < 0;
-            value = Math.Abs(value);
-            char[] output = new char[33];
-            int lastCharIndex = 33;
+            bool isNegative = value < 0;
+            if (isNegative)
+            {
+                value = -value;
+            }
+            const int outputArrMaxSize = 12;
+            char[] output = new char[outputArrMaxSize];
+            int lastCharIndex = outputArrMaxSize;
             while (value > 0)
             {
                 int valIntDiv10 = value / 10;
                 int digit = value - valIntDiv10 * 10;
                 value = valIntDiv10;
+
                 output[--lastCharIndex] = toChar(digit);
             }
-            if (wasNegative)
+            if (isNegative)
             {
                 output[--lastCharIndex] = '-';
             }
-            return new string(output, lastCharIndex, 33 - lastCharIndex);
+            return new string(output, lastCharIndex, outputArrMaxSize - lastCharIndex);
         }
 
         public static string FloatToString(float value)
         {
-            // TODO
-            return "";
+            switch (value)
+            {
+                case 0f: // also catches negative zero
+                    return "0";
+            }
+            StringBuilder s = new StringBuilder();
+
+            bool isNegative = value < 0;
+            if (isNegative)
+            {
+                value = -value;
+                s.Append('-');
+            }
+
+            int sigFigs = 0;
+            // pseudo boolean, so I can rewrite 'if (nonzeroDigitAdded) { sigFigs++ }' as 'sigFigs += nonzeroDigitAdded'
+            int nonzeroDigitAdded = 0;
+
+            // invisible leading zeroes
+            int digit = 0;
+            int powerOf10 = 38;
+            for (; powerOf10 > 0 && nonzeroDigitAdded == 0; powerOf10--)
+            {
+                popDigitFromFloat(value, powerOf10, out digit, ref nonzeroDigitAdded);
+            }
+
+            // digits before decimal point
+            if (digit > 0)
+            {
+                powerOf10++;
+            }
+            for (; powerOf10 >= 0; powerOf10--)
+            {
+                value = popDigitFromFloat(value, powerOf10, out digit, ref nonzeroDigitAdded);
+                s.Append(toChar(digit));
+                sigFigs += nonzeroDigitAdded;
+            }
+
+            if (value > float.Epsilon)
+            {
+                // decimal point (if one is needed)
+                s.Append('.');
+
+                // digits after decimal point (if any)
+                char[] decimalDigits = new char[38];
+                int j = 0;
+                for (; value > float.Epsilon && powerOf10 > -38 && sigFigs < 8; powerOf10--)
+                {
+                    value = popDigitFromFloat(value, powerOf10, out digit, ref nonzeroDigitAdded);
+                    decimalDigits[j++] = toChar(digit);
+                    sigFigs += nonzeroDigitAdded;
+                }
+
+                // trim any trailing zeroes
+                for (; j > 0 && decimalDigits[j - 1] == '0'; j--) { }
+
+                s.Append(decimalDigits, 0, j);
+            }
+            return s.ToString();
+        }
+
+        private static float popDigitFromFloat(float value, int powerOf10, out int digit, ref int isNonZero)
+        {
+            digit = (int)(value * DIGIT_POWERS_OF_10[38 + powerOf10]);
+            if (0 < digit && digit < 10)
+            {
+                isNonZero = 1;
+                return value - digit * DIGIT_POWERS_OF_10[38 - powerOf10];
+            }
+            else
+            {
+                digit = 0;
+                return value;
+            }
         }
 
         public static float StringToFloat(string str)
@@ -208,5 +285,87 @@ namespace Einstein.model.json
             return c == '.';
         }
 
+        // ----- float values for powers of 10 -----
+
+        private static readonly float[] DIGIT_POWERS_OF_10 = new float[]
+        {
+                1e+38f,
+                1e+37f,
+                1e+36f,
+                1e+35f,
+                1e+34f,
+                1e+33f,
+                1e+32f,
+                1e+31f,
+                1e+30f,
+                1e+29f,
+                1e+28f,
+                1e+27f,
+                1e+26f,
+                1e+25f,
+                1e+24f,
+                1e+23f,
+                1e+22f,
+                1e+21f,
+                1e+20f,
+                1e+19f,
+                1e+18f,
+                1e+17f,
+                1e+16f,
+                1e+15f,
+                1e+14f,
+                1e+13f,
+                1e+12f,
+                1e+11f,
+                1e+10f,
+                1e+9f,
+                1e+8f,
+                1e+7f,
+                1e+6f,
+                1e+5f,
+                1e+4f,
+                1e+3f,
+                1e+2f,
+                1e+1f,
+                1e+0f,
+                1e-1f,
+                1e-2f,
+                1e-3f,
+                1e-4f,
+                1e-5f,
+                1e-6f,
+                1e-7f,
+                1e-8f,
+                1e-9f,
+                1e-10f,
+                1e-11f,
+                1e-12f,
+                1e-13f,
+                1e-14f,
+                1e-15f,
+                1e-16f,
+                1e-17f,
+                1e-18f,
+                1e-19f,
+                1e-20f,
+                1e-21f,
+                1e-22f,
+                1e-23f,
+                1e-24f,
+                1e-25f,
+                1e-26f,
+                1e-27f,
+                1e-28f,
+                1e-29f,
+                1e-30f,
+                1e-31f,
+                1e-32f,
+                1e-33f,
+                1e-34f,
+                1e-35f,
+                1e-36f,
+                1e-37f,
+                1e-38f,
+        };
     }
 }
