@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibraryFunctionReplacements;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace Einstein.model.json
         // }
 
         private const string JSON_FORMAT =
+            "{\n" +
             "        \"Type\": {0},\n" +
             "        \"TypeName\": \"{1}\",\n" +
             "        \"Index\": {2},\n" +
@@ -30,7 +32,8 @@ namespace Einstein.model.json
             "        \"Desc\": \"{4}\",\n" +
             "        \"Value\": {5},\n" +
             "        \"LastInput\": {6},\n" +
-            "        \"LastOutput\": {7}\n";
+            "        \"LastOutput\": {7}\n" +
+            "      }";
 
         public int Inov { protected set; get; }
 
@@ -91,17 +94,15 @@ namespace Einstein.model.json
 
         public override string GetSave()
         {
-            return "{\n" + string.Format(CultureInfo.GetCultureInfo("en-US"),
-                JSON_FORMAT,
-                (int)Type,
+            return string.Format(CultureInfo.GetCultureInfo("en-US"), JSON_FORMAT,
+                CustomNumberParser.IntToString((int)Type),
                 Type.ToString(),
-                Index,
-                Inov,
+                CustomNumberParser.IntToString(Index),
+                CustomNumberParser.IntToString(Inov),
                 Description,
-                value,
-                lastInput,
-                lastOutput)
-                + "      }";
+                CustomNumberParser.FloatToString(value),
+                CustomNumberParser.FloatToString(lastInput),
+                CustomNumberParser.FloatToString(lastOutput));
         }
     }
 }

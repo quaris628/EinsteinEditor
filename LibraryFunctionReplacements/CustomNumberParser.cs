@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Einstein.model.json
+namespace LibraryFunctionReplacements
 {
     public class CustomNumberParser
     {
         private CustomNumberParser() { }
-        
+
         public static int StringToInt(string str)
         {
             if (str.Length == 0)
@@ -93,6 +93,11 @@ namespace Einstein.model.json
 
         public static string FloatToString(float value)
         {
+            return FloatToString(value, 8, int.MaxValue);
+        }
+
+        public static string FloatToString(float value, int maxSigFigs, int maxDecimals)
+        {
             switch (value)
             {
                 case 0f: // also catches negative zero
@@ -128,7 +133,7 @@ namespace Einstein.model.json
             powerOf10 += nonzeroDigitAdded;
             for (; powerOf10 >= 0; powerOf10--)
             {
-                value = popDigitFromFloat(value, powerOf10, out digit, ref nonzeroDigitAdded);
+                value -= popDigitFromFloat(value, powerOf10, out digit, ref nonzeroDigitAdded);
                 s.Append(toChar(digit));
                 sigFigs += nonzeroDigitAdded;
             }
@@ -141,11 +146,16 @@ namespace Einstein.model.json
                 // digits after decimal point (if any)
                 char[] decimalDigits = new char[38];
                 int j = 0;
-                for (; value > float.Epsilon && powerOf10 > -38 && sigFigs < 8; powerOf10--)
+                for (; value > float.Epsilon && powerOf10 > -38 && sigFigs < maxSigFigs && j < maxDecimals; powerOf10--)
                 {
-                    value = popDigitFromFloat(value, powerOf10, out digit, ref nonzeroDigitAdded);
+                    value -= popDigitFromFloat(value, powerOf10, out digit, ref nonzeroDigitAdded);
                     decimalDigits[j++] = toChar(digit);
                     sigFigs += nonzeroDigitAdded;
+                }
+                if (powerOf10 > -38 && value >= 5 * DIGIT_POWERS_OF_10[38 - powerOf10])
+                {
+                    // round up the last digit
+                    roundUpDigit(decimalDigits, j - 1);
                 }
 
                 // trim any trailing zeroes
@@ -162,12 +172,32 @@ namespace Einstein.model.json
             if (0 < digit && digit < 10)
             {
                 isNonZero = 1;
-                return value - digit * DIGIT_POWERS_OF_10[38 - powerOf10];
+                return digit * DIGIT_POWERS_OF_10[38 - powerOf10];
             }
             else
             {
                 digit = 0;
-                return value;
+                return 0;
+            }
+        }
+
+        private static void roundUpDigit(char[] decimalDigits, int digitIndex)
+        {
+            char digit = decimalDigits[digitIndex];
+            switch (digit)
+            {
+                // skip over the decimal character
+                case '.':
+                    roundUpDigit(decimalDigits, digitIndex - 1);
+                    break;
+                // if the last digit was a 9, round up the digit before that, etc...
+                case '9':
+                    decimalDigits[digitIndex] = '0';
+                    roundUpDigit(decimalDigits, digitIndex - 1);
+                    break;
+                default:
+                    decimalDigits[digitIndex] = (char)(digit + 1);
+                    break;
             }
         }
 

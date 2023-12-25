@@ -1,5 +1,6 @@
 ﻿using Einstein.config;
 using Einstein.model;
+using LibraryFunctionReplacements;
 using phi.graphics.drawables;
 using phi.graphics.renderables;
 using System;
@@ -14,7 +15,6 @@ namespace Einstein.ui.editarea
 {
     public class SynapseStrengthET : FloatET
     {
-        public const int MAX_DECIMALS = 2;
         public static readonly Color TEXT_COLOR = EinsteinConfig.COLOR_MODE.Text;
 
         public BaseSynapse Synapse { get; protected set; }
@@ -25,7 +25,7 @@ namespace Einstein.ui.editarea
                   .WithEditingDisabled()
                   .WithMinValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MIN)
                   .WithMaxValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MAX)
-                  .WithMaxDecimalPlaces(MAX_DECIMALS))
+                  .WithMaxDecimalPlaces(BaseSynapse.STRENGTH_MAX_DECIMALS))
         {
             Synapse = synapse;
             justEnabledEditing = false;
@@ -34,10 +34,10 @@ namespace Einstein.ui.editarea
         public override void Initialize()
         {
             base.Initialize();
-            SetValue(Synapse.Strength);
+            SetValue(Synapse.getStrengthAsStringForUI());
         }
 
-        public void SetValue(float strength)
+        public void SetValue(string strength)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             // easy to do this way b/c validation is all taken care of underneath
@@ -46,8 +46,7 @@ namespace Einstein.ui.editarea
             bool wasEnabled = IsEditingEnabled;
             if (!wasEnabled) { EnableEditing(); }
             Clear();
-            string strStr = Math.Round(strength, 2).ToString(); // strength string
-            foreach (char c in strStr)
+            foreach (char c in strength)
             {
                 TypeChar(c);
             }
@@ -105,10 +104,17 @@ namespace Einstein.ui.editarea
         private void UpdateStrengthIfValid()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            if (float.TryParse(text.GetMessage(), NumberStyles.Float,
-                CultureInfo.GetCultureInfo("en-US"), out float strength))
+            try
             {
-                Synapse.Strength = strength;
+                Synapse.setStrengthAsStringForUI(text.GetMessage());
+            }
+            catch (ArgumentException)
+            {
+                // Strength can be left as its most recent valid value
+            }
+            catch (ArithmeticException)
+            {
+                // Strength can be left as its most recent valid value
             }
         }
     }

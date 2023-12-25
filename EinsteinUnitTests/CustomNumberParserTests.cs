@@ -1,11 +1,11 @@
-﻿using Einstein.model.json;
+﻿using LibraryFunctionReplacements;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-namespace EinsteinUnitTests
+namespace LibraryFunctionReplacementsUnitTests
 {
     [TestClass]
     public class CustomNumberParserTests
@@ -72,6 +72,7 @@ namespace EinsteinUnitTests
             = new (string str, float num, float epsilon)[]
         {
             ("0.3", 0.3f, float.Epsilon),
+            ("0.25", 0.25f, float.Epsilon),
             ("-3.2", -3.2f, float.Epsilon),
             ("0", 0, float.Epsilon),
             ("1", 1, float.Epsilon),

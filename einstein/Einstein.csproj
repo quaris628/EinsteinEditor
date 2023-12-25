@@ -49,7 +49,6 @@
     <Compile Include="model\BaseBrain.cs" />
     <Compile Include="model\BaseNeuron.cs" />
     <Compile Include="model\BaseSynapse.cs" />
-    <Compile Include="model\json\CustomNumberParser.cs" />
     <Compile Include="model\json\JsonBrain.cs" />
     <Compile Include="model\json\JsonNeuron.cs" />
     <Compile Include="model\json\JsonParser.cs" />
@@ -75,6 +74,10 @@
     <Compile Include="ui\menu\SaveMessageText.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LibraryFunctionReplacements\LibraryFunctionReplacements.csproj">
+      <Project>{d3ab7b57-e9cc-4f6b-a0ee-adc50d3ada0a}</Project>
+      <Name>LibraryFunctionReplacements</Name>
+    </ProjectReference>
     <ProjectReference Include="..\phi\phi.csproj">
       <Project>{16a36fcd-07e6-4cae-b5cb-db677e33f3fb}</Project>
       <Name>phi</Name>

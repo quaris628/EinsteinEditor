@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibraryFunctionReplacements;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -38,33 +39,45 @@ namespace Einstein.model.json
         public int getNextValueInt(string tag)
         {
             string value = getNextValue(tag);
-            if (!int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue))
+            try
+            {
+                return CustomNumberParser.StringToInt(value);
+            }
+            catch (ArgumentException e)
             {
                 throw new InvalidValueFormatException(
-                    "Value is not an integer: '" + value + "'");
+                    string.Format(CultureInfo.GetCultureInfo("en-US"),
+                    "Cannot parse '{0}' to an integer:\n\t{1}", value, e.Message));
             }
-            return intValue;
+            catch (ArithmeticException e)
+            {
+                throw new InvalidValueFormatException(
+                    string.Format(CultureInfo.GetCultureInfo("en-US"),
+                    "Cannot parse '{0}' to an integer:\n\t{1}", value, e.Message));
+            }
         }
+
         public float getNextValueFloat(string tag)
         {
             string value = getNextValue(tag);
-            if (!float.TryParse(value, NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out float floatValue))
+            try
+            {
+                return CustomNumberParser.StringToFloat(value);
+            }
+            catch (ArgumentException e)
             {
                 throw new InvalidValueFormatException(
-                    "Value is not a float: '" + value + "'");
+                    string.Format(CultureInfo.GetCultureInfo("en-US"),
+                    "Cannot parse '{0}' to a floating point decimal number:\n\t{1}", value, e.Message));
             }
-            return floatValue;
-        }
-        public double getNextValueDouble(string tag)
-        {
-            string value = getNextValue(tag);
-            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out double doubleValue))
+            catch (ArithmeticException e)
             {
                 throw new InvalidValueFormatException(
-                    "Value is not a double: '" + value + "'");
+                    string.Format(CultureInfo.GetCultureInfo("en-US"),
+                    "Cannot parse '{0}' to a floating point decimal number:\n\t{1}", value, e.Message));
             }
-            return doubleValue;
         }
+
         public bool getNextValueBool(string tag)
         {
             string value = getNextValue(tag);

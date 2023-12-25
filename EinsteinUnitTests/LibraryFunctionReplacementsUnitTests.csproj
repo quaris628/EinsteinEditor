@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\einstein\Einstein.csproj">
-      <Project>{3559262F-A329-4518-A7FC-30AA424D7C66}</Project>
-      <Name>Einstein</Name>
+    <ProjectReference Include="..\LibraryFunctionReplacements\LibraryFunctionReplacements.csproj">
+      <Project>{D3AB7B57-E9CC-4F6B-A0EE-ADC50D3ADA0A}</Project>
+      <Name>LibraryFunctionReplacements</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

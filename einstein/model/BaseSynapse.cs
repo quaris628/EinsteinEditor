@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Einstein.model.json;
+using LibraryFunctionReplacements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,8 @@ namespace Einstein.model
 {
     public class BaseSynapse
     {
+        public const int STRENGTH_MAX_DECIMALS = 4;
+
         private BaseNeuron _from;
         private BaseNeuron _to;
         private float _strength;
@@ -37,7 +41,7 @@ namespace Einstein.model
 
         public override string ToString()
         {
-            return From.ToString() + " --(x" + Math.Round(Strength, 2) + ")--> " + To.ToString();
+            return From.ToString() + " --(x" + getStrengthAsStringForUI() + ")--> " + To.ToString();
         }
 
         public virtual string GetSave() { throw new NotSupportedException(); }
@@ -64,6 +68,14 @@ namespace Einstein.model
                 Math.Min(value,
                 BibiteVersionConfig.SYNAPSE_STRENGTH_MAX));
             return value;
+        }
+        public string getStrengthAsStringForUI()
+        {
+            return CustomNumberParser.FloatToString(Strength, int.MaxValue, STRENGTH_MAX_DECIMALS);
+        }
+        public void setStrengthAsStringForUI(string strength)
+        {
+            Strength = CustomNumberParser.StringToFloat(strength);
         }
     }
 

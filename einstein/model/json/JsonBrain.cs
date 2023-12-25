@@ -34,6 +34,7 @@ namespace Einstein.model.json
         // }
 
         private const string JSON_FORMAT =
+            "{\n" +
             "    \"isReady\": {0},\n" +
             "    \"parent\": {1},\n" +
             "    \"Nodes\": [\n" +
@@ -41,7 +42,8 @@ namespace Einstein.model.json
             "    ],\n" +
             "    \"Synapses\": [\n" +
             "      {3}\n" +
-            "    ]\n";
+            "    ]\n" +
+            "  },\n";
 
         // unused for now, but they're in the json so keep track of them just in case
         private string isReady;
@@ -79,12 +81,12 @@ namespace Einstein.model.json
 
         public override string GetSave()
         {
-            return "{\n" + string.Format(CultureInfo.GetCultureInfo("en-US"),
+            return string.Format(CultureInfo.GetCultureInfo("en-US"),
                 JSON_FORMAT,
                 isReady,
                 parent,
                 neuronsToJson(),
-                synapsesToJson()) + "  },\n";
+                synapsesToJson());
         }
 
         // these ToJson functions could probably be refactored to be less duplicately
