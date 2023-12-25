@@ -93,7 +93,7 @@ namespace LibraryFunctionReplacements
 
         public static string FloatToString(float value)
         {
-            return FloatToString(value, 8, int.MaxValue);
+            return FloatToString(value, 6, int.MaxValue);
         }
 
         public static string FloatToString(float value, int maxSigFigs, int maxDecimals)
@@ -129,22 +129,22 @@ namespace LibraryFunctionReplacements
             }
 
             // digits before decimal point
+            char[] wholePartDigits = new char[39];
             int digit;
             powerOf10 += nonzeroDigitAdded;
+            int wholePartDigitsStartIndex = 38 - powerOf10;
             for (; powerOf10 >= 0; powerOf10--)
             {
                 value -= popDigitFromFloat(value, powerOf10, out digit, ref nonzeroDigitAdded);
-                s.Append(toChar(digit));
+                wholePartDigits[38 - powerOf10] = toChar(digit);
                 sigFigs += nonzeroDigitAdded;
             }
 
             if (value > float.Epsilon)
             {
-                // decimal point (if one is needed)
-                s.Append('.');
-
+                
                 // digits after decimal point (if any)
-                char[] decimalDigits = new char[38];
+                char[] decimalDigits = new char[39];
                 int j = 0;
                 for (; value > float.Epsilon && powerOf10 > -38 && sigFigs < maxSigFigs && j < maxDecimals; powerOf10--)
                 {
@@ -155,13 +155,27 @@ namespace LibraryFunctionReplacements
                 if (powerOf10 > -38 && value >= 5 * DIGIT_POWERS_OF_10[38 - powerOf10])
                 {
                     // round up the last digit
-                    roundUpDigit(decimalDigits, j - 1);
+                    if (j == 0)
+                    {
+                        roundUpWholePartDigits(wholePartDigits, 0, ref wholePartDigitsStartIndex);
+                    }
+                    else
+                    {
+                        roundUpDecimalDigits(wholePartDigits, decimalDigits, j - 1, ref wholePartDigitsStartIndex);
+                    }                    
                 }
 
                 // trim any trailing zeroes
                 for (; j > 0 && decimalDigits[j - 1] == '0'; j--) { }
 
+                // assemble the string
+                s.Append(wholePartDigits, wholePartDigitsStartIndex, 39 - wholePartDigitsStartIndex);
+                s.Append('.');
                 s.Append(decimalDigits, 0, j);
+            }
+            else
+            {
+                s.Append(wholePartDigits, wholePartDigitsStartIndex, 39 - wholePartDigitsStartIndex);
             }
             return s.ToString();
         }
@@ -169,7 +183,7 @@ namespace LibraryFunctionReplacements
         private static float popDigitFromFloat(float value, int powerOf10, out int digit, ref int isNonZero)
         {
             digit = (int)(value * DIGIT_POWERS_OF_10[38 + powerOf10]);
-            if (0 < digit && digit < 10)
+            if (0 < digit)
             {
                 isNonZero = 1;
                 return digit * DIGIT_POWERS_OF_10[38 - powerOf10];
@@ -181,22 +195,43 @@ namespace LibraryFunctionReplacements
             }
         }
 
-        private static void roundUpDigit(char[] decimalDigits, int digitIndex)
+        private static void roundUpDecimalDigits(char[] wholePartDigits, char[] decimalDigits, int digitIndex, ref int wholePartDigitsStartIndex)
         {
             char digit = decimalDigits[digitIndex];
             switch (digit)
             {
-                // skip over the decimal character
+                // skip over the decimal character and start rounding the whole-part digits
                 case '.':
-                    roundUpDigit(decimalDigits, digitIndex - 1);
+                    roundUpWholePartDigits(wholePartDigits, 38, ref wholePartDigitsStartIndex);
                     break;
                 // if the last digit was a 9, round up the digit before that, etc...
                 case '9':
                     decimalDigits[digitIndex] = '0';
-                    roundUpDigit(decimalDigits, digitIndex - 1);
+                    roundUpDecimalDigits(wholePartDigits, decimalDigits, digitIndex - 1, ref wholePartDigitsStartIndex);
                     break;
                 default:
                     decimalDigits[digitIndex] = (char)(digit + 1);
+                    break;
+            }
+        }
+
+        private static void roundUpWholePartDigits(char[] wholePartDigits, int digitIndex, ref int wholePartDigitsStartIndex)
+        {
+            int digit = wholePartDigits[digitIndex];
+            switch (digit)
+            {
+                // if the last digit was a 9 and has been rounded up, add one more digit to the front
+                case '\0':
+                    wholePartDigits[digitIndex] = '0';
+                    wholePartDigitsStartIndex++;
+                    break;
+                // if the last digit was a 9, round up the digit before that, etc...
+                case '9':
+                    wholePartDigits[digitIndex] = '0';
+                    roundUpWholePartDigits(wholePartDigits, digitIndex - 1, ref wholePartDigitsStartIndex);
+                    break;
+                default:
+                    wholePartDigits[digitIndex] = (char)(digit + 1);
                     break;
             }
         }
@@ -212,10 +247,6 @@ namespace LibraryFunctionReplacements
                     throw new ArgumentException("Encountered non-digit character when parsing float: '" + str + "'");
             }
 
-            if (str.Length == 0)
-            {
-                
-            }
             float output = 0f;
             bool isNegative = str[0] == '-';
             if (isNegative)
@@ -355,9 +386,9 @@ namespace LibraryFunctionReplacements
                 1e+3f,
                 1e+2f,
                 1e+1f,
-                1e+0f,
+                1e+0f, // index 38
                 1e-1f,
-                1e-2f,
+                1e-2f + 1e-7f, // band-aid fix to mysterious bug with 100f not getting the 1 digit detected sometimes (but not always)
                 1e-3f,
                 1e-4f,
                 1e-5f,

@@ -64,19 +64,12 @@ namespace phi.graphics.renderables
       public override void DisableEditing()
       {
          base.DisableEditing();
-         if (IsMessageValidAsFinal())
-         {
-            // convert to float and back to string again, so that the format is refreshed (e.g. leading 0 is added)
-            float value = CustomNumberParser.StringToFloat(text.GetMessage());
-            int maxSigFigs = precisionType == PrecisionType.SignificantFigures ? precisionAmount : 8;
-            int maxDecimals = precisionType == PrecisionType.DecimalPlaces ? precisionAmount : int.MaxValue;
-            text.SetMessage(CustomNumberParser.FloatToString(value, maxSigFigs, maxDecimals));
-         }
-         else
-         {
-            text.SetMessage(defaultValue.ToString());
-         }
-      }
+         float value = IsMessageValidAsFinal() ? CustomNumberParser.StringToFloat(text.GetMessage()) : defaultValue;
+         // convert to float and back to string again, so that the format is refreshed (e.g. leading and trailing zeroes are removed)
+         int maxSigFigs = precisionType == PrecisionType.SignificantFigures ? precisionAmount : 8;
+         int maxDecimals = precisionType == PrecisionType.DecimalPlaces ? precisionAmount : int.MaxValue;
+         text.SetMessage(CustomNumberParser.FloatToString(value, maxSigFigs, maxDecimals));
+        }
 
       private bool isWithinPrecision(string message)
       {

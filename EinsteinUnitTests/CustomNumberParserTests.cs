@@ -167,7 +167,7 @@ namespace LibraryFunctionReplacementsUnitTests
                 Assert.AreEqual(num, CustomNumberParser.StringToInt(str));
             }
         }
-
+         
         [TestMethod]
         public void StringToIntNormal_LeadingZeros()
         {
@@ -269,6 +269,32 @@ namespace LibraryFunctionReplacementsUnitTests
                 int numCharsToCheck = Math.Min(7, Math.Min(expected.Length, actual.Length));
                 Assert.AreEqual(expected.Substring(0, numCharsToCheck), actual.Substring(0, numCharsToCheck));
                 
+                // and if there are no decimal points, the length should be equal
+                if (!expected.Contains("."))
+                {
+                    Assert.AreEqual(expected.Length, actual.Length);
+                }
+                // but if there is a decimal point, then it's okay if the input/expected string has some extra digits
+                else
+                {
+                    Assert.IsTrue(expected.Length >= actual.Length);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void FloatToStringNormal_MaxDecimals4()
+        {
+            foreach ((string expected, float num, float _) in NORMAL_FLOAT_TESTS)
+            {
+                string actual = CustomNumberParser.FloatToString(num, 8, 4);
+
+                // Floating point imprecisions with the last few digits are fine.
+
+                // So just check first 4 characters of the strings are equal,
+                int numCharsToCheck = Math.Min(4, Math.Min(expected.Length, actual.Length));
+                Assert.AreEqual(expected.Substring(0, numCharsToCheck), actual.Substring(0, numCharsToCheck));
+
                 // and if there are no decimal points, the length should be equal
                 if (!expected.Contains("."))
                 {
