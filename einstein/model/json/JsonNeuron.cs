@@ -24,7 +24,7 @@ namespace Einstein.model.json
         // }
 
         private const string JSON_FORMAT =
-            "{\n" +
+            "{{\n" +
             "        \"Type\": {0},\n" +
             "        \"TypeName\": \"{1}\",\n" +
             "        \"Index\": {2},\n" +
@@ -33,7 +33,7 @@ namespace Einstein.model.json
             "        \"Value\": {5},\n" +
             "        \"LastInput\": {6},\n" +
             "        \"LastOutput\": {7}\n" +
-            "      }";
+            "      }}";
 
         public int Inov { protected set; get; }
 

@@ -34,7 +34,7 @@ namespace Einstein.model.json
         // }
 
         private const string JSON_FORMAT =
-            "{\n" +
+            "{{\n" +
             "    \"isReady\": {0},\n" +
             "    \"parent\": {1},\n" +
             "    \"Nodes\": [\n" +
@@ -43,7 +43,7 @@ namespace Einstein.model.json
             "    \"Synapses\": [\n" +
             "      {3}\n" +
             "    ]\n" +
-            "  },\n";
+            "  }},\n";
 
         // unused for now, but they're in the json so keep track of them just in case
         private string isReady;

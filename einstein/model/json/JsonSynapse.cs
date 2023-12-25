@@ -22,13 +22,13 @@ namespace Einstein.model.json
         // }
 
         private const string JSON_FORMAT =
-            "{\n" +
+            "{{\n" +
             "        \"Inov\": {0},\n" +
             "        \"NodeIn\": {1},\n" +
             "        \"NodeOut\": {2},\n" +
             "        \"Weight\": {3},\n" +
             "        \"En\": {4}\n" +
-            "      }";
+            "      }}";
 
         // unused for now, but keep track of between loading and saving just in case
         private int inov;
