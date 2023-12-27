@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using static phi.graphics.drawables.Text;
 
 namespace Einstein
 {
@@ -29,18 +31,21 @@ namespace Einstein
         //  Data/Constructor
         // ----------------------------------------------------------------
 
+        private BibiteVersion bibiteVersion;
+
         private EditArea editArea;
 
         // TODO maybe refactor the input/output/hidden buttons into one renderable class
         private NeuronMenuCategory selected;
         private IONeuronMenuCategory input;
         private IONeuronMenuCategory output;
-        private NeuronMenuCategory hidden;
+        private HiddenNeuronMenuCategory hidden;
         private Button loadButton;
         private Button saveButton;
         private SaveMessageText saveMessageText;
         private Button autoArrangeButton;
         private KeybindsInfoText infoText;
+        private Text bibiteVersionText;
         private ZoomControls zoomControls;
 
         private string savePath;
@@ -50,9 +55,9 @@ namespace Einstein
 
         public EditorScene(Scene prevScene) : base(prevScene, EinsteinConfig.COLOR_MODE.Background)
         {
-            editArea = new EditArea(
-                new JsonBrain(),
-                moveNeuronIntoMenu);
+            bibiteVersion = BibiteVersion.DEFAULT_VERSION;
+
+            editArea = new EditArea(new JsonBrain(), moveNeuronIntoMenu, bibiteVersion);
 
             selected = null;
             NeuronMenuButton inputButton = new NeuronMenuButton(
@@ -63,7 +68,7 @@ namespace Einstein
                 onDeselectInputs);
             input = new IONeuronMenuCategory(
                 inputButton,
-                generateInputNeurons(),
+                bibiteVersion.InputNeurons,
                 moveNeuronIntoEditArea);
 
             NeuronMenuButton outputButton = new NeuronMenuButton(
@@ -74,7 +79,7 @@ namespace Einstein
                 onDeselectOutputs);
             output = new IONeuronMenuCategory(
                 outputButton,
-                generateOutputNeurons(),
+                bibiteVersion.OutputNeurons,
                 moveNeuronIntoEditArea);
 
             NeuronMenuButton hiddenButton = new NeuronMenuButton(
@@ -85,7 +90,7 @@ namespace Einstein
                 onDeselectAdd);
             hidden = new HiddenNeuronMenuCategory(
                 hiddenButton,
-                generateHiddenNeurons(),
+                bibiteVersion.HiddenNeurons,
                 createHiddenNeuronInEditArea);
             loadButton = new Button.ButtonBuilder(
                 new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
@@ -101,9 +106,15 @@ namespace Einstein
                 .withText("Save to Bibite")
                 .withOnClick(saveBrain)
                 .Build();
+            bibiteVersionText = new TextBuilder(getBb8VersionText())
+                .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
+                .WithFontSize(10f)
+                .WithXY(EinsteinConfig.PAD,
+                    EinsteinConfig.PAD + saveButton.GetY() + saveButton.GetHeight())
+                .Build();
             saveMessageText = new SaveMessageText(
                 EinsteinConfig.PAD + NeuronMenuButton.WIDTH / 2,
-                7 * EinsteinConfig.PAD + 5 * NeuronMenuButton.HEIGHT);
+                EinsteinConfig.PAD + bibiteVersionText.GetY() + bibiteVersionText.GetHeight());
             autoArrangeButton = new Button.ButtonBuilder(
                 new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
                 EinsteinConfig.PAD,
@@ -111,6 +122,7 @@ namespace Einstein
                 .withText("Auto-Arrange")
                 .withOnClick(editArea.AutoArrange)
                 .Build();
+
             infoText = new KeybindsInfoText(
                 EinsteinConfig.PAD,
                 20 + EinsteinConfig.PAD + autoArrangeButton.GetY() + autoArrangeButton.GetHeight());
@@ -139,6 +151,7 @@ namespace Einstein
             IO.RENDERER.Add(loadButton);
             IO.RENDERER.Add(saveButton);
             IO.RENDERER.Add(autoArrangeButton);
+            IO.RENDERER.Add(bibiteVersionText);
             IO.RENDERER.Add(infoText);
             IO.FRAME_TIMER.Subscribe(checkForResize);
         }
@@ -156,6 +169,7 @@ namespace Einstein
             IO.RENDERER.Remove(loadButton);
             IO.RENDERER.Remove(saveButton);
             IO.RENDERER.Remove(autoArrangeButton);
+            IO.RENDERER.Remove(bibiteVersionText);
             IO.RENDERER.Remove(infoText);
             IO.FRAME_TIMER.Unsubscribe(checkForResize);
         }
@@ -171,13 +185,15 @@ namespace Einstein
         private void saveBrain()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+
+            // TODO check bb8Version of the destination .bb8 file and do conversion handling
+
             foreach (NeuronRenderable nr in editArea.NeuronRenderables)
             {
                 int x = nr.NeuronDrawable.GetCenterX();
                 int y = nr.NeuronDrawable.GetCenterY();
                 ((JsonNeuron)nr.Neuron).SetInovXY(x, y);
             }
-            string brainJson = ((JsonBrain)editArea.Brain).GetSave();
             string filepath = IO.POPUPS.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
                 "Save to Bibite", "");
             if (filepath == "")
@@ -198,6 +214,8 @@ namespace Einstein
                 IO.POPUPS.ShowErrorPopup("Save Failed", "File format is invalid.");
                 return;
             }
+            // TODO read version and convert accordingly
+            string brainJson = ((JsonBrain)editArea.Brain).GetSave(bibiteVersion);
             bibiteJson = bibiteJson.Substring(0, startIndex) + " " + brainJson + bibiteJson.Substring(endIndex);
             File.WriteAllText(filepath, bibiteJson);
             savePath = Path.GetDirectoryName(filepath);
@@ -207,6 +225,8 @@ namespace Einstein
         private void loadBrain()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+
+            // read the file
             string filepath = IO.POPUPS.PromptForFile(getLoadPath(), "Bibite Files|*.bb8",
                 "Load from Bibite", "");
             if (filepath == "") { return; }
@@ -216,13 +236,28 @@ namespace Einstein
                 return;
             }
             string json = File.ReadAllText(filepath);
+
+            // parse and set the version number
+            BibiteVersion newBibiteVersion;
+            try
+            {
+                newBibiteVersion = BibiteVersion.FromName(parseVersionName(json));
+            }
+            catch (JsonParsingException e)
+            {
+                IO.POPUPS.ShowErrorPopup("Load Failed",
+                    "File format is invalid.\n\nDetails: " + e.Message);
+                return;
+            }
+
+            // parse and set the brain
             JsonBrain brain;
             bool autoFixNeuronDescriptions = false;
             while (true)
             {
                 try
                 {
-                    brain = new JsonBrain(json, json.IndexOf("\"brain\":") + 8);
+                    brain = new JsonBrain(json, json.IndexOf("\"brain\":") + 8, newBibiteVersion);
                     break;
                 }
                 catch (JsonParsingException e)
@@ -272,9 +307,35 @@ namespace Einstein
                 }
             }
 
-            editArea.LoadBrain(brain);
-            updateNeuronsInMenu();
+            // only on successful load...
+            bibiteVersion = newBibiteVersion;
+            bibiteVersionText.SetMessage(getBb8VersionText());
+            editArea.LoadBrain(brain, newBibiteVersion);
+            updateIONeuronsInMenu(); // depends on the brain being set in editArea.LoadBrain
+            hidden.ResetNeuronOptionsTo(bibiteVersion.HiddenNeurons);
             loadPath = Path.GetDirectoryName(filepath);
+        }
+
+        private string parseVersionName(string json)
+        {
+            const string versionTag = "\"version\":";
+            int indexOfVersionTag = json.IndexOf(versionTag);
+            if (indexOfVersionTag < 0)
+            {
+                throw new NoNextValueException("Version not found");
+            }
+            int indexLeft = json.IndexOf('"', indexOfVersionTag + versionTag.Length + 1) + 1;
+            if (indexLeft < 0)
+            {
+                throw new NoNextValueException("No '\"' found after index " + indexLeft);
+            }
+            int indexRight = json.IndexOf('"', indexLeft);
+            if (indexRight < 0)
+            {
+                throw new NoNextValueException("No '\"' found after index " + indexRight);
+            }
+            int length = indexRight - indexLeft;
+            return json.Substring(indexLeft, length);
         }
 
         private string getSavePath()
@@ -293,19 +354,19 @@ namespace Einstein
             return DEFAULT_SAVE_LOAD_FOLDER;
         }
 
-        private void updateNeuronsInMenu()
+        private void updateIONeuronsInMenu()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             input.ClearAllOptions();
             output.ClearAllOptions();
-            foreach (BaseNeuron neuron in generateInputNeurons())
+            foreach (BaseNeuron neuron in bibiteVersion.InputNeurons)
             {
                 if (!editArea.Brain.ContainsNeuron(neuron))
                 {
                     input.AddOption(neuron);
                 }
             }
-            foreach (BaseNeuron neuron in generateOutputNeurons())
+            foreach (BaseNeuron neuron in bibiteVersion.OutputNeurons)
             {
                 if (!editArea.Brain.ContainsNeuron(neuron))
                 {
@@ -339,51 +400,6 @@ namespace Einstein
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             editArea.CreateHiddenNeuron(hiddenNeuronToAdd.Type);
-        }
-
-        // ----- Generating neuron options -----
-
-        public static ICollection<BaseNeuron> generateInputNeurons()
-        {
-            ICollection<BaseNeuron> inputs = new List<BaseNeuron>();
-            for (int i = BibiteVersionConfig.INPUT_NODES_INDEX_MIN;
-                i <= BibiteVersionConfig.INPUT_NODES_INDEX_MAX; i++)
-            {
-                inputs.Add(new JsonNeuron(
-                    i,
-                    NeuronType.Input,
-                    BibiteVersionConfig.DESCRIPTIONS[i]));
-            }
-            return inputs;
-        }
-
-        public static ICollection<BaseNeuron> generateOutputNeurons()
-        {
-            ICollection<BaseNeuron> outputs = new List<BaseNeuron>();
-            for (int i = BibiteVersionConfig.OUTPUT_NODES_INDEX_MIN;
-                i <= BibiteVersionConfig.OUTPUT_NODES_INDEX_MAX; i++)
-            {
-                outputs.Add(new JsonNeuron(
-                    i,
-                    BibiteVersionConfig.GetOutputNeuronType(i),
-                    BibiteVersionConfig.DESCRIPTIONS[i]));
-            }
-            return outputs;
-        }
-
-        public static ICollection<BaseNeuron> generateHiddenNeurons()
-        {
-            ICollection<BaseNeuron> hiddens = new List<BaseNeuron>();
-            int index = BibiteVersionConfig.HIDDEN_NODES_INDEX_MAX
-                - Enum.GetValues(typeof(NeuronType)).Length;
-            foreach (NeuronType neuronType in Enum.GetValues(typeof(NeuronType)))
-            {
-                if (neuronType == NeuronType.Input) { continue; }
-                hiddens.Add(new BaseNeuron(
-                    index++,
-                    neuronType));
-            }
-            return hiddens;
         }
 
         // ----- Button Selection -----
@@ -423,6 +439,12 @@ namespace Einstein
             selected = null;
         }
 
+        // ----- other/misc -----
+
+        private string getBb8VersionText()
+        {
+            return "Bibite Version: " + bibiteVersion.VERSION_NAME;
+        }
 
         // check if the window has been resized
         // if so, we probably need to reposition the menu buttons
@@ -444,6 +466,7 @@ namespace Einstein
         public string LogDetailsForCrash()
         {
             string log = "Version = " + EinsteinConfig.VERSION;
+            log += "\nbibiteVersion = " + (bibiteVersion == null ? "null" : bibiteVersion.ToString());
             log += "\nEditorScene.editArea = " + editArea.LogDetailsForCrash();
             log += "\nselected = ";
             if (selected == null)
@@ -464,7 +487,7 @@ namespace Einstein
             }
             log += "\ninput = " + input.LogDetailsForCrash();
             log += "\noutput = " + output.LogDetailsForCrash();
-            log += "hidden = " + hidden.LogDetailsForCrash();
+            log += "\nhidden = " + hidden.LogDetailsForCrash();
             log += "\nsavePath = " + (savePath ?? "null");
             log += "\nloadPath = " + (loadPath ?? "null");
             log += "\nprevWindowWidth = " + prevWindowWidth;

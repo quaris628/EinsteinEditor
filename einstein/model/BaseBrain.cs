@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Einstein.config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -174,7 +175,7 @@ namespace Einstein.model
             return synapsesToIndex[neuronIndex];
         }
 
-        public virtual string GetSave() { throw new NotSupportedException(); }
+        public virtual string GetSave(BibiteVersion bibiteVersion) { throw new NotSupportedException(); }
     }
 
     public abstract class BrainException : Exception

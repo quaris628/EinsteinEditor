@@ -38,10 +38,6 @@ namespace Einstein.ui
         private float circleCenterX;
         private float circleCenterY;
 
-        public NeuronDrawable(int index, NeuronType type) :
-            this(new BaseNeuron(index, type), DEFAULT_X, DEFAULT_Y) { }
-        public NeuronDrawable(int index, NeuronType type, string description) :
-            this(new BaseNeuron(index, type, description), DEFAULT_X, DEFAULT_Y) { }
         public NeuronDrawable(NeuronDrawable neuron) : this(neuron.Neuron) { }
         public NeuronDrawable(BaseNeuron neuron) : this(neuron, DEFAULT_X, DEFAULT_Y) { }
         public NeuronDrawable(BaseNeuron neuron, int x, int y) : base(x, y, CIRCLE_DIAMETER, CIRCLE_DIAMETER)

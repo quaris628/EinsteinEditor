@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Einstein.config;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace Einstein.model.json
             oldNewNeuronIndicesMap = new Dictionary<int, int>();
         }
 
-        public JsonBrain(string json, int startIndex) : base()
+        public JsonBrain(string json, int startIndex, BibiteVersion bibiteVersion) : base()
         {
             JsonParser parser = new JsonParser(json, startIndex);
             isReady = "true";
@@ -66,7 +67,7 @@ namespace Einstein.model.json
             // parse neurons
             parser.parseArray((neuronStartIndex) =>
             {
-                BaseNeuron neuron = new JsonNeuron(json, neuronStartIndex);
+                BaseNeuron neuron = new JsonNeuron(json, neuronStartIndex, bibiteVersion);
                 Add(neuron);
             });
             // parse synapses
@@ -79,27 +80,27 @@ namespace Einstein.model.json
             oldNewNeuronIndicesMap = new Dictionary<int, int>();
         }
 
-        public override string GetSave()
+        public override string GetSave(BibiteVersion bibiteVersion)
         {
             return string.Format(CultureInfo.GetCultureInfo("en-US"),
                 JSON_FORMAT,
                 isReady,
                 parent,
-                neuronsToJson(),
+                neuronsToJson(bibiteVersion),
                 synapsesToJson());
         }
 
         // these ToJson functions could probably be refactored to be less duplicately
         // but I'm too lazy right now and this code smell isn't very strong anyway
-        private string neuronsToJson()
+        private string neuronsToJson(BibiteVersion bibiteVersion)
         {
             // I tried using .Union on these but this seriously looked like less work
             List<BaseNeuron> allNeurons = new List<BaseNeuron>();
-            foreach (BaseNeuron neuron in EditorScene.generateInputNeurons())
+            foreach (BaseNeuron neuron in bibiteVersion.InputNeurons)
             {
                 allNeurons.Add(neuron);
             }
-            foreach (BaseNeuron neuron in EditorScene.generateOutputNeurons())
+            foreach (BaseNeuron neuron in bibiteVersion.OutputNeurons)
             {
                 allNeurons.Add(neuron);
             }
@@ -108,6 +109,7 @@ namespace Einstein.model.json
                 bool alreadyInBrain = false;
                 foreach (BaseNeuron oldNeuron in allNeurons)
                 {
+                    // TODO handle saving between different versions
                     if (newNeuron.Equals(oldNeuron))
                     {
                         // Remove and replace b/c there may be hidden properties we
@@ -119,7 +121,7 @@ namespace Einstein.model.json
                         break;
                     }
                 }
-                if (!alreadyInBrain)
+                if (!alreadyInBrain) // hidden neuron
                 {
                     allNeurons.Add(newNeuron);
                 }

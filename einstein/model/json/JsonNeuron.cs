@@ -1,4 +1,5 @@
-﻿using LibraryFunctionReplacements;
+﻿using Einstein.config;
+using LibraryFunctionReplacements;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -42,8 +43,11 @@ namespace Einstein.model.json
         private float lastInput;
         private float lastOutput;
 
-        public JsonNeuron(int index, NeuronType type, string description)
-            : base(index, type, description)
+        public JsonNeuron(int index, NeuronType type, BibiteVersion bibiteVersion)
+            : this(index, type, Enum.GetName(typeof(NeuronType), type), bibiteVersion) { }
+
+        public JsonNeuron(int index, NeuronType type, string description, BibiteVersion bibiteVersion)
+            : base(index, type, description, bibiteVersion)
         {
             Inov = 0;
             value = 0f;
@@ -52,7 +56,7 @@ namespace Einstein.model.json
         }
 
         public JsonNeuron(JsonNeuron jsonNeuron)
-            : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Description)
+            : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Description, jsonNeuron.BibiteVersion)
         {
             Inov = jsonNeuron.Inov;
             value = jsonNeuron.value;
@@ -60,7 +64,7 @@ namespace Einstein.model.json
             lastOutput = jsonNeuron.lastOutput;
         }
 
-        public JsonNeuron(string json, int startIndex) : base()
+        public JsonNeuron(string json, int startIndex, BibiteVersion bibiteVersion) : base(bibiteVersion)
         {
             JsonParser parser = new JsonParser(json, startIndex);
             parser.startParsingNextLeafObj();

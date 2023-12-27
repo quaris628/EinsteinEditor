@@ -14,7 +14,7 @@ namespace Einstein.ui.menu
         private Action<BaseNeuron> onRemove;
         private bool disableOnRemove;
         public IONeuronMenuCategory(NeuronMenuButton button,
-            ICollection<BaseNeuron> neuronOptions,
+            IEnumerable<BaseNeuron> neuronOptions,
             Action<BaseNeuron> onRemove)
             : base(button, neuronOptions)
         {

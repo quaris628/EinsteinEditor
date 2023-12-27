@@ -23,8 +23,8 @@ namespace Einstein.ui.editarea
         public SynapseStrengthET(BaseSynapse synapse, int anchorX, int anchorY)
             : base(new FloatETBuilder(new Text.TextBuilder("").WithColor(new SolidBrush(TEXT_COLOR)).Build())
                   .WithEditingDisabled()
-                  .WithMinValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MIN)
-                  .WithMaxValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MAX)
+                  .WithMinValue(BibiteVersionIndependentConfig.SYNAPSE_STRENGTH_MIN)
+                  .WithMaxValue(BibiteVersionIndependentConfig.SYNAPSE_STRENGTH_MAX)
                   .WithMaxDecimalPlaces(BaseSynapse.STRENGTH_MAX_DECIMALS))
         {
             Synapse = synapse;

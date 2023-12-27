@@ -23,7 +23,7 @@ namespace Einstein.ui.menu
         protected bool isInit { get; private set; }
 
         public NeuronMenuCategory(NeuronMenuButton button,
-            ICollection<BaseNeuron> neuronOptions)
+            IEnumerable<BaseNeuron> neuronOptions)
         {
             Button = button;
 

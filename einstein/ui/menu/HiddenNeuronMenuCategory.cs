@@ -13,7 +13,7 @@ namespace Einstein.ui.menu
     {
         private Action<BaseNeuron> onSelect;
         public HiddenNeuronMenuCategory(NeuronMenuButton button,
-            ICollection<BaseNeuron> neuronOptions,
+            IEnumerable<BaseNeuron> neuronOptions,
             Action<BaseNeuron> onSelect)
             : base(button, neuronOptions)
         {
@@ -39,6 +39,26 @@ namespace Einstein.ui.menu
             {
                 IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(neuronDrawable);
             }
+        }
+
+        public void ResetNeuronOptionsTo(IEnumerable<BaseNeuron> neuronOptions)
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            {
+                IO.RENDERER.Remove(neuronDrawable);
+            }
+            neuronDrawables = new SortedDictionary<int, NeuronDrawable>();
+            foreach (BaseNeuron neuron in neuronOptions)
+            {
+                NeuronDrawable neuronDrawable = new NeuronDrawable(neuron);
+                neuronDrawable.SetDisplaying(Button.IsSelected());
+
+                neuronDrawables.Add(neuron.Index, neuronDrawable);
+                
+                IO.RENDERER.Add(neuronDrawable, OPTION_LAYER);
+            }
+            RepositionOptions();
         }
 
         public override string LogDetailsForCrash()

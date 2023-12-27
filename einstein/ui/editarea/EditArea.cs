@@ -19,6 +19,7 @@ namespace Einstein.ui.editarea
         public const int ZOOM_MAX_LEVEL = 8;
 
         public BaseBrain Brain { get; private set; }
+        public BibiteVersion BibiteVersion { get; private set; }
 
         private Dictionary<int, NeuronRenderable> neuronIndexToNR;
         public IEnumerable<NeuronRenderable> NeuronRenderables { get { return neuronIndexToNR.Values; } }
@@ -34,13 +35,14 @@ namespace Einstein.ui.editarea
         private int shiftViewInitX;
         private int shiftViewInitY;
 
-        public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove)
+        public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove, BibiteVersion bibiteVersion)
         {
+            BibiteVersion = bibiteVersion;
             neuronIndexToNR = new Dictionary<int, NeuronRenderable>();
             this.onRemove = onRemove;
             disableOnRemove = false;
             synapseIndicesToSR = new Dictionary<(int, int), SynapseRenderable>();
-            nextHiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
+            nextHiddenNeuronIndex = bibiteVersion.HIDDEN_NODES_INDEX_MIN;
             justFinishedSynapse = false;
             Brain = brain;
             zoomLevel = 0;
@@ -78,14 +80,14 @@ namespace Einstein.ui.editarea
 
         public void CreateHiddenNeuron(NeuronType type)
         {
-            string desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN);
+            string desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN);
             while (Brain.ContainsNeuronDescription(desc)) 
             {
                 nextHiddenNeuronIndex++;
-                desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN);
+                desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN);
             }
             AddNeuron(new JsonNeuron(nextHiddenNeuronIndex, type,
-                type.ToString() + (nextHiddenNeuronIndex - BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN)));
+                type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN), BibiteVersion));
             nextHiddenNeuronIndex++;
         }
 
@@ -181,7 +183,7 @@ namespace Einstein.ui.editarea
 
         // ----- Manage (i.e. load) brain -----
 
-        public void LoadBrain(BaseBrain brain)
+        public void LoadBrain(BaseBrain brain, BibiteVersion bibiteVersion)
         {
             // Clear any data currently in the brain
             NeuronRenderable[] neuronsToClearFromOldBrain = new NeuronRenderable[neuronIndexToNR.Values.Count];
@@ -192,9 +194,12 @@ namespace Einstein.ui.editarea
                 RemoveNeuron(nr.Neuron);
             }
             disableOnRemove = false;
+
+            // re-init for a new brain
+            BibiteVersion = bibiteVersion;
             neuronIndexToNR = new Dictionary<int, NeuronRenderable>();
             synapseIndicesToSR = new Dictionary<(int, int), SynapseRenderable>();
-            nextHiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
+            nextHiddenNeuronIndex = BibiteVersion.HIDDEN_NODES_INDEX_MIN;
 
             // Ensures shallow copies are equal (in case that matters) and more importantly,
             // if any Neuron/Synapse/Brain class is a subclass of the base class, that is preserved
@@ -290,7 +295,6 @@ namespace Einstein.ui.editarea
         public void ShiftView(int dx, int dy)
         {
             if (dx == 0 && dy == 0) { return; }
-            Console.WriteLine("Shift view dx: " + dx + " dy: " + dy);
             foreach (NeuronRenderable nr in neuronIndexToNR.Values)
             {
                 float x = nr.NeuronDrawable.GetCircleCenterXfloat();
@@ -647,9 +651,12 @@ namespace Einstein.ui.editarea
         public string LogDetailsForCrash()
         {
             string log = "";
+            log += "\nsynapseIndicesToSR = ";
+            if (BibiteVersion == null) { log += "null"; }
+            else { log += BibiteVersion.ToString(); }
             try
             {
-                log += "\nBrain = " + Brain.GetSave();
+                log += "\nBrain = " + Brain.GetSave(BibiteVersion);
             }
             catch (Exception) { }
             log += "\nneuronIndexToNR = ";
@@ -659,7 +666,7 @@ namespace Einstein.ui.editarea
             log += "\nonRemove.Method.Name = " + onRemove.Method.Name;
             log += "\nonRemove.Target = " + onRemove.Target;
             log += "\ndisableOnRemove = " + disableOnRemove;
-            log += "\ndisplayedSynapsesIndex = ";
+            log += "\nsynapseIndicesToSR = ";
             if (synapseIndicesToSR == null) { log += "null"; }
             else if (synapseIndicesToSR.Count == 0) { log += "empty"; }
             else { log += string.Join(":", synapseIndicesToSR); }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Einstein.config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,13 +27,19 @@ namespace Einstein.model
             set { _description = validateDescription(value); }
         }
 
-        protected BaseNeuron() { }
+        // description, type, and even index can change, but version must be immutable
+        public BibiteVersion BibiteVersion { get; private set; }
+
+        protected BaseNeuron(BibiteVersion bibiteVersion)
+        {
+            BibiteVersion = bibiteVersion;
+        }
 
         // Description will be the type name
-        public BaseNeuron(int index, NeuronType type) : this(index, type,
-            Enum.GetName(typeof(NeuronType), type)) { }
+        public BaseNeuron(int index, NeuronType type, BibiteVersion bibiteVersion) : this(index, type,
+            Enum.GetName(typeof(NeuronType), type), bibiteVersion) { }
 
-        public BaseNeuron(int index, NeuronType type, string description)
+        public BaseNeuron(int index, NeuronType type, string description, BibiteVersion bibiteVersion) : this(bibiteVersion)
         {
             Index = index;
             Type = type;
@@ -54,8 +61,8 @@ namespace Einstein.model
 
         public bool IsOutput()
         {
-            return BibiteVersionConfig.OUTPUT_NODES_INDEX_MIN <= Index
-                && Index <= BibiteVersionConfig.OUTPUT_NODES_INDEX_MAX;
+            return BibiteVersion.OUTPUT_NODES_INDEX_MIN <= Index
+                && Index <= BibiteVersion.OUTPUT_NODES_INDEX_MAX;
         }
 
         public bool IsHidden()
@@ -73,7 +80,7 @@ namespace Einstein.model
 
         public override string ToString()
         {
-            return Description + " : " + Type.ToString();
+            return Description + " : " + Type.ToString() + " [i" + Index + " v" + BibiteVersion.ToString() + "]";
         }
 
         public virtual string GetSave() { throw new NotSupportedException(); }
