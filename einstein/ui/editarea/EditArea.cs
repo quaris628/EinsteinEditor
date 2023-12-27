@@ -247,7 +247,7 @@ namespace Einstein.ui.editarea
 
             AutoArrange();
 
-            if (neuronIndexToNR.First().Value.Neuron is JsonNeuron)
+            if (neuronIndexToNR.Any() && neuronIndexToNR.First().Value.Neuron is JsonNeuron)
             {
                 foreach (NeuronRenderable nr in neuronIndexToNR.Values)
                 {
