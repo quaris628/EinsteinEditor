@@ -21,11 +21,12 @@ namespace Einstein.ui.editarea
         private bool justEnabledEditing;
 
         public SynapseStrengthET(BaseSynapse synapse, int anchorX, int anchorY)
-            : base(new FloatETBuilder(new Text.TextBuilder("").WithColor(new SolidBrush(TEXT_COLOR)).Build())
+            : base((FloatETBuilder)new FloatETBuilder(new Text.TextBuilder("").WithColor(new SolidBrush(TEXT_COLOR)).Build())
                   .WithEditingDisabled()
                   .WithMinValue(BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MIN)
                   .WithMaxValue(BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX)
-                  .WithMaxDecimalPlaces(BaseSynapse.STRENGTH_MAX_DECIMALS))
+                  .WithMaxDecimalPlaces(BaseSynapse.STRENGTH_MAX_DECIMALS)
+                  .WithAnchor(anchorX, anchorY))
         {
             Synapse = synapse;
             justEnabledEditing = false;
