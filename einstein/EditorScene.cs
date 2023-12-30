@@ -239,15 +239,7 @@ namespace Einstein
             }
             catch (ArgumentException e)
             {
-                IO.POPUPS.ShowErrorPopup("Save Failed", e.Message + "\n\n" +
-                    "This bibite's version is either invalid or is too old or too new to be recognized by Einstein.\n" +
-                    "If it's too new, consider checking for updates to Einstein at https://github.com/quaris628/EinsteinEditor/releases/\n\n" +
-                    "If, for some reason, you really really really want to try editing this bibite anyway, " +
-                    "beware! You will probably run into seriously bad problems like data corruption, " +
-                    "unpredictable crashes, and bugged 'god' or 'demon' bibites... but technically you can change the " +
-                    "bibite file's version number to trick Einstein into treating the file as if it was that version. " +
-                    "As long as you back up your .bb8 files beforehand, there won't be any permanent harm done. " +
-                    "Again, I don't advise doing this, but it is a last-resort option.");
+                showVersionMismatchErrorPopup("Save Failed", e);
                 return;
             }
 
@@ -300,15 +292,25 @@ namespace Einstein
             string json = File.ReadAllText(filepath);
 
             // parse and set the version number
-            BibiteVersion newBibiteVersion;
+            string newBibiteVersionName;
             try
             {
-                newBibiteVersion = BibiteVersion.FromName(parseVersionName(json));
+                newBibiteVersionName = parseVersionName(json);
             }
             catch (JsonParsingException e)
             {
                 IO.POPUPS.ShowErrorPopup("Load Failed",
-                    "File format is invalid.\n\nDetails: " + e.Message);
+                    "File format is invalid. Cannot find Bibites version.\n\nDetails: " + e.Message);
+                return;
+            }
+            BibiteVersion newBibiteVersion;
+            try
+            {
+                newBibiteVersion = BibiteVersion.FromName(newBibiteVersionName);
+            }
+            catch (ArgumentException e)
+            {
+                showVersionMismatchErrorPopup("Load Failed", e);
                 return;
             }
 
@@ -387,18 +389,31 @@ namespace Einstein
             {
                 throw new NoNextValueException("Version not found");
             }
-            int indexLeft = json.IndexOf('"', indexOfVersionTag + versionTag.Length + 1) + 1;
+            int indexLeft = json.IndexOf('"', indexOfVersionTag + versionTag.Length) + 1;
             if (indexLeft < 0)
             {
-                throw new NoNextValueException("No '\"' found after index " + indexLeft);
+                throw new NoNextValueException("No '\"' found after index " + indexOfVersionTag + versionTag.Length);
             }
             int indexRight = json.IndexOf('"', indexLeft);
             if (indexRight < 0)
             {
-                throw new NoNextValueException("No '\"' found after index " + indexRight);
+                throw new NoNextValueException("No '\"' found after index " + indexLeft);
             }
             int length = indexRight - indexLeft;
             return json.Substring(indexLeft, length);
+        }
+
+        private static void showVersionMismatchErrorPopup(string title, ArgumentException e)
+        {
+            IO.POPUPS.ShowErrorPopup(title, e.Message + "\n\n" +
+                    "This bibite's version is either invalid or is too old or too new to be recognized by Einstein.\n" +
+                    "If it's too new, consider checking for updates to Einstein at https://github.com/quaris628/EinsteinEditor/releases/\n\n" +
+                    "If, for some reason, you really really really want to try editing this bibite anyway, " +
+                    "beware! You will probably run into seriously bad problems like data corruption, " +
+                    "unpredictable crashes, and bugged 'god' or 'demon' bibites... but technically you can change the " +
+                    "bibite file's version number to trick Einstein into treating the file as if it was that version. " +
+                    "As long as you back up your .bb8 files beforehand, there won't be any permanent harm done. " +
+                    "Again, I don't advise doing this, but it is a last-resort option.");
         }
 
         private string getSavePath()
