@@ -64,9 +64,9 @@ namespace Einstein.model
         }
         private float validateStrength(float value)
         {
-            value = Math.Max(BibiteVersionIndependentConfig.SYNAPSE_STRENGTH_MIN,
+            value = Math.Max(BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MIN,
                 Math.Min(value,
-                BibiteVersionIndependentConfig.SYNAPSE_STRENGTH_MAX));
+                BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX));
             return value;
         }
         public string getStrengthAsStringForUI()

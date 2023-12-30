@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Einstein
 {
-    public struct BibiteVersionIndependentConfig
+    public struct BibiteConfigVersionIndependent
     {
         public const float SYNAPSE_STRENGTH_MIN = -100f;
         public const float SYNAPSE_STRENGTH_MAX = 100f;

@@ -51,14 +51,14 @@ namespace Einstein.model.json
         private string parent;
         private Dictionary<int, int> oldNewNeuronIndicesMap;
 
-        public JsonBrain() : base()
+        public JsonBrain(BibiteVersion bibiteVersion) : base(bibiteVersion)
         {
             isReady = "true";
             parent = "true";
             oldNewNeuronIndicesMap = new Dictionary<int, int>();
         }
 
-        public JsonBrain(string json, int startIndex, BibiteVersion bibiteVersion) : base()
+        public JsonBrain(string json, int startIndex, BibiteVersion bibiteVersion) : base(bibiteVersion)
         {
             JsonParser parser = new JsonParser(json, startIndex);
             isReady = "true";

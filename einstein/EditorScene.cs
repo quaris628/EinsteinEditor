@@ -1,4 +1,5 @@
 ﻿using Einstein.config;
+using Einstein.config.bibiteVersions;
 using Einstein.model;
 using Einstein.model.json;
 using Einstein.ui;
@@ -57,7 +58,7 @@ namespace Einstein
         {
             bibiteVersion = BibiteVersion.DEFAULT_VERSION;
 
-            editArea = new EditArea(new JsonBrain(), moveNeuronIntoMenu, bibiteVersion);
+            editArea = new EditArea(new JsonBrain(bibiteVersion), moveNeuronIntoMenu, bibiteVersion);
 
             selected = null;
             NeuronMenuButton inputButton = new NeuronMenuButton(
@@ -188,12 +189,15 @@ namespace Einstein
 
             // TODO check bb8Version of the destination .bb8 file and do conversion handling
 
+            // set inov positioning
             foreach (NeuronRenderable nr in editArea.NeuronRenderables)
             {
                 int x = nr.NeuronDrawable.GetCenterX();
                 int y = nr.NeuronDrawable.GetCenterY();
                 ((JsonNeuron)nr.Neuron).SetInovXY(x, y);
             }
+
+            // read file
             string filepath = IO.POPUPS.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
                 "Save to Bibite", "");
             if (filepath == "")
@@ -206,18 +210,76 @@ namespace Einstein
                 IO.POPUPS.ShowErrorPopup("Save Failed", "File not found.");
                 return;
             }
-            string bibiteJson = File.ReadAllText(filepath);
-            int startIndex = bibiteJson.IndexOf("\"brain\":") + "\"brain\":".Length;
-            int endIndex = bibiteJson.IndexOf("\"immuneSystem\":");
+            string json = File.ReadAllText(filepath);
+
+            // determine where to insert the brain
+            int startIndex = json.IndexOf("\"brain\":") + "\"brain\":".Length;
+            int endIndex = json.IndexOf("\"immuneSystem\":");
             if (startIndex < 0 || endIndex < 0)
             {
-                IO.POPUPS.ShowErrorPopup("Save Failed", "File format is invalid.");
+                IO.POPUPS.ShowErrorPopup("Save Failed", "File format is invalid: Cannot find an existing brain.");
                 return;
             }
-            // TODO read version and convert accordingly
-            string brainJson = ((JsonBrain)editArea.Brain).GetSave(bibiteVersion);
-            bibiteJson = bibiteJson.Substring(0, startIndex) + " " + brainJson + bibiteJson.Substring(endIndex);
-            File.WriteAllText(filepath, bibiteJson);
+
+            // determine destination version
+            string versionName;
+            try
+            {
+                versionName = parseVersionName(json);
+            }
+            catch (NoNextValueException e)
+            {
+                IO.POPUPS.ShowErrorPopup("Save Failed", "File format is invalid: Cannot find Bibites version.\nDetails: " + e.Message);
+                return;
+            }
+            BibiteVersion targetBibiteVersion;
+            try
+            {
+                targetBibiteVersion = BibiteVersion.FromName(versionName);
+            }
+            catch (ArgumentException e)
+            {
+                IO.POPUPS.ShowErrorPopup("Save Failed", e.Message + "\n\n" +
+                    "This bibite's version is either invalid or is too old or too new to be recognized by Einstein.\n" +
+                    "If it's too new, consider checking for updates to Einstein at https://github.com/quaris628/EinsteinEditor/releases/\n\n" +
+                    "If, for some reason, you really really really want to try editing this bibite anyway, " +
+                    "beware! You will probably run into seriously bad problems like data corruption, " +
+                    "unpredictable crashes, and bugged 'god' or 'demon' bibites... but technically you can change the " +
+                    "bibite file's version number to trick Einstein into treating the file as if it was that version. " +
+                    "As long as you back up your .bb8 files beforehand, there won't be any permanent harm done. " +
+                    "Again, I don't advise doing this, but it is a last-resort option.");
+                return;
+            }
+
+            BaseBrain brainToSave = editArea.Brain;
+
+            // ask the user if they want to convert
+            if (targetBibiteVersion != bibiteVersion)
+            {
+                bool answer = IO.POPUPS.ShowYesNoPopup("Version Mismatch",
+                    $"This brain's Bibites version is '{bibiteVersion}'.\n" +
+                    $"The chosen .bb8 file's Bibites version is '{targetBibiteVersion}'.\n\n" +
+                    $"Do you want Einstein to try automatically converting the brain to version '{targetBibiteVersion}' and save it to the file?\n\n" +
+                    "Regardless of your choice, the brain will remain open in the editor in its unconverted state.");
+                if (!answer)
+                {
+                    return;
+                }
+                try
+                {
+                    brainToSave = bibiteVersion.CreateConvertedCopyOf(brainToSave, targetBibiteVersion);
+                }
+                catch (CannotConvertException e)
+                {
+                    IO.POPUPS.ShowErrorPopup("Unable to convert brain to "
+                        + targetBibiteVersion.VERSION_NAME, e.Message);
+                    return;
+                }
+            }
+
+            string brainJson = ((JsonBrain)brainToSave).GetSave(targetBibiteVersion);
+            json = json.Substring(0, startIndex) + " " + brainJson + json.Substring(endIndex);
+            File.WriteAllText(filepath, json);
             savePath = Path.GetDirectoryName(filepath);
             saveMessageText.Show();
         }
@@ -292,7 +354,8 @@ namespace Einstein
                         newDescription = nonNumberDesc + descNumberInt;
                     }
                     // replace 2nd instance of the original description with the new description
-                    int indexOf2ndInstance = json.IndexOf(originalDescription, json.IndexOf(originalDescription));
+                    int indexOf2ndInstance = 1 + json.IndexOf("\"" + originalDescription + "\"",
+                        json.IndexOf("\"" + originalDescription + "\""));
                     json = json.Substring(0, indexOf2ndInstance) +
                         newDescription +
                         json.Substring(indexOf2ndInstance + originalDescription.Length);

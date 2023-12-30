@@ -18,7 +18,10 @@ namespace Einstein.model
         private Dictionary<int, LinkedList<BaseSynapse>> synapsesFromIndex;
         private Dictionary<int, LinkedList<BaseSynapse>> synapsesToIndex;
 
-        public BaseBrain()
+        // version must be immutable
+        public BibiteVersion BibiteVersion { get; private set; }
+
+        public BaseBrain(BibiteVersion bibiteVersion)
         {
             Neurons = new LinkedList<BaseNeuron>();
             Synapses = new LinkedList<BaseSynapse>();
@@ -27,6 +30,7 @@ namespace Einstein.model
             synapsesIndex = new Dictionary<(int, int), BaseSynapse>();
             synapsesFromIndex = new Dictionary<int, LinkedList<BaseSynapse>>();
             synapsesToIndex = new Dictionary<int, LinkedList<BaseSynapse>>();
+            BibiteVersion = bibiteVersion;
         }
 
         public void Add(BaseNeuron neuron)
