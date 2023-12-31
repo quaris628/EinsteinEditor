@@ -58,6 +58,20 @@ namespace Einstein.model.json
             oldNewNeuronIndicesMap = new Dictionary<int, int>();
         }
 
+        public JsonBrain(BaseBrain brain, BibiteVersion bibiteVersion) : this(bibiteVersion)
+        {
+            foreach (BaseNeuron neuron in brain.Neurons)
+            {
+                Add(new JsonNeuron(neuron.Index, neuron.Type, neuron.Description, bibiteVersion));
+            }
+            foreach (BaseSynapse synapse in brain.Synapses)
+            {
+                JsonNeuron newTo = (JsonNeuron)GetNeuron(synapse.To.Index);
+                JsonNeuron newFrom = (JsonNeuron)GetNeuron(synapse.From.Index);
+                Add(new JsonSynapse(newTo, newFrom, synapse.Strength));
+            }
+        }
+
         public JsonBrain(string json, int startIndex, BibiteVersion bibiteVersion) : base(bibiteVersion)
         {
             JsonParser parser = new JsonParser(json, startIndex);

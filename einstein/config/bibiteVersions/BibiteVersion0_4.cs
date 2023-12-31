@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Einstein.config.bibiteVersions
 {
-    public class BibiteVersion0_5 : BibiteVersion
+    public class BibiteVersion0_4 : BibiteVersion
     {
-        internal static readonly BibiteVersion0_5 INSTANCE = new BibiteVersion0_5();
+        internal static readonly BibiteVersion0_4 INSTANCE = new BibiteVersion0_4();
 
-        private BibiteVersion0_5(): base(5)
+        private BibiteVersion0_4(): base(4)
         {
-            VERSION_NAME = "0.5";
+            VERSION_NAME = "0.4";
 
             INPUT_NODES_INDEX_MIN = 0;
             INPUT_NODES_INDEX_MAX = 32;
@@ -96,63 +96,16 @@ namespace Einstein.config.bibiteVersions
             };
         }
 
-        // No changes between 0.4 and 0.5
-
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
-            // To 0.4
-            // deep copy with no changes
-            return new JsonBrain(brain, V0_4);
+            throw new NoSuchVersionException("There is no supported version lower than " + VERSION_NAME);
         }
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            // To 0.6
-            // Add 2 new IO neurons, and shift indexes to accomodate them
-
-            BaseBrain brainOut = new JsonBrain(V0_6);
-            foreach (BaseNeuron neuron in brain.Neurons)
-            {
-                // update each index
-                int newIndex = ConvertNeuronIndexTo0_6(neuron.Index);
-
-                brainOut.Add(new JsonNeuron(newIndex, neuron.Type, neuron.Description, V0_6));
-            }
-            foreach (BaseSynapse synapse in brain.Synapses)
-            {
-                int newToIndex = ConvertNeuronIndexTo0_6(synapse.To.Index);
-                int newFromIndex = ConvertNeuronIndexTo0_6(synapse.From.Index);
-                BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
-                BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
-                brainOut.Add(new JsonSynapse((JsonNeuron)newTo, (JsonNeuron)newFrom, synapse.Strength));
-            }
-
-            // EggsStored
-            brainOut.Add(new JsonNeuron(8, NeuronType.Input, V0_6.DESCRIPTIONS[8], V0_6));
-            // EggProduction
-            brainOut.Add(new JsonNeuron(37, NeuronType.TanH, V0_6.DESCRIPTIONS[37], V0_6));
-
-            return brainOut;
-        }
-
-        private int ConvertNeuronIndexTo0_6(int index0_5)
-        {
-            if (0 <= index0_5 && index0_5 <= 8)
-            {
-                return index0_5;
-            }
-            else if (9 <= index0_5 && index0_5 <= 35)
-            {
-                return index0_5 + 1;
-            }
-            else if (36 <= index0_5)
-            {
-                return index0_5 + 2;
-            }
-            else
-            {
-                throw new ArgumentException("index cannot be negative");
-            }
+            // To 0.5
+            // deep copy with no changes
+            return new JsonBrain(brain, V0_5);
         }
     }
 }

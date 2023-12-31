@@ -12,7 +12,7 @@ namespace Einstein.config.bibiteVersions
     {
         internal static readonly BibiteVersion0_6 INSTANCE = new BibiteVersion0_6();
 
-        private BibiteVersion0_6(): base(1)
+        private BibiteVersion0_6(): base(6)
         {
             VERSION_NAME = "0.6";
 
@@ -162,7 +162,7 @@ namespace Einstein.config.bibiteVersions
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            throw new NoSuchVersionException("There is no version higher than " + VERSION_NAME);
+            throw new NoSuchVersionException("There is no supported version higher than " + VERSION_NAME);
         }
     }
 }

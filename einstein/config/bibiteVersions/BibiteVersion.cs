@@ -11,28 +11,31 @@ namespace Einstein.config
 {
     public abstract class BibiteVersion : IComparable<BibiteVersion>
     {
-        #region Instances
+        #region Version Instances - Static
 
         public static readonly BibiteVersion V0_6 = BibiteVersion0_6.INSTANCE;
         public static readonly BibiteVersion V0_5 = BibiteVersion0_5.INSTANCE;
+        public static readonly BibiteVersion V0_4 = BibiteVersion0_4.INSTANCE;
 
         // What the version is when you start the editor
         public static readonly BibiteVersion DEFAULT_VERSION = V0_6;
-
 
         // could always do more complex version number handling here,
         // in case we need that flexibility for weird scenarios
 
         public static BibiteVersion FromName(string versionName)
         {
-            // (switch doesn't work, case values need to be const)
-            if (versionName.Substring(0, V0_5.VERSION_NAME.Length) == V0_5.VERSION_NAME)
+            if (V0_6.IsMatchForVersionName(versionName))
+            {
+                return V0_6;
+            }
+            else if (V0_5.IsMatchForVersionName(versionName))
             {
                 return V0_5;
             }
-            else if (versionName.Substring(0, V0_6.VERSION_NAME.Length) == V0_6.VERSION_NAME)
+            else if (V0_4.IsMatchForVersionName(versionName))
             {
-                return V0_6;
+                return V0_4;
             }
             else
             {
@@ -40,30 +43,13 @@ namespace Einstein.config
             }
         }
 
-        private static BibiteVersion FromId(int versionId)
-        {
-            switch (versionId)
-            {
-                case 0:
-                    return V0_5;
-                case 1:
-                    return V0_6;
-                default:
-                    throw new NoSuchVersionException($"Unrecognized version id '{versionId}'");
-            }
-        }
-
-        #endregion Instances
+        #endregion Version Instances - Static
 
         #region Data
 
         // used to order the versions
         private int versionId;
 
-        // any version that starts with these characters will be considered a version match
-        // e.g. "version": "0.5.1" matches VERSION_NAME = "0.5"
-        // Note this means you could do "0.6" to cover any 0.6 version,
-        // or you could have a separate "0.6.1", "0.6.2", etc.
         public string VERSION_NAME { get; protected set; }
         
         public int INPUT_NODES_INDEX_MIN { get; protected set; }
@@ -82,6 +68,11 @@ namespace Einstein.config
         protected BibiteVersion(int versionId)
         {
             this.versionId = versionId;
+        }
+
+        protected virtual bool IsMatchForVersionName(string bibitesVersionName)
+        {
+            return bibitesVersionName.Substring(0, VERSION_NAME.Length).Equals(VERSION_NAME);
         }
 
         #region Getters
