@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Einstein", "einstein\Einste
 		{D3AB7B57-E9CC-4F6B-A0EE-ADC50D3ADA0A} = {D3AB7B57-E9CC-4F6B-A0EE-ADC50D3ADA0A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryFunctionReplacementsUnitTests", "EinsteinUnitTests\LibraryFunctionReplacementsUnitTests.csproj", "{D7057195-0940-49F6-ACF6-2C46AE4A5335}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryFunctionReplacementsUnitTests", "LibraryFunctionReplacementsUnitTests\LibraryFunctionReplacementsUnitTests.csproj", "{D7057195-0940-49F6-ACF6-2C46AE4A5335}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D3AB7B57-E9CC-4F6B-A0EE-ADC50D3ADA0A} = {D3AB7B57-E9CC-4F6B-A0EE-ADC50D3ADA0A}
 	EndProjectSection

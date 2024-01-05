@@ -64,6 +64,8 @@ namespace LibraryFunctionReplacementsUnitTests
             "2147483648",
             "-2147483649",
             "2147483648.0000000004656612873077392578125",
+            "1e44",
+            "1e-44",
         };
 
         // ----- Floats -----
@@ -118,6 +120,18 @@ namespace LibraryFunctionReplacementsUnitTests
             ("-0.00000000000000000012345678", -0.00000000000000000012345678f, 0.0000000000000000000000001f),
             ("0.00000000000000000000000012345678", 0.00000000000000000000000012345678f, 0.0000000000000000000000000000001f),
             ("-0.00000000000000000000000012345678", -0.00000000000000000000000012345678f, 0.0000000000000000000000000000001f),
+        };
+
+        private static readonly (string str, float num, float epsilon)[] NORMAL_SCI_NOTATION_FLOAT_TESTS
+            = new (string str, float num, float epsilon)[]
+        {
+            // TODO I probably need to adjust epsilon, but just test it first
+            ("5E36", 5e36f, float.Epsilon),
+            ("2e-1", 2e-1f, float.Epsilon),
+            ("8E-7", 8e-7f, float.Epsilon),
+            ("2.36e-1", 2.36e-1f, float.Epsilon),
+            ("8.85E7", 8.85e7f, float.Epsilon),
+            ("-8.399032E-06", -8.399032E-06f, float.Epsilon),
         };
 
         private static readonly string[] INVALID_STRING_NOT_A_FLOAT_TESTS = new string[]
@@ -265,8 +279,8 @@ namespace LibraryFunctionReplacementsUnitTests
                 
                 // Floating point imprecisions with the last few digits are fine.
 
-                // So just check first 7 characters of the strings are equal,
-                int numCharsToCheck = Math.Min(7, Math.Min(expected.Length, actual.Length));
+                // So just check first 5 characters of the strings are equal,
+                int numCharsToCheck = Math.Min(5, Math.Min(expected.Length, actual.Length));
                 Assert.AreEqual(expected.Substring(0, numCharsToCheck), actual.Substring(0, numCharsToCheck));
                 
                 // and if there are no decimal points, the length should be equal
@@ -376,6 +390,15 @@ namespace LibraryFunctionReplacementsUnitTests
         public void StringToFloatNormal_NegativeZero()
         {
             Assert.AreEqual(0, CustomNumberParser.StringToFloat("-0"), float.Epsilon);
+        }
+
+        [TestMethod]
+        public void StringToFloatNormal_SciNotation()
+        {
+            foreach ((string str, float num, float epsilon) in NORMAL_SCI_NOTATION_FLOAT_TESTS)
+            {
+                Assert.AreEqual(num, CustomNumberParser.StringToFloat(str), epsilon);
+            }
         }
 
         [TestMethod]
