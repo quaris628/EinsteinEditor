@@ -157,7 +157,7 @@ namespace LibraryFunctionReplacements
                     // round up the last digit
                     if (j == 0)
                     {
-                        roundUpWholePartDigits(wholePartDigits, 0, ref wholePartDigitsStartIndex);
+                        roundUpWholePartDigits(wholePartDigits, 38, ref wholePartDigitsStartIndex);
                     }
                     else
                     {
@@ -170,8 +170,11 @@ namespace LibraryFunctionReplacements
 
                 // assemble the string
                 s.Append(wholePartDigits, wholePartDigitsStartIndex, 39 - wholePartDigitsStartIndex);
-                s.Append('.');
-                s.Append(decimalDigits, 0, j);
+                if (j > 0)
+                {
+                    s.Append('.');
+                    s.Append(decimalDigits, 0, j);
+                }
             }
             else
             {
