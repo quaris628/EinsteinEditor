@@ -72,7 +72,8 @@ namespace Einstein.config.bibiteVersions
 
         protected virtual bool IsMatchForVersionName(string bibitesVersionName)
         {
-            return bibitesVersionName.Substring(0, VERSION_NAME.Length).Equals(VERSION_NAME);
+            return bibitesVersionName.Length >= VERSION_NAME.Length
+                && bibitesVersionName.Substring(0, VERSION_NAME.Length).Equals(VERSION_NAME);
         }
 
         #region Getters
