@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Einstein.config.bibiteVersions
 {
-    public class BibiteVersion0_6 : BibiteVersion
+    public class BibiteVersion0_6_0a : BibiteVersion
     {
-        internal static readonly BibiteVersion0_6 INSTANCE = new BibiteVersion0_6();
+        internal static readonly BibiteVersion0_6_0a INSTANCE = new BibiteVersion0_6_0a();
 
-        private BibiteVersion0_6(): base(6)
+        private BibiteVersion0_6_0a(): base(6)
         {
-            VERSION_NAME = "0.6";
+            VERSION_NAME = "0.6.0a";
 
             INPUT_NODES_INDEX_MIN = 0;
             INPUT_NODES_INDEX_MAX = 33;

@@ -42,12 +42,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="config\bibiteVersions\BibiteVersion.cs" />
+    <Compile Include="config\BibiteVersion.cs" />
     <Compile Include="config\bibiteVersions\BibiteVersion0_4.cs" />
-    <Compile Include="config\bibiteVersions\BibiteVersion0_6.cs" />
+    <Compile Include="config\bibiteVersions\BibiteVersion0_6_0a.cs" />
     <Compile Include="config\bibiteVersions\BibiteVersion0_5.cs" />
-    <Compile Include="config\bibiteVersions\CannotConvertException.cs" />
-    <Compile Include="config\bibiteVersions\NoSuchVersionException.cs" />
+    <Compile Include="config\exceptions\CannotConvertException.cs" />
+    <Compile Include="config\exceptions\NoSuchVersionException.cs" />
     <Compile Include="config\ColorScheme.cs" />
     <Compile Include="EinsteinMain.cs" />
     <Compile Include="config\EinsteinConfig.cs" />

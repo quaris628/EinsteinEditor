@@ -107,35 +107,35 @@ namespace Einstein.config.bibiteVersions
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            // To 0.6
+            // To 0.6.0a
             // Add 2 new IO neurons, and shift indexes to accomodate them
 
-            BaseBrain brainOut = new JsonBrain(V0_6);
+            BaseBrain brainOut = new JsonBrain(V0_6_0a);
             foreach (BaseNeuron neuron in brain.Neurons)
             {
                 // update each index
-                int newIndex = ConvertNeuronIndexTo0_6(neuron.Index);
+                int newIndex = ConvertNeuronIndexTo0_6_0a(neuron.Index);
 
-                brainOut.Add(new JsonNeuron(newIndex, neuron.Type, neuron.Description, V0_6));
+                brainOut.Add(new JsonNeuron(newIndex, neuron.Type, neuron.Description, V0_6_0a));
             }
             foreach (BaseSynapse synapse in brain.Synapses)
             {
-                int newToIndex = ConvertNeuronIndexTo0_6(synapse.To.Index);
-                int newFromIndex = ConvertNeuronIndexTo0_6(synapse.From.Index);
+                int newToIndex = ConvertNeuronIndexTo0_6_0a(synapse.To.Index);
+                int newFromIndex = ConvertNeuronIndexTo0_6_0a(synapse.From.Index);
                 BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
                 BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
                 brainOut.Add(new JsonSynapse((JsonNeuron)newTo, (JsonNeuron)newFrom, synapse.Strength));
             }
 
             // EggsStored
-            brainOut.Add(new JsonNeuron(8, NeuronType.Input, V0_6.DESCRIPTIONS[8], V0_6));
+            brainOut.Add(new JsonNeuron(8, NeuronType.Input, V0_6_0a.DESCRIPTIONS[8], V0_6_0a));
             // EggProduction
-            brainOut.Add(new JsonNeuron(37, NeuronType.TanH, V0_6.DESCRIPTIONS[37], V0_6));
+            brainOut.Add(new JsonNeuron(37, NeuronType.TanH, V0_6_0a.DESCRIPTIONS[37], V0_6_0a));
 
             return brainOut;
         }
 
-        private int ConvertNeuronIndexTo0_6(int index0_5)
+        private int ConvertNeuronIndexTo0_6_0a(int index0_5)
         {
             if (0 <= index0_5 && index0_5 <= 8)
             {

@@ -237,7 +237,7 @@ namespace Einstein
             {
                 targetBibiteVersion = BibiteVersion.FromName(versionName);
             }
-            catch (ArgumentException e)
+            catch (NoSuchVersionException e)
             {
                 showVersionMismatchErrorPopup("Save Failed", e);
                 return;
@@ -308,7 +308,7 @@ namespace Einstein
             {
                 newBibiteVersion = BibiteVersion.FromName(newBibiteVersionName);
             }
-            catch (ArgumentException e)
+            catch (NoSuchVersionException e)
             {
                 showVersionMismatchErrorPopup("Load Failed", e);
                 return;
@@ -403,7 +403,7 @@ namespace Einstein
             return json.Substring(indexLeft, length);
         }
 
-        private static void showVersionMismatchErrorPopup(string title, ArgumentException e)
+        private static void showVersionMismatchErrorPopup(string title, NoSuchVersionException e)
         {
             IO.POPUPS.ShowErrorPopup(title, e.Message + "\n\n" +
                     "This bibite's version is either invalid or is too old or too new to be recognized by Einstein.\n" +

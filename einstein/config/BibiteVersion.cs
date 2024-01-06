@@ -7,27 +7,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Einstein.config
+namespace Einstein.config.bibiteVersions
 {
     public abstract class BibiteVersion : IComparable<BibiteVersion>
     {
         #region Version Instances - Static
 
-        public static readonly BibiteVersion V0_6 = BibiteVersion0_6.INSTANCE;
+        public static readonly BibiteVersion V0_6_0a = BibiteVersion0_6_0a.INSTANCE;
         public static readonly BibiteVersion V0_5 = BibiteVersion0_5.INSTANCE;
         public static readonly BibiteVersion V0_4 = BibiteVersion0_4.INSTANCE;
 
         // What the version is when you start the editor
-        public static readonly BibiteVersion DEFAULT_VERSION = V0_6;
+        public static readonly BibiteVersion DEFAULT_VERSION = V0_5;
 
         // could always do more complex version number handling here,
         // in case we need that flexibility for weird scenarios
 
         public static BibiteVersion FromName(string versionName)
         {
-            if (V0_6.IsMatchForVersionName(versionName))
+            if (V0_6_0a.IsMatchForVersionName(versionName))
             {
-                return V0_6;
+                return V0_6_0a;
             }
             else if (V0_5.IsMatchForVersionName(versionName))
             {
@@ -39,7 +39,7 @@ namespace Einstein.config
             }
             else
             {
-                throw new ArgumentException($"Unrecognized version '{versionName}'");
+                throw new NoSuchVersionException($"Unrecognized version '{versionName}'");
             }
         }
 
