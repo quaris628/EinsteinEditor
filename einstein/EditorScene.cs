@@ -529,15 +529,25 @@ namespace Einstein
         private void checkForResize()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            if (IO.WINDOW.GetWidth() != prevWindowWidth)
+            int newWidth = IO.WINDOW.GetWidth();
+            int newHeight = IO.WINDOW.GetHeight();
+
+            if (newHeight <= 0)
+            {
+                return;
+            }
+
+            if (newWidth != prevWindowWidth)
             {
                 input.RepositionOptions();
                 output.RepositionOptions();
                 hidden.RepositionOptions();
+                prevWindowWidth = newWidth;
             }
-            if (IO.WINDOW.GetHeight() != prevWindowHeight)
+            if (newHeight != prevWindowHeight)
             {
                 zoomControls.Reposition();
+                prevWindowHeight = newHeight;
             }
         }
 
