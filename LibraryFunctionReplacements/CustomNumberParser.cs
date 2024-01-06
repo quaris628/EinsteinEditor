@@ -266,6 +266,20 @@ namespace LibraryFunctionReplacements
                         i++;
                         break;
                     }
+                    else if (str[i] == 'e' || str[i] == 'E')
+                    {
+                        int exponent = StringToInt(str.Substring(i + 1));
+                        try
+                        {
+                            output *= DIGIT_POWERS_OF_10[38 - exponent];
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            throw new ArithmeticException($"Exponent '{exponent}' in '{str}' exceeds maximum or minimum bounds for single-precision floating point numbers");
+                        }
+                        i = str.Length; // stop second for loop from continuing
+                        break;
+                    }
                     else
                     {
                         throw new ArgumentException("Encountered non-digit character when parsing float: '" + str[i] + "'");
@@ -279,6 +293,19 @@ namespace LibraryFunctionReplacements
                     {
                         output -= d * decBase;
                         decBase *= 0.1f;
+                    }
+                    else if (str[i] == 'e' || str[i] == 'E')
+                    {
+                        int exponent = StringToInt(str.Substring(i + 1));
+                        try
+                        {
+                            output *= DIGIT_POWERS_OF_10[38 - exponent];
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            throw new ArithmeticException($"Exponent '{exponent}' in '{str}' exceeds maximum or minimum bounds for single-precision floating point numbers");
+                        }
+                        break;
                     }
                     else
                     {
@@ -300,6 +327,20 @@ namespace LibraryFunctionReplacements
                         i++;
                         break;
                     }
+                    else if (str[i] == 'e' || str[i] == 'E')
+                    {
+                        int exponent = StringToInt(str.Substring(i + 1));
+                        try
+                        {
+                            output *= DIGIT_POWERS_OF_10[38 - exponent];
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            throw new ArithmeticException($"Exponent '{exponent}' in '{str}' exceeds maximum or minimum bounds for single-precision floating point numbers");
+                        }
+                        i = str.Length; // stop second for loop from continuing
+                        break;
+                    }
                     else
                     {
                         throw new ArgumentException("Encountered non-digit character when parsing float: '" + str[i] + "'");
@@ -313,6 +354,19 @@ namespace LibraryFunctionReplacements
                     {
                         output += d * decBase;
                         decBase *= 0.1f;
+                    }
+                    else if (str[i] == 'e' || str[i] == 'E')
+                    {
+                        int exponent = StringToInt(str.Substring(i + 1));
+                        try
+                        {
+                            output *= DIGIT_POWERS_OF_10[38 - exponent];
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            throw new ArithmeticException($"Exponent '{exponent}' in '{str}' exceeds maximum or minimum bounds for single-precision floating point numbers");
+                        }
+                        break;
                     }
                     else
                     {

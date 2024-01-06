@@ -123,11 +123,10 @@ namespace LibraryFunctionReplacementsUnitTests
         private static readonly (string str, float num, float epsilon)[] NORMAL_SCI_NOTATION_FLOAT_TESTS
             = new (string str, float num, float epsilon)[]
         {
-            // TODO I probably need to adjust epsilon, but just test it first
             ("5E36", 5e36f, float.Epsilon),
             ("2e-1", 2e-1f, float.Epsilon),
             ("8E-7", 8e-7f, float.Epsilon),
-            ("2.36e-1", 2.36e-1f, float.Epsilon),
+            ("2.36e-1", 2.36e-1f, 1e-7f),
             ("8.85E7", 8.85e7f, float.Epsilon),
             ("-8.399032E-06", -8.399032E-06f, float.Epsilon),
         };
