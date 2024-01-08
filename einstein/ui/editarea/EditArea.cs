@@ -258,12 +258,7 @@ namespace Einstein.ui.editarea
                 foreach (NeuronRenderable nr in neuronIndexToNR.Values)
                 {
                     JsonNeuron jn = (JsonNeuron)nr.Neuron;
-                    if (jn.Inov != 0)
-                    {
-                        int x = jn.GetInovX();
-                        int y = jn.GetInovY();
-                        nr.Reposition(x, y);
-                    }
+                    nr.Reposition(jn.DiagramX, jn.DiagramY);
                 }
             }
         }

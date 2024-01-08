@@ -83,8 +83,6 @@ namespace Einstein.model
             return Description + " : " + Type.ToString() + " [i" + Index + " v" + BibiteVersion.ToString() + "]";
         }
 
-        public virtual string GetSave() { throw new NotSupportedException(); }
-
         public static string GetDefaultDescription(int index) { return "Hidden" + index; }
 
         private int validateIndex(int value)
@@ -109,12 +107,6 @@ namespace Einstein.model
                     "Neuron descriptions must be alphanumeric");
             }
             return value;
-        }
-
-        // Don't use this unless you know what you're doing.
-        public void YesImReallyAbsolutelyDefinitelySureIWantToChangeTheIndex(int newIndex)
-        {
-            _index = newIndex;
         }
     }
 

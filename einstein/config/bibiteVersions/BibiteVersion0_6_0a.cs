@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Einstein.model.json.JsonNeuron;
 
 namespace Einstein.config.bibiteVersions
 {
@@ -99,6 +100,22 @@ namespace Einstein.config.bibiteVersions
             };
         }
 
+        public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
+        {
+            // fall back to inov if it's not in the description
+            return GetNeuronDiagramPositionFromDescription(fields, ref x, ref y)
+                || GetNeuronDiagramPositionFromInov(fields, ref x, ref y);
+        }
+        public override void SetNeuronDiagramPositionInRawJsonFields(RawJsonFields fields, int x, int y)
+        {
+            SetNeuronDiagramPositionInDesc(fields, x, y);
+            // set inov if and only if the neuron type is hidden
+            if (new JsonNeuron(fields, INSTANCE).IsHidden())
+            {
+                SetNeuronDiagramPositionInInov(fields, x, y);
+            }
+        }
+
         // Changes from 0.5:
         // - New input neuron EggsStored added at new index 8, offsets 
         // - New output neuron EggProduction added at new index 37, type is TanH
@@ -118,7 +135,11 @@ namespace Einstein.config.bibiteVersions
                 // update each index
                 int newIndex = ConvertNeuronIndexTo0_5(neuron.Index);
 
-                brainOut.Add(new JsonNeuron(newIndex, neuron.Type, neuron.Description, V0_5));
+                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, neuron.Description, V0_5);
+                jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
+                jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
+
+                brainOut.Add(jn);
             }
             foreach (BaseSynapse synapse in brain.Synapses)
             {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Einstein.model.json.JsonNeuron;
 
 namespace Einstein.config.bibiteVersions
 {
@@ -96,6 +97,19 @@ namespace Einstein.config.bibiteVersions
             };
         }
 
+        public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
+        {
+            // fall back to inov if it's not in the description
+            return GetNeuronDiagramPositionFromDescription(fields, ref x, ref y)
+                || GetNeuronDiagramPositionFromInov(fields, ref x, ref y);
+        }
+        public override void SetNeuronDiagramPositionInRawJsonFields(RawJsonFields fields, int x, int y)
+        {
+            SetNeuronDiagramPositionInDesc(fields, x, y);
+            // always set inov
+            SetNeuronDiagramPositionInInov(fields, x, y);
+        }
+
         // No changes between 0.4 and 0.5
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
@@ -115,8 +129,17 @@ namespace Einstein.config.bibiteVersions
             {
                 // update each index
                 int newIndex = ConvertNeuronIndexTo0_6_0a(neuron.Index);
+                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, neuron.Description, V0_6_0a);
+                jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
+                jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
 
-                brainOut.Add(new JsonNeuron(newIndex, neuron.Type, neuron.Description, V0_6_0a));
+                // set inov for Input/output neurons to 1 + index
+                if (jn.IsInput() || jn.IsOutput())
+                {
+                    jn.Inov = newIndex + 1;
+                }
+
+                brainOut.Add(jn);
             }
             foreach (BaseSynapse synapse in brain.Synapses)
             {
@@ -124,7 +147,7 @@ namespace Einstein.config.bibiteVersions
                 int newFromIndex = ConvertNeuronIndexTo0_6_0a(synapse.From.Index);
                 BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
                 BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
-                brainOut.Add(new JsonSynapse((JsonNeuron)newTo, (JsonNeuron)newFrom, synapse.Strength));
+                brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
             }
 
             // EggsStored

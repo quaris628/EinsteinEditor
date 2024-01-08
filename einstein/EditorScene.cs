@@ -187,16 +187,6 @@ namespace Einstein
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
 
-            // TODO check bb8Version of the destination .bb8 file and do conversion handling
-
-            // set inov positioning
-            foreach (NeuronRenderable nr in editArea.NeuronRenderables)
-            {
-                int x = nr.NeuronDrawable.GetCenterX();
-                int y = nr.NeuronDrawable.GetCenterY();
-                ((JsonNeuron)nr.Neuron).SetInovXY(x, y);
-            }
-
             // read file
             string filepath = IO.POPUPS.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
                 "Save to Bibite", "");
@@ -244,6 +234,15 @@ namespace Einstein
             }
 
             BaseBrain brainToSave = editArea.Brain;
+            // set diagram positions
+            foreach (NeuronRenderable nr in editArea.NeuronRenderables)
+            {
+                int x = nr.NeuronDrawable.GetCenterX();
+                int y = nr.NeuronDrawable.GetCenterY();
+                JsonNeuron jn = (JsonNeuron)nr.Neuron;
+                jn.DiagramX = x;
+                jn.DiagramY = y;
+            }
 
             // ask the user if they want to convert
             if (targetBibiteVersion != bibiteVersion)

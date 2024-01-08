@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Einstein.model.json.JsonNeuron;
 
 namespace Einstein.config.bibiteVersions
 {
@@ -94,6 +95,19 @@ namespace Einstein.config.bibiteVersions
                 NeuronType.Sigmoid,
                 NeuronType.TanH,
             };
+        }
+
+        public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
+        {
+            // fall back to inov if it's not in the description
+            return GetNeuronDiagramPositionFromDescription(fields, ref x, ref y)
+                || GetNeuronDiagramPositionFromInov(fields, ref x, ref y);
+        }
+        public override void SetNeuronDiagramPositionInRawJsonFields(RawJsonFields fields, int x, int y)
+        {
+            SetNeuronDiagramPositionInDesc(fields, x, y);
+            // always set inov
+            SetNeuronDiagramPositionInInov(fields, x, y);
         }
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)

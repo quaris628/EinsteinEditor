@@ -11,37 +11,15 @@ namespace Einstein.model.json
 {
     public class JsonNeuron : BaseNeuron
     {
-
-        // Example:
-        // {
-        //   "Type":5,
-        //   "TypeName":"ReLu",
-        //   "Index":41,
-        //   "Inov":0,
-        //   "Desc":"PhereOut1",
-        //   "Value":0.0,
-        //   "LastInput":0.0,
-        //   "LastOutput":0.0
-        // }
-
-        private const string JSON_FORMAT =
-            "{{\n" +
-            "        \"Type\": {0},\n" +
-            "        \"TypeName\": \"{1}\",\n" +
-            "        \"Index\": {2},\n" +
-            "        \"Inov\": {3},\n" +
-            "        \"Desc\": \"{4}\",\n" +
-            "        \"Value\": {5},\n" +
-            "        \"LastInput\": {6},\n" +
-            "        \"LastOutput\": {7}\n" +
-            "      }}";
-
-        public int Inov { protected set; get; }
+        public int Inov;
 
         // unused for now, but they're in the json so keep track of them just in case
         private float value;
         private float lastInput;
         private float lastOutput;
+
+        public int DiagramX;
+        public int DiagramY;
 
         public JsonNeuron(int index, NeuronType type, BibiteVersion bibiteVersion)
             : this(index, type, Enum.GetName(typeof(NeuronType), type), bibiteVersion) { }
@@ -62,51 +40,150 @@ namespace Einstein.model.json
             value = jsonNeuron.value;
             lastInput = jsonNeuron.lastInput;
             lastOutput = jsonNeuron.lastOutput;
+            DiagramX = jsonNeuron.DiagramX;
+            DiagramY = jsonNeuron.DiagramY;
         }
 
-        public JsonNeuron(string json, int startIndex, BibiteVersion bibiteVersion) : base(bibiteVersion)
+        public JsonNeuron(RawJsonFields jsonFields, BibiteVersion bibiteVersion) : base(bibiteVersion)
         {
-            JsonParser parser = new JsonParser(json, startIndex);
-            parser.startParsingNextLeafObj();
-
-            Type = (NeuronType)parser.getNextValueInt("Type");
+            Type = (NeuronType)jsonFields.typeIndex;
             // skip TypeName
-            Index = parser.getNextValueInt("Index");
-            Inov = parser.getNextValueInt("Inov");
-            Description = parser.getNextValue("Desc");
-            value = parser.getNextValueFloat("Value");
-            lastInput = parser.getNextValueFloat("LastInput");
-            lastOutput = parser.getNextValueFloat("LastOutput");
-            
-            parser.endParsingLeafObj();
+            Index = jsonFields.index;
+            Inov = jsonFields.inov;
+            Description = jsonFields.GetDescPiece(RawJsonFields.DescPiece.Description);
+            value = jsonFields.value;
+            lastInput = jsonFields.lastInput;
+            lastOutput = jsonFields.lastOutput;
+            bibiteVersion.GetNeuronDiagramPositionFromRawJsonFields(jsonFields, ref DiagramX, ref DiagramY);
         }
 
-        public int GetInovX()
+        public class RawJsonFields
         {
-            return Inov >> 16;
-        }
+            public const char DESC_SPECIAL_DATA_DELIM = '-';
 
-        public int GetInovY()
-        {
-            return (Inov & 0xffff) - 32768;
-        }
+            public int typeIndex;
+            public string typeName;
+            public int index;
+            public int inov;
+            private string _desc;
+            private string[] _splitDesc;
+            public string rawDescription
+            {
+                get
+                {
+                    return _desc;
+                }
+                set
+                {
+                    _desc = value;
+                    _splitDesc = _desc.Split(DESC_SPECIAL_DATA_DELIM);
+                }
+            }
+            public float value;
+            public float lastInput;
+            public float lastOutput;
 
-        public void SetInovXY(int x, int y)
-        {
-            Inov = (x << 16) | (y + 32768);
-        }
+            public RawJsonFields(JsonNeuron jsonNeuron)
+            {
+                this.typeIndex = (int)jsonNeuron.Type;
+                this.typeName = jsonNeuron.Type.ToString();
+                this.index = jsonNeuron.Index;
+                this.inov = jsonNeuron.Inov;
+                this.SetDescPiece(DescPiece.Description, jsonNeuron.Description);
+                this.value = jsonNeuron.value;
+                this.lastInput = jsonNeuron.lastInput;
+                this.lastOutput = jsonNeuron.lastOutput;
+                jsonNeuron.BibiteVersion.SetNeuronDiagramPositionInRawJsonFields(
+                    this, jsonNeuron.DiagramX, jsonNeuron.DiagramY);
+            }
 
-        public override string GetSave()
-        {
-            return string.Format(CultureInfo.GetCultureInfo("en-US"), JSON_FORMAT,
-                CustomNumberParser.IntToString((int)Type),
-                Type.ToString(),
-                CustomNumberParser.IntToString(Index),
-                CustomNumberParser.IntToString(Inov),
+            public RawJsonFields(string json, int startIndex)
+            {
+                JsonParser parser = new JsonParser(json, startIndex);
+                parser.startParsingNextLeafObj();
+                this.typeIndex = parser.getNextValueInt("Type");
+                this.typeName = parser.getNextValue("TypeName");
+                this.index = parser.getNextValueInt("Index");
+                this.inov = parser.getNextValueInt("Inov");
+                this.rawDescription = parser.getNextValue("Desc");
+                this.value = parser.getNextValueFloat("Value");
+                this.lastInput = parser.getNextValueFloat("LastInput");
+                this.lastOutput = parser.getNextValueFloat("LastOutput");
+                parser.endParsingLeafObj();
+            }
+
+            public bool HasDescPiece(DescPiece piece)
+            {
+                return _splitDesc.Length > (int)piece;
+            }
+
+            public string GetDescPiece(DescPiece piece)
+            {
+                return _splitDesc[(int)piece];
+            }
+
+            public void SetDescPiece(DescPiece index, string piece)
+            {
+                if (_splitDesc == null)
+                {
+                    _splitDesc = new string[(int)index + 1];
+                }
+                else if (_splitDesc.Length <= (int)index)
+                {
+                    string[] newArr = new string[(int) index + 1];
+                    Array.Copy(_splitDesc, newArr, _splitDesc.Length);
+                    _splitDesc = newArr;
+                }
+                _splitDesc[(int)index] = piece;
+                _desc = string.Join(DESC_SPECIAL_DATA_DELIM.ToString(), _splitDesc);
+            }
+
+            public enum DescPiece
+            {
                 Description,
-                CustomNumberParser.FloatToString(value),
-                CustomNumberParser.FloatToString(lastInput),
-                CustomNumberParser.FloatToString(lastOutput));
+                DiagramPosX,
+                DiagramPosY,
+            }
+
+
+            // Example:
+            // {
+            //   "Type":5,
+            //   "TypeName":"ReLu",
+            //   "Index":41,
+            //   "Inov":0,
+            //   "Desc":"PhereOut1",
+            //   "Value":0.0,
+            //   "LastInput":0.0,
+            //   "LastOutput":0.0
+            // }
+
+            private const string JSON_FORMAT =
+                "{{\n" +
+                "        \"Type\": {0},\n" +
+                "        \"TypeName\": \"{1}\",\n" +
+                "        \"Index\": {2},\n" +
+                "        \"Inov\": {3},\n" +
+                "        \"Desc\": \"{4}\",\n" +
+                "        \"Value\": {5},\n" +
+                "        \"LastInput\": {6},\n" +
+                "        \"LastOutput\": {7}\n" +
+                "      }}";
+
+            public override string ToString()
+            {
+                return string.Format(
+                    CultureInfo.GetCultureInfo("en-US"),
+                    JSON_FORMAT,
+                    typeIndex,
+                    typeName,
+                    CustomNumberParser.IntToString(index),
+                    CustomNumberParser.IntToString(inov),
+                    rawDescription,
+                    CustomNumberParser.FloatToString(value),
+                    CustomNumberParser.FloatToString(lastInput),
+                    CustomNumberParser.FloatToString(lastOutput));
+            }
         }
     }
 }
