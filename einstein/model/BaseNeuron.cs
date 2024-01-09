@@ -101,12 +101,17 @@ namespace Einstein.model
             {
                 return GetDefaultDescription(Index);
             }
-            else if (!value.All(char.IsLetterOrDigit))
+            else if (!value.All(isValidCharForDesc))
             {
                 throw new InvalidDescriptionException(
-                    "Neuron descriptions must be alphanumeric");
+                    "Neuron descriptions must be alphanumeric (except _ and -)");
             }
             return value;
+        }
+
+        public static bool isValidCharForDesc(char c)
+        {
+            return char.IsLetterOrDigit(c) || c == '_' || c == '-';
         }
     }
 
