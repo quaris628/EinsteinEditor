@@ -62,13 +62,13 @@ namespace Einstein.model.json
         {
             foreach (BaseNeuron neuron in brain.Neurons)
             {
-                Add(new JsonNeuron(neuron.Index, neuron.Type, neuron.Description, bibiteVersion));
+                Add(new JsonNeuron((JsonNeuron)neuron, bibiteVersion));
             }
             foreach (BaseSynapse synapse in brain.Synapses)
             {
-                JsonNeuron newTo = (JsonNeuron)GetNeuron(synapse.To.Index);
                 JsonNeuron newFrom = (JsonNeuron)GetNeuron(synapse.From.Index);
-                Add(new JsonSynapse(newTo, newFrom, synapse.Strength));
+                JsonNeuron newTo = (JsonNeuron)GetNeuron(synapse.To.Index);
+                Add(new JsonSynapse(newFrom, newTo, synapse.Strength));
             }
         }
 

@@ -44,6 +44,17 @@ namespace Einstein.model.json
             DiagramY = jsonNeuron.DiagramY;
         }
 
+        public JsonNeuron(JsonNeuron jsonNeuron, BibiteVersion bibiteVersion)
+            : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Description, bibiteVersion)
+        {
+            Inov = jsonNeuron.Inov;
+            value = jsonNeuron.value;
+            lastInput = jsonNeuron.lastInput;
+            lastOutput = jsonNeuron.lastOutput;
+            DiagramX = jsonNeuron.DiagramX;
+            DiagramY = jsonNeuron.DiagramY;
+        }
+
         public JsonNeuron(RawJsonFields jsonFields, BibiteVersion bibiteVersion) : base(bibiteVersion)
         {
             Type = (NeuronType)jsonFields.typeIndex;
