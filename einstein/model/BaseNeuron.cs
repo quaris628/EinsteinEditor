@@ -1,6 +1,7 @@
 ﻿using Einstein.config.bibiteVersions;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ namespace Einstein.model
 {
     public class BaseNeuron
     {
+        public static readonly Color DEFAULT_COLOR_GROUP = Color.FromArgb(225, 225, 225);
+
         private int _index;
         public int Index {
             get { return _index; }
@@ -27,12 +30,15 @@ namespace Einstein.model
             set { _description = validateDescription(value); }
         }
 
+        public Color ColorGroup;
+
         // description, type, and even index can change, but version must be immutable
         public BibiteVersion BibiteVersion { get; private set; }
 
         protected BaseNeuron(BibiteVersion bibiteVersion)
         {
             BibiteVersion = bibiteVersion;
+            ColorGroup = DEFAULT_COLOR_GROUP;
         }
 
         // Description will be the type name
@@ -44,6 +50,7 @@ namespace Einstein.model
             Index = index;
             Type = type;
             Description = description;
+            ColorGroup = DEFAULT_COLOR_GROUP;
             if (IsInput() && IsOutput())
             {
                 // This is Leo's fault. Don't blame me.

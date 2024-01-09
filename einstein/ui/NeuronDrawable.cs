@@ -19,7 +19,7 @@ namespace Einstein.ui
     public class NeuronDrawable : Drawable
     {
         private const string BASE_DIR = EinsteinConfig.RES_DIR + "neurons/";
-        public static readonly string BASE_IMAGE = BASE_DIR + EinsteinConfig.COLOR_MODE.NeuronBaseFile;
+        public static readonly Pen BASE_OUTLINE_PEN = new Pen(Color.Black, 1f);
         public const int CIRCLE_RADIUS = 16;
         public const int CIRCLE_DIAMETER = 2 * CIRCLE_RADIUS;
         public const int FONT_SIZE = 10;
@@ -30,7 +30,6 @@ namespace Einstein.ui
 
 
         public BaseNeuron Neuron { get; protected set; }
-        private Sprite baseSprite;
         private Sprite icon;
         private bool descEditable;
         private Text descText;
@@ -43,7 +42,6 @@ namespace Einstein.ui
         public NeuronDrawable(BaseNeuron neuron, int x, int y) : base(x, y, CIRCLE_DIAMETER, CIRCLE_DIAMETER)
         {
             Neuron = neuron;
-            baseSprite = new Sprite(new ImageWrapper(BASE_IMAGE), x, y);
             try
             {
                 icon = new Sprite(new ImageWrapper(getIconFileName(neuron)), x, y);
@@ -103,8 +101,8 @@ namespace Einstein.ui
 
         protected override void DrawAt(Graphics g, int x, int y)
         {
-            baseSprite.SetXY(x, y);
-            baseSprite.Draw(g);
+            g.FillEllipse(new Pen(Neuron.ColorGroup).Brush, x, y, CIRCLE_DIAMETER - 1f, CIRCLE_DIAMETER - 1f);
+            g.DrawEllipse(BASE_OUTLINE_PEN, x, y, CIRCLE_DIAMETER - 1f, CIRCLE_DIAMETER - 1f);
 
             icon?.SetXY(x, y);
             icon?.Draw(g);
@@ -122,7 +120,6 @@ namespace Einstein.ui
         public override void PutIn(DynamicContainer container)
         {
             base.PutIn(container);
-            baseSprite.PutIn(container);
             icon.PutIn(container);
             descText.PutIn(container);
         }
@@ -130,7 +127,6 @@ namespace Einstein.ui
         public override void TakeOut(DynamicContainer container)
         {
             base.TakeOut(container);
-            baseSprite.TakeOut(container);
             icon.TakeOut(container);
             descText.TakeOut(container);
         }

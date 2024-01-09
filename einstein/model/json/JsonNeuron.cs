@@ -2,6 +2,7 @@
 using LibraryFunctionReplacements;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,7 @@ namespace Einstein.model.json
             value = 0f;
             lastInput = 0f;
             lastOutput = 0f;
+            ColorGroup = DEFAULT_COLOR_GROUP;
         }
 
         public JsonNeuron(JsonNeuron jsonNeuron)
@@ -42,6 +44,7 @@ namespace Einstein.model.json
             lastOutput = jsonNeuron.lastOutput;
             DiagramX = jsonNeuron.DiagramX;
             DiagramY = jsonNeuron.DiagramY;
+            ColorGroup = jsonNeuron.ColorGroup;
         }
 
         public JsonNeuron(JsonNeuron jsonNeuron, BibiteVersion bibiteVersion)
@@ -53,6 +56,7 @@ namespace Einstein.model.json
             lastOutput = jsonNeuron.lastOutput;
             DiagramX = jsonNeuron.DiagramX;
             DiagramY = jsonNeuron.DiagramY;
+            ColorGroup = jsonNeuron.ColorGroup;
         }
 
         public JsonNeuron(RawJsonFields jsonFields, BibiteVersion bibiteVersion) : base(bibiteVersion)
@@ -66,11 +70,20 @@ namespace Einstein.model.json
             lastInput = jsonFields.lastInput;
             lastOutput = jsonFields.lastOutput;
             bibiteVersion.GetNeuronDiagramPositionFromRawJsonFields(jsonFields, ref DiagramX, ref DiagramY);
+            ColorGroup = jsonFields.GetColorGroup();
         }
 
         public class RawJsonFields
         {
             public const char DESC_SPECIAL_DATA_DELIM = '-';
+
+            public enum DescPiece
+            {
+                Description,
+                DiagramPosX,
+                DiagramPosY,
+                ColorHex,
+            }
 
             public int typeIndex;
             public string typeName;
@@ -101,6 +114,7 @@ namespace Einstein.model.json
                 this.index = jsonNeuron.Index;
                 this.inov = jsonNeuron.Inov;
                 this.SetDescPiece(DescPiece.Description, jsonNeuron.Description);
+                this.SetDescPiece(DescPiece.ColorHex, ColorTranslator.ToHtml(jsonNeuron.ColorGroup).Substring(1));
                 this.value = jsonNeuron.value;
                 this.lastInput = jsonNeuron.lastInput;
                 this.lastOutput = jsonNeuron.lastOutput;
@@ -121,6 +135,19 @@ namespace Einstein.model.json
                 this.lastInput = parser.getNextValueFloat("LastInput");
                 this.lastOutput = parser.getNextValueFloat("LastOutput");
                 parser.endParsingLeafObj();
+            }
+
+            public Color GetColorGroup()
+            {
+                if (HasDescPiece(DescPiece.ColorHex))
+                {
+                    string hex = GetDescPiece(DescPiece.ColorHex);
+                    return ColorTranslator.FromHtml('#' + hex);
+                }
+                else
+                {
+                    return DEFAULT_COLOR_GROUP;
+                }
             }
 
             public bool HasDescPiece(DescPiece piece)
@@ -148,14 +175,6 @@ namespace Einstein.model.json
                 _splitDesc[(int)index] = piece;
                 _desc = string.Join(DESC_SPECIAL_DATA_DELIM.ToString(), _splitDesc);
             }
-
-            public enum DescPiece
-            {
-                Description,
-                DiagramPosX,
-                DiagramPosY,
-            }
-
 
             // Example:
             // {
