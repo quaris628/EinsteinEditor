@@ -11,7 +11,7 @@ namespace Einstein.ui.editarea
 {
     public class NeuronDescET : EditableText
     {
-        public const string DESC_ALLOWED_CHARS = ALPHABET_CHARS + NUMBER_CHARS;
+        public const string DESC_ALLOWED_CHARS = UPPERCASE_ALPHABET_CHARS + LOWERCASE_ALPHABET_CHARS + NUMBER_CHARS;
 
         public BaseBrain Brain { get; private set; }
         public BaseNeuron Neuron { get; private set; }
@@ -36,7 +36,7 @@ namespace Einstein.ui.editarea
             Brain.UpdateNeuronDescription(Neuron, text.GetMessage());
         }
 
-        public void RecenterOnAnchor()
+        public override void RecenterOnAnchor()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             GetDrawable().SetCenterX(anchorX);
