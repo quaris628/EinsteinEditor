@@ -22,6 +22,7 @@ __To report bugs:__
 What this can do:
  - Allow you to create and edit small, weak, inefficient, and dumb bibite brains
  - Crash spectacularly, or otherwise break (consider this a disclaimer)
+ - Handle crashes with a prompt to report them and by logging info to a file
  - Save/Load brain to/from a bibite file
  - Show/Hide input and output neurons in the diagram
  - Create/Delete hidden neurons
@@ -30,13 +31,12 @@ What this can do:
  - Edit/View synapse strengths
  - Drag neurons around the diagram
  - Zoom and pan around the diagram
- - Have positions of neurons in the diagram persist between saving/loading (Credit to Lucifer!)
+ - Have positions of neurons in the diagram persist between saving/loading (Credit to Lucifer!) - This happens by appending data to the end of neuron descriptions, which is the extra characters you'll see when viewing the brain in the bibites simulation.
  - Handle window resizing (up to 2048x1080)
  - Auto-arrange neurons in a cleaner arrangement
  - Auto-fix non-unique neuron descriptions
  - Support multiple bibite versions
  - Auto-convert brains between bibite versions (when saving to different-versioned files)
- - Handle crashes with a prompt to report them and by logging info to a file
 
 What this can't do (and probably never will):
  - Edit bibite genes
@@ -50,7 +50,6 @@ What this sucks at doing (known bugs):
  - Takes a long time to auto-fix duplicate neuron descriptions for large brains (probably won't be fixed) [technical note: could be improved by avoiding throwing and catching exceptions]
 
 What this will do (planned enhancements):
- - Move keybinds info under a help button (and allow displaying it alongside the rest of the program)
 
 What this might do (future ideas):
   Each feature has an estimated difficultly to create (1-5).
@@ -61,6 +60,7 @@ What this might do (future ideas):
  - 2 - Keyboard shortcuts (in general)
  - 2 - Improve auto-arrangement (in general)
  - 2 - Look pretty (in general)
+ - 2 - Move keybinds info under a help button (and allow displaying it alongside the rest of the program)
  - 2 - Allow multiple instances of just the contstant input neuron (same neuron in the bibite, two or more icons floating around in the diagram)
  - 3? - Allow multiple instances of all input neurons (same neuron in the bibite, two or more icons floating around in the diagram)
  - 3 - Toggle darkmode/lightmode
