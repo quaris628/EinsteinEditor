@@ -46,6 +46,7 @@ namespace Einstein.ui.menu
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
             {
+                IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(neuronDrawable);
                 IO.RENDERER.Remove(neuronDrawable);
             }
             neuronDrawables = new SortedDictionary<int, NeuronDrawable>();
@@ -55,8 +56,12 @@ namespace Einstein.ui.menu
                 neuronDrawable.SetDisplaying(Button.IsSelected());
 
                 neuronDrawables.Add(neuron.Index, neuronDrawable);
-                
+
                 IO.RENDERER.Add(neuronDrawable, OPTION_LAYER);
+                IO.MOUSE.LEFT_UP.SubscribeOnDrawable(() =>
+                {
+                    onSelect.Invoke(neuronDrawable.Neuron);
+                }, neuronDrawable);
             }
             RepositionOptions();
         }
