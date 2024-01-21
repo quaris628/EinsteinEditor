@@ -12,20 +12,19 @@ namespace Einstein.ui.menu
     public class IONeuronMenuCategory : NeuronMenuCategory
     {
         private Action<BaseNeuron> onRemove;
-        private bool disableOnRemove;
+        
         public IONeuronMenuCategory(NeuronMenuButton button,
             IEnumerable<BaseNeuron> neuronOptions,
             Action<BaseNeuron> onRemove)
             : base(button, neuronOptions)
         {
             this.onRemove = onRemove;
-            disableOnRemove = false;
         }
 
         public override void Initialize()
         {
             base.Initialize();
-            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            foreach (NeuronDrawable neuronDrawable in GetNeuronDrawables())
             {
                 IO.MOUSE.LEFT_UP.SubscribeOnDrawable(() =>
                 {
@@ -36,7 +35,7 @@ namespace Einstein.ui.menu
         public override void Uninitialize()
         {
             base.Uninitialize();
-            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            foreach (NeuronDrawable neuronDrawable in GetNeuronDrawables())
             {
                 IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(neuronDrawable);
             }
@@ -44,55 +43,13 @@ namespace Einstein.ui.menu
 
         public void AddOption(BaseNeuron neuron)
         {
-            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            NeuronDrawable neuronDrawable = new NeuronDrawable(neuron);
-            neuronDrawable.SetDisplaying(Button.IsSelected());
-
-            neuronDrawables.Add(neuron.Index, neuronDrawable);
-
-            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(() =>
-            {
-                RemoveOption(neuronDrawable.Neuron);
-            }, neuronDrawable);
-            IO.RENDERER.Add(neuronDrawable, OPTION_LAYER);
-
-            RepositionOptions();
+            AddOption(neuron.Index, new NeuronDrawable(neuron));
         }
 
         public void RemoveOption(BaseNeuron neuron)
         {
-            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            NeuronDrawable neuronDrawable = neuronDrawables[neuron.Index];
-
-            if (!neuronDrawables.Remove(neuron.Index)) {
-                throw new KeyNotFoundException(neuronDrawable + " not found"); // TODO remove this?
-            }
-
-            IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(neuronDrawable);
-            IO.RENDERER.Remove(neuronDrawable);
-            RepositionOptions();
-
-            if (!disableOnRemove)
-            {
-                onRemove.Invoke(neuron);
-            }
-        }
-
-        public void ClearAllOptions()
-        {
-            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            // must avoid concurrent modification exception
-            LinkedList<BaseNeuron> neuronsToRemove = new LinkedList<BaseNeuron>();
-            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
-            {
-                neuronsToRemove.AddFirst(neuronDrawable.Neuron);
-            }
-            disableOnRemove = true; // kinda hacky but easiest solution, and doesn't add duplicate code
-            foreach (BaseNeuron neuron in neuronsToRemove)
-            {
-                RemoveOption(neuron);
-            }
-            disableOnRemove = false;
+            RemoveOption(neuron.Index);
+            onRemove.Invoke(neuron);
         }
 
         public override string LogDetailsForCrash()

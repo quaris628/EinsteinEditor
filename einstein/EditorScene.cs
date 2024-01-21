@@ -485,19 +485,19 @@ namespace Einstein
         private void onSelectInputs()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            selected?.Button.Deselect();
+            selected?.NeuronButton.Deselect();
             selected = input;
         }
         private void onSelectOutputs()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            selected?.Button.Deselect();
+            selected?.NeuronButton.Deselect();
             selected = output;
         }
         private void onSelectAdd()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            selected?.Button.Deselect();
+            selected?.NeuronButton.Deselect();
             selected = hidden;
         }
 

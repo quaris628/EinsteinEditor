@@ -23,7 +23,7 @@ namespace Einstein.ui.menu
         public override void Initialize()
         {
             base.Initialize();
-            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            foreach (NeuronDrawable neuronDrawable in GetNeuronDrawables())
             {
                 IO.MOUSE.LEFT_UP.SubscribeOnDrawable(() =>
                 {
@@ -35,7 +35,7 @@ namespace Einstein.ui.menu
         public override void Uninitialize()
         {
             base.Uninitialize();
-            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            foreach (NeuronDrawable neuronDrawable in GetNeuronDrawables())
             {
                 IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(neuronDrawable);
             }
@@ -44,18 +44,20 @@ namespace Einstein.ui.menu
         public void ResetNeuronOptionsTo(IEnumerable<BaseNeuron> neuronOptions)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            
+            foreach (NeuronDrawable neuronDrawable in GetNeuronDrawables())
             {
                 IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(neuronDrawable);
                 IO.RENDERER.Remove(neuronDrawable);
             }
-            neuronDrawables = new SortedDictionary<int, NeuronDrawable>();
+            sortedOptionDrawables.Clear();
+            
             foreach (BaseNeuron neuron in neuronOptions)
             {
                 NeuronDrawable neuronDrawable = new NeuronDrawable(neuron);
-                neuronDrawable.SetDisplaying(Button.IsSelected());
+                neuronDrawable.SetDisplaying(NeuronButton.IsSelected());
 
-                neuronDrawables.Add(neuron.Index, neuronDrawable);
+                sortedOptionDrawables.Add(neuron.Index, neuronDrawable);
 
                 IO.RENDERER.Add(neuronDrawable, OPTION_LAYER);
                 IO.MOUSE.LEFT_UP.SubscribeOnDrawable(() =>
@@ -63,6 +65,7 @@ namespace Einstein.ui.menu
                     onSelect.Invoke(neuronDrawable.Neuron);
                 }, neuronDrawable);
             }
+
             RepositionOptions();
         }
 
