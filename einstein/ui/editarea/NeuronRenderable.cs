@@ -5,6 +5,7 @@ using phi.graphics.renderables;
 using phi.io;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,8 +15,8 @@ namespace Einstein.ui.editarea
 {
     public class NeuronRenderable : Draggable
     {
-        public const int SPAWN_X = 250 + NeuronMenuButton.WIDTH + EinsteinConfig.PAD;
-        public const int SPAWN_Y = 200 + (NeuronMenuButton.HEIGHT + EinsteinConfig.PAD) * 3;
+        public const int SPAWN_X = 250 + MenuCategoryButton.WIDTH + EinsteinConfig.PAD;
+        public const int SPAWN_Y = 200 + (MenuCategoryButton.HEIGHT + EinsteinConfig.PAD) * 3;
 
         public BaseNeuron Neuron { get; private set; }
         public NeuronDrawable NeuronDrawable { get { return (NeuronDrawable)GetDrawable(); } }
@@ -80,6 +81,10 @@ namespace Einstein.ui.editarea
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (isRemoved) { return; }
             editArea.DisableShiftingView();
+            if (editArea.PaintColor != null && !IO.KEYS.IsModifierKeyDown(Keys.Shift))
+            {
+                NeuronDrawable.SetColorGroup((Color)editArea.PaintColor);
+            }
         }
 
         protected override void MyMouseMove(int x, int y)

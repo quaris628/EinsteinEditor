@@ -2,6 +2,7 @@
 using phi.io;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Einstein.ui.menu
     {
         private Action<BaseNeuron> onRemove;
         
-        public IONeuronMenuCategory(NeuronMenuButton button,
+        public IONeuronMenuCategory(MenuCategoryButton button,
             IEnumerable<BaseNeuron> neuronOptions,
             Action<BaseNeuron> onRemove)
             : base(button, neuronOptions)
@@ -43,7 +44,12 @@ namespace Einstein.ui.menu
 
         public void AddOption(BaseNeuron neuron)
         {
-            AddOption(neuron.Index, new NeuronDrawable(neuron));
+            NeuronDrawable optionDrawable = new NeuronDrawable(neuron);
+            AddOption(neuron.Index, optionDrawable);
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(() =>
+            {
+                onRemove.Invoke(neuron);
+            }, optionDrawable);
         }
 
         public void RemoveOption(BaseNeuron neuron)

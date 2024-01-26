@@ -5,6 +5,7 @@ using Einstein.model.json;
 using Einstein.ui;
 using Einstein.ui.editarea;
 using Einstein.ui.menu;
+using Einstein.ui.menu.categories.colors;
 using phi.control;
 using phi.graphics.drawables;
 using phi.io;
@@ -37,10 +38,14 @@ namespace Einstein
         private EditArea editArea;
 
         // TODO maybe refactor the input/output/hidden buttons into one renderable class
-        private NeuronMenuCategory selected;
+        private MenuCategory selected;
         private IONeuronMenuCategory input;
-        private IONeuronMenuCategory output;
         private HiddenNeuronMenuCategory hidden;
+        private IONeuronMenuCategory output;
+        private ColorMenuCategory editColorMenuCategory;
+        private Color selectedColor;
+        private RectangleDrawable paintColorDisplay;
+        private SelectableButton paintColorButton;
         private Button loadButton;
         private Button saveButton;
         private SaveMessageText saveMessageText;
@@ -61,21 +66,30 @@ namespace Einstein
             editArea = new EditArea(new JsonBrain(bibiteVersion), moveNeuronIntoMenu, bibiteVersion);
 
             selected = null;
-            NeuronMenuButton inputButton = new NeuronMenuButton(
+            MenuCategoryButton inputButton = new MenuCategoryButton(
                 EinsteinConfig.PAD,
                 EinsteinConfig.PAD,
-                "Input Neurons",
+                "Add Input",
                 onSelectInputs,
                 onDeselectInputs);
             input = new IONeuronMenuCategory(
                 inputButton,
                 bibiteVersion.InputNeurons,
                 moveNeuronIntoEditArea);
-
-            NeuronMenuButton outputButton = new NeuronMenuButton(
+            MenuCategoryButton hiddenButton = new MenuCategoryButton(
                 EinsteinConfig.PAD,
-                2 * EinsteinConfig.PAD + NeuronMenuButton.HEIGHT,
-                "Output Neurons",
+                EinsteinConfig.PAD + inputButton.GetY() + inputButton.GetHeight(),
+                "Add Hidden",
+                onSelectHidden,
+                onDeselectHidden);
+            hidden = new HiddenNeuronMenuCategory(
+                hiddenButton,
+                bibiteVersion.HiddenNeurons,
+                createHiddenNeuronInEditArea);
+            MenuCategoryButton outputButton = new MenuCategoryButton(
+                EinsteinConfig.PAD,
+                EinsteinConfig.PAD + hiddenButton.GetY() + hiddenButton.GetHeight(),
+                "Add Output",
                 onSelectOutputs,
                 onDeselectOutputs);
             output = new IONeuronMenuCategory(
@@ -83,27 +97,56 @@ namespace Einstein
                 bibiteVersion.OutputNeurons,
                 moveNeuronIntoEditArea);
 
-            NeuronMenuButton hiddenButton = new NeuronMenuButton(
+            selectedColor = ColorMenuCategory.STARTING_COLOR;
+            EditColorMenuCategoryButton editColorButton = new EditColorMenuCategoryButton(
                 EinsteinConfig.PAD,
-                3 * EinsteinConfig.PAD + 2 * NeuronMenuButton.HEIGHT,
-                "Hidden Neurons",
-                onSelectAdd,
-                onDeselectAdd);
-            hidden = new HiddenNeuronMenuCategory(
-                hiddenButton,
-                bibiteVersion.HiddenNeurons,
-                createHiddenNeuronInEditArea);
+                EinsteinConfig.PAD + outputButton.GetY() + outputButton.GetHeight(),
+                "Colors",
+                onSelectColors,
+                onDeselectColors);
+            editColorMenuCategory = new ColorMenuCategory(
+                editColorButton,
+                (color) => {
+                    selectedColor = color;
+                    if (editArea.PaintColor != null)
+                    {
+                        editArea.PaintColor = selectedColor;
+                    }
+                    paintColorDisplay.SetPen(new Pen(color));
+                });
+            int paintColorButtonX = 2 * EinsteinConfig.PAD + EditColorMenuCategoryButton.WIDTH + 1;
+            int paintColorButtonY = EinsteinConfig.PAD + outputButton.GetY() + outputButton.GetHeight();
+            paintColorDisplay = new RectangleDrawable(paintColorButtonX, paintColorButtonY,
+                EditColorMenuCategoryButton.WIDTH, EditColorMenuCategoryButton.HEIGHT);
+            paintColorDisplay.SetPen(new Pen(selectedColor));
+            paintColorButton = new SelectableButton(
+                new Button.ButtonBuilder(
+                    new ImageWrapper(EinsteinConfig.RES_DIR + "HalfButtonBackgroundTransparent.png"),
+                    paintColorButtonX, paintColorButtonY)
+                    .withText("Paint")
+                    .withOnClick(() => {
+                        editArea.PaintColor = selectedColor;
+                    }),
+                new Button.ButtonBuilder(
+                    new ImageWrapper(EinsteinConfig.RES_DIR + "HalfButtonBackgroundTransparentSelected.png"),
+                    paintColorButtonX, paintColorButtonY)
+                    .withText("Paint")
+                    .withOnClick(() => {
+                        editArea.PaintColor = null;
+                    }));
+            
+
             loadButton = new Button.ButtonBuilder(
-                new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
+                new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
                 EinsteinConfig.PAD,
-                5 * EinsteinConfig.PAD + 3 * NeuronMenuButton.HEIGHT)
+                EinsteinConfig.PAD * 2 + paintColorButton.GetY() + paintColorButton.GetHeight())
                 .withText("Load from Bibite")
                 .withOnClick(loadBrain)
                 .Build();
             saveButton = new Button.ButtonBuilder(
-                new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
+                new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
                 EinsteinConfig.PAD,
-                6 * EinsteinConfig.PAD + 4 * NeuronMenuButton.HEIGHT)
+                EinsteinConfig.PAD + loadButton.GetY() + loadButton.GetHeight())
                 .withText("Save to Bibite")
                 .withOnClick(saveBrain)
                 .Build();
@@ -114,10 +157,11 @@ namespace Einstein
                     EinsteinConfig.PAD + saveButton.GetY() + saveButton.GetHeight())
                 .Build();
             saveMessageText = new SaveMessageText(
-                EinsteinConfig.PAD + NeuronMenuButton.WIDTH / 2,
+                EinsteinConfig.PAD + MenuCategoryButton.WIDTH / 2,
                 EinsteinConfig.PAD + bibiteVersionText.GetY() + bibiteVersionText.GetHeight());
+
             autoArrangeButton = new Button.ButtonBuilder(
-                new ImageWrapper(NeuronMenuButton.UNSELECTED_IMAGE_PATH),
+                new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
                 EinsteinConfig.PAD,
                 EinsteinConfig.PAD + saveMessageText.GetY() + saveMessageText.GetHeight())
                 .withText("Auto-Arrange")
@@ -127,6 +171,7 @@ namespace Einstein
             infoText = new KeybindsInfoText(
                 EinsteinConfig.PAD,
                 20 + EinsteinConfig.PAD + autoArrangeButton.GetY() + autoArrangeButton.GetHeight());
+            
             zoomControls = new ZoomControls(editArea);
 
             savePath = null;
@@ -143,8 +188,12 @@ namespace Einstein
         {
             editArea.Initialize();
             input.Initialize();
-            output.Initialize();
             hidden.Initialize();
+            output.Initialize();
+            editColorMenuCategory.Initialize();
+            IO.RENDERER.Add(paintColorDisplay, EinsteinConfig.Render.DEFAULT_LAYER - 1);
+            IO.RENDERER.Add(paintColorButton);
+            paintColorButton.Initialize();
             loadButton.Initialize();
             saveButton.Initialize();
             autoArrangeButton.Initialize();
@@ -163,6 +212,10 @@ namespace Einstein
             input.Uninitialize();
             output.Uninitialize();
             hidden.Uninitialize();
+            editColorMenuCategory.Uninitialize();
+            IO.RENDERER.Remove(paintColorDisplay);
+            IO.RENDERER.Remove(paintColorButton);
+            paintColorButton.Uninitialize();
             loadButton.Uninitialize();
             saveButton.Uninitialize();
             autoArrangeButton.Uninitialize();
@@ -473,6 +526,10 @@ namespace Einstein
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             editArea.AddNeuron(neuronRemovedFromMenu);
+            if (editArea.PaintColor != null)
+            {
+                editArea.GetNROf(neuronRemovedFromMenu).NeuronDrawable.SetColorGroup((Color)editArea.PaintColor);
+            }
         }
         private void createHiddenNeuronInEditArea(BaseNeuron hiddenNeuronToAdd)
         {
@@ -485,20 +542,26 @@ namespace Einstein
         private void onSelectInputs()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            selected?.NeuronButton.Deselect();
+            selected?.Button.Deselect();
             selected = input;
         }
         private void onSelectOutputs()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            selected?.NeuronButton.Deselect();
+            selected?.Button.Deselect();
             selected = output;
         }
-        private void onSelectAdd()
+        private void onSelectHidden()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            selected?.NeuronButton.Deselect();
+            selected?.Button.Deselect();
             selected = hidden;
+        }
+        private void onSelectColors()
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            selected?.Button.Deselect();
+            selected = editColorMenuCategory;
         }
 
         private void onDeselectInputs()
@@ -511,7 +574,12 @@ namespace Einstein
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             selected = null;
         }
-        private void onDeselectAdd()
+        private void onDeselectHidden()
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            selected = null;
+        }
+        private void onDeselectColors()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             selected = null;
@@ -542,6 +610,7 @@ namespace Einstein
                 input.RepositionOptions();
                 output.RepositionOptions();
                 hidden.RepositionOptions();
+                editColorMenuCategory.RepositionOptions();
                 prevWindowWidth = newWidth;
             }
             if (newHeight != prevWindowHeight)

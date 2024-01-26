@@ -7,6 +7,7 @@ using phi.io;
 using phi.other;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Einstein.ui.editarea
@@ -21,6 +22,7 @@ namespace Einstein.ui.editarea
 
         public BaseBrain Brain { get; private set; }
         public BibiteVersion BibiteVersion { get; private set; }
+        public Color? PaintColor;
 
         private Dictionary<int, NeuronRenderable> neuronIndexToNR;
         public IEnumerable<NeuronRenderable> NeuronRenderables { get { return neuronIndexToNR.Values; } }
@@ -89,7 +91,12 @@ namespace Einstein.ui.editarea
             }
             AddNeuron(new JsonNeuron(nextHiddenNeuronIndex, type,
                 type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN), BibiteVersion));
+            if (PaintColor != null)
+            {
+                neuronIndexToNR[nextHiddenNeuronIndex].NeuronDrawable.SetColorGroup((Color)PaintColor);
+            }
             nextHiddenNeuronIndex++;
+            
         }
 
         public void RemoveNeuron(BaseNeuron neuron)
@@ -595,9 +602,9 @@ namespace Einstein.ui.editarea
             return null;
         }
 
-        public static Rectangle GetBounds()
+        public static phi.other.Rectangle GetBounds()
         {
-            return new Rectangle(GetX(), GetY(), GetWidth(), GetHeight());
+            return new phi.other.Rectangle(GetX(), GetY(), GetWidth(), GetHeight());
         }
         public static int GetWidth()
         {
@@ -609,7 +616,7 @@ namespace Einstein.ui.editarea
         }
         public static int GetX()
         {
-            return NeuronMenuButton.WIDTH + EinsteinConfig.PAD * 2;
+            return MenuCategoryButton.WIDTH + EinsteinConfig.PAD * 2;
         }
         public static int GetY()
         {

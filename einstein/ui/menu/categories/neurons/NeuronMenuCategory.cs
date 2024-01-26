@@ -14,15 +14,13 @@ namespace Einstein.ui.menu
 {
     public class NeuronMenuCategory : MenuCategory
     {
-        public NeuronMenuButton NeuronButton {
-            get { return (NeuronMenuButton)Button; }
-            set { Button = value; }
+        public MenuCategoryButton NeuronButton {
+            get { return (MenuCategoryButton)Button; }
         }
 
-        public NeuronMenuCategory(NeuronMenuButton button,
-            IEnumerable<BaseNeuron> neuronOptions)
+        public NeuronMenuCategory(MenuCategoryButton button,
+            IEnumerable<BaseNeuron> neuronOptions): base(button)
         {
-            NeuronButton = button;
             foreach (BaseNeuron neuron in neuronOptions)
             {
                 sortedOptionDrawables.Add(neuron.Index, new NeuronDrawable(neuron));

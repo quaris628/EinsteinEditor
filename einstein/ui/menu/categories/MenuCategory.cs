@@ -22,12 +22,13 @@ namespace Einstein.ui.menu
         protected SortedDictionary<int, Drawable> sortedOptionDrawables;
         protected bool isInit { get; private set; }
         
-        protected MenuCategory()
+        protected MenuCategory(SelectableButton button)
         {
-            // width and height will be set later
-            background = new RectangleDrawable(NeuronMenuButton.WIDTH + 2 * EinsteinConfig.PAD, 0, 0, 0);
+            Button = button;
+            background = new RectangleDrawable(MenuCategoryButton.WIDTH + 2 * EinsteinConfig.PAD, 0, 0, 0);
             background.SetPen(new Pen(new SolidBrush(EinsteinConfig.COLOR_MODE.MenuBackground)));
             sortedOptionDrawables = new SortedDictionary<int, Drawable>();
+            // width and height will be set later
         }
 
 
@@ -124,7 +125,6 @@ namespace Einstein.ui.menu
             {
                 RemoveOption(sortKey);
             }
-            
         }
 
         // places options left to right on the screen, wrapping
@@ -134,7 +134,7 @@ namespace Einstein.ui.menu
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
 
-            int startX = Button.GetX() + Button.GetWidth() + EinsteinConfig.PAD;
+            int startX = background.GetX() + EinsteinConfig.PAD;
             int x = startX;
             int y = EinsteinConfig.PAD;
             int deltaY = 0;
@@ -149,10 +149,10 @@ namespace Einstein.ui.menu
                     deltaY = 0;
                 }
                 optionDrawable.SetXY(x, y);
-                x += width + EinsteinConfig.PAD;
+                x += width + EinsteinConfig.PAD * 2;
                 deltaY = Math.Max(deltaY, optionDrawable.GetHeight());
             }
-            background.SetHeight(y + deltaY);
+            background.SetHeight(y + deltaY + EinsteinConfig.PAD);
             background.SetWidth(IO.WINDOW.GetWidth() - startX);
         }
 

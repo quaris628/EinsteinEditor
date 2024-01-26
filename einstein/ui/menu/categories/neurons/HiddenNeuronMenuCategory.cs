@@ -12,7 +12,7 @@ namespace Einstein.ui.menu
     public class HiddenNeuronMenuCategory : NeuronMenuCategory
     {
         private Action<BaseNeuron> onSelect;
-        public HiddenNeuronMenuCategory(NeuronMenuButton button,
+        public HiddenNeuronMenuCategory(MenuCategoryButton button,
             IEnumerable<BaseNeuron> neuronOptions,
             Action<BaseNeuron> onSelect)
             : base(button, neuronOptions)

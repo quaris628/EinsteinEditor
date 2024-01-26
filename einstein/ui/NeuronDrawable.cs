@@ -85,6 +85,12 @@ namespace Einstein.ui
             descSET = null;
         }
 
+        public void SetColorGroup(Color paintColor)
+        {
+            Neuron.ColorGroup = paintColor;
+            FlagChange();
+        }
+
         public int GetCircleCenterX() { return GetX() + CIRCLE_RADIUS; }
         public int GetCircleCenterY() { return GetY() + CIRCLE_RADIUS; }
         public virtual void SetCircleCenterX(int x) { SetX(x - CIRCLE_RADIUS); circleCenterX = x; }

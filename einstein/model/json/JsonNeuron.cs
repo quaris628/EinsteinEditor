@@ -114,7 +114,8 @@ namespace Einstein.model.json
                 this.index = jsonNeuron.Index;
                 this.inov = jsonNeuron.Inov;
                 this.SetDescPiece(DescPiece.Description, jsonNeuron.Description);
-                this.SetDescPiece(DescPiece.ColorHex, ColorTranslator.ToHtml(jsonNeuron.ColorGroup).Substring(1));
+                this.SetDescPiece(DescPiece.ColorHex, ColorTranslator.ToHtml(
+                    Color.FromArgb(jsonNeuron.ColorGroup.ToArgb())).Substring(1));
                 this.value = jsonNeuron.value;
                 this.lastInput = jsonNeuron.lastInput;
                 this.lastOutput = jsonNeuron.lastOutput;
