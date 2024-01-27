@@ -31,13 +31,18 @@ namespace Einstein.ui.editarea
             NeuronDrawable.SetCircleCenterXY(SPAWN_X, SPAWN_Y);
             this.editArea = editArea;
             isRemoved = false;
+
+            if (editArea.isPainting || IO.KEYS.IsModifierKeyDown(Keys.Control))
+            {
+                NeuronDrawable.SetColorGroup(editArea.PaintColor);
+            }
         }
 
         public override void Initialize()
         {
             base.Initialize();
             IO.RENDERER.Add(this);
-            IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(RemoveIfShiftIsDown, GetDrawable());
+            IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(MaybeRemoveOrPaint, GetDrawable());
             IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(StartASynapse, GetDrawable());
             if (Neuron.IsHidden())
             {
@@ -50,7 +55,7 @@ namespace Einstein.ui.editarea
         {
             base.Uninitialize();
             IO.RENDERER.Remove(this);
-            IO.MOUSE.LEFT_CLICK.UnsubscribeFromDrawable(RemoveIfShiftIsDown, GetDrawable());
+            IO.MOUSE.LEFT_CLICK.UnsubscribeFromDrawable(MaybeRemoveOrPaint, GetDrawable());
             IO.MOUSE.RIGHT_UP.UnsubscribeFromDrawable(StartASynapse, GetDrawable());
             if (Neuron.IsHidden())
             {
@@ -58,7 +63,7 @@ namespace Einstein.ui.editarea
             }
         }
 
-        private void RemoveIfShiftIsDown()
+        private void MaybeRemoveOrPaint()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (isRemoved) { return; }
@@ -66,6 +71,10 @@ namespace Einstein.ui.editarea
             {
                 editArea.RemoveNeuron(Neuron);
                 isRemoved = true;
+            }
+            else if (editArea.isPainting || IO.KEYS.IsModifierKeyDown(Keys.Control))
+            {
+                NeuronDrawable.SetColorGroup(editArea.PaintColor);
             }
         }
 
@@ -81,10 +90,7 @@ namespace Einstein.ui.editarea
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (isRemoved) { return; }
             editArea.DisableShiftingView();
-            if (editArea.PaintColor != null && !IO.KEYS.IsModifierKeyDown(Keys.Shift))
-            {
-                NeuronDrawable.SetColorGroup((Color)editArea.PaintColor);
-            }
+            
         }
 
         protected override void MyMouseMove(int x, int y)

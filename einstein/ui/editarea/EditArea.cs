@@ -22,7 +22,8 @@ namespace Einstein.ui.editarea
 
         public BaseBrain Brain { get; private set; }
         public BibiteVersion BibiteVersion { get; private set; }
-        public Color? PaintColor;
+        public Color PaintColor;
+        public bool isPainting;
 
         private Dictionary<int, NeuronRenderable> neuronIndexToNR;
         public IEnumerable<NeuronRenderable> NeuronRenderables { get { return neuronIndexToNR.Values; } }
@@ -41,6 +42,8 @@ namespace Einstein.ui.editarea
         public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove, BibiteVersion bibiteVersion)
         {
             BibiteVersion = bibiteVersion;
+            PaintColor = BaseNeuron.DEFAULT_COLOR_GROUP;
+            isPainting = false;
             neuronIndexToNR = new Dictionary<int, NeuronRenderable>();
             this.onRemove = onRemove;
             disableOnRemove = false;
@@ -72,7 +75,7 @@ namespace Einstein.ui.editarea
 
         // ----- Manage neurons -----
 
-        public void AddNeuron(BaseNeuron neuron)
+        public void AddNeuron(BaseNeuron neuron, bool tryPainting)
         {
             Brain.Add(neuron);
 
@@ -89,12 +92,17 @@ namespace Einstein.ui.editarea
                 nextHiddenNeuronIndex++;
                 desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN);
             }
-            AddNeuron(new JsonNeuron(nextHiddenNeuronIndex, type,
-                type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN), BibiteVersion));
+            AddNeuron(new JsonNeuron(nextHiddenNeuronIndex,
+                type,
+                type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN),
+                BibiteVersion),
+                true);
+            /*
             if (PaintColor != null)
             {
                 neuronIndexToNR[nextHiddenNeuronIndex].NeuronDrawable.SetColorGroup((Color)PaintColor);
             }
+            //*/
             nextHiddenNeuronIndex++;
             
         }
@@ -251,7 +259,7 @@ namespace Einstein.ui.editarea
             }
             foreach (BaseNeuron neuron in neurons)
             {
-                AddNeuron(neuron);
+                AddNeuron(neuron, false);
             }
             foreach (BaseSynapse synapse in synapses)
             {
