@@ -17,7 +17,7 @@ namespace Einstein.ui.menu
 {
     public class ColorMenuCategory : MenuCategory
     {
-        private static readonly Color[] DEFAULT_COLORS = new Color[]
+        public static readonly Color[] DEFAULT_COLORS = new Color[]
         {
             Color.OrangeRed,
             
@@ -40,14 +40,20 @@ namespace Einstein.ui.menu
             Color.Tan,
             Color.SaddleBrown,
 
-            JsonNeuron.DEFAULT_COLOR_GROUP,
+            BaseNeuron.DEFAULT_COLOR_GROUP,
         };
+
         public static readonly Color STARTING_COLOR = DEFAULT_COLORS[0];
+
+        public static readonly Color[] STARTING_SHORTCUTS =
+            new ArraySegment<Color>(DEFAULT_COLORS, 0, 9)
+            .Append(BaseNeuron.DEFAULT_COLOR_GROUP).ToArray();
 
         private int nextSortKey;
         private Dictionary<Color, ColorSelectDrawable> colorToDrawable;
         private Action<Color> onSelect;
         private ColorSelectDrawable selected;
+        private Color[] shortcuts;
 
         public ColorMenuCategory(SelectableButton button, Action<Color> onSelect): base(button)
         {
@@ -64,8 +70,8 @@ namespace Einstein.ui.menu
             }
             selected = (ColorSelectDrawable)sortedOptionDrawables[0];
             selected.IsSelected = true;
-            //background.SetX(160 + 2 * EinsteinConfig.PAD);
-            //background.SetX(MenuCategoryButton.WIDTH + 2 * EinsteinConfig.PAD);
+
+            shortcuts = STARTING_SHORTCUTS;
         }
 
         public override void Initialize()
@@ -82,6 +88,22 @@ namespace Einstein.ui.menu
                     onSelect.Invoke(colorSelectDrawable.Color);
                 }, colorSelectDrawable);
             }
+            IO.KEYS.Subscribe(Shortcut1, (int)Keys.D1 + (int)Keys.Control);
+            IO.KEYS.Subscribe(Shortcut2, (int)Keys.D2 + (int)Keys.Control);
+            IO.KEYS.Subscribe(Shortcut3, (int)Keys.D3 + (int)Keys.Control);
+            IO.KEYS.Subscribe(Shortcut4, (int)Keys.D4 + (int)Keys.Control);
+            IO.KEYS.Subscribe(Shortcut5, (int)Keys.D5 + (int)Keys.Control);
+            IO.KEYS.Subscribe(Shortcut6, (int)Keys.D6 + (int)Keys.Control);
+            IO.KEYS.Subscribe(Shortcut7, (int)Keys.D7 + (int)Keys.Control);
+            IO.KEYS.Subscribe(Shortcut8, (int)Keys.D8 + (int)Keys.Control);
+            IO.KEYS.Subscribe(Shortcut9, (int)Keys.D9 + (int)Keys.Control);
+            IO.KEYS.Subscribe(Shortcut0, (int)Keys.D0 + (int)Keys.Control);
+
+            for (int i = 0; i < 9; i++)
+            {
+                colorToDrawable[shortcuts[i]].Label = (i + 1).ToString();
+            }
+            colorToDrawable[shortcuts[9]].Label = "0";
         }
 
         public override void Uninitialize()
@@ -91,6 +113,16 @@ namespace Einstein.ui.menu
             {
                 IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(drawable);
             }
+            IO.KEYS.Unsubscribe(Shortcut1, (int)Keys.D1 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(Shortcut2, (int)Keys.D2 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(Shortcut3, (int)Keys.D3 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(Shortcut4, (int)Keys.D4 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(Shortcut5, (int)Keys.D5 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(Shortcut6, (int)Keys.D6 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(Shortcut7, (int)Keys.D7 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(Shortcut8, (int)Keys.D8 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(Shortcut9, (int)Keys.D9 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(Shortcut0, (int)Keys.D0 + (int)Keys.Control);
         }
 
         public void Add(Color color)
@@ -112,5 +144,24 @@ namespace Einstein.ui.menu
             }
             RepositionOptions();
         }
+
+        private void Shortcut(int index)
+        {
+            onSelect.Invoke(shortcuts[index]);
+            selected.IsSelected = false;
+            selected = colorToDrawable[shortcuts[index]];
+            selected.IsSelected = true;
+        }
+
+        private void Shortcut1() { Shortcut(0); }
+        private void Shortcut2() { Shortcut(1); }
+        private void Shortcut3() { Shortcut(2); }
+        private void Shortcut4() { Shortcut(3); }
+        private void Shortcut5() { Shortcut(4); }
+        private void Shortcut6() { Shortcut(5); }
+        private void Shortcut7() { Shortcut(6); }
+        private void Shortcut8() { Shortcut(7); }
+        private void Shortcut9() { Shortcut(8); }
+        private void Shortcut0() { Shortcut(9); }
     }
 }

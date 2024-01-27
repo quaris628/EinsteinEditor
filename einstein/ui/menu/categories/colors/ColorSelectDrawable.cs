@@ -20,6 +20,7 @@ namespace Einstein.ui.menu.categories.colors
         private Brush colorBrush;
         public int SortKey { get; private set; }
         public bool IsSelected;
+        public string Label;
 
         public ColorSelectDrawable(Color color, int sortKey) : base(-SIZE, -SIZE, SIZE, SIZE)
         {
@@ -27,7 +28,7 @@ namespace Einstein.ui.menu.categories.colors
             colorBrush = new Pen(color).Brush;
             SortKey = sortKey;
             IsSelected = false;
-            
+            Label = "";
         }
 
         protected override void DrawAt(Graphics g, int x, int y)
@@ -37,6 +38,11 @@ namespace Einstein.ui.menu.categories.colors
             {
                 g.DrawRectangle(SELECTED_PEN, x, y, SIZE, SIZE);
             }
+            g.DrawString(Label,
+                new Font("Arial", 12),
+                new Pen(Color.Black).Brush,
+                x + SIZE / 2 - 7,
+                y + SIZE / 2 - 9);
         }
     }
 }
