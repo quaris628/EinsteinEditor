@@ -169,6 +169,16 @@ namespace Einstein
             output.Initialize();
             editColorMenuCategory.Initialize();
             IO.RENDERER.Add(paintColorDisplay, EinsteinConfig.Render.DEFAULT_LAYER - 1);
+            IO.KEYS.Subscribe(RebindColorShortcut1, (int)Keys.D1 + (int)Keys.Control);
+            IO.KEYS.Subscribe(RebindColorShortcut2, (int)Keys.D2 + (int)Keys.Control);
+            IO.KEYS.Subscribe(RebindColorShortcut3, (int)Keys.D3 + (int)Keys.Control);
+            IO.KEYS.Subscribe(RebindColorShortcut4, (int)Keys.D4 + (int)Keys.Control);
+            IO.KEYS.Subscribe(RebindColorShortcut5, (int)Keys.D5 + (int)Keys.Control);
+            IO.KEYS.Subscribe(RebindColorShortcut6, (int)Keys.D6 + (int)Keys.Control);
+            IO.KEYS.Subscribe(RebindColorShortcut7, (int)Keys.D7 + (int)Keys.Control);
+            IO.KEYS.Subscribe(RebindColorShortcut8, (int)Keys.D8 + (int)Keys.Control);
+            IO.KEYS.Subscribe(RebindColorShortcut9, (int)Keys.D9 + (int)Keys.Control);
+            IO.KEYS.Subscribe(RebindColorShortcut0, (int)Keys.D0 + (int)Keys.Control);
             loadButton.Initialize();
             saveButton.Initialize();
             autoArrangeButton.Initialize();
@@ -189,6 +199,16 @@ namespace Einstein
             hidden.Uninitialize();
             editColorMenuCategory.Uninitialize();
             IO.RENDERER.Remove(paintColorDisplay);
+            IO.KEYS.Unsubscribe(RebindColorShortcut1, (int)Keys.D1 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(RebindColorShortcut2, (int)Keys.D2 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(RebindColorShortcut3, (int)Keys.D3 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(RebindColorShortcut4, (int)Keys.D4 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(RebindColorShortcut5, (int)Keys.D5 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(RebindColorShortcut6, (int)Keys.D6 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(RebindColorShortcut7, (int)Keys.D7 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(RebindColorShortcut8, (int)Keys.D8 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(RebindColorShortcut9, (int)Keys.D9 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(RebindColorShortcut0, (int)Keys.D0 + (int)Keys.Control);
             loadButton.Uninitialize();
             saveButton.Uninitialize();
             autoArrangeButton.Uninitialize();
@@ -566,6 +586,48 @@ namespace Einstein
         }
 
         // ----- other/misc -----
+
+        private void RebindColorShortcut1()
+        {
+            editColorMenuCategory.RebindShortcut(editArea.PaintColor, 0);
+        }
+        private void RebindColorShortcut2()
+        {
+            editColorMenuCategory.RebindShortcut(editArea.PaintColor, 1);
+        }
+        private void RebindColorShortcut3()
+        {
+            editColorMenuCategory.RebindShortcut(editArea.PaintColor, 2);
+        }
+        private void RebindColorShortcut4()
+        {
+            editColorMenuCategory.RebindShortcut(editArea.PaintColor, 3);
+        }
+        private void RebindColorShortcut5()
+        {
+            editColorMenuCategory.RebindShortcut(editArea.PaintColor, 4);
+        }
+        private void RebindColorShortcut6()
+        {
+            editColorMenuCategory.RebindShortcut(editArea.PaintColor, 5);
+        }
+        private void RebindColorShortcut7()
+        {
+            editColorMenuCategory.RebindShortcut(editArea.PaintColor, 6);
+        }
+        private void RebindColorShortcut8()
+        {
+            editColorMenuCategory.RebindShortcut(editArea.PaintColor, 7);
+        }
+        private void RebindColorShortcut9()
+        {
+            editColorMenuCategory.RebindShortcut(editArea.PaintColor, 8);
+        }
+        private void RebindColorShortcut0()
+        {
+            editColorMenuCategory.RebindShortcut(editArea.PaintColor, 9);
+        }
+
 
         private string getBb8VersionText()
         {

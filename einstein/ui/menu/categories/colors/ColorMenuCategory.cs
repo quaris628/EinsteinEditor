@@ -93,22 +93,21 @@ namespace Einstein.ui.menu
                     onSelect.Invoke(colorSelectDrawable.Color);
                 }, colorSelectDrawable);
             }
-            IO.KEYS.Subscribe(Shortcut1, (int)Keys.D1 + (int)Keys.Control);
-            IO.KEYS.Subscribe(Shortcut2, (int)Keys.D2 + (int)Keys.Control);
-            IO.KEYS.Subscribe(Shortcut3, (int)Keys.D3 + (int)Keys.Control);
-            IO.KEYS.Subscribe(Shortcut4, (int)Keys.D4 + (int)Keys.Control);
-            IO.KEYS.Subscribe(Shortcut5, (int)Keys.D5 + (int)Keys.Control);
-            IO.KEYS.Subscribe(Shortcut6, (int)Keys.D6 + (int)Keys.Control);
-            IO.KEYS.Subscribe(Shortcut7, (int)Keys.D7 + (int)Keys.Control);
-            IO.KEYS.Subscribe(Shortcut8, (int)Keys.D8 + (int)Keys.Control);
-            IO.KEYS.Subscribe(Shortcut9, (int)Keys.D9 + (int)Keys.Control);
-            IO.KEYS.Subscribe(Shortcut0, (int)Keys.D0 + (int)Keys.Control);
+            IO.KEYS.Subscribe(Shortcut1, Keys.D1);
+            IO.KEYS.Subscribe(Shortcut2, Keys.D2);
+            IO.KEYS.Subscribe(Shortcut3, Keys.D3);
+            IO.KEYS.Subscribe(Shortcut4, Keys.D4);
+            IO.KEYS.Subscribe(Shortcut5, Keys.D5);
+            IO.KEYS.Subscribe(Shortcut6, Keys.D6);
+            IO.KEYS.Subscribe(Shortcut7, Keys.D7);
+            IO.KEYS.Subscribe(Shortcut8, Keys.D8);
+            IO.KEYS.Subscribe(Shortcut9, Keys.D9);
+            IO.KEYS.Subscribe(Shortcut0, Keys.D0);
 
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 10; i++)
             {
-                colorToDrawable[shortcuts[i]].Label = (i + 1).ToString();
+                colorToDrawable[shortcuts[i]].Label = ShortcutIndexToLabel(i);
             }
-            colorToDrawable[shortcuts[9]].Label = "0";
         }
 
         public override void Uninitialize()
@@ -118,16 +117,16 @@ namespace Einstein.ui.menu
             {
                 IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(drawable);
             }
-            IO.KEYS.Unsubscribe(Shortcut1, (int)Keys.D1 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(Shortcut2, (int)Keys.D2 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(Shortcut3, (int)Keys.D3 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(Shortcut4, (int)Keys.D4 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(Shortcut5, (int)Keys.D5 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(Shortcut6, (int)Keys.D6 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(Shortcut7, (int)Keys.D7 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(Shortcut8, (int)Keys.D8 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(Shortcut9, (int)Keys.D9 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(Shortcut0, (int)Keys.D0 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(Shortcut1, Keys.D1);
+            IO.KEYS.Unsubscribe(Shortcut2, Keys.D2);
+            IO.KEYS.Unsubscribe(Shortcut3, Keys.D3);
+            IO.KEYS.Unsubscribe(Shortcut4, Keys.D4);
+            IO.KEYS.Unsubscribe(Shortcut5, Keys.D5);
+            IO.KEYS.Unsubscribe(Shortcut6, Keys.D6);
+            IO.KEYS.Unsubscribe(Shortcut7, Keys.D7);
+            IO.KEYS.Unsubscribe(Shortcut8, Keys.D8);
+            IO.KEYS.Unsubscribe(Shortcut9, Keys.D9);
+            IO.KEYS.Unsubscribe(Shortcut0, Keys.D0);
         }
 
         public void Add(Color color)
@@ -150,6 +149,27 @@ namespace Einstein.ui.menu
             RepositionOptions();
         }
 
+        public void RebindShortcut(Color targetColor, int index)
+        {
+            // get the keybind's old color
+            ColorSelectDrawable sourceColor = colorToDrawable[shortcuts[index]];
+            sourceColor.Label = "";
+
+            // check if this NEW color has an old keybind
+            for (int i = 0; i < 10; i++)
+            {
+                if (shortcuts[i] == targetColor)
+                {
+                    int targetColorOldIndex = i;
+                    // if so, swap the keybinds
+                    shortcuts[targetColorOldIndex] = sourceColor.Color;
+                    sourceColor.Label = ShortcutIndexToLabel(targetColorOldIndex);
+                }
+            }
+            shortcuts[index] = targetColor;
+            colorToDrawable[targetColor].Label = ShortcutIndexToLabel(index);
+        }
+
         private void Shortcut(int index)
         {
             onSelect.Invoke(shortcuts[index]);
@@ -168,5 +188,10 @@ namespace Einstein.ui.menu
         private void Shortcut8() { Shortcut(7); }
         private void Shortcut9() { Shortcut(8); }
         private void Shortcut0() { Shortcut(9); }
+
+        private string ShortcutIndexToLabel(int index)
+        {
+            return index == 9 ? "0" : (index + 1).ToString();
+        }
     }
 }

@@ -19,8 +19,32 @@ namespace Einstein.ui.menu.categories.colors
         public Color Color { get; private set; }
         private Brush colorBrush;
         public int SortKey { get; private set; }
-        public bool IsSelected;
-        public string Label;
+        public bool _isSelected;
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                _isSelected = value;
+                FlagChange();
+
+            }
+        }
+        private string _label;
+        public string Label {
+            get
+            {
+                return _label;
+            }
+            set
+            {
+                _label = value;
+                FlagChange();
+            }
+        }
 
         public ColorSelectDrawable(Color color, int sortKey) : base(-SIZE, -SIZE, SIZE, SIZE)
         {
