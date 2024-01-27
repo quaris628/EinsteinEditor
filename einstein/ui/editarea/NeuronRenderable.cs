@@ -24,7 +24,7 @@ namespace Einstein.ui.editarea
         private EditArea editArea;
         private bool isRemoved;
 
-        public NeuronRenderable(EditArea editArea, BaseNeuron neuron)
+        public NeuronRenderable(EditArea editArea, BaseNeuron neuron, bool tryPainting)
             : base(new NeuronDrawable(neuron, SPAWN_X, SPAWN_Y), EditArea.GetBounds)
         {
             Neuron = neuron;
@@ -32,7 +32,8 @@ namespace Einstein.ui.editarea
             this.editArea = editArea;
             isRemoved = false;
 
-            if (editArea.isPainting || IO.KEYS.IsModifierKeyDown(Keys.Control))
+            if (tryPainting
+                && (editArea.isPainting || IO.KEYS.IsModifierKeyDown(Keys.Control)))
             {
                 NeuronDrawable.SetColorGroup(editArea.PaintColor);
             }

@@ -79,7 +79,7 @@ namespace Einstein.ui.editarea
         {
             Brain.Add(neuron);
 
-            NeuronRenderable dragNeuron = new NeuronRenderable(this, neuron);
+            NeuronRenderable dragNeuron = new NeuronRenderable(this, neuron, tryPainting);
             dragNeuron.Initialize();
             neuronIndexToNR.Add(neuron.Index, dragNeuron);
         }
