@@ -19,16 +19,21 @@ namespace Einstein.ui.menu
     {
         public static readonly Color[] DEFAULT_COLORS = new Color[]
         {
-            Color.OrangeRed,
+            //Color.OrangeRed,
+            Color.IndianRed,
             
-            Color.Orange,
+            //Color.Orange,
+            Color.FromArgb(236, 151, 6), // Honey
             
-            Color.Yellow,
+            //Color.Yellow,
+            Color.FromArgb(250, 218, 94), // Royal Yellow
             
-            Color.Lime,
+            //Color.Lime,
+            Color.FromArgb(178, 236, 93), // Inchworm
             Color.ForestGreen,
 
-            Color.Cyan,
+            //Color.Cyan,
+            Color.FromArgb(153, 255, 255), // Ice Blue
             //Color.DeepSkyBlue,
             Color.DodgerBlue,
             
