@@ -519,12 +519,6 @@ namespace Einstein
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             editArea.AddNeuron(neuronRemovedFromMenu, true);
-            /*
-            if (editArea.PaintColor != null)
-            {
-                editArea.GetNROf(neuronRemovedFromMenu).NeuronDrawable.SetColorGroup((Color)editArea.PaintColor);
-            }
-            //*/
         }
         private void createHiddenNeuronInEditArea(BaseNeuron hiddenNeuronToAdd)
         {
