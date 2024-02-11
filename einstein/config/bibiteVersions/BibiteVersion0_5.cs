@@ -160,11 +160,11 @@ namespace Einstein.config.bibiteVersions
 
         private int ConvertNeuronIndexTo0_6_0a(int index0_5)
         {
-            if (0 <= index0_5 && index0_5 <= 8)
+            if (0 <= index0_5 && index0_5 <= 7)
             {
                 return index0_5;
             }
-            else if (9 <= index0_5 && index0_5 <= 35)
+            else if (8 <= index0_5 && index0_5 <= 35)
             {
                 return index0_5 + 1;
             }
