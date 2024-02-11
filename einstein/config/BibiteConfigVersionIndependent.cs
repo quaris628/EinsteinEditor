@@ -9,7 +9,7 @@ namespace Einstein
 {
     public struct BibiteConfigVersionIndependent
     {
-        public const float SYNAPSE_STRENGTH_MIN = -100f;
-        public const float SYNAPSE_STRENGTH_MAX = 100f;
+        public const float SYNAPSE_STRENGTH_MIN = float.MinValue;
+        public const float SYNAPSE_STRENGTH_MAX = float.MaxValue;
     }
 }
