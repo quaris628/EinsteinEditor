@@ -168,7 +168,7 @@ namespace Einstein
             hidden.Initialize();
             output.Initialize();
             editColorMenuCategory.Initialize();
-            IO.RENDERER.Add(paintColorDisplay, EinsteinConfig.Render.DEFAULT_LAYER - 1);
+            IO.RENDERER.Add(paintColorDisplay, EinsteinConfig.Render.DEFAULT_LAYER);
             IO.KEYS.Subscribe(RebindColorShortcut1, (int)Keys.D1 + (int)Keys.Control);
             IO.KEYS.Subscribe(RebindColorShortcut2, (int)Keys.D2 + (int)Keys.Control);
             IO.KEYS.Subscribe(RebindColorShortcut3, (int)Keys.D3 + (int)Keys.Control);
