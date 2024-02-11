@@ -172,6 +172,11 @@ namespace Einstein.ui.menu
 
         private void Shortcut(int index)
         {
+            // while editing neuron descriptions or synapse strengths, don't trigger the shortcuts
+            if (SelectableEditableText.IsAnyCurrentlySelected())
+            {
+                return;
+            }
             onSelect.Invoke(shortcuts[index]);
             selected.IsSelected = false;
             selected = colorToDrawable[shortcuts[index]];
