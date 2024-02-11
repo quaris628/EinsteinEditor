@@ -132,6 +132,7 @@ namespace Einstein.config.bibiteVersions
                 JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, neuron.Description, V0_6_0a);
                 jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
                 jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
+                jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
 
                 // set inov for Input/output neurons to 1 + index
                 if (jn.IsInput() || jn.IsOutput())

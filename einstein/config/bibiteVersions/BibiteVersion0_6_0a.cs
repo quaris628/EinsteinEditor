@@ -138,6 +138,7 @@ namespace Einstein.config.bibiteVersions
                 JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, neuron.Description, V0_5);
                 jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
                 jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
+                jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
 
                 brainOut.Add(jn);
             }
