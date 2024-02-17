@@ -54,6 +54,8 @@ namespace Einstein
 
         private string savePath;
         private string loadPath;
+        private string mostRecentSavedToFile;
+        private string mostRecentLoadedToFile;
         private int prevWindowWidth;
         private int prevWindowHeight;
 
@@ -153,6 +155,8 @@ namespace Einstein
 
             savePath = null;
             loadPath = null;
+            mostRecentSavedToFile = null;
+            mostRecentLoadedToFile = null;
             prevWindowWidth = EinsteinConfig.Window.INITIAL_WIDTH;
             prevWindowHeight = EinsteinConfig.Window.INITIAL_HEIGHT;
         }
@@ -236,7 +240,7 @@ namespace Einstein
             // read file
             string filepath = IO.POPUPS.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
                 "Save to Bibite", "");
-            if (filepath == "")
+            if (filepath == "" || filepath == null)
             {
                 // User cancelled
                 return;
@@ -248,6 +252,19 @@ namespace Einstein
             }
             string json = File.ReadAllText(filepath);
 
+            // Warn if saving to a different file than the
+            // most recently loaded or saved-to file
+            if (!filepath.Equals(mostRecentSavedToFile)
+                && !filepath.Equals(mostRecentLoadedToFile)
+                && !IO.POPUPS.ShowYesNoPopup("Save to different bibite?",
+                    $"Are you sure you want to save to '{Path.GetFileName(filepath)}'?\n\n" +
+                    $"It is not the bibite this brain was originally loaded from ('{Path.GetFileName(mostRecentLoadedToFile)}')" +
+                    (mostRecentSavedToFile == null ? "."
+                    : $",\nnor is it the bibite you most recently saved to ('{Path.GetFileName(mostRecentSavedToFile)}').")))
+            {
+                return;
+            }
+            
             // determine where to insert the brain
             int startIndex = json.IndexOf("\"brain\":") + "\"brain\":".Length;
             int endIndex = json.IndexOf("\"immuneSystem\":");
@@ -318,6 +335,7 @@ namespace Einstein
             json = json.Substring(0, startIndex) + " " + brainJson + json.Substring(endIndex);
             File.WriteAllText(filepath, json);
             savePath = Path.GetDirectoryName(filepath);
+            mostRecentSavedToFile = filepath;
             saveMessageText.Show();
         }
 
@@ -425,6 +443,7 @@ namespace Einstein
             updateIONeuronsInMenu(); // depends on the brain being set in editArea.LoadBrain
             hidden.ResetNeuronOptionsTo(bibiteVersion.HiddenNeurons);
             loadPath = Path.GetDirectoryName(filepath);
+            mostRecentLoadedToFile = filepath;
         }
 
         private string parseVersionName(string json)
