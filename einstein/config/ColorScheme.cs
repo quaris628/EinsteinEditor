@@ -18,6 +18,7 @@ namespace Einstein.config
         public readonly Color Background;
         public readonly Color MenuBackground;
         public readonly Color Text;
+        public readonly Color DisabledButtonText;
         public readonly Color SynapseBase;
         public readonly Color SynapseTip;
         public readonly Color SynapseTextBackgroundSelected;
@@ -30,6 +31,7 @@ namespace Einstein.config
                 Background = Color.White;
                 MenuBackground = Color.FromArgb(192, 208, 208, 208);
                 Text = Color.Black;
+                DisabledButtonText = Color.FromArgb(108, 108, 108);
                 SynapseBase = Color.LightGray;
                 SynapseTip = Color.FromArgb(127, 127, 127);
                 SynapseTextBackgroundSelected = Color.CornflowerBlue;
@@ -40,6 +42,7 @@ namespace Einstein.config
                 Background = Color.FromArgb(24, 24, 24);
                 MenuBackground = Color.FromArgb(192, 48, 48, 48);
                 Text = Color.LightGray;
+                DisabledButtonText = Color.FromArgb(108, 108, 108);
                 SynapseBase = Color.FromArgb(64, 64, 64);
                 SynapseTip = Color.FromArgb(127, 127, 127);
                 SynapseTextBackgroundSelected = Color.FromArgb(64, 64, 128);

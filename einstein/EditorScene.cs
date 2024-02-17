@@ -45,11 +45,14 @@ namespace Einstein
         private ColorMenuCategory editColorMenuCategory;
         private RectangleDrawable paintColorDisplay;
         private Button loadButton;
-        private Button saveButton;
+        private Button resaveButtonDisabledPlaceholder;
+        private Button resaveButton;
+        private Text bibiteNameText;
+        private Text bibiteVersionText;
+        private Button saveToButton;
         private SaveMessageText saveMessageText;
         private Button autoArrangeButton;
         private KeybindsInfoText infoText;
-        private Text bibiteVersionText;
         private ZoomControls zoomControls;
 
         private string savePath;
@@ -69,7 +72,7 @@ namespace Einstein
             MenuCategoryButton inputButton = new MenuCategoryButton(
                 EinsteinConfig.PAD,
                 EinsteinConfig.PAD,
-                "Input Neurons",
+                "Inputs",
                 onSelectInputs,
                 onDeselectInputs);
             input = new IONeuronMenuCategory(
@@ -79,7 +82,7 @@ namespace Einstein
             MenuCategoryButton outputButton = new MenuCategoryButton(
                 EinsteinConfig.PAD,
                 EinsteinConfig.PAD + inputButton.GetY() + inputButton.GetHeight(),
-                "Output Neurons",
+                "Outputs",
                 onSelectOutputs,
                 onDeselectOutputs);
             output = new IONeuronMenuCategory(
@@ -89,7 +92,7 @@ namespace Einstein
             MenuCategoryButton hiddenButton = new MenuCategoryButton(
                 EinsteinConfig.PAD,
                 EinsteinConfig.PAD + outputButton.GetY() + outputButton.GetHeight(),
-                "Hidden Neurons",
+                "Hidden",
                 onSelectHidden,
                 onDeselectHidden);
             hidden = new HiddenNeuronMenuCategory(
@@ -118,22 +121,41 @@ namespace Einstein
             loadButton = new Button.ButtonBuilder(
                 new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
                 EinsteinConfig.PAD,
-                EinsteinConfig.PAD * 2 + editColorButton.GetY() + editColorButton.GetHeight())
-                .withText("Load from Bibite")
-                .withOnClick(loadBrain)
+                EinsteinConfig.PAD * 2 + paintColorDisplay.GetY() + paintColorDisplay.GetHeight())
+                .withText("Load")
+                .withOnClick(loadFromBibite)
                 .Build();
-            saveButton = new Button.ButtonBuilder(
-                new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
+            resaveButtonDisabledPlaceholder = new Button.ButtonBuilder(new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
                 EinsteinConfig.PAD,
                 EinsteinConfig.PAD + loadButton.GetY() + loadButton.GetHeight())
-                .withText("Save to Bibite")
-                .withOnClick(saveBrain)
+                .withText(new TextBuilder("Save").WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.DisabledButtonText)).Build())
+                .withOnClick(() => { })
+                .Build();
+            resaveButton = new Button.ButtonBuilder(new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
+                resaveButtonDisabledPlaceholder.GetX(),
+                resaveButtonDisabledPlaceholder.GetY())
+                .withText("Save")
+                .withOnClick(resaveToBibite)
+                .Build();
+            resaveButton.SetDisplaying(false);
+            saveToButton = new Button.ButtonBuilder(
+                new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
+                EinsteinConfig.PAD,
+                EinsteinConfig.PAD + resaveButton.GetY() + resaveButton.GetHeight())
+                .withText("Save to")
+                .withOnClick(saveToBibite)
+                .Build();
+            bibiteNameText = new TextBuilder(getBb8NameText())
+                .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
+                .WithFontSize(10f)
+                .WithXY(EinsteinConfig.PAD,
+                    EinsteinConfig.PAD + saveToButton.GetY() + saveToButton.GetHeight())
                 .Build();
             bibiteVersionText = new TextBuilder(getBb8VersionText())
                 .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
                 .WithFontSize(10f)
                 .WithXY(EinsteinConfig.PAD,
-                    EinsteinConfig.PAD + saveButton.GetY() + saveButton.GetHeight())
+                    EinsteinConfig.PAD + bibiteNameText.GetY() + bibiteNameText.GetHeight())
                 .Build();
             saveMessageText = new SaveMessageText(
                 EinsteinConfig.PAD + MenuCategoryButton.WIDTH / 2,
@@ -142,15 +164,15 @@ namespace Einstein
             autoArrangeButton = new Button.ButtonBuilder(
                 new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
                 EinsteinConfig.PAD,
-                EinsteinConfig.PAD + saveMessageText.GetY() + saveMessageText.GetHeight())
+                EinsteinConfig.PAD * 2 + saveMessageText.GetY() + saveMessageText.GetHeight())
                 .withText("Auto-Arrange")
                 .withOnClick(editArea.AutoArrange)
                 .Build();
 
             infoText = new KeybindsInfoText(
                 EinsteinConfig.PAD,
-                20 + EinsteinConfig.PAD + autoArrangeButton.GetY() + autoArrangeButton.GetHeight());
-            
+                EinsteinConfig.PAD + autoArrangeButton.GetY() + autoArrangeButton.GetHeight());
+
             zoomControls = new ZoomControls(editArea);
 
             savePath = null;
@@ -168,6 +190,7 @@ namespace Einstein
         protected override void InitializeMe()
         {
             editArea.Initialize();
+            
             input.Initialize();
             hidden.Initialize();
             output.Initialize();
@@ -183,21 +206,30 @@ namespace Einstein
             IO.KEYS.Subscribe(RebindColorShortcut8, (int)Keys.D8 + (int)Keys.Control);
             IO.KEYS.Subscribe(RebindColorShortcut9, (int)Keys.D9 + (int)Keys.Control);
             IO.KEYS.Subscribe(RebindColorShortcut0, (int)Keys.D0 + (int)Keys.Control);
+            
             loadButton.Initialize();
-            saveButton.Initialize();
-            autoArrangeButton.Initialize();
-            zoomControls.Initialize();
             IO.RENDERER.Add(loadButton);
-            IO.RENDERER.Add(saveButton);
-            IO.RENDERER.Add(autoArrangeButton);
+            resaveButton.Initialize();
+            IO.RENDERER.Add(resaveButton, EinsteinConfig.Render.DEFAULT_LAYER + 1);
+            resaveButtonDisabledPlaceholder.Initialize();
+            IO.RENDERER.Add(resaveButtonDisabledPlaceholder);
+            IO.RENDERER.Add(bibiteNameText);
             IO.RENDERER.Add(bibiteVersionText);
+            saveToButton.Initialize();
+            IO.RENDERER.Add(saveToButton);
+
+            autoArrangeButton.Initialize();
+            IO.RENDERER.Add(autoArrangeButton);
             IO.RENDERER.Add(infoText);
+            zoomControls.Initialize();
+            
             IO.FRAME_TIMER.Subscribe(checkForResize);
         }
 
         protected override void UninitializeMe()
         {
             editArea.Uninitialize();
+
             input.Uninitialize();
             output.Uninitialize();
             hidden.Uninitialize();
@@ -213,15 +245,23 @@ namespace Einstein
             IO.KEYS.Unsubscribe(RebindColorShortcut8, (int)Keys.D8 + (int)Keys.Control);
             IO.KEYS.Unsubscribe(RebindColorShortcut9, (int)Keys.D9 + (int)Keys.Control);
             IO.KEYS.Unsubscribe(RebindColorShortcut0, (int)Keys.D0 + (int)Keys.Control);
+
             loadButton.Uninitialize();
-            saveButton.Uninitialize();
-            autoArrangeButton.Uninitialize();
-            zoomControls.Uninitialize();
             IO.RENDERER.Remove(loadButton);
-            IO.RENDERER.Remove(saveButton);
-            IO.RENDERER.Remove(autoArrangeButton);
+            resaveButton.Uninitialize();
+            IO.RENDERER.Remove(resaveButton);
+            resaveButtonDisabledPlaceholder.Uninitialize();
+            IO.RENDERER.Remove(resaveButtonDisabledPlaceholder);
+            IO.RENDERER.Remove(bibiteNameText);
             IO.RENDERER.Remove(bibiteVersionText);
+            saveToButton.Uninitialize();
+            IO.RENDERER.Remove(saveToButton);
+
+            autoArrangeButton.Uninitialize();
+            IO.RENDERER.Remove(autoArrangeButton);
             IO.RENDERER.Remove(infoText);
+            zoomControls.Uninitialize();
+
             IO.FRAME_TIMER.Unsubscribe(checkForResize);
         }
 
@@ -233,10 +273,19 @@ namespace Einstein
 
         // ----- Saving/Loading -----
 
-        private void saveBrain()
+        private void resaveToBibite()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            if (mostRecentLoadedToFile == null)
+            {
+                return;
+            }
+            saveToBibite(mostRecentLoadedToFile);
+        }
 
+        private void saveToBibite()
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             // read file
             string filepath = IO.POPUPS.PromptForFile(getSavePath(), "Bibite Files|*.bb8",
                 "Save to Bibite", "");
@@ -245,24 +294,30 @@ namespace Einstein
                 // User cancelled
                 return;
             }
+            saveToBibite(filepath);
+        }
+
+        private bool saveToBibite(string filepath)
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+
             if (!File.Exists(filepath))
             {
                 IO.POPUPS.ShowErrorPopup("Save Failed", "File not found.");
-                return;
+                return false;
             }
             string json = File.ReadAllText(filepath);
 
             // Warn if saving to a different file than the
             // most recently loaded or saved-to file
-            if (!filepath.Equals(mostRecentSavedToFile)
+            if (mostRecentLoadedToFile != null
                 && !filepath.Equals(mostRecentLoadedToFile)
+                && !filepath.Equals(mostRecentSavedToFile) // if you're always saving to another file
                 && !IO.POPUPS.ShowYesNoPopup("Save to different bibite?",
                     $"Are you sure you want to save to '{Path.GetFileName(filepath)}'?\n\n" +
-                    $"It is not the bibite this brain was originally loaded from ('{Path.GetFileName(mostRecentLoadedToFile)}')" +
-                    (mostRecentSavedToFile == null ? "."
-                    : $",\nnor is it the bibite you most recently saved to ('{Path.GetFileName(mostRecentSavedToFile)}').")))
+                    $"It is not the bibite this brain was originally loaded from."))
             {
-                return;
+                return false;
             }
             
             // determine where to insert the brain
@@ -271,7 +326,7 @@ namespace Einstein
             if (startIndex < 0 || endIndex < 0)
             {
                 IO.POPUPS.ShowErrorPopup("Save Failed", "File format is invalid: Cannot find an existing brain.");
-                return;
+                return false;
             }
 
             // determine destination version
@@ -283,7 +338,7 @@ namespace Einstein
             catch (NoNextValueException e)
             {
                 IO.POPUPS.ShowErrorPopup("Save Failed", "File format is invalid: Cannot find Bibites version.\nDetails: " + e.Message);
-                return;
+                return false;
             }
             BibiteVersion targetBibiteVersion;
             try
@@ -293,7 +348,7 @@ namespace Einstein
             catch (NoSuchVersionException e)
             {
                 showVersionMismatchErrorPopup("Save Failed", e);
-                return;
+                return false;
             }
 
             BaseBrain brainToSave = editArea.Brain;
@@ -317,7 +372,7 @@ namespace Einstein
                     "Regardless of your choice, the brain will remain open in the editor in its unconverted state.");
                 if (!answer)
                 {
-                    return;
+                    return false;
                 }
                 try
                 {
@@ -327,7 +382,7 @@ namespace Einstein
                 {
                     IO.POPUPS.ShowErrorPopup("Unable to convert brain to "
                         + targetBibiteVersion.VERSION_NAME, e.Message);
-                    return;
+                    return false;
                 }
             }
 
@@ -337,9 +392,10 @@ namespace Einstein
             savePath = Path.GetDirectoryName(filepath);
             mostRecentSavedToFile = filepath;
             saveMessageText.Show();
+            return true;
         }
 
-        private void loadBrain()
+        private void loadFromBibite()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
 
@@ -437,13 +493,18 @@ namespace Einstein
             }
 
             // only on successful load...
+            
             bibiteVersion = newBibiteVersion;
-            bibiteVersionText.SetMessage(getBb8VersionText());
             editArea.LoadBrain(brain, newBibiteVersion);
             updateIONeuronsInMenu(); // depends on the brain being set in editArea.LoadBrain
             hidden.ResetNeuronOptionsTo(bibiteVersion.HiddenNeurons);
+            
             loadPath = Path.GetDirectoryName(filepath);
             mostRecentLoadedToFile = filepath;
+            mostRecentSavedToFile = null;
+            resaveButton.SetDisplaying(true);
+            bibiteNameText.SetMessage(getBb8NameText());
+            bibiteVersionText.SetMessage(getBb8VersionText());
         }
 
         private string parseVersionName(string json)
@@ -651,6 +712,11 @@ namespace Einstein
         private string getBb8VersionText()
         {
             return "Bibite Version: " + bibiteVersion.VERSION_NAME;
+        }
+
+        private string getBb8NameText()
+        {
+            return mostRecentLoadedToFile == null ? "Brain is not from a .bb8" : Path.GetFileName(mostRecentLoadedToFile);
         }
 
         // check if the window has been resized
