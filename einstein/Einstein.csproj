@@ -60,6 +60,7 @@
     <Compile Include="model\json\JsonParser.cs" />
     <Compile Include="model\json\JsonSynapse.cs" />
     <Compile Include="model\NeuronType.cs" />
+    <Compile Include="ui\editarea\AutoArranger.cs" />
     <Compile Include="ui\editarea\EditArea.cs" />
     <Compile Include="ui\editarea\NeuronDescET.cs" />
     <Compile Include="ui\editarea\NeuronDescSET.cs" />

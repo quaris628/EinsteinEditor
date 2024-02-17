@@ -467,6 +467,8 @@ namespace Einstein.ui.editarea
                 }
             }
 
+            // ----- Assign left-to-right layers -----
+
             // assign layers of hidden neurons
             // note that later assignments overwrite the earlier assignments
             foreach (BaseNeuron hiddenNeuron in hiddenNeurons)
@@ -507,37 +509,48 @@ namespace Einstein.ui.editarea
                 layerToTotalNeurons[layer] = layerToTotalNeurons.ContainsKey(layer) ? layerToTotalNeurons[layer] + 1 : 1;
             }
 
-            int totalWidth = EditArea.GetWidth() - NeuronDrawable.CIRCLE_DIAMETER;
-            int totalHeight = EditArea.GetHeight() - NeuronDrawable.CIRCLE_DIAMETER;
+            int totalWidth = GetWidth() - NeuronDrawable.CIRCLE_DIAMETER;
+            int totalHeight = GetHeight() - NeuronDrawable.CIRCLE_DIAMETER;
 
             // TODO? find a better vertical order for each layer to have its neurons be put in?
 
             // horizontally divide up layers
             // vertically divide up neurons in each layer
-            if (layerToTotalNeurons.Count == 0) { return; } // avoid divide by 0
+            if (layerToTotalNeurons.Count == 0)  // avoid divide by 0
+            {
+                return;
+            }
             // used floats to not let rounding make everything get slightly further off from ideal
             // positions the further down and right you go
             float eachWidth = totalWidth / (float)layerToTotalNeurons.Count;
-            float x = EditArea.GetX() + NeuronDrawable.CIRCLE_RADIUS - eachWidth / 2;
+            float x = GetX() + NeuronDrawable.CIRCLE_RADIUS - eachWidth / 2;
             List<int> sortedLayers = layerToTotalNeurons.Keys.ToList();
             sortedLayers.Sort();
             foreach (int layer in sortedLayers)
             {
-                if (layerToTotalNeurons[layer] == 0) { continue; }
+                if (layerToTotalNeurons[layer] == 0)
+                {
+                    continue;
+                }
                 x += eachWidth;
                 float eachHeight = totalHeight / (float)layerToTotalNeurons[layer];
-                float y = EditArea.GetY() + NeuronDrawable.CIRCLE_RADIUS - eachHeight / 2;
+                float y = GetY() + NeuronDrawable.CIRCLE_RADIUS - eachHeight / 2;
 
+                // determine neurons in the layer
                 // maybe there's a more efficient way but meh, "this is fine"
+                LinkedList<int> indexesOfNeuronsInLayer = new LinkedList<int>();
                 foreach (BaseNeuron neuron in Brain.Neurons)
                 {
                     if (indexToLayer[neuron.Index] == layer)
                     {
-                        y += eachHeight;
-                        // position neuron
-                        neuronIndexToNR[neuron.Index].Reposition((int)x, (int)y);
+                        indexesOfNeuronsInLayer.AddLast(neuron.Index);
+                        
                     }
                 }
+
+                y += eachHeight;
+                // position neuron
+                neuronIndexToNR[neuron.Index].Reposition((int)x, (int)y);
             }
         }
 
