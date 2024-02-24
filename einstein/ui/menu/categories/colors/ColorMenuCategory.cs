@@ -93,16 +93,16 @@ namespace Einstein.ui.menu
                     onSelect.Invoke(colorSelectDrawable.Color);
                 }, colorSelectDrawable);
             }
-            IO.KEYS.Subscribe(Shortcut1, Keys.D1);
-            IO.KEYS.Subscribe(Shortcut2, Keys.D2);
-            IO.KEYS.Subscribe(Shortcut3, Keys.D3);
-            IO.KEYS.Subscribe(Shortcut4, Keys.D4);
-            IO.KEYS.Subscribe(Shortcut5, Keys.D5);
-            IO.KEYS.Subscribe(Shortcut6, Keys.D6);
-            IO.KEYS.Subscribe(Shortcut7, Keys.D7);
-            IO.KEYS.Subscribe(Shortcut8, Keys.D8);
-            IO.KEYS.Subscribe(Shortcut9, Keys.D9);
-            IO.KEYS.Subscribe(Shortcut0, Keys.D0);
+            IO.KEYS.Subscribe(Shortcut1, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[0]);
+            IO.KEYS.Subscribe(Shortcut2, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[1]);
+            IO.KEYS.Subscribe(Shortcut3, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[2]);
+            IO.KEYS.Subscribe(Shortcut4, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[3]);
+            IO.KEYS.Subscribe(Shortcut5, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[4]);
+            IO.KEYS.Subscribe(Shortcut6, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[5]);
+            IO.KEYS.Subscribe(Shortcut7, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[6]);
+            IO.KEYS.Subscribe(Shortcut8, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[7]);
+            IO.KEYS.Subscribe(Shortcut9, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[8]);
+            IO.KEYS.Subscribe(Shortcut0, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[9]);
 
             for (int i = 0; i < 10; i++)
             {
@@ -117,16 +117,16 @@ namespace Einstein.ui.menu
             {
                 IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(drawable);
             }
-            IO.KEYS.Unsubscribe(Shortcut1, Keys.D1);
-            IO.KEYS.Unsubscribe(Shortcut2, Keys.D2);
-            IO.KEYS.Unsubscribe(Shortcut3, Keys.D3);
-            IO.KEYS.Unsubscribe(Shortcut4, Keys.D4);
-            IO.KEYS.Unsubscribe(Shortcut5, Keys.D5);
-            IO.KEYS.Unsubscribe(Shortcut6, Keys.D6);
-            IO.KEYS.Unsubscribe(Shortcut7, Keys.D7);
-            IO.KEYS.Unsubscribe(Shortcut8, Keys.D8);
-            IO.KEYS.Unsubscribe(Shortcut9, Keys.D9);
-            IO.KEYS.Unsubscribe(Shortcut0, Keys.D0);
+            IO.KEYS.Unsubscribe(Shortcut1, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[0]);
+            IO.KEYS.Unsubscribe(Shortcut2, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[1]);
+            IO.KEYS.Unsubscribe(Shortcut3, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[2]);
+            IO.KEYS.Unsubscribe(Shortcut4, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[3]);
+            IO.KEYS.Unsubscribe(Shortcut5, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[4]);
+            IO.KEYS.Unsubscribe(Shortcut6, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[5]);
+            IO.KEYS.Unsubscribe(Shortcut7, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[6]);
+            IO.KEYS.Unsubscribe(Shortcut8, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[7]);
+            IO.KEYS.Unsubscribe(Shortcut9, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[8]);
+            IO.KEYS.Unsubscribe(Shortcut0, EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[9]);
         }
 
         public void Add(Color color)

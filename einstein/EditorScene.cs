@@ -200,16 +200,16 @@ namespace Einstein
             output.Initialize();
             editColorMenuCategory.Initialize();
             IO.RENDERER.Add(paintColorDisplay, EinsteinConfig.Render.DEFAULT_LAYER);
-            IO.KEYS.Subscribe(RebindColorShortcut1, (int)Keys.D1 + (int)Keys.Control);
-            IO.KEYS.Subscribe(RebindColorShortcut2, (int)Keys.D2 + (int)Keys.Control);
-            IO.KEYS.Subscribe(RebindColorShortcut3, (int)Keys.D3 + (int)Keys.Control);
-            IO.KEYS.Subscribe(RebindColorShortcut4, (int)Keys.D4 + (int)Keys.Control);
-            IO.KEYS.Subscribe(RebindColorShortcut5, (int)Keys.D5 + (int)Keys.Control);
-            IO.KEYS.Subscribe(RebindColorShortcut6, (int)Keys.D6 + (int)Keys.Control);
-            IO.KEYS.Subscribe(RebindColorShortcut7, (int)Keys.D7 + (int)Keys.Control);
-            IO.KEYS.Subscribe(RebindColorShortcut8, (int)Keys.D8 + (int)Keys.Control);
-            IO.KEYS.Subscribe(RebindColorShortcut9, (int)Keys.D9 + (int)Keys.Control);
-            IO.KEYS.Subscribe(RebindColorShortcut0, (int)Keys.D0 + (int)Keys.Control);
+            IO.KEYS.Subscribe(RebindColorShortcut1, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[0] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Subscribe(RebindColorShortcut2, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[1] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Subscribe(RebindColorShortcut3, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[2] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Subscribe(RebindColorShortcut4, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[3] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Subscribe(RebindColorShortcut5, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[4] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Subscribe(RebindColorShortcut6, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[5] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Subscribe(RebindColorShortcut7, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[6] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Subscribe(RebindColorShortcut8, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[7] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Subscribe(RebindColorShortcut9, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[8] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Subscribe(RebindColorShortcut0, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[9] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
 
             loadButton.Initialize();
             IO.RENDERER.Add(loadButton);
@@ -227,6 +227,9 @@ namespace Einstein
             IO.RENDERER.Add(infoText);
             zoomControls.Initialize();
 
+            IO.KEYS.Subscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
+            IO.KEYS.Subscribe(loadFromBibite, EinsteinConfig.Keybinds.LOAD_FROM_BIBITE);
+
             IO.FRAME_TIMER.Subscribe(checkForResize);
 
             editArea.Brain.MarkChangesAsSaved();
@@ -241,16 +244,16 @@ namespace Einstein
             hidden.Uninitialize();
             editColorMenuCategory.Uninitialize();
             IO.RENDERER.Remove(paintColorDisplay);
-            IO.KEYS.Unsubscribe(RebindColorShortcut1, (int)Keys.D1 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(RebindColorShortcut2, (int)Keys.D2 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(RebindColorShortcut3, (int)Keys.D3 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(RebindColorShortcut4, (int)Keys.D4 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(RebindColorShortcut5, (int)Keys.D5 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(RebindColorShortcut6, (int)Keys.D6 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(RebindColorShortcut7, (int)Keys.D7 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(RebindColorShortcut8, (int)Keys.D8 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(RebindColorShortcut9, (int)Keys.D9 + (int)Keys.Control);
-            IO.KEYS.Unsubscribe(RebindColorShortcut0, (int)Keys.D0 + (int)Keys.Control);
+            IO.KEYS.Unsubscribe(RebindColorShortcut1, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[0] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Unsubscribe(RebindColorShortcut2, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[1] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Unsubscribe(RebindColorShortcut3, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[2] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Unsubscribe(RebindColorShortcut4, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[3] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Unsubscribe(RebindColorShortcut5, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[4] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Unsubscribe(RebindColorShortcut6, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[5] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Unsubscribe(RebindColorShortcut7, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[6] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Unsubscribe(RebindColorShortcut8, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[7] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Unsubscribe(RebindColorShortcut9, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[8] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
+            IO.KEYS.Unsubscribe(RebindColorShortcut0, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[9] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
 
             loadButton.Uninitialize();
             IO.RENDERER.Remove(loadButton);
@@ -267,6 +270,9 @@ namespace Einstein
             IO.RENDERER.Remove(autoArrangeButton);
             IO.RENDERER.Remove(infoText);
             zoomControls.Uninitialize();
+
+            IO.KEYS.Unsubscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
+            IO.KEYS.Unsubscribe(loadFromBibite, EinsteinConfig.Keybinds.LOAD_FROM_BIBITE);
 
             IO.FRAME_TIMER.Unsubscribe(checkForResize);
         }
