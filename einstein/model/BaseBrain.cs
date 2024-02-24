@@ -1,4 +1,5 @@
 ﻿using Einstein.config.bibiteVersions;
+using phi.other;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Einstein.model
 {
-    public class BaseBrain
+    public class BaseBrain : DynamicContainer
     {
         public ICollection<BaseNeuron> Neurons { get; }
         private Dictionary<int, BaseNeuron> neuronsIndex;
@@ -45,6 +46,10 @@ namespace Einstein.model
             }
 
             Neurons.Add(neuron);
+
+            FlagChange();
+            neuron.PutIn(this);
+
             // update indexes
             neuronsIndex.Add(neuron.Index, neuron);
             neuronDescriptionIndex.Add(neuron.Description, neuron);
@@ -72,6 +77,10 @@ namespace Einstein.model
             }
 
             Synapses.Add(synapse);
+
+            FlagChange();
+            synapse.PutIn(this);
+
             // update indexes
             synapsesIndex.Add((synapse.From.Index, synapse.To.Index), synapse);
             synapsesFromIndex[synapse.From.Index].AddLast(synapse);
@@ -87,6 +96,10 @@ namespace Einstein.model
                     "Cannot remove the neuron '" +
                     neuron.ToString() + "' because it does not exist in the brain.");
             }
+
+            FlagChange();
+            neuron.TakeOut(this);
+
             // remove linked synapses
             // avoid concurrent modification exception
             LinkedList<BaseSynapse> linkedSynapses = new LinkedList<BaseSynapse>();
@@ -105,6 +118,7 @@ namespace Einstein.model
             {
                 Remove(synapse);
             }
+
             // update indexes
             neuronsIndex.Remove(neuron.Index);
             neuronDescriptionIndex.Remove(neuron.Description);
@@ -122,6 +136,10 @@ namespace Einstein.model
                     "Cannot remove the synapse '" + synapse +
                     "' because it does not exist in the brain.");
             }
+
+            FlagChange();
+            synapse.TakeOut(this);
+
             // update indexes
             synapsesIndex.Remove((synapse.From.Index, synapse.To.Index));
             synapsesFromIndex[synapse.From.Index].Remove(synapse);
@@ -180,6 +198,16 @@ namespace Einstein.model
         }
 
         public virtual string GetSave(BibiteVersion bibiteVersion) { throw new NotSupportedException(); }
+
+        public bool HasUnsavedChanges()
+        {
+            return HasChanged();
+        }
+
+        public void MarkChangesAsSaved()
+        {
+            UnflagChanges();
+        }
     }
 
     public abstract class BrainException : Exception

@@ -81,13 +81,14 @@ namespace Einstein.ui.editarea
 
             NeuronRenderable dragNeuron = new NeuronRenderable(this, neuron, tryPainting);
             dragNeuron.Initialize();
+
             neuronIndexToNR.Add(neuron.Index, dragNeuron);
         }
 
         public void CreateHiddenNeuron(NeuronType type)
         {
             string desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN);
-            while (Brain.ContainsNeuronDescription(desc)) 
+            while (Brain.ContainsNeuronDescription(desc))
             {
                 nextHiddenNeuronIndex++;
                 desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN);
@@ -97,14 +98,8 @@ namespace Einstein.ui.editarea
                 type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN),
                 BibiteVersion),
                 true);
-            /*
-            if (PaintColor != null)
-            {
-                neuronIndexToNR[nextHiddenNeuronIndex].NeuronDrawable.SetColorGroup((Color)PaintColor);
-            }
-            //*/
+
             nextHiddenNeuronIndex++;
-            
         }
 
         public void RemoveNeuron(BaseNeuron neuron)
@@ -132,7 +127,8 @@ namespace Einstein.ui.editarea
 
             Brain.Remove(neuron);
 
-            IO.FRAME_TIMER.QueueUninit(neuronIndexToNR[neuron.Index].Uninitialize);
+            NeuronRenderable nr = neuronIndexToNR[neuron.Index];
+            IO.FRAME_TIMER.QueueUninit(nr.Uninitialize);
             neuronIndexToNR.Remove(neuron.Index);
 
             if (!disableOnRemove)
@@ -276,6 +272,8 @@ namespace Einstein.ui.editarea
                     nr.Reposition(jn.DiagramX, jn.DiagramY);
                 }
             }
+
+            Brain.MarkChangesAsSaved();
         }
 
         // ----- Background drag -----

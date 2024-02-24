@@ -1,5 +1,6 @@
 ﻿using Einstein.model.json;
 using LibraryFunctionReplacements;
+using phi.other;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Einstein.model
 {
-    public class BaseSynapse
+    public class BaseSynapse : DynamicHoldable
     {
         public const int STRENGTH_MAX_DECIMALS = 4;
 
@@ -17,17 +18,26 @@ namespace Einstein.model
         private float _strength;
         public BaseNeuron From {
             get { return _from; }
-            set { _from = validateFrom(value); }
+            set {
+                _from = validateFrom(value);
+                FlagChange();
+            }
         }
         public BaseNeuron To
         {
             get { return _to; }
-            set { _to = validateTo(value); }
+            set {
+                _to = validateTo(value);
+                FlagChange();
+            }
         }
 
         public float Strength {
             get { return _strength; }
-            set { _strength = validateStrength(value); }
+            set {
+                _strength = validateStrength(value);
+                FlagChange();
+            }
         }
 
         protected BaseSynapse() { }

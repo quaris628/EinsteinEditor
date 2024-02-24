@@ -9,6 +9,7 @@ using Einstein.ui.menu.categories.colors;
 using phi.control;
 using phi.graphics.drawables;
 using phi.io;
+using phi.other;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -137,6 +138,9 @@ namespace Einstein
                 .withText("Save")
                 .withOnClick(resaveToBibite)
                 .Build();
+            editArea.Brain.OnChangeFlagged += (_container) => {
+                resaveButton.SetDisplaying(mostRecentLoadedToFile != null);
+            };
             resaveButton.SetDisplaying(false);
             saveToButton = new Button.ButtonBuilder(
                 new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
@@ -190,7 +194,7 @@ namespace Einstein
         protected override void InitializeMe()
         {
             editArea.Initialize();
-            
+
             input.Initialize();
             hidden.Initialize();
             output.Initialize();
@@ -206,7 +210,7 @@ namespace Einstein
             IO.KEYS.Subscribe(RebindColorShortcut8, (int)Keys.D8 + (int)Keys.Control);
             IO.KEYS.Subscribe(RebindColorShortcut9, (int)Keys.D9 + (int)Keys.Control);
             IO.KEYS.Subscribe(RebindColorShortcut0, (int)Keys.D0 + (int)Keys.Control);
-            
+
             loadButton.Initialize();
             IO.RENDERER.Add(loadButton);
             resaveButton.Initialize();
@@ -222,8 +226,10 @@ namespace Einstein
             IO.RENDERER.Add(autoArrangeButton);
             IO.RENDERER.Add(infoText);
             zoomControls.Initialize();
-            
+
             IO.FRAME_TIMER.Subscribe(checkForResize);
+
+            editArea.Brain.MarkChangesAsSaved();
         }
 
         protected override void UninitializeMe()
@@ -280,7 +286,9 @@ namespace Einstein
             {
                 return;
             }
+
             saveToBibite(mostRecentLoadedToFile);
+            resaveButton.SetDisplaying(false);
         }
 
         private void saveToBibite()
@@ -294,7 +302,10 @@ namespace Einstein
                 // User cancelled
                 return;
             }
-            saveToBibite(filepath);
+            if (saveToBibite(filepath))
+            {
+                editArea.Brain.MarkChangesAsSaved();
+            }
         }
 
         private bool saveToBibite(string filepath)
@@ -319,7 +330,7 @@ namespace Einstein
             {
                 return false;
             }
-            
+
             // determine where to insert the brain
             int startIndex = json.IndexOf("\"brain\":") + "\"brain\":".Length;
             int endIndex = json.IndexOf("\"immuneSystem\":");
@@ -398,6 +409,13 @@ namespace Einstein
         private void loadFromBibite()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+
+            if (editArea.Brain.HasUnsavedChanges()
+                && !IO.POPUPS.ShowYesNoPopup("Unsaved changes",
+                "This brain has unsaved changes. Are you sure you want to load a new brain?"))
+            {
+                return;
+            }
 
             // read the file
             string filepath = IO.POPUPS.PromptForFile(getLoadPath(), "Bibite Files|*.bb8",
@@ -493,16 +511,19 @@ namespace Einstein
             }
 
             // only on successful load...
-            
+
             bibiteVersion = newBibiteVersion;
             editArea.LoadBrain(brain, newBibiteVersion);
             updateIONeuronsInMenu(); // depends on the brain being set in editArea.LoadBrain
             hidden.ResetNeuronOptionsTo(bibiteVersion.HiddenNeurons);
-            
+
             loadPath = Path.GetDirectoryName(filepath);
             mostRecentLoadedToFile = filepath;
             mostRecentSavedToFile = null;
-            resaveButton.SetDisplaying(true);
+            brain.OnChangeFlagged += (_container) => {
+                resaveButton.SetDisplaying(true);
+            };
+            resaveButton.SetDisplaying(false);
             bibiteNameText.SetMessage(getBb8NameText());
             bibiteVersionText.SetMessage(getBb8VersionText());
         }
@@ -717,6 +738,15 @@ namespace Einstein
         private string getBb8NameText()
         {
             return mostRecentLoadedToFile == null ? "Brain is not from a .bb8" : Path.GetFileName(mostRecentLoadedToFile);
+        }
+
+        public override bool CanClose()
+        {
+            if (editArea.Brain.HasUnsavedChanges())
+            {
+                return IO.POPUPS.ShowYesNoPopup("Unsaved changes", "This brain has unsaved changes. Are you sure you want to exit?");
+            }
+            return true;
         }
 
         // check if the window has been resized

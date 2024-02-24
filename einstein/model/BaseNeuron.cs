@@ -1,4 +1,5 @@
 ﻿using Einstein.config.bibiteVersions;
+using phi.other;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,29 +9,58 @@ using System.Threading.Tasks;
 
 namespace Einstein.model
 {
-    public class BaseNeuron
+    public class BaseNeuron : DynamicHoldable
     {
         public static readonly Color DEFAULT_COLOR_GROUP = Color.FromArgb(225, 225, 225);
 
         private int _index;
         public int Index {
             get { return _index; }
-            protected set { _index = validateIndex(value); }
+            protected set {
+                _index = validateIndex(value);
+                FlagChange();
+            }
         }
+
         // TODO make setting type public, and when I do that
         // validate that you can't set the type to (for example)
         // Input when index is in the hidden neuron range
-        public NeuronType Type { get; protected set; }
+        private NeuronType _type;
+        public NeuronType Type {
+            get
+            {
+                return _type;
+            }
+            protected set
+            {
+                _type = value;
+                FlagChange();
+            }
+
+        }
         private string _description;
+
         // IMPORTANT if this neuron is in a brain,
         // then use Brain's UpdateNeuronDescription method instead of setting the description directly.
         // Otherwise some Brain description stuff will start having problems.
         public string Description {
             get { return _description; }
-            set { _description = validateDescription(value); }
+            set {
+                _description = validateDescription(value);
+                FlagChange();
+            }
         }
 
-        public Color ColorGroup;
+        private Color _colorGroup;
+        public Color ColorGroup
+        {
+            get { return _colorGroup; }
+            set
+            {
+                _colorGroup = value;
+                FlagChange();
+            }
+        }
 
         // description, type, and even index can change, but version must be immutable
         public BibiteVersion BibiteVersion { get; private set; }

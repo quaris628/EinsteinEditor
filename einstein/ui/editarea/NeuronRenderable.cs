@@ -98,6 +98,7 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (isRemoved) { return; }
+            editArea.Brain.FlagChange();
             Reposition();
         }
 
@@ -112,6 +113,11 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (isRemoved) { return; }
+
+            if (NeuronDrawable.GetCircleCenterX() != x && NeuronDrawable.GetCircleCenterY() != y)
+            {
+                editArea.Brain.FlagChange();
+            }
             NeuronDrawable.SetCircleCenterXY(x, y);
             if (editArea.Brain != null)
             {
