@@ -293,8 +293,11 @@ namespace Einstein
                 return;
             }
 
-            saveToBibite(mostRecentLoadedToFile);
-            resaveButton.SetDisplaying(false);
+            if (saveToBibite(mostRecentLoadedToFile))
+            {
+                editArea.Brain.MarkChangesAsSaved();
+                resaveButton.SetDisplaying(false);
+            }
         }
 
         private void saveToBibite()
@@ -308,10 +311,7 @@ namespace Einstein
                 // User cancelled
                 return;
             }
-            if (saveToBibite(filepath))
-            {
-                editArea.Brain.MarkChangesAsSaved();
-            }
+            saveToBibite(filepath);
         }
 
         private bool saveToBibite(string filepath)
