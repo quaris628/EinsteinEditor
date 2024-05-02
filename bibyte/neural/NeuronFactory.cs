@@ -1,4 +1,5 @@
 ﻿using Einstein;
+using Einstein.config.bibiteVersions;
 using Einstein.model;
 using Einstein.model.json;
 using System;
@@ -11,7 +12,24 @@ namespace Bibyte.neural
 {
     public static class NeuronFactory
     {
-        private static int hiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
+        private static int hiddenNeuronIndex = int.MinValue;// BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
+        private static BibiteVersion bibiteVersion = null;
+
+        public static void InitializeBibiteVersion(BibiteVersion bibiteVersion)
+        {
+            if (NeuronFactory.bibiteVersion != null)
+            {
+                throw new InvalidOperationException("A bibite version has already been initialized");
+            }
+
+            NeuronFactory.bibiteVersion = bibiteVersion;
+            hiddenNeuronIndex = bibiteVersion.HIDDEN_NODES_INDEX_MIN;
+        }
+
+        public static BibiteVersion GetBibiteVersion()
+        {
+            return bibiteVersion;
+        }
 
         /// <summary>
         /// Creates a new hidden neuron.
@@ -21,6 +39,10 @@ namespace Bibyte.neural
         /// <returns>A new hidden neuron.</returns>
         public static JsonNeuron CreateNeuron(NeuronType type)
         {
+            if (bibiteVersion == null)
+            {
+                throw new InvalidOperationException("Must initialize bibite version before creating a neuron");
+            }
             return CreateNeuron(type, "Hidden");
         }
 
@@ -34,11 +56,15 @@ namespace Bibyte.neural
         /// <returns>A new hidden neuron.</returns>
         public static JsonNeuron CreateNeuron(NeuronType type, string descriptionPrefix)
         {
+            if (bibiteVersion == null)
+            {
+                throw new InvalidOperationException("Must initialize bibite version before creating a neuron");
+            }
             if (type == NeuronType.Input)
             {
             throw new ArgumentException("You tried to create a new input neuron. That's not allowed, silly!");
             }
-            return new JsonNeuron(hiddenNeuronIndex, type, descriptionPrefix + hiddenNeuronIndex++);
+            return new JsonNeuron(hiddenNeuronIndex, type, descriptionPrefix + hiddenNeuronIndex++, bibiteVersion);
         }
 
         /// <summary>
@@ -55,12 +81,16 @@ namespace Bibyte.neural
         public static JsonNeuron CreateNeuron(NeuronType type, string descriptionPrefix,
             float initialValue, float initialLastInput, float initialLastOutput)
         {
+            if (bibiteVersion == null)
+            {
+                throw new InvalidOperationException("Must initialize bibite version before creating a neuron");
+            }
             if (type == NeuronType.Input)
             {
                 throw new ArgumentException("You tried to create a new input neuron. That's not allowed, silly!");
             }
             return new JsonNeuron(hiddenNeuronIndex, type, descriptionPrefix + hiddenNeuronIndex++,
-                initialValue, initialLastInput, initialLastOutput);
+                initialValue, initialLastInput, initialLastOutput, bibiteVersion);
         }
     }
 }

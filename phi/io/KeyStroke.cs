@@ -86,7 +86,7 @@ namespace phi.io
          }
          public KeyStrokeBuilder with(Keys modifier)
          {
-            this.code &= (int)modifier;
+            this.code |= (int)modifier;
             return this;
          }
          public KeyStroke Build() { return new KeyStroke(code); }

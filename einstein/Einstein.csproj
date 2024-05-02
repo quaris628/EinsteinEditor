@@ -42,6 +42,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="config\BibiteVersion.cs" />
+    <Compile Include="config\bibiteVersions\BibiteVersion0_4.cs" />
+    <Compile Include="config\bibiteVersions\BibiteVersion0_6_0a.cs" />
+    <Compile Include="config\bibiteVersions\BibiteVersion0_5.cs" />
+    <Compile Include="config\exceptions\CannotConvertException.cs" />
+    <Compile Include="config\exceptions\NoSuchVersionException.cs" />
     <Compile Include="config\ColorScheme.cs" />
     <Compile Include="EinsteinMain.cs" />
     <Compile Include="config\EinsteinConfig.cs" />
@@ -63,17 +69,25 @@
     <Compile Include="ui\editarea\LineArrow.cs" />
     <Compile Include="ui\editarea\SynapseArrow.cs" />
     <Compile Include="ui\editarea\SynapseRenderable.cs" />
-    <Compile Include="ui\menu\HiddenNeuronMenuCategory.cs" />
-    <Compile Include="ui\menu\IONeuronMenuCategory.cs" />
-    <Compile Include="ui\menu\NeuronMenuCategory.cs" />
-    <Compile Include="ui\menu\NeuronMenuButton.cs" />
+    <Compile Include="ui\menu\categories\colors\ColorSelectDrawable.cs" />
+    <Compile Include="ui\menu\categories\colors\ColorMenuCategory.cs" />
+    <Compile Include="ui\menu\categories\colors\EditColorMenuCategoryButton.cs" />
+    <Compile Include="ui\menu\categories\neurons\HiddenNeuronMenuCategory.cs" />
+    <Compile Include="ui\menu\categories\neurons\IONeuronMenuCategory.cs" />
+    <Compile Include="ui\menu\categories\MenuCategory.cs" />
+    <Compile Include="ui\menu\categories\neurons\NeuronMenuCategory.cs" />
+    <Compile Include="ui\menu\categories\neurons\MenuCategoryButton.cs" />
     <Compile Include="ui\menu\KeybindsInfoText.cs" />
     <Compile Include="ui\menu\ZoomControls.cs" />
     <Compile Include="ui\NeuronDrawable.cs" />
-    <Compile Include="config\BibiteVersionConfig.cs" />
+    <Compile Include="config\BibiteConfigVersionIndependent.cs" />
     <Compile Include="ui\menu\SaveMessageText.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LibraryFunctionReplacements\LibraryFunctionReplacements.csproj">
+      <Project>{d3ab7b57-e9cc-4f6b-a0ee-adc50d3ada0a}</Project>
+      <Name>LibraryFunctionReplacements</Name>
+    </ProjectReference>
     <ProjectReference Include="..\phi\phi.csproj">
       <Project>{16a36fcd-07e6-4cae-b5cb-db677e33f3fb}</Project>
       <Name>phi</Name>

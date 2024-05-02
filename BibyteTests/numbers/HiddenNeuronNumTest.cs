@@ -2,6 +2,7 @@
 using Bibyte.functional.background;
 using Bibyte.functional.background.values;
 using Bibyte.neural;
+using Einstein.config.bibiteVersions;
 using Einstein.model;
 using Einstein.model.json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,13 +14,25 @@ namespace BibyteTests.numbers
     [TestClass]
     public class HiddenNeuronNumTest
     {
+        public HiddenNeuronNumTest()
+        {
+            try
+            {
+                NeuronFactory.InitializeBibiteVersion(BibiteVersion.V0_5);
+            }
+            catch
+            {
+
+            }
+        }
+
         [TestMethod]
         public void Sine()
         {
             // Arrange
-            NeuralBackgroundBrainBuilder.ClearBrain();
+            NeuralBackgroundBrainBuilder.ClearBrain(BibiteVersion.V0_5);
             InputNum input = InputNum.RED_BIBITE;
-            Neuron output = Outputs.PHERE_OUT_1;
+            JsonNeuron output = Outputs0_5.PHERE_OUT_1;
 
             // Act
             HiddenNeuronNum num = new HiddenNeuronNum(input, NeuronType.Sine);
@@ -27,19 +40,19 @@ namespace BibyteTests.numbers
 
             // Assert
 
-            Brain brain = NeuralBackgroundBrainBuilder.GetBrain();
+            JsonBrain brain = NeuralBackgroundBrainBuilder.GetBrain();
 
             // there are the input and output neurons
-            Neuron[] ioNeurons = new Neuron[] { input.GetInputNeuron(), output };
-            foreach (Neuron neuron in ioNeurons)
+            JsonNeuron[] ioNeurons = new JsonNeuron[] { input.GetInputNeuron(), output };
+            foreach (JsonNeuron neuron in ioNeurons)
             {
                 Assert.IsTrue(brain.ContainsNeuron(neuron));
             }
             // and there's one other neuron
             Assert.AreEqual(ioNeurons.Length + 1, brain.Neurons.Count);
             // which is a sine
-            Neuron hidden = null;
-            foreach (Neuron neuron in brain.Neurons)
+            JsonNeuron hidden = null;
+            foreach (JsonNeuron neuron in brain.Neurons)
             {
                 if (ioNeurons.Contains(neuron))
                 {
@@ -61,9 +74,9 @@ namespace BibyteTests.numbers
         public void Gaussian()
         {
             // Arrange
-            NeuralBackgroundBrainBuilder.ClearBrain();
+            NeuralBackgroundBrainBuilder.ClearBrain(BibiteVersion.V0_5);
             InputNum input = InputNum.RED_BIBITE;
-            Neuron output = Outputs.PHERE_OUT_1;
+            JsonNeuron output = Outputs0_5.PHERE_OUT_1;
 
             // Act
             HiddenNeuronNum num = new HiddenNeuronNum(input, NeuronType.Gaussian);
@@ -71,19 +84,19 @@ namespace BibyteTests.numbers
 
             // Assert
 
-            Brain brain = NeuralBackgroundBrainBuilder.GetBrain();
+            JsonBrain brain = NeuralBackgroundBrainBuilder.GetBrain();
 
             // there are the input and output neurons
-            Neuron[] ioNeurons = new Neuron[] { input.GetInputNeuron(), output };
-            foreach (Neuron neuron in ioNeurons)
+            JsonNeuron[] ioNeurons = new JsonNeuron[] { input.GetInputNeuron(), output };
+            foreach (JsonNeuron neuron in ioNeurons)
             {
                 Assert.IsTrue(brain.ContainsNeuron(neuron));
             }
             // and there's one other neuron
             Assert.AreEqual(ioNeurons.Length + 1, brain.Neurons.Count);
             // which is a gaussian
-            Neuron hidden = null;
-            foreach (Neuron neuron in brain.Neurons)
+            JsonNeuron hidden = null;
+            foreach (JsonNeuron neuron in brain.Neurons)
             {
                 if (ioNeurons.Contains(neuron))
                 {

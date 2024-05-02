@@ -1,4 +1,5 @@
 ﻿using Einstein.config;
+using Einstein.config.bibiteVersions;
 using Einstein.model;
 using Einstein.model.json;
 using Einstein.ui.menu;
@@ -6,6 +7,7 @@ using phi.io;
 using phi.other;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace Einstein.ui.editarea
@@ -19,6 +21,9 @@ namespace Einstein.ui.editarea
         public const int ZOOM_MAX_LEVEL = 8;
 
         public BaseBrain Brain { get; private set; }
+        public BibiteVersion BibiteVersion { get; private set; }
+        public Color PaintColor;
+        public bool isPainting;
 
         private Dictionary<int, NeuronRenderable> neuronIndexToNR;
         public IEnumerable<NeuronRenderable> NeuronRenderables { get { return neuronIndexToNR.Values; } }
@@ -34,13 +39,16 @@ namespace Einstein.ui.editarea
         private int shiftViewInitX;
         private int shiftViewInitY;
 
-        public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove)
+        public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove, BibiteVersion bibiteVersion)
         {
+            BibiteVersion = bibiteVersion;
+            PaintColor = BaseNeuron.DEFAULT_COLOR_GROUP;
+            isPainting = false;
             neuronIndexToNR = new Dictionary<int, NeuronRenderable>();
             this.onRemove = onRemove;
             disableOnRemove = false;
             synapseIndicesToSR = new Dictionary<(int, int), SynapseRenderable>();
-            nextHiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
+            nextHiddenNeuronIndex = bibiteVersion.HIDDEN_NODES_INDEX_MIN;
             justFinishedSynapse = false;
             Brain = brain;
             zoomLevel = 0;
@@ -67,25 +75,30 @@ namespace Einstein.ui.editarea
 
         // ----- Manage neurons -----
 
-        public void AddNeuron(BaseNeuron neuron)
+        public void AddNeuron(BaseNeuron neuron, bool tryPainting)
         {
             Brain.Add(neuron);
 
-            NeuronRenderable dragNeuron = new NeuronRenderable(this, neuron);
+            NeuronRenderable dragNeuron = new NeuronRenderable(this, neuron, tryPainting);
             dragNeuron.Initialize();
+
             neuronIndexToNR.Add(neuron.Index, dragNeuron);
         }
 
         public void CreateHiddenNeuron(NeuronType type)
         {
-            string desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN);
-            while (Brain.ContainsNeuronDescription(desc)) 
+            string desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN);
+            while (Brain.ContainsNeuronDescription(desc))
             {
                 nextHiddenNeuronIndex++;
-                desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN);
+                desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN);
             }
-            AddNeuron(new JsonNeuron(nextHiddenNeuronIndex, type,
-                type.ToString() + (nextHiddenNeuronIndex - BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN)));
+            AddNeuron(new JsonNeuron(nextHiddenNeuronIndex,
+                type,
+                type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN),
+                BibiteVersion),
+                true);
+
             nextHiddenNeuronIndex++;
         }
 
@@ -114,7 +127,8 @@ namespace Einstein.ui.editarea
 
             Brain.Remove(neuron);
 
-            IO.FRAME_TIMER.QueueUninit(neuronIndexToNR[neuron.Index].Uninitialize);
+            NeuronRenderable nr = neuronIndexToNR[neuron.Index];
+            IO.FRAME_TIMER.QueueUninit(nr.Uninitialize);
             neuronIndexToNR.Remove(neuron.Index);
 
             if (!disableOnRemove)
@@ -181,7 +195,7 @@ namespace Einstein.ui.editarea
 
         // ----- Manage (i.e. load) brain -----
 
-        public void LoadBrain(BaseBrain brain)
+        public void LoadBrain(BaseBrain brain, BibiteVersion bibiteVersion)
         {
             // Clear any data currently in the brain
             NeuronRenderable[] neuronsToClearFromOldBrain = new NeuronRenderable[neuronIndexToNR.Values.Count];
@@ -192,9 +206,12 @@ namespace Einstein.ui.editarea
                 RemoveNeuron(nr.Neuron);
             }
             disableOnRemove = false;
+
+            // re-init for a new brain
+            BibiteVersion = bibiteVersion;
             neuronIndexToNR = new Dictionary<int, NeuronRenderable>();
             synapseIndicesToSR = new Dictionary<(int, int), SynapseRenderable>();
-            nextHiddenNeuronIndex = BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN;
+            nextHiddenNeuronIndex = BibiteVersion.HIDDEN_NODES_INDEX_MIN;
 
             // Ensures shallow copies are equal (in case that matters) and more importantly,
             // if any Neuron/Synapse/Brain class is a subclass of the base class, that is preserved
@@ -238,7 +255,7 @@ namespace Einstein.ui.editarea
             }
             foreach (BaseNeuron neuron in neurons)
             {
-                AddNeuron(neuron);
+                AddNeuron(neuron, false);
             }
             foreach (BaseSynapse synapse in synapses)
             {
@@ -247,19 +264,16 @@ namespace Einstein.ui.editarea
 
             AutoArrange();
 
-            if (neuronIndexToNR.First().Value.Neuron is JsonNeuron)
+            if (neuronIndexToNR.Any() && neuronIndexToNR.First().Value.Neuron is JsonNeuron)
             {
                 foreach (NeuronRenderable nr in neuronIndexToNR.Values)
                 {
                     JsonNeuron jn = (JsonNeuron)nr.Neuron;
-                    if (jn.Inov != 0)
-                    {
-                        int x = jn.GetInovX();
-                        int y = jn.GetInovY();
-                        nr.Reposition(x, y);
-                    }
+                    nr.Reposition(jn.DiagramX, jn.DiagramY);
                 }
             }
+
+            Brain.MarkChangesAsSaved();
         }
 
         // ----- Background drag -----
@@ -594,9 +608,9 @@ namespace Einstein.ui.editarea
             return null;
         }
 
-        public static Rectangle GetBounds()
+        public static phi.other.Rectangle GetBounds()
         {
-            return new Rectangle(GetX(), GetY(), GetWidth(), GetHeight());
+            return new phi.other.Rectangle(GetX(), GetY(), GetWidth(), GetHeight());
         }
         public static int GetWidth()
         {
@@ -608,7 +622,7 @@ namespace Einstein.ui.editarea
         }
         public static int GetX()
         {
-            return NeuronMenuButton.WIDTH + EinsteinConfig.PAD * 2;
+            return MenuCategoryButton.WIDTH + EinsteinConfig.PAD * 2;
         }
         public static int GetY()
         {
@@ -646,9 +660,12 @@ namespace Einstein.ui.editarea
         public string LogDetailsForCrash()
         {
             string log = "";
+            log += "\nsynapseIndicesToSR = ";
+            if (BibiteVersion == null) { log += "null"; }
+            else { log += BibiteVersion.ToString(); }
             try
             {
-                log += "\nBrain = " + Brain.GetSave();
+                log += "\nBrain = " + Brain.GetSave(BibiteVersion);
             }
             catch (Exception) { }
             log += "\nneuronIndexToNR = ";
@@ -658,7 +675,7 @@ namespace Einstein.ui.editarea
             log += "\nonRemove.Method.Name = " + onRemove.Method.Name;
             log += "\nonRemove.Target = " + onRemove.Target;
             log += "\ndisableOnRemove = " + disableOnRemove;
-            log += "\ndisplayedSynapsesIndex = ";
+            log += "\nsynapseIndicesToSR = ";
             if (synapseIndicesToSR == null) { log += "null"; }
             else if (synapseIndicesToSR.Count == 0) { log += "empty"; }
             else { log += string.Join(":", synapseIndicesToSR); }

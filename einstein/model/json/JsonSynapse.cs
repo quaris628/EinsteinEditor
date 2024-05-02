@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Einstein.ui.editarea;
+using LibraryFunctionReplacements;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,14 +22,16 @@ namespace Einstein.model.json
         // }
 
         private const string JSON_FORMAT =
+            "{{\n" +
             "        \"Inov\": {0},\n" +
             "        \"NodeIn\": {1},\n" +
             "        \"NodeOut\": {2},\n" +
             "        \"Weight\": {3},\n" +
-            "        \"En\": {4}\n";
+            "        \"En\": {4}\n" +
+            "      }}";
 
         // unused for now, but keep track of between loading and saving just in case
-        private double inov;
+        private int inov;
         private bool En;
 
         public JsonSynapse(JsonNeuron from, JsonNeuron to, float strength)
@@ -42,7 +47,7 @@ namespace Einstein.model.json
             JsonParser parser = new JsonParser(json, startIndex);
             parser.startParsingNextLeafObj();
             
-            inov = parser.getNextValueDouble("Inov");
+            inov = parser.getNextValueInt("Inov");
 
             int fromIndex = parser.getNextValueInt("NodeIn");
             if (!brain.ContainsNeuron(fromIndex))
@@ -70,26 +75,25 @@ namespace Einstein.model.json
         // Saves this synapse but with the specified neuron index values
         public string GetSave(int fromIndex, int toIndex)
         {
-            return "{\n" + string.Format(JSON_FORMAT,
-                inov,
-                fromIndex,
-                toIndex,
-                Strength,
-                En ? "true" : "false")
-                + "      }";
+         return string.Format(CultureInfo.GetCultureInfo("en-US"), JSON_FORMAT,
+                CustomNumberParser.IntToString(inov),
+                CustomNumberParser.IntToString(fromIndex),
+                CustomNumberParser.IntToString(toIndex),
+                CustomNumberParser.FloatToString(Strength, int.MaxValue, STRENGTH_MAX_DECIMALS),
+                En ? "true" : "false");
         }
 
         public override string GetSave()
         {
-            return "{\n" + string.Format(JSON_FORMAT,
-                inov,
-                From.Index,
-                To.Index,
-                Strength,
-                En ? "true" : "false")
-                + "      }";
+            return string.Format(CultureInfo.GetCultureInfo("en-US"), JSON_FORMAT,
+                CustomNumberParser.IntToString(inov),
+                CustomNumberParser.IntToString(From.Index),
+                CustomNumberParser.IntToString(To.Index),
+                CustomNumberParser.FloatToString(Strength, int.MaxValue, STRENGTH_MAX_DECIMALS),
+                En ? "true" : "false");
         } 
     }
+
     public class DanglingSynapseException : JsonParsingException
     {
         public DanglingSynapseException() : base() { }

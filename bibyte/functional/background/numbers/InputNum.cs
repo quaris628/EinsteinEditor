@@ -52,7 +52,7 @@ namespace Bibyte.functional.background.values
 
         private InputNum(int inputIndex)
         {
-            inputNeuron = Inputs.ConcstructInputNeuron(inputIndex);
+            inputNeuron = Inputs0_5.ConcstructInputNeuron(inputIndex);
         }
 
         public JsonNeuron GetInputNeuron() { return inputNeuron; }

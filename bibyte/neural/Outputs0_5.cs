@@ -1,10 +1,11 @@
 ﻿using Einstein;
+using Einstein.config.bibiteVersions;
 using Einstein.model.json;
 using System;
 
 namespace Bibyte.neural
 {
-    public class Outputs
+    public class Outputs0_5
     {
         public static JsonNeuron ACCELERATE       = ConstructOutputNeuron(33);
         public static JsonNeuron ROTATE           = ConstructOutputNeuron(34);
@@ -24,14 +25,15 @@ namespace Bibyte.neural
       
         private static JsonNeuron ConstructOutputNeuron(int index)
         {
-            if (index < BibiteVersionConfig.OUTPUT_NODES_INDEX_MIN
-            || BibiteVersionConfig.OUTPUT_NODES_INDEX_MAX < index)
+            if (index < BibiteVersion.V0_5.OUTPUT_NODES_INDEX_MIN
+            || BibiteVersion.V0_5.OUTPUT_NODES_INDEX_MAX < index)
             {
                 throw new ArgumentException("bad index");
             }
             return new JsonNeuron(index,
-                    BibiteVersionConfig.GetOutputNeuronType(index),
-                    BibiteVersionConfig.DESCRIPTIONS[index]);
+                    BibiteVersion.V0_5.GetOutputNeuronType(index),
+                    BibiteVersion.V0_5.DESCRIPTIONS[index],
+                    BibiteVersion.V0_5);
         }
     }
 }

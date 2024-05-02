@@ -51,6 +51,9 @@
     <Compile Include="functional\background\Value.cs" />
     <Compile Include="functional\background\ValueConnectionTester.cs" />
     <Compile Include="functional\brains\BrainToGenerate.cs" />
+    <Compile Include="functional\brains\IFunctionalProgrammingBrain.cs" />
+    <Compile Include="functional\brains\IFunctionalProgrammingBrain0_6a.cs" />
+    <Compile Include="functional\brains\TestingBrain0_6a.cs" />
     <Compile Include="functional\brains\TestingBrain.cs" />
     <Compile Include="neural\circuits\Circuit1OverX.cs" />
     <Compile Include="neural\circuits\CircuitDivide.cs" />
@@ -63,7 +66,7 @@
     <Compile Include="functional\background\booleans\ValLessThanEqValBool.cs" />
     <Compile Include="functional\background\booleans\ValLessThanValBool.cs" />
     <Compile Include="functional\background\FunctionalBrainBuilder.cs" />
-    <Compile Include="functional\brains\IFunctionalProgrammingBrain.cs" />
+    <Compile Include="functional\brains\IFunctionalProgrammingBrain0_5.cs" />
     <Compile Include="functional\Mem.cs" />
     <Compile Include="functional\background\booleans\StoredBool.cs" />
     <Compile Include="functional\background\numbers\StoredNum.cs" />
@@ -79,11 +82,13 @@
     <Compile Include="functional\background\numbers\ScalaredNum.cs" />
     <Compile Include="functional\background\numbers\SumNum.cs" />
     <Compile Include="functional\background\Number.cs" />
-    <Compile Include="neural\Inputs.cs" />
+    <Compile Include="neural\Inputs0_6a.cs" />
+    <Compile Include="neural\Inputs0_5.cs" />
     <Compile Include="neural\NeuralBackgroundBrainBuilder.cs" />
     <Compile Include="neural\NeuralBrainCreator.cs" />
     <Compile Include="neural\NeuronFactory.cs" />
-    <Compile Include="neural\Outputs.cs" />
+    <Compile Include="neural\Outputs0_6a.cs" />
+    <Compile Include="neural\Outputs0_5.cs" />
     <Compile Include="neural\SynapseFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -32,13 +32,13 @@ namespace Bibyte.functional.background.values
 
             foreach (ConnectToRequest conn in connsWithNetScalars)
             {
-                if (BibiteVersionConfig.SYNAPSE_STRENGTH_MAX
-                    * BibiteVersionConfig.SYNAPSE_STRENGTH_MAX < Math.Abs(conn.SynapseStrength))
+                if (BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX
+                    * BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX < Math.Abs(conn.SynapseStrength))
                 {
                     throw new ArgumentOutOfRangeException();
                 }
             }
-            connectAndHandleLargeScalars(Inputs.CONSTANT, connsWithNetScalars);
+            connectAndHandleLargeScalars(Inputs0_5.CONSTANT, connsWithNetScalars);
         }
     }
 }

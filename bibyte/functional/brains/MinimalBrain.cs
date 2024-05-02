@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Bibyte.functional
 {
-    public class MinimalBrain : IFunctionalProgrammingBrain
+    public class MinimalBrain : IFunctionalProgrammingBrain0_5
     {
         public void InitializeReusedValues()
         {

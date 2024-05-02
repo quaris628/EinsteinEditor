@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Einstein.model.json;
+using LibraryFunctionReplacements;
+using phi.other;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,24 +9,35 @@ using System.Threading.Tasks;
 
 namespace Einstein.model
 {
-    public class BaseSynapse
+    public class BaseSynapse : DynamicHoldable
     {
+        public const int STRENGTH_MAX_DECIMALS = 4;
+
         private BaseNeuron _from;
         private BaseNeuron _to;
         private float _strength;
         public BaseNeuron From {
             get { return _from; }
-            set { _from = validateFrom(value); }
+            set {
+                _from = validateFrom(value);
+                FlagChange();
+            }
         }
         public BaseNeuron To
         {
             get { return _to; }
-            set { _to = validateTo(value); }
+            set {
+                _to = validateTo(value);
+                FlagChange();
+            }
         }
 
         public float Strength {
             get { return _strength; }
-            set { _strength = validateStrength(value); }
+            set {
+                _strength = validateStrength(value);
+                FlagChange();
+            }
         }
 
         protected BaseSynapse() { }
@@ -37,7 +51,7 @@ namespace Einstein.model
 
         public override string ToString()
         {
-            return From.ToString() + " --(x" + Math.Round(Strength, 2) + ")--> " + To.ToString();
+            return From.ToString() + " --(x" + getStrengthAsStringForUI() + ")--> " + To.ToString();
         }
 
         public virtual string GetSave() { throw new NotSupportedException(); }
@@ -60,10 +74,18 @@ namespace Einstein.model
         }
         private float validateStrength(float value)
         {
-            value = Math.Max(BibiteVersionConfig.SYNAPSE_STRENGTH_MIN,
+            value = Math.Max(BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MIN,
                 Math.Min(value,
-                BibiteVersionConfig.SYNAPSE_STRENGTH_MAX));
+                BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX));
             return value;
+        }
+        public string getStrengthAsStringForUI()
+        {
+            return CustomNumberParser.FloatToString(Strength, int.MaxValue, STRENGTH_MAX_DECIMALS);
+        }
+        public void setStrengthAsStringForUI(string strength)
+        {
+            Strength = CustomNumberParser.StringToFloat(strength);
         }
     }
 

@@ -72,6 +72,10 @@
       <Project>{3559262F-A329-4518-A7FC-30AA424D7C66}</Project>
       <Name>Einstein</Name>
     </ProjectReference>
+    <ProjectReference Include="..\phi\phi.csproj">
+      <Project>{16A36FCD-07E6-4CAE-B5CB-DB677E33F3FB}</Project>
+      <Name>phi</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

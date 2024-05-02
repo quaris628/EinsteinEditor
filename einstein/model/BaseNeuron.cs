@@ -1,42 +1,86 @@
-﻿using System;
+﻿using Einstein.config.bibiteVersions;
+using phi.other;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Einstein.model
 {
-    public class BaseNeuron
+    public class BaseNeuron : DynamicHoldable
     {
+        public static readonly Color DEFAULT_COLOR_GROUP = Color.FromArgb(225, 225, 225);
+
         private int _index;
         public int Index {
             get { return _index; }
-            protected set { _index = validateIndex(value); }
+            protected set {
+                _index = validateIndex(value);
+                FlagChange();
+            }
         }
+
         // TODO make setting type public, and when I do that
         // validate that you can't set the type to (for example)
         // Input when index is in the hidden neuron range
-        public NeuronType Type { get; protected set; }
+        private NeuronType _type;
+        public NeuronType Type {
+            get
+            {
+                return _type;
+            }
+            protected set
+            {
+                _type = value;
+                FlagChange();
+            }
+
+        }
         private string _description;
+
         // IMPORTANT if this neuron is in a brain,
         // then use Brain's UpdateNeuronDescription method instead of setting the description directly.
         // Otherwise some Brain description stuff will start having problems.
         public string Description {
             get { return _description; }
-            set { _description = validateDescription(value); }
+            set {
+                _description = validateDescription(value);
+                FlagChange();
+            }
         }
 
-        protected BaseNeuron() { }
+        private Color _colorGroup;
+        public Color ColorGroup
+        {
+            get { return _colorGroup; }
+            set
+            {
+                _colorGroup = value;
+                FlagChange();
+            }
+        }
+
+        // description, type, and even index can change, but version must be immutable
+        public BibiteVersion BibiteVersion { get; private set; }
+
+        protected BaseNeuron(BibiteVersion bibiteVersion)
+        {
+            BibiteVersion = bibiteVersion;
+            ColorGroup = DEFAULT_COLOR_GROUP;
+        }
 
         // Description will be the type name
-        public BaseNeuron(int index, NeuronType type) : this(index, type,
-            Enum.GetName(typeof(NeuronType), type)) { }
+        public BaseNeuron(int index, NeuronType type, BibiteVersion bibiteVersion) : this(index, type,
+            Enum.GetName(typeof(NeuronType), type), bibiteVersion) { }
 
-        public BaseNeuron(int index, NeuronType type, string description)
+        public BaseNeuron(int index, NeuronType type, string description, BibiteVersion bibiteVersion) : this(bibiteVersion)
         {
             Index = index;
             Type = type;
             Description = description;
+            ColorGroup = DEFAULT_COLOR_GROUP;
             if (IsInput() && IsOutput())
             {
                 // This is Leo's fault. Don't blame me.
@@ -54,8 +98,8 @@ namespace Einstein.model
 
         public bool IsOutput()
         {
-            return BibiteVersionConfig.OUTPUT_NODES_INDEX_MIN <= Index
-                && Index <= BibiteVersionConfig.OUTPUT_NODES_INDEX_MAX;
+            return BibiteVersion.OUTPUT_NODES_INDEX_MIN <= Index
+                && Index <= BibiteVersion.OUTPUT_NODES_INDEX_MAX;
         }
 
         public bool IsHidden()
@@ -73,10 +117,8 @@ namespace Einstein.model
 
         public override string ToString()
         {
-            return Description + " : " + Type.ToString();
+            return Description + " : " + Type.ToString() + " [i" + Index + " v" + BibiteVersion.ToString() + "]";
         }
-
-        public virtual string GetSave() { throw new NotSupportedException(); }
 
         public static string GetDefaultDescription(int index) { return "Hidden" + index; }
 
@@ -96,18 +138,17 @@ namespace Einstein.model
             {
                 return GetDefaultDescription(Index);
             }
-            else if (!value.All(char.IsLetterOrDigit))
+            else if (!value.All(isValidCharForDesc))
             {
                 throw new InvalidDescriptionException(
-                    "Neuron descriptions must be alphanumeric");
+                    "Neuron descriptions must be alphanumeric (except _ and -)");
             }
             return value;
         }
 
-        // Don't use this unless you know what you're doing.
-        public void YesImReallyAbsolutelyDefinitelySureIWantToChangeTheIndex(int newIndex)
+        public static bool isValidCharForDesc(char c)
         {
-            _index = newIndex;
+            return char.IsLetterOrDigit(c) || c == '_' || c == '-';
         }
     }
 

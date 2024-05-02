@@ -32,7 +32,7 @@ namespace Bibyte.functional.background.booleans
             {
                 latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "Not");
                 fromBooleanConns.AddLast(new ConnectToRequest(latch, -3f));
-                SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, 2);
+                SynapseFactory.CreateSynapse(Inputs0_5.CONSTANT, latch, 2);
             }
 
             LinkedList<ConnectToRequest> fromLatchConns = new LinkedList<ConnectToRequest>();
@@ -55,7 +55,7 @@ namespace Bibyte.functional.background.booleans
             }
             if (fromConstantConns.Count > 0)
             {
-                connectAndHandleLargeScalars(Inputs.CONSTANT, fromConstantConns);
+                connectAndHandleLargeScalars(Inputs0_5.CONSTANT, fromConstantConns);
             }
             if (fromBooleanConns.Count > 0)
             {

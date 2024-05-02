@@ -1,10 +1,13 @@
-﻿using phi.graphics.drawables;
+﻿using LibraryFunctionReplacements;
+using phi.graphics.drawables;
+using phi.other;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace phi.graphics.renderables
 {
@@ -16,14 +19,14 @@ namespace phi.graphics.renderables
       private float defaultValue;
       private float minValue;
       private float maxValue;
-      private int precisionTypeCode; // 0 = none, 1 = decimal places, 2 = sig figs
+      private PrecisionType precisionType; // 0 = none, 1 = decimal places, 2 = sig figs
       private int precisionAmount; // num of decimal places or sig figs
 
       protected FloatET(FloatETBuilder b) : base(b)
       {
          minValue = b.minValue;
          maxValue = b.maxValue;
-         precisionTypeCode = b.precisionTypeCode;
+         precisionType = b.precisionType;
          precisionAmount = b.precisionAmount;
       }
 
@@ -37,83 +40,107 @@ namespace phi.graphics.renderables
       protected override bool IsMessageValidAsFinalInternal(string message)
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+
          float floatValue;
-         if (!float.TryParse(message, NumberStyles.Any, CultureInfo.InvariantCulture,
-            out floatValue)) { return false; }
-         if (floatValue < minValue) { return false; }
-         if (floatValue > maxValue) { return false; }
-
-         if (precisionTypeCode == 1) // decimal places
+         try
          {
-            // find decmal point index
-            int decimalIndex = Math.Max(message.IndexOf(","), message.IndexOf("."));
-            if (decimalIndex == -1) { return true; }
-            // count all digits after the decimal point
-            int decimalPlacesCount = message.Length - decimalIndex - 1;
-            return decimalPlacesCount <= precisionAmount;
+            floatValue = CustomNumberParser.StringToFloat(message);
          }
-         else if (precisionTypeCode == 2) // significant figures
+         catch (ArgumentException)
          {
-            // find first nonzero digit
-            char firstNonzeroDigit = '$';
-            foreach (char c in message)
-            {
-               if ("123456789".Contains(c))
-               {
-                  firstNonzeroDigit = c;
-                  break;
-               }
-            }
-            int startCountIndex = firstNonzeroDigit;
-            // if there are no nonzero digits, i.e. 0.00000000000...
-            if (firstNonzeroDigit == '$') {
-               // start counting sig figs at first zero after decimal point
-               startCountIndex = Math.Max(message.IndexOf(","), message.IndexOf("."));
-            }
-
-            int count = 0;
-            foreach (char c in message.Substring(startCountIndex))
-            {
-               if (!(",.".Contains(c)))
-               {
-                  count++;
-               }
-            }
-
-            return count <= precisionAmount;
+            return false;
          }
-         return true;
+         catch (ArithmeticException)
+         {
+            return false;
+         }
+         if (floatValue < minValue || floatValue > maxValue) {
+            return false;
+         }
+
+         return isWithinPrecision(message);
       }
 
       public override void DisableEditing()
       {
          base.DisableEditing();
-         if (IsMessageValidAsFinal())
+         float value = IsMessageValidAsFinal() ? CustomNumberParser.StringToFloat(text.GetMessage()) : defaultValue;
+         // convert to float and back to string again, so that the format is refreshed (e.g. leading and trailing zeroes are removed)
+         int maxSigFigs = precisionType == PrecisionType.SignificantFigures ? precisionAmount : 8;
+         int maxDecimals = precisionType == PrecisionType.DecimalPlaces ? precisionAmount : int.MaxValue;
+         text.SetMessage(CustomNumberParser.FloatToString(value, maxSigFigs, maxDecimals));
+        }
+
+      private bool isWithinPrecision(string message)
+      {
+         switch (precisionType)
          {
-            text.SetMessage(float.Parse(text.GetMessage(),
-             NumberStyles.Any, CultureInfo.InvariantCulture).ToString());
-         }
-         else
-         {
-            text.SetMessage(defaultValue.ToString());
+            case PrecisionType.DecimalPlaces:
+               return isWithinPrecisionDecimalPlaces(message);
+            case PrecisionType.SignificantFigures:
+               return isWithinPrecisionSignificantFigures(message);
+            default:
+               return true;
          }
       }
 
+      private bool isWithinPrecisionDecimalPlaces(string message)
+      {
+         // find decmal point index
+         int decimalIndex = Math.Max(message.IndexOf(","), message.IndexOf("."));
+         if (decimalIndex == -1) { return true; }
+         // count all digits after the decimal point
+         int decimalPlacesCount = message.Length - decimalIndex - 1;
+         return decimalPlacesCount <= precisionAmount;
+      }
+
+      private bool isWithinPrecisionSignificantFigures(string message)
+      {
+         // find first nonzero digit
+         char firstNonzeroDigit = '$';
+         foreach (char c in message)
+         {
+            if ("123456789".Contains(c))
+            {
+               firstNonzeroDigit = c;
+               break;
+            }
+         }
+         int startCountIndex = firstNonzeroDigit;
+         // if there are no nonzero digits, i.e. 0.00000000000...
+         if (firstNonzeroDigit == '$')
+         {
+            // start counting sig figs at first zero after decimal point
+            startCountIndex = Math.Max(message.IndexOf(","), message.IndexOf("."));
+         }
+
+         int count = 0;
+         foreach (char c in message.Substring(startCountIndex))
+         {
+            if (!(",.".Contains(c)))
+            {
+               count++;
+            }
+         }
+
+         return count <= precisionAmount;
+      }
+      
       // Wrapper for EditableTextBuilder that just hides the WithValidateMessage option
       public class FloatETBuilder : EditableTextBuilder
       {
-         internal float defaultValue;
-         internal float minValue;
-         internal float maxValue;
-         internal int precisionTypeCode; // 0 = none, 1 = decimal places, 2 = sig figs
-         internal int precisionAmount; // num of decimal places or sig figs
+         public float defaultValue { get;  private set; }
+         public float minValue { get; private set; }
+         public float maxValue { get; private set; }
+         internal PrecisionType precisionType { get; private set; }
+         public int precisionAmount { get; private set; }
 
          public FloatETBuilder(Text text) : base(text)
          {
             defaultValue = DEFAULT_DEFAULT_VALUE;
             minValue = float.MinValue;
             maxValue = float.MaxValue;
-            precisionTypeCode = 0;
+            precisionType = PrecisionType.None;
             base.WithAllowedChars(ALLOWED_CHARS);
          }
 
@@ -127,18 +154,25 @@ namespace phi.graphics.renderables
          // mutually exclusive with having a maximum number of significant figures
          public virtual FloatETBuilder WithMaxDecimalPlaces(int numDecimals)
          {
-            precisionTypeCode = 1;
+            precisionType = PrecisionType.DecimalPlaces;
             precisionAmount = numDecimals;
             return this;
          }
          public virtual FloatETBuilder WithMaxSigFigs(int numSigFigs)
          {
-            precisionTypeCode = 2;
+            precisionType = PrecisionType.SignificantFigures;
             precisionAmount = numSigFigs;
             return this;
          }
 
          public new FloatET Build() { return new FloatET(this); }
+      }
+
+      internal enum PrecisionType
+      {
+         None = 0,
+         DecimalPlaces = 1,
+         SignificantFigures = 2,
       }
    }
 }

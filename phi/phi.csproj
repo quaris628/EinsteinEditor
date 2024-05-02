@@ -123,5 +123,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LibraryFunctionReplacements\LibraryFunctionReplacements.csproj">
+      <Project>{d3ab7b57-e9cc-4f6b-a0ee-adc50d3ada0a}</Project>
+      <Name>LibraryFunctionReplacements</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

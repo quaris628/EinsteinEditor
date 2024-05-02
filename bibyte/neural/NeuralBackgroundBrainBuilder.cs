@@ -1,5 +1,6 @@
 ﻿using Bibyte.circuits;
 using Einstein;
+using Einstein.config.bibiteVersions;
 using Einstein.model;
 using Einstein.model.json;
 using System;
@@ -9,11 +10,11 @@ namespace Bibyte.neural
 {
     public static class NeuralBackgroundBrainBuilder
     {
-        private static JsonBrain brain = new JsonBrain();
+        private static JsonBrain brain = null;
 
-        public static void ClearBrain()
+        public static void ClearBrain(BibiteVersion bibiteVersion)
         {
-            brain = new JsonBrain();
+            brain = new JsonBrain(bibiteVersion);
         }
 
         public static void AddToBrain(JsonSynapse[] synapses)

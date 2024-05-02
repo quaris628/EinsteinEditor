@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Einstein.ui;
 using phi;
+using phi.io;
 
 namespace Einstein.config
 {
@@ -15,9 +16,31 @@ namespace Einstein.config
         public new const string HOME_DIR = "../";
         public new const string RES_DIR = HOME_DIR + "res/";
         public const int PAD = 5;
-        public const string VERSION = "v1.4.1 - dev";
+        public const string VERSION = "v1.7.0";
 
-        public static ColorScheme COLOR_MODE = new ColorScheme(ColorScheme.Mode.Dark);
+        public static readonly ColorScheme COLOR_MODE = new ColorScheme(ColorScheme.Mode.Dark);
+
+        public class Keybinds
+        {
+            public static readonly KeyStroke SAVE_TO_BIBITE =
+                new KeyStroke.KeyStrokeBuilder(Keys.S).with(Keys.Control).Build();
+            public static readonly KeyStroke LOAD_FROM_BIBITE =
+                new KeyStroke.KeyStrokeBuilder(Keys.L).with(Keys.Control).Build();
+
+            public static readonly Keys[] SELECT_PAINT_COLORS = new Keys[] {
+                Keys.D1,
+                Keys.D2,
+                Keys.D3,
+                Keys.D4,
+                Keys.D5,
+                Keys.D6,
+                Keys.D7,
+                Keys.D8,
+                Keys.D9,
+                Keys.D0,
+            };
+            public static readonly Keys REBIND_PAINT_COLOR_MODIFIER = Keys.Control;
+        }
 
         public new class Window : DefaultConfig.Window
         {

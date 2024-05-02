@@ -12,7 +12,7 @@ namespace bibyte.functional.brains
         // This brain will be generated when the bibyte program is run.
         // You should change it to one of your brains.
         public static readonly IFunctionalProgrammingBrain
-            BRAIN_TO_GENERATE = new TestingBrain();
+            BRAIN_TO_GENERATE = new TestingBrain0_6a();
 
         private BrainToGenerate() { }
     }

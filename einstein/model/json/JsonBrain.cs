@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Einstein.config.bibiteVersions;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +35,7 @@ namespace Einstein.model.json
         // }
 
         private const string JSON_FORMAT =
+            "{{\n" +
             "    \"isReady\": {0},\n" +
             "    \"parent\": {1},\n" +
             "    \"Nodes\": [\n" +
@@ -40,21 +43,36 @@ namespace Einstein.model.json
             "    ],\n" +
             "    \"Synapses\": [\n" +
             "      {3}\n" +
-            "    ]\n";
+            "    ]\n" +
+            "  }},\n";
 
         // unused for now, but they're in the json so keep track of them just in case
         private string isReady;
         private string parent;
         private Dictionary<int, int> oldNewNeuronIndicesMap;
 
-        public JsonBrain() : base()
+        public JsonBrain(BibiteVersion bibiteVersion) : base(bibiteVersion)
         {
             isReady = "true";
             parent = "true";
             oldNewNeuronIndicesMap = new Dictionary<int, int>();
         }
 
-        public JsonBrain(string json, int startIndex) : base()
+        public JsonBrain(BaseBrain brain, BibiteVersion bibiteVersion) : this(bibiteVersion)
+        {
+            foreach (BaseNeuron neuron in brain.Neurons)
+            {
+                Add(new JsonNeuron((JsonNeuron)neuron, bibiteVersion));
+            }
+            foreach (BaseSynapse synapse in brain.Synapses)
+            {
+                JsonNeuron newFrom = (JsonNeuron)GetNeuron(synapse.From.Index);
+                JsonNeuron newTo = (JsonNeuron)GetNeuron(synapse.To.Index);
+                Add(new JsonSynapse(newFrom, newTo, synapse.Strength));
+            }
+        }
+
+        public JsonBrain(string json, int startIndex, BibiteVersion bibiteVersion) : base(bibiteVersion)
         {
             JsonParser parser = new JsonParser(json, startIndex);
             isReady = "true";
@@ -63,8 +81,8 @@ namespace Einstein.model.json
             // parse neurons
             parser.parseArray((neuronStartIndex) =>
             {
-                BaseNeuron neuron = new JsonNeuron(json, neuronStartIndex);
-                Add(neuron);
+                JsonNeuron.RawJsonFields fields = new JsonNeuron.RawJsonFields(json, neuronStartIndex);
+                Add(new JsonNeuron(fields, bibiteVersion));
             });
             // parse synapses
             parser.parseArray((synapseStartIndex) =>
@@ -76,26 +94,27 @@ namespace Einstein.model.json
             oldNewNeuronIndicesMap = new Dictionary<int, int>();
         }
 
-        public override string GetSave()
+        public override string GetSave(BibiteVersion bibiteVersion)
         {
-            return "{\n" + string.Format(JSON_FORMAT,
+            return string.Format(CultureInfo.GetCultureInfo("en-US"),
+                JSON_FORMAT,
                 isReady,
                 parent,
-                neuronsToJson(),
-                synapsesToJson()) + "  },\n";
+                neuronsToJson(bibiteVersion),
+                synapsesToJson());
         }
 
         // these ToJson functions could probably be refactored to be less duplicately
         // but I'm too lazy right now and this code smell isn't very strong anyway
-        private string neuronsToJson()
+        private string neuronsToJson(BibiteVersion bibiteVersion)
         {
             // I tried using .Union on these but this seriously looked like less work
             List<BaseNeuron> allNeurons = new List<BaseNeuron>();
-            foreach (BaseNeuron neuron in EditorScene.generateInputNeurons())
+            foreach (BaseNeuron neuron in bibiteVersion.InputNeurons)
             {
                 allNeurons.Add(neuron);
             }
-            foreach (BaseNeuron neuron in EditorScene.generateOutputNeurons())
+            foreach (BaseNeuron neuron in bibiteVersion.OutputNeurons)
             {
                 allNeurons.Add(neuron);
             }
@@ -104,6 +123,7 @@ namespace Einstein.model.json
                 bool alreadyInBrain = false;
                 foreach (BaseNeuron oldNeuron in allNeurons)
                 {
+                    // TODO handle saving between different versions
                     if (newNeuron.Equals(oldNeuron))
                     {
                         // Remove and replace b/c there may be hidden properties we
@@ -115,7 +135,7 @@ namespace Einstein.model.json
                         break;
                     }
                 }
-                if (!alreadyInBrain)
+                if (!alreadyInBrain) // hidden neuron
                 {
                     allNeurons.Add(newNeuron);
                 }
@@ -126,9 +146,9 @@ namespace Einstein.model.json
             foreach (JsonNeuron neuron in allNeurons)
             {
                 oldNewNeuronIndicesMap[neuron.Index] = i;
-                JsonNeuron neuronCopy = new JsonNeuron(neuron);
-                neuronCopy.YesImReallyAbsolutelyDefinitelySureIWantToChangeTheIndex(i);
-                neuronJsons[i] = neuronCopy.GetSave();
+                JsonNeuron.RawJsonFields jsonFields = new JsonNeuron.RawJsonFields(neuron);
+                jsonFields.index = i;
+                neuronJsons[i] = jsonFields.ToString();
                 i++;
             }
             return string.Join(",\n      ", neuronJsons);

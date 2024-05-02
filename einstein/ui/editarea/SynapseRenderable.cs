@@ -23,6 +23,8 @@ namespace Einstein.ui.editarea
         public const float INITIAL_STRENGTH = 1f;
         public const string DEFAULT_STRENGTH = "0";
 
+        private const float STRENGTH_POS_ALONG_SYNAPSE_LENGTH = 0.7f;
+
         private const string CIRCLE_ARROW_IMAGE = EinsteinConfig.RES_DIR + "CircularSynapse.png";
 
         public BaseSynapse Synapse { get; private set; }
@@ -217,7 +219,8 @@ namespace Einstein.ui.editarea
             }
             
             UpdateTipXY(arrowTipX, arrowTipY);
-            sset.SetAnchor(line.GetCenterX(), line.GetCenterY());
+
+            UpdateStrengthTextPosition();
         }
 
         public void UpdateCircleArrowPositionToNeuron()
@@ -228,6 +231,13 @@ namespace Einstein.ui.editarea
             circleArrow.SetXY(arrowUpperLeftX, arrowUpperLeftY);
             // text's anchor is at 9, 9 in the png
             sset.SetAnchor(arrowUpperLeftX + 9, arrowUpperLeftY + 9);
+        }
+
+        private void UpdateStrengthTextPosition()
+        {
+            float textX = line.GetX() + line.GetWidth() * STRENGTH_POS_ALONG_SYNAPSE_LENGTH;
+            float textY = line.GetY() + line.GetHeight() * STRENGTH_POS_ALONG_SYNAPSE_LENGTH;
+            sset.SetAnchor((int)textX, (int)textY);
         }
 
         // ----- Removing -----

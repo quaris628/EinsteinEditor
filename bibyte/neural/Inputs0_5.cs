@@ -1,11 +1,12 @@
 ﻿using Einstein;
+using Einstein.config.bibiteVersions;
 using Einstein.model;
 using Einstein.model.json;
 using System;
 
 namespace Bibyte.neural
 {
-    public class Inputs
+    public class Inputs0_5
     {
         public static JsonNeuron CONSTANT         = ConcstructInputNeuron(0);
         public static JsonNeuron ENERGY_RATIO     = ConcstructInputNeuron(1);
@@ -43,13 +44,13 @@ namespace Bibyte.neural
       
         public static JsonNeuron ConcstructInputNeuron(int index)
         {
-            if (index < BibiteVersionConfig.INPUT_NODES_INDEX_MIN
-            || BibiteVersionConfig.INPUT_NODES_INDEX_MAX < index)
+            if (index < BibiteVersion.V0_5.INPUT_NODES_INDEX_MIN
+                || BibiteVersion.V0_5.INPUT_NODES_INDEX_MAX < index)
             {
                 throw new ArgumentException("bad index");
             }
             return new JsonNeuron(index, NeuronType.Input,
-            BibiteVersionConfig.DESCRIPTIONS[index]);
+            BibiteVersion.V0_5.DESCRIPTIONS[index], BibiteVersion.V0_5);
         }
 
     }
