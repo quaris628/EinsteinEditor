@@ -20,8 +20,8 @@ namespace Bibyte.functional.background.values
     public class InverseNum : Number
     {
         private Number val;
-        private Neuron gauss;
-        private Neuron mult;
+        private JsonNeuron gauss;
+        private JsonNeuron mult;
 
         public InverseNum(Number val)
         {

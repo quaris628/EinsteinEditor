@@ -19,7 +19,7 @@ namespace Bibyte.neural
         /// <param name="to">Neuron the synapse goes to</param>
         /// <param name="strength">The synapse's strength</param>
         /// <returns>A new synapse</returns>
-        public static Synapse CreateSynapse(Neuron from, Neuron to, float strength)
+        public static JsonSynapse CreateSynapse(JsonNeuron from, JsonNeuron to, float strength)
         {
             if (strength < BibiteVersionConfig.SYNAPSE_STRENGTH_MIN
                 || BibiteVersionConfig.SYNAPSE_STRENGTH_MAX < strength)
@@ -29,7 +29,7 @@ namespace Bibyte.neural
                     + strength
                     + "'. Must be between -100 and 100");
             }
-            Synapse synapse = new Synapse(from, to, strength);
+            JsonSynapse synapse = new JsonSynapse(from, to, strength);
             NeuralBackgroundBrainBuilder.AddToBrain(synapse);
             return synapse;
         }

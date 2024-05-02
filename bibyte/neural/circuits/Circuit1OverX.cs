@@ -16,23 +16,23 @@ namespace Bibyte.circuits
     {
         public static float DEFAULT_K = 100f;
 
-        private Neuron denominator;
-        private Neuron outputMult;
+        private JsonNeuron denominator;
+        private JsonNeuron outputMult;
         
-        public Circuit1OverX(Neuron denominator)
+        public Circuit1OverX(JsonNeuron denominator)
         {
             this.denominator = denominator;
-            Neuron gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "DivGauss");
+            JsonNeuron gauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "DivGauss");
             outputMult = NeuronFactory.CreateNeuron(NeuronType.Mult);
 
-            NeuralBackgroundBrainBuilder.AddToBrain(new Synapse[] {
-                new Synapse(denominator, gauss, DEFAULT_K),
-                new Synapse(gauss, outputMult, DEFAULT_K),
-                new Synapse(denominator, outputMult, DEFAULT_K),
+            NeuralBackgroundBrainBuilder.AddToBrain(new JsonSynapse[] {
+                new JsonSynapse(denominator, gauss, DEFAULT_K),
+                new JsonSynapse(gauss, outputMult, DEFAULT_K),
+                new JsonSynapse(denominator, outputMult, DEFAULT_K),
             });
         }
 
-        public Neuron GetDenominator() { return denominator; }
-        public Neuron GetQuotient() { return outputMult; }
+        public JsonNeuron GetDenominator() { return denominator; }
+        public JsonNeuron GetQuotient() { return outputMult; }
     }
 }

@@ -14,7 +14,7 @@ namespace Bibyte.functional.background
 {
     public abstract class Number : Value
     {
-        public void PlugIntoOutput(Neuron outputNeuron)
+        public void PlugIntoOutput(JsonNeuron outputNeuron)
         {
             if (!outputNeuron.IsOutput())
             {

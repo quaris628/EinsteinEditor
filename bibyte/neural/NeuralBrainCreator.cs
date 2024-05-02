@@ -17,8 +17,8 @@ namespace Bibyte.neural
             CircuitDivide div = new CircuitDivide(Inputs.PHERO_SENSE_1, Inputs.PHERO_SENSE_2);
             SynapseFactory.CreateSynapse(div.GetQuotient(), Outputs.HERDING, -1);
 
-            Neuron hiddenGauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian);
-            Neuron hiddenSine = NeuronFactory.CreateNeuron(NeuronType.Sine, "Sine");
+            JsonNeuron hiddenGauss = NeuronFactory.CreateNeuron(NeuronType.Gaussian);
+            JsonNeuron hiddenSine = NeuronFactory.CreateNeuron(NeuronType.Sine, "Sine");
 
             SynapseFactory.CreateSynapse(Inputs.PLANT_CLOSENESS, hiddenGauss, -2);
             SynapseFactory.CreateSynapse(hiddenGauss, hiddenSine, 8.675309f);

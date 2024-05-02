@@ -14,15 +14,15 @@ namespace bibyte.functional.background
     {
         private ValueConnectionTester() { }
 
-        public static void ConnectValueTo(Value val, Neuron outputNeuron)
+        public static void ConnectValueTo(Value val, JsonNeuron outputNeuron)
         {
-            ConnectValueTo(val, new Neuron[] { outputNeuron });
+            ConnectValueTo(val, new JsonNeuron[] { outputNeuron });
         }
         
-        public static void ConnectValueTo(Value val, IEnumerable<Neuron> outputNeurons)
+        public static void ConnectValueTo(Value val, IEnumerable<JsonNeuron> outputNeurons)
         {
             LinkedList<ConnectToRequest> conns = new LinkedList<ConnectToRequest>();
-            foreach (Neuron outputNeuron in outputNeurons)
+            foreach (JsonNeuron outputNeuron in outputNeurons)
             {
                 conns.AddLast(new ConnectToRequest(outputNeuron, 1f));
             }

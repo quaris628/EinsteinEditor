@@ -21,11 +21,11 @@ namespace Bibyte.functional.background.booleans
     {
         public static float ERR_AFTER_LESS_THAN_OR_EQUAL = -0.000004f;
 
-        private Neuron latch;
+        private JsonNeuron latch;
 
         public ValLessThanEqValBool(Number left, Number right)
         {
-            Neuron sigmoid = NeuronFactory.CreateNeuron(NeuronType.Sigmoid, "ValLessThanEqVal");
+            JsonNeuron sigmoid = NeuronFactory.CreateNeuron(NeuronType.Sigmoid, "ValLessThanEqVal");
             (left * -100f).ConnectTo(new[] { new ConnectToRequest(sigmoid, 1f) });
             (right * 100f).ConnectTo(new[] { new ConnectToRequest(sigmoid, 1f) });
 

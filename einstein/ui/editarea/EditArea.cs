@@ -84,7 +84,7 @@ namespace Einstein.ui.editarea
                 nextHiddenNeuronIndex++;
                 desc = type.ToString() + (nextHiddenNeuronIndex - BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN);
             }
-            AddNeuron(new Neuron(nextHiddenNeuronIndex, type,
+            AddNeuron(new JsonNeuron(nextHiddenNeuronIndex, type,
                 type.ToString() + (nextHiddenNeuronIndex - BibiteVersionConfig.HIDDEN_NODES_INDEX_MIN)));
             nextHiddenNeuronIndex++;
         }
@@ -247,11 +247,11 @@ namespace Einstein.ui.editarea
 
             AutoArrange();
 
-            if (neuronIndexToNR.First().Value.Neuron is Neuron)
+            if (neuronIndexToNR.First().Value.Neuron is JsonNeuron)
             {
                 foreach (NeuronRenderable nr in neuronIndexToNR.Values)
                 {
-                    Neuron jn = (Neuron)nr.Neuron;
+                    JsonNeuron jn = (JsonNeuron)nr.Neuron;
                     if (jn.Inov != 0)
                     {
                         int x = jn.GetInovX();

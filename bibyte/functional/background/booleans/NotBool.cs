@@ -17,7 +17,7 @@ namespace Bibyte.functional.background.booleans
     public class NotBool : Bool
     {
         private Bool boolean;
-        private Neuron latch;
+        private JsonNeuron latch;
 
         public NotBool(Bool boolean)
         {

@@ -15,7 +15,7 @@ namespace Bibyte.functional.background.values
     /// </summary>
     public class HiddenNeuronNum : Number
     {
-        private Neuron hidden;
+        private JsonNeuron hidden;
 
         public HiddenNeuronNum(Number input, NeuronType type)
         {

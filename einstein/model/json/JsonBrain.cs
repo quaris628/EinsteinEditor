@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Einstein.model.json
 {
-    public class Brain : BaseBrain
+    public class JsonBrain : BaseBrain
     {
         // Example:
         // {
@@ -47,14 +47,14 @@ namespace Einstein.model.json
         private string parent;
         private Dictionary<int, int> oldNewNeuronIndicesMap;
 
-        public Brain() : base()
+        public JsonBrain() : base()
         {
             isReady = "true";
             parent = "true";
             oldNewNeuronIndicesMap = new Dictionary<int, int>();
         }
 
-        public Brain(string json, int startIndex) : base()
+        public JsonBrain(string json, int startIndex) : base()
         {
             JsonParser parser = new JsonParser(json, startIndex);
             isReady = "true";
@@ -63,13 +63,13 @@ namespace Einstein.model.json
             // parse neurons
             parser.parseArray((neuronStartIndex) =>
             {
-                BaseNeuron neuron = new Neuron(json, neuronStartIndex);
+                BaseNeuron neuron = new JsonNeuron(json, neuronStartIndex);
                 Add(neuron);
             });
             // parse synapses
             parser.parseArray((synapseStartIndex) =>
             {
-                BaseSynapse synapse = new Synapse(json, synapseStartIndex, this);
+                BaseSynapse synapse = new JsonSynapse(json, synapseStartIndex, this);
                 Add(synapse);
             });
 
@@ -123,10 +123,10 @@ namespace Einstein.model.json
 
             string[] neuronJsons = new string[allNeurons.Count];
             int i = 0;
-            foreach (Neuron neuron in allNeurons)
+            foreach (JsonNeuron neuron in allNeurons)
             {
                 oldNewNeuronIndicesMap[neuron.Index] = i;
-                Neuron neuronCopy = new Neuron(neuron);
+                JsonNeuron neuronCopy = new JsonNeuron(neuron);
                 neuronCopy.YesImReallyAbsolutelyDefinitelySureIWantToChangeTheIndex(i);
                 neuronJsons[i] = neuronCopy.GetSave();
                 i++;
@@ -138,7 +138,7 @@ namespace Einstein.model.json
         {
             string[] synapseJsons = new string[Synapses.Count];
             int i = 0;
-            foreach (Synapse synapse in Synapses)
+            foreach (JsonSynapse synapse in Synapses)
             {
                 int toIndex = oldNewNeuronIndicesMap[synapse.To.Index];
                 int fromIndex = oldNewNeuronIndicesMap[synapse.From.Index];

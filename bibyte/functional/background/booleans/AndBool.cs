@@ -17,7 +17,7 @@ namespace Bibyte.functional.background.booleans
     {
         private Bool left;
         private Bool right;
-        private Neuron mult;
+        private JsonNeuron mult;
 
         public AndBool(Bool left, Bool right)
         {

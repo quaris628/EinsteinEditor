@@ -19,14 +19,14 @@ namespace Bibyte.functional.background.values
     /// </summary>
     public class StoredNum : Number
     {
-        private Neuron loop;
+        private JsonNeuron loop;
 
         public StoredNum(Bool shouldStore, Number toStore) : this(shouldStore, toStore, 0f) { }
         public StoredNum(Bool shouldStore, Number toStore, float initialValue)
         {
             validateFloat(initialValue);
             Bool resetBool = new RisingBool(shouldStore);
-            Neuron resetNeuron = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueReset");
+            JsonNeuron resetNeuron = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueReset");
             resetBool.ConnectTo(new[] { new ConnectToRequest(resetNeuron, 1f) });
             // the rising bool induces a 2-tick delay (since it has 2 extra synapses)
             // so delay the input value by the same amount
@@ -36,8 +36,8 @@ namespace Bibyte.functional.background.values
             // TODO right now all other circuits don't have consistent timing anyway,
             // so it doesn't matter if we synchronize the input and the shouldStore bool
 
-            Neuron multIn = NeuronFactory.CreateNeuron(NeuronType.Mult, "StoredValueInput");
-            Neuron multReset = NeuronFactory.CreateNeuron(NeuronType.Mult, "StoredValueReset");
+            JsonNeuron multIn = NeuronFactory.CreateNeuron(NeuronType.Mult, "StoredValueInput");
+            JsonNeuron multReset = NeuronFactory.CreateNeuron(NeuronType.Mult, "StoredValueReset");
             loop = NeuronFactory.CreateNeuron(NeuronType.Linear, "StoredValueLoop",
                 initialValue, initialValue, initialValue);
             toStore.ConnectTo(new[] { new ConnectToRequest(multIn, 1f) });

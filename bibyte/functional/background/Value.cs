@@ -16,7 +16,7 @@ namespace bibyte.functional.background
         
         protected internal abstract void ConnectTo(IEnumerable<ConnectToRequest> outputConns);
 
-        protected static IEnumerable<Neuron> neuronsOf(
+        protected static IEnumerable<JsonNeuron> neuronsOf(
             IEnumerable<ConnectToRequest> outputConns)
         {
             foreach (ConnectToRequest conn in outputConns)
@@ -29,9 +29,9 @@ namespace bibyte.functional.background
         {
             return containsMults(neuronsOf(outputConns));
         }
-        protected static bool containsMults(IEnumerable<Neuron> neurons)
+        protected static bool containsMults(IEnumerable<JsonNeuron> neurons)
         {
-            foreach (Neuron neuron in neurons)
+            foreach (JsonNeuron neuron in neurons)
             {
                 if (neuron.Type == NeuronType.Mult)
                 {
@@ -45,9 +45,9 @@ namespace bibyte.functional.background
         {
             return containsNonMults(neuronsOf(outputConns));
         }
-        protected static bool containsNonMults(IEnumerable<Neuron> neurons)
+        protected static bool containsNonMults(IEnumerable<JsonNeuron> neurons)
         {
-            foreach (Neuron neuron in neurons)
+            foreach (JsonNeuron neuron in neurons)
             {
                 if (neuron.Type != NeuronType.Mult)
                 {
@@ -68,10 +68,10 @@ namespace bibyte.functional.background
             return newConnectToRequests;
         }
 
-        protected static void connectAndHandleLargeScalars(Neuron inputNeuron,
+        protected static void connectAndHandleLargeScalars(JsonNeuron inputNeuron,
             IEnumerable<ConnectToRequest> outputConns)
         {
-            List<Neuron> x100Neurons = new List<Neuron>();
+            List<JsonNeuron> x100Neurons = new List<JsonNeuron>();
             foreach (ConnectToRequest outputConn in outputConns)
             {
                 float absNetScalar = Math.Abs(outputConn.SynapseStrength);
@@ -82,10 +82,10 @@ namespace bibyte.functional.background
                     x100NeuronIndex++;
                     if (x100Neurons.Count <= x100NeuronIndex)
                     {
-                        Neuron baseLinear = x100Neurons.Count == 0
+                        JsonNeuron baseLinear = x100Neurons.Count == 0
                             ? inputNeuron
                             : x100Neurons.ElementAt(x100NeuronIndex);
-                        Neuron newLinear = NeuronFactory.CreateNeuron(NeuronType.Linear);
+                        JsonNeuron newLinear = NeuronFactory.CreateNeuron(NeuronType.Linear);
                         SynapseFactory.CreateSynapse(baseLinear, newLinear, BibiteVersionConfig.SYNAPSE_STRENGTH_MAX);
                         x100Neurons.Add(newLinear);
                     }

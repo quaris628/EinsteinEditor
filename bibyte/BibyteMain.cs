@@ -43,7 +43,7 @@ namespace Bibyte
             //*
             Console.WriteLine("Building functionally programmed brain");
             Console.WriteLine("Creating brain...");
-            Brain brain = FunctionalBrainBuilder.Build(BrainToGenerate.BRAIN_TO_GENERATE);
+            JsonBrain brain = FunctionalBrainBuilder.Build(BrainToGenerate.BRAIN_TO_GENERATE);
             Console.WriteLine("Saving brain...");
             SaveBrain(brain, saveFilePath);
             //*/
@@ -60,7 +60,7 @@ namespace Bibyte
             PhiMain.Main(new EditorScene(null, saveFilePath), new EinsteinConfig());
         }
 
-        public static void SaveBrain(Brain brain, string filepath)
+        public static void SaveBrain(JsonBrain brain, string filepath)
         {
             string brainJson = brain.GetSave();
             if (!File.Exists(filepath))

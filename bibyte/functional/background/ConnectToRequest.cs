@@ -10,10 +10,10 @@ namespace bibyte.functional.background
 {
     public class ConnectToRequest
     {
-        public Neuron Neuron { get; private set; }
+        public JsonNeuron Neuron { get; private set; }
         public float SynapseStrength { get; private set; }
 
-        public ConnectToRequest(Neuron neuron, float synapseStrength)
+        public ConnectToRequest(JsonNeuron neuron, float synapseStrength)
         {
             Neuron = neuron;
             SynapseStrength = synapseStrength;

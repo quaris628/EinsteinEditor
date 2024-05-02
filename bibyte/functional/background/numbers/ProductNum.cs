@@ -17,7 +17,7 @@ namespace Bibyte.functional.background.values
     {
         private Number left;
         private Number right;
-        private Neuron mult;
+        private JsonNeuron mult;
 
         public ProductNum(Number left, Number right)
         {

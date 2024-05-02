@@ -18,14 +18,14 @@ namespace Bibyte.functional.background.booleans
     /// </summary>
     public class StoredBool : Bool
     {
-        private Neuron memoryBit;
+        private JsonNeuron memoryBit;
 
         public StoredBool(Bool shouldStore, Bool valueToStoreFrom)
             : this(shouldStore, valueToStoreFrom, false) { }
         public StoredBool(Bool shouldStore, Bool valueToStoreFrom, bool initialValue)
         {
             float initialValueFloat = initialValue ? 1f : 0f;
-            Neuron memoryShouldStoreMult = NeuronFactory.CreateNeuron(NeuronType.Mult, "memoryShouldStoreMult");
+            JsonNeuron memoryShouldStoreMult = NeuronFactory.CreateNeuron(NeuronType.Mult, "memoryShouldStoreMult");
 
             memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit",
                 initialValueFloat, initialValueFloat, initialValueFloat);

@@ -9,27 +9,27 @@ namespace Bibyte.neural
 {
     public static class NeuralBackgroundBrainBuilder
     {
-        private static Brain brain = new Brain();
+        private static JsonBrain brain = new JsonBrain();
 
         public static void ClearBrain()
         {
-            brain = new Brain();
+            brain = new JsonBrain();
         }
 
-        public static void AddToBrain(Synapse[] synapses)
+        public static void AddToBrain(JsonSynapse[] synapses)
         {
-            foreach (Synapse synapse in synapses)
+            foreach (JsonSynapse synapse in synapses)
             {
                 AddToBrain(synapse);
             }
         }
 
-        public static void AddToBrain(Synapse synapse)
+        public static void AddToBrain(JsonSynapse synapse)
         {
             AddSynapseAndItsNeurons(synapse);
         }
 
-        private static void AddSynapseAndItsNeurons(Synapse synapse)
+        private static void AddSynapseAndItsNeurons(JsonSynapse synapse)
         {
             if (!brain.ContainsNeuron(synapse.From))
             {
@@ -45,13 +45,13 @@ namespace Bibyte.neural
             }
             else
             {
-                Neuron lin = NeuronFactory.CreateNeuron(NeuronType.Linear, "DupeSyn");
+                JsonNeuron lin = NeuronFactory.CreateNeuron(NeuronType.Linear, "DupeSyn");
                 brain.Add(lin);
-                brain.Add(new Synapse((Neuron)synapse.From, lin, synapse.Strength));
-                brain.Add(new Synapse(lin, (Neuron)synapse.To, 1));
+                brain.Add(new JsonSynapse((JsonNeuron)synapse.From, lin, synapse.Strength));
+                brain.Add(new JsonSynapse(lin, (JsonNeuron)synapse.To, 1));
             }
         }
 
-        public static Brain GetBrain() { return brain; }
+        public static JsonBrain GetBrain() { return brain; }
     }
 }

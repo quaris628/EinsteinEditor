@@ -15,16 +15,16 @@ namespace Bibyte.functional.background.booleans
     /// </summary>
     public class ToggledBool : Bool
     {
-        private Neuron memoryBit;
+        private JsonNeuron memoryBit;
 
         public ToggledBool(Bool shouldToggle, bool initialState)
         {
             float initialStateFloat = initialState ? 1f : 0f;
             memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "toggledBoolMemoryBit",
                 initialStateFloat, initialStateFloat, initialStateFloat);
-            Neuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "toggledBool",
+            JsonNeuron mult = NeuronFactory.CreateNeuron(NeuronType.Mult, "toggledBool",
                 initialStateFloat, initialStateFloat, initialStateFloat);
-            Neuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "toggledBool",
+            JsonNeuron linear = NeuronFactory.CreateNeuron(NeuronType.Linear, "toggledBool",
                 initialStateFloat, initialStateFloat, initialStateFloat);
             shouldToggle.ConnectTo(new[]
             {

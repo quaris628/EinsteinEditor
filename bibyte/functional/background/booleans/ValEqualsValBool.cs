@@ -19,11 +19,11 @@ namespace Bibyte.functional.background.booleans
     public class ValEqualsValBool : Bool
     {
         public static float ERR_AFTER_1 = 0.00001f;
-        private Neuron latch;
+        private JsonNeuron latch;
 
         public ValEqualsValBool(Number left, Number right)
         {
-            Neuron guassian = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "ValEqualsVal");
+            JsonNeuron guassian = NeuronFactory.CreateNeuron(NeuronType.Gaussian, "ValEqualsVal");
             (left * 100f).ConnectTo(new[] { new ConnectToRequest(guassian, 1f) });
             (right * -100f).ConnectTo(new[] { new ConnectToRequest(guassian, 1f) });
 

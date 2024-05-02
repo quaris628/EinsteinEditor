@@ -10,7 +10,7 @@ namespace Bibyte.functional.background
 {
     public class FunctionalBrainBuilder
     {
-        public static Brain Build(IFunctionalProgrammingBrain brain)
+        public static JsonBrain Build(IFunctionalProgrammingBrain brain)
         {
             NeuralBackgroundBrainBuilder.ClearBrain();
             brain.InitializeReusedValues();

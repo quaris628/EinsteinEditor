@@ -17,7 +17,7 @@ namespace Bibyte.functional.background
     {
         private Number left;
         private Number right;
-        private Neuron linear;
+        private JsonNeuron linear;
 
         public SumNum(Number left, Number right)
         {

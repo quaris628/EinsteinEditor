@@ -19,7 +19,7 @@ namespace Bibyte.neural
         /// </summary>
         /// <param name="type">Neuron type (e.g. Linear, Gaussian...)</param>
         /// <returns>A new hidden neuron.</returns>
-        public static Neuron CreateNeuron(NeuronType type)
+        public static JsonNeuron CreateNeuron(NeuronType type)
         {
             return CreateNeuron(type, "Hidden");
         }
@@ -32,13 +32,13 @@ namespace Bibyte.neural
         /// <param name="descriptionPrefix">Text that the neuron description should start with.
         ///   To keep descriptions unique, each description automatically has its index appended to the end.</param>
         /// <returns>A new hidden neuron.</returns>
-        public static Neuron CreateNeuron(NeuronType type, string descriptionPrefix)
+        public static JsonNeuron CreateNeuron(NeuronType type, string descriptionPrefix)
         {
             if (type == NeuronType.Input)
             {
             throw new ArgumentException("You tried to create a new input neuron. That's not allowed, silly!");
             }
-            return new Neuron(hiddenNeuronIndex, type, descriptionPrefix + hiddenNeuronIndex++);
+            return new JsonNeuron(hiddenNeuronIndex, type, descriptionPrefix + hiddenNeuronIndex++);
         }
 
         /// <summary>
@@ -52,14 +52,14 @@ namespace Bibyte.neural
         /// <param name="initialLastInput"></param>
         /// <param name="initialLastOutput"></param>
         /// <returns></returns>
-        public static Neuron CreateNeuron(NeuronType type, string descriptionPrefix,
+        public static JsonNeuron CreateNeuron(NeuronType type, string descriptionPrefix,
             float initialValue, float initialLastInput, float initialLastOutput)
         {
             if (type == NeuronType.Input)
             {
                 throw new ArgumentException("You tried to create a new input neuron. That's not allowed, silly!");
             }
-            return new Neuron(hiddenNeuronIndex, type, descriptionPrefix + hiddenNeuronIndex++,
+            return new JsonNeuron(hiddenNeuronIndex, type, descriptionPrefix + hiddenNeuronIndex++,
                 initialValue, initialLastInput, initialLastOutput);
         }
     }

@@ -16,7 +16,7 @@ namespace Bibyte.functional.background.booleans
     public class RisingBool : Bool
     {
         private Bool input;
-        private Neuron latch;
+        private JsonNeuron latch;
 
         public RisingBool(Bool input)
         {
@@ -38,7 +38,7 @@ namespace Bibyte.functional.background.booleans
 
                 if (latch == null)
                 {
-                    Neuron diff = NeuronFactory.CreateNeuron(NeuronType.Differential, "RisingBool");
+                    JsonNeuron diff = NeuronFactory.CreateNeuron(NeuronType.Differential, "RisingBool");
                     latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "RisingBool");
                     input.ConnectTo(new[] { new ConnectToRequest(diff, 100f) });
                     SynapseFactory.CreateSynapse(diff, latch, 100f);

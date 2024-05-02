@@ -48,14 +48,14 @@ namespace Bibyte.functional.background.values
         public static InputNum PHERO_3_HEADING = new InputNum(31);
         public static InputNum INFECTION_RATE = new InputNum(32);
 
-        private Neuron inputNeuron;
+        private JsonNeuron inputNeuron;
 
         private InputNum(int inputIndex)
         {
             inputNeuron = Inputs.ConcstructInputNeuron(inputIndex);
         }
 
-        public Neuron GetInputNeuron() { return inputNeuron; }
+        public JsonNeuron GetInputNeuron() { return inputNeuron; }
 
         protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)
         {

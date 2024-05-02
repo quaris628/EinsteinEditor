@@ -14,16 +14,16 @@ namespace Bibyte.circuits
     /// </summary>
     public class CircuitDivide : Circuit1OverX
     {
-        Neuron numerator;
+        JsonNeuron numerator;
         
-        public CircuitDivide(Neuron numerator, Neuron denominator)
+        public CircuitDivide(JsonNeuron numerator, JsonNeuron denominator)
             : base(denominator)
         {
             this.numerator = numerator;
 
-            NeuralBackgroundBrainBuilder.AddToBrain(new Synapse(numerator, GetQuotient(), 1));
+            NeuralBackgroundBrainBuilder.AddToBrain(new JsonSynapse(numerator, GetQuotient(), 1));
         }
 
-        public Neuron GetNumerator() { return numerator; }
+        public JsonNeuron GetNumerator() { return numerator; }
     }
 }

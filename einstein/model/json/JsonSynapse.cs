@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Einstein.model.json
 {
-    public class Synapse : BaseSynapse
+    public class JsonSynapse : BaseSynapse
     {
 
         // Example:
@@ -29,14 +29,14 @@ namespace Einstein.model.json
         private double inov;
         private bool En;
 
-        public Synapse(Neuron from, Neuron to, float strength)
+        public JsonSynapse(JsonNeuron from, JsonNeuron to, float strength)
             : base(from, to, strength)
         {
             inov = 0;
             En = true;
         }
 
-        public Synapse(string json, int startIndex, Brain brain)
+        public JsonSynapse(string json, int startIndex, JsonBrain brain)
             : base()
         {
             JsonParser parser = new JsonParser(json, startIndex);
