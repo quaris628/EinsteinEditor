@@ -12,8 +12,8 @@ namespace Einstein.ui.menu
     public class HiddenNeuronMenuCategory : NeuronMenuCategory
     {
         private Action<BaseNeuron> onSelect;
-        public HiddenNeuronMenuCategory(NeuronMenuButton button,
-            ICollection<BaseNeuron> neuronOptions,
+        public HiddenNeuronMenuCategory(MenuCategoryButton button,
+            IEnumerable<BaseNeuron> neuronOptions,
             Action<BaseNeuron> onSelect)
             : base(button, neuronOptions)
         {
@@ -23,7 +23,7 @@ namespace Einstein.ui.menu
         public override void Initialize()
         {
             base.Initialize();
-            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            foreach (NeuronDrawable neuronDrawable in GetNeuronDrawables())
             {
                 IO.MOUSE.LEFT_UP.SubscribeOnDrawable(() =>
                 {
@@ -35,10 +35,38 @@ namespace Einstein.ui.menu
         public override void Uninitialize()
         {
             base.Uninitialize();
-            foreach (NeuronDrawable neuronDrawable in neuronDrawables.Values)
+            foreach (NeuronDrawable neuronDrawable in GetNeuronDrawables())
             {
                 IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(neuronDrawable);
             }
+        }
+
+        public void ResetNeuronOptionsTo(IEnumerable<BaseNeuron> neuronOptions)
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            
+            foreach (NeuronDrawable neuronDrawable in GetNeuronDrawables())
+            {
+                IO.MOUSE.LEFT_UP.UnsubscribeAllFromDrawable(neuronDrawable);
+                IO.RENDERER.Remove(neuronDrawable);
+            }
+            sortedOptionDrawables.Clear();
+            
+            foreach (BaseNeuron neuron in neuronOptions)
+            {
+                NeuronDrawable neuronDrawable = new NeuronDrawable(neuron);
+                neuronDrawable.SetDisplaying(NeuronButton.IsSelected());
+
+                sortedOptionDrawables.Add(neuron.Index, neuronDrawable);
+
+                IO.RENDERER.Add(neuronDrawable, OPTION_LAYER);
+                IO.MOUSE.LEFT_UP.SubscribeOnDrawable(() =>
+                {
+                    onSelect.Invoke(neuronDrawable.Neuron);
+                }, neuronDrawable);
+            }
+
+            RepositionOptions();
         }
 
         public override string LogDetailsForCrash()

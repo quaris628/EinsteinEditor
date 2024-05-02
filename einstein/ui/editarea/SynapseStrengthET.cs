@@ -1,10 +1,12 @@
 ﻿using Einstein.config;
 using Einstein.model;
+using LibraryFunctionReplacements;
 using phi.graphics.drawables;
 using phi.graphics.renderables;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,17 +16,19 @@ namespace Einstein.ui.editarea
     public class SynapseStrengthET : FloatET
     {
         public const int MAX_DECIMALS = 5;
+
         public static readonly Color TEXT_COLOR = EinsteinConfig.COLOR_MODE.Text;
 
         public BaseSynapse Synapse { get; protected set; }
         private bool justEnabledEditing;
 
         public SynapseStrengthET(BaseSynapse synapse, int anchorX, int anchorY)
-            : base(new FloatETBuilder(new Text.TextBuilder("").WithColor(new SolidBrush(TEXT_COLOR)).Build())
+            : base((FloatETBuilder)new FloatETBuilder(new Text.TextBuilder("").WithColor(new SolidBrush(TEXT_COLOR)).Build())
                   .WithEditingDisabled()
-                  .WithMinValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MIN)
-                  .WithMaxValue(BibiteVersionConfig.SYNAPSE_STRENGTH_MAX)
-                  .WithMaxDecimalPlaces(MAX_DECIMALS))
+                  .WithMinValue(BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MIN)
+                  .WithMaxValue(BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX)
+                  .WithMaxDecimalPlaces(BaseSynapse.STRENGTH_MAX_DECIMALS)
+                  .WithAnchor(anchorX, anchorY))
         {
             Synapse = synapse;
             justEnabledEditing = false;
@@ -33,10 +37,10 @@ namespace Einstein.ui.editarea
         public override void Initialize()
         {
             base.Initialize();
-            SetValue(Synapse.Strength);
+            SetValue(Synapse.getStrengthAsStringForUI());
         }
 
-        public void SetValue(float strength)
+        public void SetValue(string strength)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
 
@@ -45,8 +49,7 @@ namespace Einstein.ui.editarea
             bool wasEnabled = IsEditingEnabled;
             if (!wasEnabled) { EnableEditing(); }
             Clear();
-            string strStr = Math.Round(strength, MAX_DECIMALS).ToString(); // strength string
-            foreach (char c in strStr)
+            foreach (char c in strength)
             {
                 TypeChar(c);
             }
@@ -104,9 +107,17 @@ namespace Einstein.ui.editarea
         private void UpdateStrengthIfValid()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            if (float.TryParse(text.GetMessage(), out float strength))
+            try
             {
-                Synapse.Strength = strength;
+                Synapse.setStrengthAsStringForUI(text.GetMessage());
+            }
+            catch (ArgumentException)
+            {
+                // Strength can be left as its most recent valid value
+            }
+            catch (ArithmeticException)
+            {
+                // Strength can be left as its most recent valid value
             }
         }
     }

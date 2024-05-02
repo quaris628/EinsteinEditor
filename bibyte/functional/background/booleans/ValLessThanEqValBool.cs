@@ -31,7 +31,7 @@ namespace Bibyte.functional.background.booleans
 
             this.latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "ValLessThanEqVal");
             SynapseFactory.CreateSynapse(sigmoid, latch, 100);
-            SynapseFactory.CreateSynapse(Inputs.CONSTANT, latch, -48.99999f);
+            SynapseFactory.CreateSynapse(Inputs0_5.CONSTANT, latch, -48.99999f);
         }
 
         protected internal override void ConnectTo(IEnumerable<ConnectToRequest> outputConns)

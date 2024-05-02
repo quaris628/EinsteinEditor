@@ -22,6 +22,7 @@ __To report bugs:__
 What this can do:
  - Allow you to create and edit small, weak, inefficient, and dumb bibite brains
  - Crash spectacularly, or otherwise break (consider this a disclaimer)
+ - Handle crashes with a prompt to report them and by logging info to a file
  - Save/Load brain to/from a bibite file
  - Show/Hide input and output neurons in the diagram
  - Create/Delete hidden neurons
@@ -30,11 +31,12 @@ What this can do:
  - Edit/View synapse strengths
  - Drag neurons around the diagram
  - Zoom and pan around the diagram
- - Have positions of neurons in the diagram persist between saving/loading (Credit to Lucifer!)
+ - Have positions of neurons in the diagram persist between saving/loading (Credit to Lucifer!) - This happens by appending data to the end of neuron descriptions, which is the extra characters you'll see when viewing the brain in the bibites simulation.
  - Handle window resizing (up to 2048x1080)
  - Auto-arrange neurons in a cleaner arrangement
  - Auto-fix non-unique neuron descriptions
- - Handle crashes with a prompt to report them and by logging info to a file
+ - Support multiple bibite versions
+ - Auto-convert brains between bibite versions (when saving to different-versioned files)
 
 What this can't do (and probably never will):
  - Edit bibite genes
@@ -48,7 +50,6 @@ What this sucks at doing (known bugs):
  - Takes a long time to auto-fix duplicate neuron descriptions for large brains (probably won't be fixed) [technical note: could be improved by avoiding throwing and catching exceptions]
 
 What this will do (planned enhancements):
- - Move keybinds info under a help button (and allow displaying it alongside the rest of the program)
 
 What this might do (future ideas):
   Each feature has an estimated difficultly to create (1-5).
@@ -59,6 +60,7 @@ What this might do (future ideas):
  - 2 - Keyboard shortcuts (in general)
  - 2 - Improve auto-arrangement (in general)
  - 2 - Look pretty (in general)
+ - 2 - Move keybinds info under a help button (and allow displaying it alongside the rest of the program)
  - 2 - Allow multiple instances of just the contstant input neuron (same neuron in the bibite, two or more icons floating around in the diagram)
  - 3? - Allow multiple instances of all input neurons (same neuron in the bibite, two or more icons floating around in the diagram)
  - 3 - Toggle darkmode/lightmode
@@ -67,6 +69,7 @@ What this might do (future ideas):
  - 4 - Deactivate/activate synapses
  - 4 - Save/Load sub-assemblies of neurons and synapses. Could load multiple subassemblies into one brain.
  - 4 - Show detailed info about neurons (e.g. range of outputs for an input neuron, description of the effects of an output neuron, description of hidden neuron's behavior...)
+ - 4 - An undo button
  - 5 - Sentience (?)
  - 5 - Visualization of the flow of values throughout the network (or allow testing specific input values?)
  - 5 - Create color groups of neurons and synapses (Credit to Wazzah!)
@@ -79,5 +82,5 @@ What this might do (future ideas):
 
 To any potential contributors:
  - I want to talk with you about what you want to work on! (If it hasn't been too long since I wrote this, anyway.) In order of my preference, Discord: quaris#9905 Reddit: u/quaris628 Email: quaris314@gmail.com Carrier pigeon: Polly usually flies the fastest, but Gary is also pretty good.
- - I've been using Visual Studio 2019 for an IDE. Just FYI so that if you're running into problems with another IDE, you can always try switching as a workaround.
+ - I've been using Visual Studio 2019 and 2022 for an IDE. Just FYI so that if you're running into problems with another IDE, you can always try switching as a workaround.
  - This project uses the phi graphics "library"/framework/whatever thing, which is a separate project I partnered in creating a few years ago. It has its own repository (https://github.com/quaris628/PhiGraphicsEngine), so if you spot any issues with or want to contribute to any of the code in the 'phi' folder, consider also going to that repo to write up an issue or pull request (or whatever). If you don't, I'll still try to keep the two in sync myself. [Edit: Given how many small fixes and enhancements I've been making, I'm just giving up on keeping the other repo in sync. I'll do a larger sync 'sometime later'.]

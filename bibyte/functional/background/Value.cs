@@ -77,7 +77,7 @@ namespace bibyte.functional.background
                 float absNetScalar = Math.Abs(outputConn.SynapseStrength);
                 bool isNetScalarPositive = outputConn.SynapseStrength > 0;
                 int x100NeuronIndex = -1;
-                while (BibiteVersionConfig.SYNAPSE_STRENGTH_MAX < absNetScalar)
+                while (BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX < absNetScalar)
                 {
                     x100NeuronIndex++;
                     if (x100Neurons.Count <= x100NeuronIndex)
@@ -86,10 +86,10 @@ namespace bibyte.functional.background
                             ? inputNeuron
                             : x100Neurons.ElementAt(x100NeuronIndex);
                         JsonNeuron newLinear = NeuronFactory.CreateNeuron(NeuronType.Linear);
-                        SynapseFactory.CreateSynapse(baseLinear, newLinear, BibiteVersionConfig.SYNAPSE_STRENGTH_MAX);
+                        SynapseFactory.CreateSynapse(baseLinear, newLinear, BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX);
                         x100Neurons.Add(newLinear);
                     }
-                    absNetScalar /= BibiteVersionConfig.SYNAPSE_STRENGTH_MAX;
+                    absNetScalar /= BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX;
                 }
                 if (x100NeuronIndex >= 0)
                 {
@@ -106,8 +106,8 @@ namespace bibyte.functional.background
 
         protected static void validateFloat(float val)
         {
-            if (val < BibiteVersionConfig.SYNAPSE_STRENGTH_MIN
-            || BibiteVersionConfig.SYNAPSE_STRENGTH_MAX < val)
+            if (val < BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MIN
+            || BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX < val)
             {
                 throw new ArgumentException(val + " cannot be used as a synapse strength. "
                     + "Must be between -100 and 100.");

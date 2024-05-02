@@ -7,6 +7,7 @@ using Bibyte.functional.background;
 using Bibyte.neural;
 using Einstein;
 using Einstein.config;
+using Einstein.config.bibiteVersions;
 using Einstein.model.json;
 using phi;
 
@@ -43,9 +44,9 @@ namespace Bibyte
             //*
             Console.WriteLine("Building functionally programmed brain");
             Console.WriteLine("Creating brain...");
-            JsonBrain brain = FunctionalBrainBuilder.Build(BrainToGenerate.BRAIN_TO_GENERATE);
+            JsonBrain brain = FunctionalBrainBuilder.Build(BrainToGenerate.BRAIN_TO_GENERATE, out BibiteVersion bibiteVersion);
             Console.WriteLine("Saving brain...");
-            SaveBrain(brain, saveFilePath);
+            SaveBrain(brain, saveFilePath, bibiteVersion);
             //*/
 
             // use neural programming
@@ -54,15 +55,15 @@ namespace Bibyte
             Console.WriteLine("Creating brain...");
             NeuralBrainCreator.CreateBrain();
             Console.WriteLine("Saving brain...");
-            SaveBrain(NeuralBackgroundBrainBuilder.GetBrain(), saveFilePath);
+            SaveBrain(NeuralBackgroundBrainBuilder.GetBrain(), saveFilePath, NeuronFactory.GetBibiteVersion());
             //*/
 
             PhiMain.Main(new EditorScene(null, saveFilePath), new EinsteinConfig());
         }
 
-        public static void SaveBrain(JsonBrain brain, string filepath)
+        public static void SaveBrain(JsonBrain brain, string filepath, BibiteVersion bibiteVersion)
         {
-            string brainJson = brain.GetSave();
+            string brainJson = brain.GetSave(bibiteVersion);
             if (!File.Exists(filepath))
             {
                 Console.WriteLine("Error, file does not exist: '" + filepath + "'");

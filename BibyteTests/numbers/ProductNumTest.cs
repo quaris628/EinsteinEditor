@@ -2,6 +2,7 @@
 using Bibyte.functional.background;
 using Bibyte.functional.background.values;
 using Bibyte.neural;
+using Einstein.config.bibiteVersions;
 using Einstein.model;
 using Einstein.model.json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,14 +14,25 @@ namespace BibyteTests.numbers
     [TestClass]
     public class ProductNumTest
     {
+        public ProductNumTest()
+        {
+            try
+            {
+                NeuronFactory.InitializeBibiteVersion(BibiteVersion.V0_5);
+            }
+            catch
+            {
+
+            }
+        }
         [TestMethod]
         public void ToNonMult()
         {
             // Arrange
-            NeuralBackgroundBrainBuilder.ClearBrain();
+            NeuralBackgroundBrainBuilder.ClearBrain(BibiteVersion.V0_5);
             InputNum left = InputNum.GREEN_BIBITE;
             InputNum right = InputNum.RED_BIBITE;
-            Neuron output = Outputs.PHERE_OUT_1;
+            JsonNeuron output = Outputs0_5.PHERE_OUT_1;
 
             // Act
             ProductNum num = new ProductNum(left, right);
@@ -28,19 +40,19 @@ namespace BibyteTests.numbers
 
             // Assert
 
-            Brain brain = NeuralBackgroundBrainBuilder.GetBrain();
+            JsonBrain brain = NeuralBackgroundBrainBuilder.GetBrain();
 
             // there are the input and output neurons
-            Neuron[] ioNeurons = new Neuron[] { left.GetInputNeuron(), right.GetInputNeuron(), output };
-            foreach (Neuron neuron in ioNeurons)
+            JsonNeuron[] ioNeurons = new JsonNeuron[] { left.GetInputNeuron(), right.GetInputNeuron(), output };
+            foreach (JsonNeuron neuron in ioNeurons)
             {
                 Assert.IsTrue(brain.ContainsNeuron(neuron));
             }
             // and there's one other hidden neuron
             Assert.AreEqual(ioNeurons.Length + 1, brain.Neurons.Count);
             // which is a mult
-            Neuron hiddenMult = null;
-            foreach (Neuron neuron in brain.Neurons)
+            JsonNeuron hiddenMult = null;
+            foreach (JsonNeuron neuron in brain.Neurons)
             {
                 if (ioNeurons.Contains(neuron))
                 {
@@ -63,10 +75,10 @@ namespace BibyteTests.numbers
         public void ToMult()
         {
             // Arrange
-            NeuralBackgroundBrainBuilder.ClearBrain();
+            NeuralBackgroundBrainBuilder.ClearBrain(BibiteVersion.V0_5);
             InputNum left = InputNum.GREEN_BIBITE;
             InputNum right = InputNum.RED_BIBITE;
-            Neuron output = NeuronFactory.CreateNeuron(NeuronType.Mult);
+            JsonNeuron output = NeuronFactory.CreateNeuron(NeuronType.Mult);
 
             // Act
             ProductNum num = new ProductNum(left, right);
@@ -74,7 +86,7 @@ namespace BibyteTests.numbers
 
             // Assert
 
-            Brain brain = NeuralBackgroundBrainBuilder.GetBrain();
+            JsonBrain brain = NeuralBackgroundBrainBuilder.GetBrain();
 
             // there are the input and output neurons
             Assert.IsTrue(brain.ContainsNeuron(left.GetInputNeuron()));
@@ -94,11 +106,11 @@ namespace BibyteTests.numbers
         public void ToMultAndNonMult()
         {
             // Arrange
-            NeuralBackgroundBrainBuilder.ClearBrain();
+            NeuralBackgroundBrainBuilder.ClearBrain(BibiteVersion.V0_5);
             InputNum left = InputNum.GREEN_BIBITE;
             InputNum right = InputNum.RED_BIBITE;
-            Neuron nonMultOutput = Outputs.PHERE_OUT_1;
-            Neuron multOutput = NeuronFactory.CreateNeuron(NeuronType.Mult);
+            JsonNeuron nonMultOutput = Outputs0_5.PHERE_OUT_1;
+            JsonNeuron multOutput = NeuronFactory.CreateNeuron(NeuronType.Mult);
 
             // Act
             ProductNum num = new ProductNum(left, right);
@@ -106,20 +118,20 @@ namespace BibyteTests.numbers
 
             // Assert
 
-            Brain brain = NeuralBackgroundBrainBuilder.GetBrain();
+            JsonBrain brain = NeuralBackgroundBrainBuilder.GetBrain();
 
             // there are the input and output neurons
-            Neuron[] ioNeurons = new Neuron[] { left.GetInputNeuron(), right.GetInputNeuron(),
+            JsonNeuron[] ioNeurons = new JsonNeuron[] { left.GetInputNeuron(), right.GetInputNeuron(),
                 nonMultOutput, multOutput };
-            foreach (Neuron neuron in ioNeurons)
+            foreach (JsonNeuron neuron in ioNeurons)
             {
                 Assert.IsTrue(brain.ContainsNeuron(neuron));
             }
             // and there's one other hidden neuron
             Assert.AreEqual(ioNeurons.Length + 1, brain.Neurons.Count);
             // which is a mult
-            Neuron hiddenMult = null;
-            foreach (Neuron neuron in brain.Neurons)
+            JsonNeuron hiddenMult = null;
+            foreach (JsonNeuron neuron in brain.Neurons)
             {
                 if (ioNeurons.Contains(neuron))
                 {

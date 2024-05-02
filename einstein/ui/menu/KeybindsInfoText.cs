@@ -16,8 +16,11 @@ namespace Einstein.ui
         public const string MESSAGE =
             "------------ Neurons ------------\n" +
             "Add          Menus\n" +
-            "Remove    Shift-click\n" +
             "Move        Click and drag\n" +
+            "Remove    Shift-click\n" +
+            "Paint         Ctrl-click\n" +
+            "Set color   1-0\n" +
+            "Bind color  Ctrl + 1-0\n" +
             "----------- Synapses -----------\n" +
             "Add              Right-click\n" +
             "Remove        Shift-click\n" +

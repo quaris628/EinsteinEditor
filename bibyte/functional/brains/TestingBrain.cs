@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Bibyte.functional
 {
-    public class TestingBrain : IFunctionalProgrammingBrain
+    public class TestingBrain0_5 : IFunctionalProgrammingBrain0_5
     {
         private static Number risingPlantClose = null;
         public void InitializeReusedValues()

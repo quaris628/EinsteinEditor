@@ -42,7 +42,7 @@ namespace Einstein.ui.menu
                 .Build();
             reset = new Button.ButtonBuilder(
                 new ImageWrapper(RESET_IMAGE),
-                EinsteinConfig.PAD + NeuronMenuButton.WIDTH - IMAGES_SIZE,
+                EinsteinConfig.PAD + MenuCategoryButton.WIDTH - IMAGES_SIZE,
                 EinsteinConfig.Window.INITIAL_HEIGHT - EinsteinConfig.PAD - IMAGES_SIZE)
                 .withOnClick(editArea.ResetZoomLevel)
                 .Build();

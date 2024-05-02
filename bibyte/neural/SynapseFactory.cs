@@ -21,8 +21,8 @@ namespace Bibyte.neural
         /// <returns>A new synapse</returns>
         public static JsonSynapse CreateSynapse(JsonNeuron from, JsonNeuron to, float strength)
         {
-            if (strength < BibiteVersionConfig.SYNAPSE_STRENGTH_MIN
-                || BibiteVersionConfig.SYNAPSE_STRENGTH_MAX < strength)
+            if (strength < BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MIN
+                || BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX < strength)
             {
                 throw new ArgumentException(
                     "Invalid synapse strength '"

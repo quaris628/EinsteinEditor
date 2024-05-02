@@ -1,5 +1,4 @@
 ﻿using Einstein.config;
-using Einstein.model;
 using phi.graphics.drawables;
 using phi.io;
 using System;
@@ -8,18 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Einstein.ui.menu
+namespace Einstein.ui.menu.categories.colors
 {
-    public class NeuronMenuButton : SelectableButton
+    public class EditColorMenuCategoryButton : SelectableButton
     {
         public const string UNSELECTED_IMAGE_PATH =
-            EinsteinConfig.RES_DIR + "ButtonBackground.png";
+            EinsteinConfig.RES_DIR + "ButtonBackgroundTransparent.png";
         public const string SELECTED_IMAGE_PATH =
-            EinsteinConfig.RES_DIR + "ButtonBackgroundSelected.png";
+            EinsteinConfig.RES_DIR + "ButtonBackgroundTransparentSelected.png";
         public const int WIDTH = 160;
         public const int HEIGHT = 32;
 
-        public NeuronMenuButton(
+        public EditColorMenuCategoryButton(
                 int x, int y,
                 string text,
                 Action onSelect,
@@ -34,8 +33,7 @@ namespace Einstein.ui.menu
                     .withText(text)
                     .withOnClick(onDeselect))
         {
-            
-        }
 
+        }
     }
 }

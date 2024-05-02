@@ -16,6 +16,10 @@ namespace phi.graphics.renderables
       private const string DEFAULT_DEFAULT_MESSAGE = "";
 
       private static SelectableEditableText selected = null;
+      public static bool IsAnyCurrentlySelected()
+      {
+          return selected != null;
+      }
 
       public EditableText EditableText { get; private set; }
       private Text text; // just a shortcut reference
