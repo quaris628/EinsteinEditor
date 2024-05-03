@@ -210,7 +210,15 @@ namespace LibraryFunctionReplacements
                 // if the last digit was a 9, round up the digit before that, etc...
                 case '9':
                     decimalDigits[digitIndex] = '0';
-                    roundUpDecimalDigits(wholePartDigits, decimalDigits, digitIndex - 1, ref wholePartDigitsStartIndex);
+                    // if this 9 is at the tenths place, start rounding up the whole-part digits
+                    if (digitIndex == 0)
+                    {
+                        roundUpWholePartDigits(wholePartDigits, 38, ref wholePartDigitsStartIndex);
+                    }
+                    else
+                    {
+                        roundUpDecimalDigits(wholePartDigits, decimalDigits, digitIndex - 1, ref wholePartDigitsStartIndex);
+                    }
                     break;
                 default:
                     decimalDigits[digitIndex] = (char)(digit + 1);
