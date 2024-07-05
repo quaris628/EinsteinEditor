@@ -77,7 +77,6 @@
     <Compile Include="ui\menu\categories\MenuCategory.cs" />
     <Compile Include="ui\menu\categories\neurons\NeuronMenuCategory.cs" />
     <Compile Include="ui\menu\categories\neurons\MenuCategoryButton.cs" />
-    <Compile Include="ui\menu\KeybindsInfoText.cs" />
     <Compile Include="ui\menu\ZoomControls.cs" />
     <Compile Include="ui\NeuronDrawable.cs" />
     <Compile Include="config\BibiteConfigVersionIndependent.cs" />

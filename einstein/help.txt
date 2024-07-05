@@ -1,0 +1,101 @@
+--------------------------------
+ Controls
+--------------------------------
+
+ == Neurons ==
+
+Add:	Menu buttons
+Move:	Left-click and drag
+Remove:	Shift + Left-click
+
+ == Synapses ==
+
+Add:	Right-click
+Remove:	Shift + Left-click
+Edit Strength: Left-click number
+
+ == Coloring ==
+
+Paint a neuron: Ctrl + Left-click
+Set brush color: Menu buttons, or 1234567890
+Bind current color to key: Ctrl + 1234567890
+
+ == Misc keyboard shortcuts ==
+Open: Ctrl + O
+Save: Ctrl + S
+Save As: Ctrl + Shift + S
+
+
+--------------------------------
+ How to get a .bb8 file from a simulation
+--------------------------------
+
+Select a bibite (left-click on it)
+Click "Stats Panel" (far upper-left button with a bar graph)
+"Save"
+Give it a name. Description is optional.
+Do NOT select "Save as template". (This box should be UNchecked.)
+"Save"
+
+This will save it to the simulation's "Bibites" folder.
+Einstein should automatically open to this "Bibites" folder when loading and saving.
+If you need to see where this folder is (e.g. so you can copy a .bb8 file to/from it), you can click on "Open save folder" (big up-arrow icon) to open this folder in the file explorer.
+
+(It's possible newer versions will have a different process.)
+
+
+
+--------------------------------
+ How to put a .bb8 file into a simulation
+--------------------------------
+
+Click the far bottom-left petri dish button
+"Place Bibite"
+"Saved Bibites" (second-to-the-left button along the top, with the bibite and up arrow icons)
+
+This will display a list of .bb8 files from the simulation's "Bibites" folder.
+Einstein should automatically open to this "Bibites" folder when loading and saving.
+If you need to see where this folder is (e.g. so you can copy a .bb8 file to/from it), you can click on "Open save folder" (big up-arrow icon) to open this folder in the file explorer.
+
+Select a bibite from this list
+Left-click to place the bibites
+
+(It's possible newer versions will have a different process.)
+
+
+--------------------------------
+ How to run Einstein
+--------------------------------
+
+Open the /bin/ folder
+Run Einstein.exe
+
+Note: Windows will warn you about running this file because I'm not a verified publisher. You'll just have to trust me that I didn't write anything malicious in this.
+If you want a shortcut on your desktop, right-click Einstein.exe in the file explorer > "Send To" > "Desktop (Create Shortcut)"
+
+
+--------------------------------
+ How does brains work?
+--------------------------------
+
+For the basics, check the wiki: https://the-bibites.fandom.com/wiki/Brain
+
+For questions beyond the basics, try the Bibites Research Conglomerate discord server: https://discord.gg/7TVF8X3X9H
+
+
+--------------------------------
+ I found a bug!
+--------------------------------
+
+(with Einstein, not the bibites simulation.)
+
+Create an issue here: https://github.com/quaris628/EinsteinEditor/issues/
+OR message me on reddit: u/quaris628
+OR email me: quaris314@gmail.com
+
+
+--------------------------------
+ Misc.
+--------------------------------
+
+Einstein can't read .bb8template files. Unfortunately their data and its format have significant inconsistencies that I haven't been able to figure out.

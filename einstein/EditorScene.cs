@@ -12,6 +12,7 @@ using phi.io;
 using phi.other;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,8 @@ namespace Einstein
         private static readonly string DEFAULT_SAVE_LOAD_FOLDER =
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
             + "\\AppData\\LocalLow\\The Bibites\\The Bibites\\Bibites";
+
+        private const string HELP_FILE_PATH = EinsteinConfig.HOME_DIR + "help.txt";
 
         // ----------------------------------------------------------------
         //  Data/Constructor
@@ -53,7 +56,7 @@ namespace Einstein
         private Button saveToButton;
         private SaveMessageText saveMessageText;
         private Button autoArrangeButton;
-        private KeybindsInfoText infoText;
+        private Button helpButton;
         private ZoomControls zoomControls;
 
         private string savePath;
@@ -173,9 +176,13 @@ namespace Einstein
                 .withOnClick(editArea.AutoArrange)
                 .Build();
 
-            infoText = new KeybindsInfoText(
-                EinsteinConfig.PAD,
-                EinsteinConfig.PAD + autoArrangeButton.GetY() + autoArrangeButton.GetHeight());
+            helpButton = new Button.ButtonBuilder(
+                    new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
+                    EinsteinConfig.PAD,
+                    EinsteinConfig.PAD + autoArrangeButton.GetY() + autoArrangeButton.GetHeight())
+                    .withText("Help")
+                    .withOnClick(openHelp)
+                    .Build();
 
             zoomControls = new ZoomControls(editArea);
 
@@ -224,10 +231,12 @@ namespace Einstein
 
             autoArrangeButton.Initialize();
             IO.RENDERER.Add(autoArrangeButton);
-            IO.RENDERER.Add(infoText);
+            helpButton.Initialize();
+            IO.RENDERER.Add(helpButton);
             zoomControls.Initialize();
 
             IO.KEYS.Subscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
+            IO.KEYS.Subscribe(resaveToBibite, EinsteinConfig.Keybinds.SAVE_BIBITE);
             IO.KEYS.Subscribe(loadFromBibite, EinsteinConfig.Keybinds.LOAD_FROM_BIBITE);
 
             IO.FRAME_TIMER.Subscribe(checkForResize);
@@ -268,7 +277,7 @@ namespace Einstein
 
             autoArrangeButton.Uninitialize();
             IO.RENDERER.Remove(autoArrangeButton);
-            IO.RENDERER.Remove(infoText);
+            IO.RENDERER.Remove(helpButton);
             zoomControls.Uninitialize();
 
             IO.KEYS.Unsubscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
@@ -747,6 +756,21 @@ namespace Einstein
         private string getBb8NameText()
         {
             return mostRecentLoadedToFile == null ? "Brain is not from a .bb8" : Path.GetFileName(mostRecentLoadedToFile);
+        }
+
+        private void openHelp()
+        {
+            if (File.Exists(HELP_FILE_PATH))
+            {
+                Process.Start("notepad.exe", HELP_FILE_PATH);
+            }
+            else
+            {
+                IO.POPUPS.ShowErrorPopup("File Not Found",
+                    "The help.txt file is missing. Try re-extracting Einstein from the zip file and running that fresh copy." +
+                    "\n\nIf that doesn't work, and you're using the most recent version of Einstein, " +
+                    "then please report this as a bug (see github page for how to).");
+            }
         }
 
         public override bool CanClose()
