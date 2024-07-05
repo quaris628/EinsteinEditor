@@ -123,7 +123,7 @@ namespace Einstein
                 new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
                 EinsteinConfig.PAD,
                 EinsteinConfig.PAD * 2 + paintColorDisplay.GetY() + paintColorDisplay.GetHeight())
-                .withText("Load")
+                .withText("Open .bb8")
                 .withOnClick(loadFromBibite)
                 .Build();
             resaveButtonDisabledPlaceholder = new Button.ButtonBuilder(new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
