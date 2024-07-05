@@ -499,8 +499,10 @@ namespace Einstein
                         newDescription = nonNumberDesc + descNumberInt;
                     }
                     // replace 2nd instance of the original description with the new description
-                    int indexOf2ndInstance = 1 + json.IndexOf("\"" + originalDescription + "\"",
-                        json.IndexOf("\"" + originalDescription + "\""));
+                    int indexOf1stInstance = 1 + Math.Max(json.IndexOf("\"" + originalDescription + "\""),
+                        json.IndexOf("\"" + originalDescription + "-"));
+                    int indexOf2ndInstance = 1 + Math.Max(json.IndexOf("\"" + originalDescription + "\"", indexOf1stInstance),
+                        json.IndexOf("\"" + originalDescription + "-", indexOf1stInstance));
                     json = json.Substring(0, indexOf2ndInstance) +
                         newDescription +
                         json.Substring(indexOf2ndInstance + originalDescription.Length);
