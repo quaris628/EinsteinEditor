@@ -146,7 +146,7 @@ namespace Einstein
                 new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
                 EinsteinConfig.PAD,
                 EinsteinConfig.PAD + resaveButton.GetY() + resaveButton.GetHeight())
-                .withText("Save to")
+                .withText("Save as")
                 .withOnClick(saveToBibite)
                 .Build();
             bibiteNameText = new TextBuilder(getBb8NameText())
