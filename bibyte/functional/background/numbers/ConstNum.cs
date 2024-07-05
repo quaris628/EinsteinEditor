@@ -38,7 +38,7 @@ namespace Bibyte.functional.background.values
                     throw new ArgumentOutOfRangeException();
                 }
             }
-            connectAndHandleLargeScalars(Inputs0_5.CONSTANT, connsWithNetScalars);
+            connectAndHandleLargeScalars(NeuronFactory.GetConst(), connsWithNetScalars);
         }
     }
 }

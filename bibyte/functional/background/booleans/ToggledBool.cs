@@ -31,7 +31,7 @@ namespace Bibyte.functional.background.booleans
                 new ConnectToRequest(mult, 1f),
                 new ConnectToRequest(linear, 1f),
             });
-            SynapseFactory.CreateSynapse(Inputs0_5.CONSTANT, linear, 0.5f);
+            SynapseFactory.CreateSynapse(NeuronFactory.GetConst(), linear, 0.5f);
             SynapseFactory.CreateSynapse(memoryBit, mult, 1f);
             SynapseFactory.CreateSynapse(mult, linear, -2f);
             SynapseFactory.CreateSynapse(linear, memoryBit, 1f);

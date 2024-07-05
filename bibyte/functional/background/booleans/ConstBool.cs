@@ -38,7 +38,7 @@ namespace Bibyte.functional.background.booleans
             // and using these constant booleans will probably be rare
             // and it'd probably be even rarer to have such bad brain design like If(False, ...)
             // so just do this
-            connectAndHandleLargeScalars(Inputs0_5.CONSTANT,
+            connectAndHandleLargeScalars(NeuronFactory.GetConst(),
                 multiplyAllConnsBy(filteredConns, boolean ? 1f : 0f));
         }
     }

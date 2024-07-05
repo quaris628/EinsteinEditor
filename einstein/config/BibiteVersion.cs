@@ -248,6 +248,15 @@ namespace Einstein.config.bibiteVersions
 
         #region Overrides
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is BibiteVersion))
+            {
+                return false;
+            }
+            return CompareTo(obj as BibiteVersion) == 0;
+        }
+
         public int CompareTo(BibiteVersion other)
         {
             return versionId.CompareTo(other.versionId);

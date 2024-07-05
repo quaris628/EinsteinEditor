@@ -31,6 +31,23 @@ namespace Bibyte.neural
             return bibiteVersion;
         }
 
+        public static JsonNeuron GetConst()
+        {
+            if (bibiteVersion == null)
+            {
+                throw new InvalidOperationException("Must initialize bibite version before creating a neuron");
+            }
+            if (bibiteVersion.Equals(BibiteVersion.V0_5))
+            {
+                return Inputs0_5.CONSTANT;
+            }
+            if (bibiteVersion.Equals(BibiteVersion.V0_6_0a))
+            {
+                return Inputs0_6_0a.CONSTANT;
+            }
+            throw new NoSuchVersionException($"Bibite version '{bibiteVersion.VERSION_NAME}' does not have a Constant neuron defined");
+        }
+
         /// <summary>
         /// Creates a new hidden neuron.
         /// Use this instead of new Neuron(...), because this automatically sets the neuron's index.

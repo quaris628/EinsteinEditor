@@ -42,7 +42,7 @@ namespace Bibyte.functional.background.booleans
                     latch = NeuronFactory.CreateNeuron(NeuronType.Latch, "RisingBool");
                     input.ConnectTo(new[] { new ConnectToRequest(diff, 100f) });
                     SynapseFactory.CreateSynapse(diff, latch, 100f);
-                    SynapseFactory.CreateSynapse(Inputs0_5.CONSTANT, latch, -1f);
+                    SynapseFactory.CreateSynapse(NeuronFactory.GetConst(), latch, -1f);
                 }
 
                 connectAndHandleLargeScalars(latch, outputConns);

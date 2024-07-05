@@ -18,9 +18,9 @@ namespace Bibyte.functional.background
             {
                 return Build(brain as IFunctionalProgrammingBrain0_5, out bibiteVersion);
             }
-            else if (brain is IFunctionalProgrammingBrain0_6a)
+            else if (brain is IFunctionalProgrammingBrain0_6_0a)
             {
-                return Build(brain as IFunctionalProgrammingBrain0_6a, out bibiteVersion);
+                return Build(brain as IFunctionalProgrammingBrain0_6_0a, out bibiteVersion);
             }
             else
             {
@@ -51,27 +51,27 @@ namespace Bibyte.functional.background
             return NeuralBackgroundBrainBuilder.GetBrain();
         }
 
-        public static JsonBrain Build(IFunctionalProgrammingBrain0_6a brain, out BibiteVersion bibiteVersion)
+        public static JsonBrain Build(IFunctionalProgrammingBrain0_6_0a brain, out BibiteVersion bibiteVersion)
         {
             bibiteVersion = BibiteVersion.V0_6_0a;
             NeuronFactory.InitializeBibiteVersion(bibiteVersion);
             NeuralBackgroundBrainBuilder.ClearBrain(bibiteVersion);
             brain.InitializeReusedValues();
-            brain.Accelerate().PlugIntoOutput(Outputs0_6a.ACCELERATE);
-            brain.Rotate().PlugIntoOutput(Outputs0_6a.ROTATE);
-            brain.Herding().PlugIntoOutput(Outputs0_6a.HERDING);
-            brain.EggProduction().PlugIntoOutput(Outputs0_6a.EGG_PRODUCTION);
-            brain.Want2Lay().PlugIntoOutput(Outputs0_6a.WANT_2_LAY);
-            brain.Digestion().PlugIntoOutput(Outputs0_6a.DIGESTION);
-            brain.Grab().PlugIntoOutput(Outputs0_6a.GRAB);
-            brain.ClkReset().PlugIntoOutput(Outputs0_6a.CLK_RESET);
-            brain.PhereOut1().PlugIntoOutput(Outputs0_6a.PHERE_OUT_1);
-            brain.PhereOut2().PlugIntoOutput(Outputs0_6a.PHERE_OUT_2);
-            brain.PhereOut3().PlugIntoOutput(Outputs0_6a.PHERE_OUT_3);
-            brain.Want2Grow().PlugIntoOutput(Outputs0_6a.WANT_2_GROW);
-            brain.Want2Heal().PlugIntoOutput(Outputs0_6a.WANT_2_HEAL);
-            brain.Want2Attack().PlugIntoOutput(Outputs0_6a.WANT_2_ATTACK);
-            brain.ImmuneSystem().PlugIntoOutput(Outputs0_6a.IMMUNE_SYSTEM);
+            brain.Accelerate().PlugIntoOutput(Outputs0_6_0a.ACCELERATE);
+            brain.Rotate().PlugIntoOutput(Outputs0_6_0a.ROTATE);
+            brain.Herding().PlugIntoOutput(Outputs0_6_0a.HERDING);
+            brain.EggProduction().PlugIntoOutput(Outputs0_6_0a.EGG_PRODUCTION);
+            brain.Want2Lay().PlugIntoOutput(Outputs0_6_0a.WANT_2_LAY);
+            brain.Digestion().PlugIntoOutput(Outputs0_6_0a.DIGESTION);
+            brain.Grab().PlugIntoOutput(Outputs0_6_0a.GRAB);
+            brain.ClkReset().PlugIntoOutput(Outputs0_6_0a.CLK_RESET);
+            brain.PhereOut1().PlugIntoOutput(Outputs0_6_0a.PHERE_OUT_1);
+            brain.PhereOut2().PlugIntoOutput(Outputs0_6_0a.PHERE_OUT_2);
+            brain.PhereOut3().PlugIntoOutput(Outputs0_6_0a.PHERE_OUT_3);
+            brain.Want2Grow().PlugIntoOutput(Outputs0_6_0a.WANT_2_GROW);
+            brain.Want2Heal().PlugIntoOutput(Outputs0_6_0a.WANT_2_HEAL);
+            brain.Want2Attack().PlugIntoOutput(Outputs0_6_0a.WANT_2_ATTACK);
+            brain.ImmuneSystem().PlugIntoOutput(Outputs0_6_0a.IMMUNE_SYSTEM);
             return NeuralBackgroundBrainBuilder.GetBrain();
         }
     }

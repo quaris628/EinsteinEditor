@@ -16,7 +16,7 @@ namespace Bibyte.neural
             NeuronFactory.InitializeBibiteVersion(bibiteVersion);
             NeuralBackgroundBrainBuilder.ClearBrain(bibiteVersion);
 
-            SynapseFactory.CreateSynapse(Inputs0_5.CONSTANT, Outputs0_5.ACCELERATE, 1);
+            SynapseFactory.CreateSynapse(NeuronFactory.GetConst(), Outputs0_5.ACCELERATE, 1);
             SynapseFactory.CreateSynapse(Inputs0_5.PLANT_ANGLE, Outputs0_5.ROTATE, 1);
 
             CircuitDivide div = new CircuitDivide(Inputs0_5.PHERO_SENSE_1, Inputs0_5.PHERO_SENSE_2);

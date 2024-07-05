@@ -30,7 +30,7 @@ namespace Bibyte.functional.background.booleans
             memoryBit = NeuronFactory.CreateNeuron(NeuronType.Latch, "memoryBit",
                 initialValueFloat, initialValueFloat, initialValueFloat);
             SynapseFactory.CreateSynapse(memoryShouldStoreMult, memoryBit, 1f);
-            SynapseFactory.CreateSynapse(Inputs0_5.CONSTANT, memoryBit, 0.5f);
+            SynapseFactory.CreateSynapse(NeuronFactory.GetConst(), memoryBit, 0.5f);
             shouldStore.ConnectTo(new[]
             {
                 new ConnectToRequest(memoryBit, -0.5f),
