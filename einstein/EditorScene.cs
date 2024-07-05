@@ -272,6 +272,7 @@ namespace Einstein
             zoomControls.Uninitialize();
 
             IO.KEYS.Unsubscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
+            IO.KEYS.Unsubscribe(resaveToBibite, EinsteinConfig.Keybinds.SAVE_BIBITE);
             IO.KEYS.Unsubscribe(loadFromBibite, EinsteinConfig.Keybinds.LOAD_FROM_BIBITE);
 
             IO.FRAME_TIMER.Unsubscribe(checkForResize);

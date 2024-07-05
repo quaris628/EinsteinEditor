@@ -22,10 +22,12 @@ namespace Einstein.config
 
         public class Keybinds
         {
-            public static readonly KeyStroke SAVE_TO_BIBITE =
-                new KeyStroke.KeyStrokeBuilder(Keys.S).with(Keys.Control).Build();
             public static readonly KeyStroke LOAD_FROM_BIBITE =
-                new KeyStroke.KeyStrokeBuilder(Keys.L).with(Keys.Control).Build();
+                new KeyStroke.KeyStrokeBuilder(Keys.O).with(Keys.Control).Build();
+            public static readonly KeyStroke SAVE_BIBITE =
+                new KeyStroke.KeyStrokeBuilder(Keys.S).with(Keys.Control).Build();
+            public static readonly KeyStroke SAVE_TO_BIBITE =
+                new KeyStroke.KeyStrokeBuilder(Keys.S).with(Keys.Control).with(Keys.Shift).Build();
 
             public static readonly Keys[] SELECT_PAINT_COLORS = new Keys[] {
                 Keys.D1,
