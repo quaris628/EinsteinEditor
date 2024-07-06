@@ -44,7 +44,8 @@
   <ItemGroup>
     <Compile Include="config\BibiteVersion.cs" />
     <Compile Include="config\bibiteVersions\BibiteVersion0_4.cs" />
-    <Compile Include="config\bibiteVersions\BibiteVersion0_6_0a.cs" />
+    <Compile Include="config\bibiteVersions\BibiteVersion0_6_0a0thru4.cs" />
+    <Compile Include="config\bibiteVersions\BibiteVersion0_6_0a5thru12.cs" />
     <Compile Include="config\bibiteVersions\BibiteVersion0_5.cs" />
     <Compile Include="config\exceptions\CannotConvertException.cs" />
     <Compile Include="config\exceptions\NoSuchVersionException.cs" />

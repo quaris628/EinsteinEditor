@@ -16,7 +16,8 @@ namespace Einstein.config.bibiteVersions
     {
         #region Version Instances - Static
 
-        public static readonly BibiteVersion V0_6_0a = BibiteVersion0_6_0a.INSTANCE;
+        public static readonly BibiteVersion V0_6_0a5thru12 = BibiteVersion0_6_0a5thru12.INSTANCE;
+        public static readonly BibiteVersion V0_6_0a0thru4 = BibiteVersion0_6_0a0thru4.INSTANCE;
         public static readonly BibiteVersion V0_5 = BibiteVersion0_5.INSTANCE;
         public static readonly BibiteVersion V0_4 = BibiteVersion0_4.INSTANCE;
 
@@ -28,9 +29,13 @@ namespace Einstein.config.bibiteVersions
 
         public static BibiteVersion FromName(string versionName)
         {
-            if (V0_6_0a.IsMatchForVersionName(versionName))
+            if (V0_6_0a5thru12.IsMatchForVersionName(versionName))
             {
-                return V0_6_0a;
+                return V0_6_0a5thru12;
+            }
+            else if (V0_6_0a0thru4.IsMatchForVersionName(versionName))
+            {
+                return V0_6_0a0thru4;
             }
             else if (V0_5.IsMatchForVersionName(versionName))
             {
@@ -77,12 +82,23 @@ namespace Einstein.config.bibiteVersions
 
         protected virtual bool IsMatchForVersionName(string bibitesVersionName)
         {
-            return bibitesVersionName.Length >= VERSION_NAME.Length
-                && bibitesVersionName.Substring(0, VERSION_NAME.Length).Equals(VERSION_NAME);
+            return StringHasPrefix(bibitesVersionName, VERSION_NAME);
+        }
+
+        protected bool StringHasPrefix(string haystack, string prefix)
+        {
+            return haystack.Length >= prefix.Length
+                && haystack.Substring(0, prefix.Length).Equals(prefix);
         }
 
         #region Neuron diagram positions
-        
+
+        // inov is the old system for storing position information,
+        // but the Inov field started being used for something in 0.6
+        // and I didn't want the position data to interfere with it,
+        // so I changed einstein to tag on the position data to the end of descriptions instead.
+        // However there will be old 0.5 (and a few 0.6 alpha) bibites that already have Inov set.
+
         public virtual bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
         {
             return GetNeuronDiagramPositionFromDescription(fields, ref x, ref y);
@@ -97,11 +113,6 @@ namespace Einstein.config.bibiteVersions
             // plan to not set inov for future versions
         }
 
-        // inov is the old system for storing position information,
-        // but the Inov field started being used for something in 0.6
-        // and I didn't want the position data to interfere with it,
-        // so I changed einstein to tag on the position data to the end of descriptions instead.
-        // However there will be old 0.5 (and a few 0.6 alpha) bibites that already have Inov set.
         protected bool GetNeuronDiagramPositionFromInov(RawJsonFields fields, ref int x, ref int y)
         {
             if (fields.inov != 0)
