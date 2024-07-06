@@ -142,7 +142,7 @@ namespace Einstein
                 .withOnClick(resaveToBibite)
                 .Build();
             editArea.Brain.OnChangeFlagged += (_container) => {
-                resaveButton.SetDisplaying(mostRecentLoadedToFile != null);
+                resaveButton.SetDisplaying(getResaveTargetFile() != null);
             };
             resaveButton.SetDisplaying(false);
             saveToButton = new Button.ButtonBuilder(
@@ -295,15 +295,18 @@ namespace Einstein
 
         // ----- Saving/Loading -----
 
+        private string getResaveTargetFile()
+        {
+            return mostRecentSavedToFile ?? mostRecentLoadedToFile;
+        }
+
         private void resaveToBibite()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            if (mostRecentLoadedToFile == null)
-            {
-                return;
-            }
 
-            if (saveToBibite(mostRecentLoadedToFile))
+            string targetFile = getResaveTargetFile();
+
+            if (targetFile != null && saveToBibite(targetFile))
             {
                 editArea.Brain.MarkChangesAsSaved();
                 resaveButton.SetDisplaying(false);
@@ -321,7 +324,10 @@ namespace Einstein
                 // User cancelled
                 return;
             }
-            saveToBibite(filepath);
+            if (saveToBibite(filepath))
+            {
+                bibiteNameText.SetMessage(getBb8NameText());
+            }
         }
 
         private bool saveToBibite(string filepath)
@@ -334,18 +340,6 @@ namespace Einstein
                 return false;
             }
             string json = File.ReadAllText(filepath);
-
-            // Warn if saving to a different file than the
-            // most recently loaded or saved-to file
-            if (mostRecentLoadedToFile != null
-                && !filepath.Equals(mostRecentLoadedToFile)
-                && !filepath.Equals(mostRecentSavedToFile) // if you're always saving to another file
-                && !IO.POPUPS.ShowYesNoPopup("Save to different bibite?",
-                    $"Are you sure you want to save to '{Path.GetFileName(filepath)}'?\n\n" +
-                    $"It is not the bibite this brain was originally loaded from."))
-            {
-                return false;
-            }
 
             // determine where to insert the brain
             int startIndex = json.IndexOf("\"brain\":") + "\"brain\":".Length;
@@ -755,7 +749,9 @@ namespace Einstein
 
         private string getBb8NameText()
         {
-            return mostRecentLoadedToFile == null ? "Brain is not from a .bb8" : Path.GetFileName(mostRecentLoadedToFile);
+            return getResaveTargetFile() == null
+                ? "Brain is not from a .bb8"
+                : Path.GetFileName(getResaveTargetFile());
         }
 
         private void openHelp()
