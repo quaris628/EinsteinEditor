@@ -327,6 +327,7 @@ namespace Einstein
             if (saveToBibite(filepath))
             {
                 bibiteNameText.SetMessage(getBb8NameText());
+                resaveButton.SetDisplaying(false);
             }
         }
 
