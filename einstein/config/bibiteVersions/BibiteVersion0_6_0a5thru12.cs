@@ -128,10 +128,14 @@ namespace Einstein.config.bibiteVersions
         public override void SetNeuronDiagramPositionInRawJsonFields(RawJsonFields fields, int x, int y)
         {
             SetNeuronDiagramPositionInDesc(fields, x, y);
-            // set inov if and only if the neuron type is hidden
+            // set inov for diagram position if and only if the neuron type is hidden
             if (new JsonNeuron(fields, INSTANCE).IsHidden())
             {
                 SetNeuronDiagramPositionInInov(fields, x, y);
+            }
+            else
+            {
+                fields.inov = fields.index + 1;
             }
         }
 
