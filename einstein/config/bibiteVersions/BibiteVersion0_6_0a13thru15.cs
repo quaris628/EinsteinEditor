@@ -9,24 +9,24 @@ using static Einstein.model.json.JsonNeuron;
 
 namespace Einstein.config.bibiteVersions
 {
-    public class BibiteVersion0_4 : BibiteVersion
+    public class BibiteVersion0_6_0a13thru15 : BibiteVersion
     {
-        internal static readonly BibiteVersion0_4 INSTANCE = new BibiteVersion0_4();
+        internal static readonly BibiteVersion0_6_0a13thru15 INSTANCE = new BibiteVersion0_6_0a13thru15();
 
-        private BibiteVersion0_4(): base(40)
+        private BibiteVersion0_6_0a13thru15(): base(62)
         {
-            VERSION_NAME = "0.4";
+            VERSION_NAME = "0.6.0a13";
 
             INPUT_NODES_INDEX_MIN = 0;
             INPUT_NODES_INDEX_MAX = 32;
             OUTPUT_NODES_INDEX_MIN = 33;
-            OUTPUT_NODES_INDEX_MAX = 47;
-            HIDDEN_NODES_INDEX_MIN = 48;
+            OUTPUT_NODES_INDEX_MAX = 48;
+            HIDDEN_NODES_INDEX_MIN = 49;
             HIDDEN_NODES_INDEX_MAX = int.MaxValue;
 
             DESCRIPTIONS = new string[] {
                 // ----- Inputs -----
-                "Constant",
+                // Removed Constant
                 "EnergyRatio",
                 "Maturity",
                 "LifeRatio",
@@ -34,6 +34,7 @@ namespace Einstein.config.bibiteVersions
                 "Speed",
                 "IsGrabbing",
                 "AttackedDamage",
+                "EggStored",
                 "BibiteCloseness",
                 "BibiteAngle",
                 "NBibites",
@@ -63,6 +64,7 @@ namespace Einstein.config.bibiteVersions
                 "Accelerate",
                 "Rotate",
                 "Herding",
+                "EggProduction",
                 "Want2Lay",
                 "Want2Eat",
                 "Digestion",
@@ -79,6 +81,7 @@ namespace Einstein.config.bibiteVersions
 
             outputTypes = new NeuronType[]
             {
+                NeuronType.TanH,
                 NeuronType.TanH,
                 NeuronType.TanH,
                 NeuronType.TanH,
@@ -109,7 +112,28 @@ namespace Einstein.config.bibiteVersions
                 NeuronType.Differential,
                 NeuronType.Abs,
                 NeuronType.Mult,
+                NeuronType.Integrator, // added
+                NeuronType.Inhibitory, // added
             };
+        }
+
+        protected override bool IsMatchForVersionName(string bibitesVersionName)
+        {
+            if (!StringHasPrefix(bibitesVersionName, "0.6a")
+                && !StringHasPrefix(bibitesVersionName, "0.6.0a"))
+            {
+                return false;
+            }
+
+            foreach (string alphaNumber in new string[] { "13", "14", "15" })
+            {
+                if (StringHasPrefix(bibitesVersionName, "0.6a" + alphaNumber)
+                    || StringHasPrefix(bibitesVersionName, "0.6.0a" + alphaNumber))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
@@ -121,20 +145,37 @@ namespace Einstein.config.bibiteVersions
         public override void SetNeuronDiagramPositionInRawJsonFields(RawJsonFields fields, int x, int y)
         {
             SetNeuronDiagramPositionInDesc(fields, x, y);
-            // always set inov
-            SetNeuronDiagramPositionInInov(fields, x, y);
+            // set inov for diagram position if and only if the neuron type is hidden
+            if (new JsonNeuron(fields, INSTANCE).IsHidden())
+            {
+                SetNeuronDiagramPositionInInov(fields, x, y);
+            }
+            else
+            {
+                fields.inov = fields.index + 1;
+            }
         }
+
+        // Changes from 0.6a5thru12:
+        // - Replaced Constant neuron with Biases
+        // - New hidden neurons Integrator (11) and Inhibitory (12)
+        //
+        // Internal side effects:
+        // all indices are now 1 less
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
-            throw new NoSuchVersionException("There is no supported version lower than " + VERSION_NAME);
+            // To 0.6a5thru12
+            // Replace biases with constant node synapses, and shift all indexes up 1
+
+            // TODO
+
+            return null;
         }
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            // To 0.5
-            // deep copy with no changes
-            return new JsonBrain(brain, V0_5);
+            throw new NoSuchVersionException("There is no supported version higher than " + VERSION_NAME);
         }
     }
 }

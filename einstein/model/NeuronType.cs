@@ -19,5 +19,7 @@ namespace Einstein.model
         Differential = 8,
         Abs = 9,
         Mult = 10,
+        Integrator = 11,
+        Inhibitory = 12,
     }
 }

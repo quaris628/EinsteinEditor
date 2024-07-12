@@ -98,6 +98,21 @@ namespace Einstein.config.bibiteVersions
                 NeuronType.Sigmoid,
                 NeuronType.TanH,
             };
+
+            neuronTypes = new NeuronType[]
+            {
+                NeuronType.Input,
+                NeuronType.Sigmoid,
+                NeuronType.Linear,
+                NeuronType.TanH,
+                NeuronType.Sine,
+                NeuronType.ReLu,
+                NeuronType.Gaussian,
+                NeuronType.Latch,
+                NeuronType.Differential,
+                NeuronType.Abs,
+                NeuronType.Mult,
+            };
         }
 
         protected override bool IsMatchForVersionName(string bibitesVersionName)
@@ -207,7 +222,11 @@ namespace Einstein.config.bibiteVersions
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            throw new NoSuchVersionException("There is no supported version higher than " + VERSION_NAME);
+            // To 0.6a13thru15
+            // Replace constant node connections with biases, and shift all indexes down 1
+
+            // TODO
+            return null;
         }
     }
 }

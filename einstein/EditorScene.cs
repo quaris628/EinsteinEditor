@@ -345,6 +345,12 @@ namespace Einstein
             // determine where to insert the brain
             int startIndex = json.IndexOf("\"brain\":") + "\"brain\":".Length;
             int endIndex = json.IndexOf("\"immuneSystem\":");
+            if (endIndex < 0)
+            {
+                // in 0.6a14 or 15, immuneSystem was removed.
+                // So fall back to "version" if no "immuneSystem" was found.
+                endIndex = json.IndexOf("\"version\":");
+            }
             if (startIndex < 0 || endIndex < 0)
             {
                 IO.POPUPS.ShowErrorPopup("Save Failed", "File format is invalid: Cannot find an existing brain.");

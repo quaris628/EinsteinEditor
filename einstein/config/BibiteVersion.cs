@@ -16,6 +16,7 @@ namespace Einstein.config.bibiteVersions
     {
         #region Version Instances - Static
 
+        public static readonly BibiteVersion V0_6_0a13 = BibiteVersion0_6_0a13thru15.INSTANCE;
         public static readonly BibiteVersion V0_6_0a5thru12 = BibiteVersion0_6_0a5thru12.INSTANCE;
         public static readonly BibiteVersion V0_6_0a0thru4 = BibiteVersion0_6_0a0thru4.INSTANCE;
         public static readonly BibiteVersion V0_5 = BibiteVersion0_5.INSTANCE;
@@ -29,7 +30,11 @@ namespace Einstein.config.bibiteVersions
 
         public static BibiteVersion FromName(string versionName)
         {
-            if (V0_6_0a5thru12.IsMatchForVersionName(versionName))
+            if (V0_6_0a13.IsMatchForVersionName(versionName))
+            {
+                return V0_6_0a13;
+            }
+            else if (V0_6_0a5thru12.IsMatchForVersionName(versionName))
             {
                 return V0_6_0a5thru12;
             }
@@ -68,8 +73,9 @@ namespace Einstein.config.bibiteVersions
         public int HIDDEN_NODES_INDEX_MAX { get; protected set; }
 
         public string[] DESCRIPTIONS { get; protected set; }
-
+        
         protected NeuronType[] outputTypes;
+        protected NeuronType[] neuronTypes;
 
         #endregion Data
 
@@ -243,9 +249,9 @@ namespace Einstein.config.bibiteVersions
             {
                 if (_hiddenNeurons == null)
                 {
-                    _hiddenNeurons = new BaseNeuron[Enum.GetValues(typeof(NeuronType)).Length - 1];
+                    _hiddenNeurons = new BaseNeuron[neuronTypes.Length - 1];
                     int index = HIDDEN_NODES_INDEX_MIN;
-                    foreach (NeuronType neuronType in Enum.GetValues(typeof(NeuronType)))
+                    foreach (NeuronType neuronType in neuronTypes)
                     {
                         if (neuronType == NeuronType.Input) { continue; }
                         _hiddenNeurons[index - HIDDEN_NODES_INDEX_MIN] = new JsonNeuron(index++, neuronType, this);

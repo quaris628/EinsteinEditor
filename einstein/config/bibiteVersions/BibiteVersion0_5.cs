@@ -95,6 +95,21 @@ namespace Einstein.config.bibiteVersions
                 NeuronType.Sigmoid,
                 NeuronType.TanH,
             };
+
+            neuronTypes = new NeuronType[]
+            {
+                NeuronType.Input,
+                NeuronType.Sigmoid,
+                NeuronType.Linear,
+                NeuronType.TanH,
+                NeuronType.Sine,
+                NeuronType.ReLu,
+                NeuronType.Gaussian,
+                NeuronType.Latch,
+                NeuronType.Differential,
+                NeuronType.Abs,
+                NeuronType.Mult,
+            };
         }
 
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
