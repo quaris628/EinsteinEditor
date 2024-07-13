@@ -28,7 +28,7 @@ namespace Einstein.model.json
             : base(index, type, bias, description, bibiteVersion)
         {
             Inov = 0;
-            Value = 0f;
+            Value = type == NeuronType.Mult ? 1f : 0f;
             lastInput = 0f;
             lastOutput = 0f;
             ColorGroup = DEFAULT_COLOR_GROUP;
