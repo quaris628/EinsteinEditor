@@ -23,7 +23,7 @@ namespace Einstein.ui.editarea
         public const float INITIAL_STRENGTH = 1f;
         public const string DEFAULT_STRENGTH = "0";
 
-        private const float STRENGTH_POS_ALONG_SYNAPSE_LENGTH = 0.4f;
+        private const float STRENGTH_POS_ALONG_SYNAPSE_LENGTH = 0.7f;
 
         private const string CIRCLE_ARROW_IMAGE = EinsteinConfig.RES_DIR + "CircularSynapse.png";
 
