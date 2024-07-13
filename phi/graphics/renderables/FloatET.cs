@@ -69,7 +69,8 @@ namespace phi.graphics.renderables
          int maxSigFigs = precisionType == PrecisionType.SignificantFigures ? precisionAmount : 8;
          int maxDecimals = precisionType == PrecisionType.DecimalPlaces ? precisionAmount : int.MaxValue;
          text.SetMessage(CustomNumberParser.FloatToString(value, maxSigFigs, maxDecimals));
-        }
+         RecenterOnAnchor();
+      }
 
       private bool isWithinPrecision(string message)
       {
