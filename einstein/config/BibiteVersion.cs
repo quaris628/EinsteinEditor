@@ -97,6 +97,11 @@ namespace Einstein.config.bibiteVersions
                 && haystack.Substring(0, prefix.Length).Equals(prefix);
         }
 
+        public virtual bool HasBiases()
+        {
+            return true;
+        }
+
         #region Neuron diagram positions
 
         // inov is the old system for storing position information,
@@ -217,7 +222,7 @@ namespace Einstein.config.bibiteVersions
                     for (int i = INPUT_NODES_INDEX_MIN;
                         i <= INPUT_NODES_INDEX_MAX; i++)
                     {
-                        _inputNeurons[i - INPUT_NODES_INDEX_MIN] = new JsonNeuron(i, NeuronType.Input, DESCRIPTIONS[i], this);
+                        _inputNeurons[i - INPUT_NODES_INDEX_MIN] = new JsonNeuron(i, NeuronType.Input, 0f, DESCRIPTIONS[i], this);
                     }
                 }
                 return _inputNeurons;
@@ -235,7 +240,7 @@ namespace Einstein.config.bibiteVersions
                     for (int i = OUTPUT_NODES_INDEX_MIN;
                         i <= OUTPUT_NODES_INDEX_MAX; i++)
                     {
-                        _outputNeurons[i - OUTPUT_NODES_INDEX_MIN] = new JsonNeuron(i, GetOutputNeuronType(i), DESCRIPTIONS[i], this);
+                        _outputNeurons[i - OUTPUT_NODES_INDEX_MIN] = new JsonNeuron(i, GetOutputNeuronType(i), 0f, DESCRIPTIONS[i], this);
                     }
                 }
                 return _outputNeurons;
@@ -254,7 +259,7 @@ namespace Einstein.config.bibiteVersions
                     foreach (NeuronType neuronType in neuronTypes)
                     {
                         if (neuronType == NeuronType.Input) { continue; }
-                        _hiddenNeurons[index - HIDDEN_NODES_INDEX_MIN] = new JsonNeuron(index++, neuronType, this);
+                        _hiddenNeurons[index - HIDDEN_NODES_INDEX_MIN] = new JsonNeuron(index++, neuronType, 0f, this);
                     }
                 }
                 return _hiddenNeurons;

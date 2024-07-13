@@ -112,6 +112,11 @@ namespace Einstein.config.bibiteVersions
             };
         }
 
+        public override bool HasBiases()
+        {
+            return false;
+        }
+
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
         {
             // fall back to inov if it's not in the description

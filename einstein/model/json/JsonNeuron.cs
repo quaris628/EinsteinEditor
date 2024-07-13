@@ -22,11 +22,11 @@ namespace Einstein.model.json
         public int DiagramX;
         public int DiagramY;
 
-        public JsonNeuron(int index, NeuronType type, BibiteVersion bibiteVersion)
-            : this(index, type, Enum.GetName(typeof(NeuronType), type), bibiteVersion) { }
+        public JsonNeuron(int index, NeuronType type, float bias, BibiteVersion bibiteVersion)
+            : this(index, type, bias, Enum.GetName(typeof(NeuronType), type), bibiteVersion) { }
 
-        public JsonNeuron(int index, NeuronType type, string description, BibiteVersion bibiteVersion)
-            : base(index, type, description, bibiteVersion)
+        public JsonNeuron(int index, NeuronType type, float bias, string description, BibiteVersion bibiteVersion)
+            : base(index, type, bias, description, bibiteVersion)
         {
             Inov = 0;
             value = 0f;
@@ -36,7 +36,7 @@ namespace Einstein.model.json
         }
 
         public JsonNeuron(JsonNeuron jsonNeuron)
-            : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Description, jsonNeuron.BibiteVersion)
+            : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Bias, jsonNeuron.Description, jsonNeuron.BibiteVersion)
         {
             Inov = jsonNeuron.Inov;
             value = jsonNeuron.value;
@@ -48,7 +48,7 @@ namespace Einstein.model.json
         }
 
         public JsonNeuron(JsonNeuron jsonNeuron, BibiteVersion bibiteVersion)
-            : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Description, bibiteVersion)
+            : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Bias, jsonNeuron.Description, bibiteVersion)
         {
             Inov = jsonNeuron.Inov;
             value = jsonNeuron.value;
@@ -62,6 +62,7 @@ namespace Einstein.model.json
         public JsonNeuron(RawJsonFields jsonFields, BibiteVersion bibiteVersion) : base(bibiteVersion)
         {
             Type = (NeuronType)jsonFields.typeIndex;
+            Bias = jsonFields.bias;
             // skip TypeName
             Index = jsonFields.index;
             Inov = jsonFields.inov;
@@ -86,6 +87,7 @@ namespace Einstein.model.json
             }
 
             public int typeIndex;
+            public float bias;
             public string typeName;
             public int index;
             public int inov;
@@ -110,6 +112,7 @@ namespace Einstein.model.json
             public RawJsonFields(JsonNeuron jsonNeuron)
             {
                 this.typeIndex = (int)jsonNeuron.Type;
+                this.bias = jsonNeuron.Bias;
                 this.typeName = jsonNeuron.Type.ToString();
                 this.index = jsonNeuron.Index;
                 this.inov = jsonNeuron.Inov;
@@ -123,11 +126,19 @@ namespace Einstein.model.json
                     this, jsonNeuron.DiagramX, jsonNeuron.DiagramY);
             }
 
-            public RawJsonFields(string json, int startIndex)
+            public RawJsonFields(string json, int startIndex, BibiteVersion bibiteVersion)
             {
                 JsonParser parser = new JsonParser(json, startIndex);
                 parser.startParsingNextLeafObj();
                 this.typeIndex = parser.getNextValueInt("Type");
+                if (bibiteVersion.HasBiases())
+                {
+                    this.bias = parser.getNextValueFloat("baseActivation");
+                }
+                else
+                {
+                    this.bias = 0f;
+                }
                 this.typeName = parser.getNextValue("TypeName");
                 this.index = parser.getNextValueInt("Index");
                 this.inov = parser.getNextValueInt("Inov");
@@ -189,6 +200,19 @@ namespace Einstein.model.json
             //   "LastOutput":0.0
             // }
 
+            private const string JSON_FORMAT_BIASES =
+                "{{\n" +
+                "        \"Type\": {0},\n" +
+                "        \"baseActivation\": {1},\n" +
+                "        \"TypeName\": \"{2}\",\n" +
+                "        \"Index\": {3},\n" +
+                "        \"Inov\": {4},\n" +
+                "        \"Desc\": \"{5}\",\n" +
+                "        \"Value\": {6},\n" +
+                "        \"LastInput\": {7},\n" +
+                "        \"LastOutput\": {8}\n" +
+                "      }}";
+
             private const string JSON_FORMAT =
                 "{{\n" +
                 "        \"Type\": {0},\n" +
@@ -201,19 +225,36 @@ namespace Einstein.model.json
                 "        \"LastOutput\": {7}\n" +
                 "      }}";
 
-            public override string ToString()
+            public string ToString(BibiteVersion bibiteVersion)
             {
-                return string.Format(
-                    CultureInfo.GetCultureInfo("en-US"),
-                    JSON_FORMAT,
-                    typeIndex,
-                    typeName,
-                    CustomNumberParser.IntToString(index),
-                    CustomNumberParser.IntToString(inov),
-                    rawDescription,
-                    CustomNumberParser.FloatToString(value),
-                    CustomNumberParser.FloatToString(lastInput),
-                    CustomNumberParser.FloatToString(lastOutput));
+                if (bibiteVersion.HasBiases()) {
+                    return string.Format(
+                        CultureInfo.GetCultureInfo("en-US"),
+                        JSON_FORMAT_BIASES,
+                        typeIndex,
+                        CustomNumberParser.FloatToString(bias),
+                        typeName,
+                        CustomNumberParser.IntToString(index),
+                        CustomNumberParser.IntToString(inov),
+                        rawDescription,
+                        CustomNumberParser.FloatToString(value),
+                        CustomNumberParser.FloatToString(lastInput),
+                        CustomNumberParser.FloatToString(lastOutput));
+                }
+                else
+                {
+                    return string.Format(
+                        CultureInfo.GetCultureInfo("en-US"),
+                        JSON_FORMAT,
+                        typeIndex,
+                        typeName,
+                        CustomNumberParser.IntToString(index),
+                        CustomNumberParser.IntToString(inov),
+                        rawDescription,
+                        CustomNumberParser.FloatToString(value),
+                        CustomNumberParser.FloatToString(lastInput),
+                        CustomNumberParser.FloatToString(lastOutput));
+                }
             }
         }
     }

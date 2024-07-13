@@ -131,6 +131,11 @@ namespace Einstein.config.bibiteVersions
             return false;
         }
 
+        public override bool HasBiases()
+        {
+            return false;
+        }
+
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
         {
             // fall back to inov if it's not in the description
@@ -174,7 +179,7 @@ namespace Einstein.config.bibiteVersions
             {
                 // update each index
                 int newIndex = ConvertNeuronIndexTo0_6_0a5thru12(neuron.Index);
-                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, neuron.Description, V0_6_0a5thru12);
+                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, V0_6_0a5thru12);
                 jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
                 jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
                 jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
@@ -191,9 +196,9 @@ namespace Einstein.config.bibiteVersions
             }
 
             // EggsStored
-            brainOut.Add(new JsonNeuron(8, NeuronType.Input, V0_6_0a5thru12.DESCRIPTIONS[8], V0_6_0a5thru12));
+            brainOut.Add(new JsonNeuron(8, NeuronType.Input, 0f, V0_6_0a5thru12.DESCRIPTIONS[8], V0_6_0a5thru12));
             // EggProduction
-            brainOut.Add(new JsonNeuron(37, NeuronType.TanH, V0_6_0a5thru12.DESCRIPTIONS[37], V0_6_0a5thru12));
+            brainOut.Add(new JsonNeuron(37, NeuronType.TanH, 0f, V0_6_0a5thru12.DESCRIPTIONS[37], V0_6_0a5thru12));
 
             return brainOut;
         }

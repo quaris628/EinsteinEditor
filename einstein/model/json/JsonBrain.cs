@@ -81,7 +81,7 @@ namespace Einstein.model.json
             // parse neurons
             parser.parseArray((neuronStartIndex) =>
             {
-                JsonNeuron.RawJsonFields fields = new JsonNeuron.RawJsonFields(json, neuronStartIndex);
+                JsonNeuron.RawJsonFields fields = new JsonNeuron.RawJsonFields(json, neuronStartIndex, bibiteVersion);
                 Add(new JsonNeuron(fields, bibiteVersion));
             });
             // parse synapses
@@ -148,7 +148,7 @@ namespace Einstein.model.json
                 oldNewNeuronIndicesMap[neuron.Index] = i;
                 JsonNeuron.RawJsonFields jsonFields = new JsonNeuron.RawJsonFields(neuron);
                 jsonFields.index = i;
-                neuronJsons[i] = jsonFields.ToString();
+                neuronJsons[i] = jsonFields.ToString(bibiteVersion);
                 i++;
             }
             return string.Join(",\n      ", neuronJsons);

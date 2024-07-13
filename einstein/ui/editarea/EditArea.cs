@@ -95,6 +95,7 @@ namespace Einstein.ui.editarea
             }
             AddNeuron(new JsonNeuron(nextHiddenNeuronIndex,
                 type,
+                0f,
                 type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN),
                 BibiteVersion),
                 true);

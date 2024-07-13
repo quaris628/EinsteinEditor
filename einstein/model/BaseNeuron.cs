@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,6 +41,17 @@ namespace Einstein.model
         }
         private string _description;
 
+        private float _bias;
+        public float Bias
+        {
+            get { return _bias; }
+            set
+            {
+                _bias = value;
+                FlagChange();
+            }
+        }
+
         // IMPORTANT if this neuron is in a brain,
         // then use Brain's UpdateNeuronDescription method instead of setting the description directly.
         // Otherwise some Brain description stuff will start having problems.
@@ -73,12 +85,13 @@ namespace Einstein.model
 
         // Description will be the type name
         public BaseNeuron(int index, NeuronType type, BibiteVersion bibiteVersion) : this(index, type,
-            Enum.GetName(typeof(NeuronType), type), bibiteVersion) { }
+            0f, Enum.GetName(typeof(NeuronType), type), bibiteVersion) { }
 
-        public BaseNeuron(int index, NeuronType type, string description, BibiteVersion bibiteVersion) : this(bibiteVersion)
+        public BaseNeuron(int index, NeuronType type, float bias, string description, BibiteVersion bibiteVersion) : this(bibiteVersion)
         {
             Index = index;
             Type = type;
+            Bias = bias;
             Description = description;
             ColorGroup = DEFAULT_COLOR_GROUP;
             if (IsInput() && IsOutput())
