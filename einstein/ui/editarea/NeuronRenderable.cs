@@ -20,14 +20,17 @@ namespace Einstein.ui.editarea
         public const int SPAWN_X = 250 + MenuCategoryButton.WIDTH + EinsteinConfig.PAD;
         public const int SPAWN_Y = 200 + (MenuCategoryButton.HEIGHT + EinsteinConfig.PAD) * 3;
 
-        public const int BIAS_TEXT_LAYER = 10;
         public const int BIAS_X_OFFSET = -10;
         public const int BIAS_Y_OFFSET = -10;
+        public const int VALUE_X_OFFSET = 17;
+        public const int VALUE_Y_OFFSET = 0;
 
         public BaseNeuron Neuron { get; private set; }
         public NeuronDrawable NeuronDrawable { get { return (NeuronDrawable)GetDrawable(); } }
-        private NeuronBiasET nbet; // also accessible via the text variable, but this is a nice shortcut reference
+        private NeuronBiasET nbet;
         private SelectableEditableText biasText;
+        private NeuronValueET nvet;
+        private SelectableEditableText valueText;
 
         private EditArea editArea;
         private bool isRemoved;
@@ -42,13 +45,17 @@ namespace Einstein.ui.editarea
             if (Neuron.BibiteVersion.HasBiases())
             {
                 nbet = new NeuronBiasET(Neuron,
-                NeuronDrawable.GetCircleCenterX() + BIAS_X_OFFSET,
-                NeuronDrawable.GetCircleCenterY() + BIAS_Y_OFFSET);
+                    NeuronDrawable.GetCircleCenterX() + BIAS_X_OFFSET,
+                    NeuronDrawable.GetCircleCenterY() + BIAS_Y_OFFSET);
                 biasText = new SelectableEditableText(nbet,
                     CustomNumberParser.FloatToString(neuron.Bias),
                     EinsteinConfig.COLOR_MODE.EditableTextBackgroundSelected,
                     EinsteinConfig.COLOR_MODE.EditableTextBackgroundUnselected);
             }
+            nvet = new NeuronValueET(Neuron,
+                NeuronDrawable.GetCircleCenterX() + VALUE_X_OFFSET,
+                NeuronDrawable.GetCircleCenterY() + VALUE_X_OFFSET);
+            valueText = new NeuronValueSET(nvet);
 
             if (tryPainting
                 && (editArea.isPainting || IO.KEYS.IsModifierKeyDown(Keys.Control)))
@@ -63,11 +70,15 @@ namespace Einstein.ui.editarea
             IO.RENDERER.Add(this);
             if (Neuron.BibiteVersion.HasBiases())
             {
-                IO.RENDERER.Add(biasText, BIAS_TEXT_LAYER);
+                IO.RENDERER.Add(biasText);
                 biasText.Initialize();
                 IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(MaybeRemoveOrPaint, biasText.GetDrawable());
                 IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(StartASynapse, biasText.GetDrawable());
             }
+            IO.RENDERER.Add(valueText);
+            valueText.Initialize();
+            IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(MaybeRemoveOrPaint, valueText.GetDrawable());
+            IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(StartASynapse, valueText.GetDrawable());
 
             IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(MaybeRemoveOrPaint, GetDrawable());
             IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(StartASynapse, GetDrawable());
@@ -89,6 +100,11 @@ namespace Einstein.ui.editarea
                 IO.MOUSE.LEFT_CLICK.UnsubscribeFromDrawable(MaybeRemoveOrPaint, biasText.GetDrawable());
                 IO.MOUSE.RIGHT_UP.UnsubscribeFromDrawable(StartASynapse, biasText.GetDrawable());
             }
+            IO.RENDERER.Remove(valueText);
+            valueText.Uninitialize();
+            IO.MOUSE.LEFT_CLICK.UnsubscribeFromDrawable(MaybeRemoveOrPaint, valueText.GetDrawable());
+            IO.MOUSE.RIGHT_UP.UnsubscribeFromDrawable(StartASynapse, valueText.GetDrawable());
+
 
             IO.MOUSE.LEFT_CLICK.UnsubscribeFromDrawable(MaybeRemoveOrPaint, GetDrawable());
             IO.MOUSE.RIGHT_UP.UnsubscribeFromDrawable(StartASynapse, GetDrawable());
@@ -96,6 +112,11 @@ namespace Einstein.ui.editarea
             {
                 NeuronDrawable.DisableEditingDescription();
             }
+        }
+
+        public void SetIsValueDisplaying(bool displaying)
+        {
+            nvet.GetDrawable().SetDisplaying(displaying);
         }
 
         private void MaybeRemoveOrPaint()
@@ -154,6 +175,7 @@ namespace Einstein.ui.editarea
             }
             NeuronDrawable.SetCircleCenterXY(x, y);
             UpdateBiasTextPosition();
+            UpdateValueTextPosition();
 
             if (editArea.Brain != null)
             {
@@ -175,6 +197,12 @@ namespace Einstein.ui.editarea
                 nbet.SetAnchor(NeuronDrawable.GetCircleCenterX() + BIAS_X_OFFSET,
                     NeuronDrawable.GetCircleCenterY() + BIAS_Y_OFFSET);
             }
+        }
+
+        private void UpdateValueTextPosition()
+        {
+            nvet.SetAnchor(NeuronDrawable.GetCircleCenterX() + VALUE_X_OFFSET,
+                    NeuronDrawable.GetCircleCenterY() + VALUE_Y_OFFSET);
         }
 
         public override string ToString()

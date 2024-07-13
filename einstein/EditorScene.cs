@@ -57,6 +57,7 @@ namespace Einstein
         private SaveMessageText saveMessageText;
         private Button autoArrangeButton;
         private Button helpButton;
+        private SelectableButton showValuesToggle;
         private ZoomControls zoomControls;
 
         private string savePath;
@@ -184,6 +185,19 @@ namespace Einstein
                     .withOnClick(openHelp)
                     .Build();
 
+            showValuesToggle = new SelectableButton(new Button.ButtonBuilder(
+                    new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
+                    EinsteinConfig.PAD,
+                    EinsteinConfig.PAD * 2 + helpButton.GetY() + helpButton.GetHeight())
+                    .withText("Show Values")
+                    .withOnClick(showValues),
+                    new Button.ButtonBuilder(
+                    new ImageWrapper(MenuCategoryButton.SELECTED_IMAGE_PATH),
+                    EinsteinConfig.PAD,
+                    EinsteinConfig.PAD * 2 + helpButton.GetY() + helpButton.GetHeight())
+                    .withText("Hide Values")
+                    .withOnClick(hideValues));
+
             zoomControls = new ZoomControls(editArea);
 
             savePath = null;
@@ -233,6 +247,8 @@ namespace Einstein
             IO.RENDERER.Add(autoArrangeButton);
             helpButton.Initialize();
             IO.RENDERER.Add(helpButton);
+            showValuesToggle.Initialize();
+            IO.RENDERER.Add(showValuesToggle);
             zoomControls.Initialize();
 
             IO.KEYS.Subscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
@@ -277,7 +293,10 @@ namespace Einstein
 
             autoArrangeButton.Uninitialize();
             IO.RENDERER.Remove(autoArrangeButton);
+            helpButton.Uninitialize();
             IO.RENDERER.Remove(helpButton);
+            showValuesToggle.Uninitialize();
+            IO.RENDERER.Remove(showValuesToggle);
             zoomControls.Uninitialize();
 
             IO.KEYS.Unsubscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
@@ -774,6 +793,16 @@ namespace Einstein
                     "\n\nIf that doesn't work, and you're using the most recent version of Einstein, " +
                     "then please report this as a bug (see github page for how to).");
             }
+        }
+
+        private void showValues()
+        {
+            editArea.SetValuesDisplaying(true);
+        }
+
+        private void hideValues()
+        {
+            editArea.SetValuesDisplaying(false);
         }
 
         public override bool CanClose()

@@ -38,6 +38,7 @@ namespace Einstein.ui.editarea
         private bool shiftView;
         private int shiftViewInitX;
         private int shiftViewInitY;
+        private bool displayValues;
 
         public EditArea(BaseBrain brain, Action<BaseNeuron> onRemove, BibiteVersion bibiteVersion)
         {
@@ -53,6 +54,7 @@ namespace Einstein.ui.editarea
             Brain = brain;
             zoomLevel = 0;
             shiftView = false;
+            displayValues = false;
         }
 
         public void Initialize()
@@ -81,6 +83,7 @@ namespace Einstein.ui.editarea
 
             NeuronRenderable dragNeuron = new NeuronRenderable(this, neuron, tryPainting);
             dragNeuron.Initialize();
+            dragNeuron.SetIsValueDisplaying(displayValues);
 
             neuronIndexToNR.Add(neuron.Index, dragNeuron);
         }
@@ -607,6 +610,19 @@ namespace Einstein.ui.editarea
                 }
             }
             return null;
+        }
+
+        public void SetValuesDisplaying(bool displaying)
+        {
+            if (displayValues == displaying)
+            {
+                return;
+            }
+            displayValues = displaying;
+            foreach (NeuronRenderable nr in NeuronRenderables)
+            {
+                nr.SetIsValueDisplaying(displaying);
+            }
         }
 
         public static phi.other.Rectangle GetBounds()

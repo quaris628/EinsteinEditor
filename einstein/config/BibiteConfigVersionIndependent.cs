@@ -15,5 +15,8 @@ namespace Einstein
         public const float NEURON_BIAS_MIN = float.MinValue;
         public const float NEURON_BIAS_MAX = float.MaxValue;
         public const int NEURON_BIAS_MAX_DECIMALS = 4;
+        public const float NEURON_VALUE_MIN = float.MinValue;
+        public const float NEURON_VALUE_MAX = float.MaxValue;
+        public const int NEURON_VALUE_MAX_DECIMALS = 4;
     }
 }

@@ -15,7 +15,6 @@ namespace Einstein.model.json
         public int Inov;
 
         // unused for now, but they're in the json so keep track of them just in case
-        private float value;
         private float lastInput;
         private float lastOutput;
 
@@ -29,7 +28,7 @@ namespace Einstein.model.json
             : base(index, type, bias, description, bibiteVersion)
         {
             Inov = 0;
-            value = 0f;
+            Value = 0f;
             lastInput = 0f;
             lastOutput = 0f;
             ColorGroup = DEFAULT_COLOR_GROUP;
@@ -39,7 +38,7 @@ namespace Einstein.model.json
             : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Bias, jsonNeuron.Description, jsonNeuron.BibiteVersion)
         {
             Inov = jsonNeuron.Inov;
-            value = jsonNeuron.value;
+            Value = jsonNeuron.Value;
             lastInput = jsonNeuron.lastInput;
             lastOutput = jsonNeuron.lastOutput;
             DiagramX = jsonNeuron.DiagramX;
@@ -51,7 +50,7 @@ namespace Einstein.model.json
             : base(jsonNeuron.Index, jsonNeuron.Type, jsonNeuron.Bias, jsonNeuron.Description, bibiteVersion)
         {
             Inov = jsonNeuron.Inov;
-            value = jsonNeuron.value;
+            Value = jsonNeuron.Value;
             lastInput = jsonNeuron.lastInput;
             lastOutput = jsonNeuron.lastOutput;
             DiagramX = jsonNeuron.DiagramX;
@@ -67,7 +66,7 @@ namespace Einstein.model.json
             Index = jsonFields.index;
             Inov = jsonFields.inov;
             Description = jsonFields.GetDescPiece(RawJsonFields.DescPiece.Description);
-            value = jsonFields.value;
+            Value = jsonFields.value;
             lastInput = jsonFields.lastInput;
             lastOutput = jsonFields.lastOutput;
             bibiteVersion.GetNeuronDiagramPositionFromRawJsonFields(jsonFields, ref DiagramX, ref DiagramY);
@@ -119,7 +118,7 @@ namespace Einstein.model.json
                 this.SetDescPiece(DescPiece.Description, jsonNeuron.Description);
                 this.SetDescPiece(DescPiece.ColorHex, ColorTranslator.ToHtml(
                     Color.FromArgb(jsonNeuron.ColorGroup.ToArgb())).Substring(1));
-                this.value = jsonNeuron.value;
+                this.value = jsonNeuron.Value;
                 this.lastInput = jsonNeuron.lastInput;
                 this.lastOutput = jsonNeuron.lastOutput;
                 jsonNeuron.BibiteVersion.SetNeuronDiagramPositionInRawJsonFields(

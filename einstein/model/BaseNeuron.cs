@@ -53,6 +53,17 @@ namespace Einstein.model
             }
         }
 
+        private float _value;
+        public float Value
+        {
+            get { return _value; }
+            set
+            {
+                _value = value;
+                FlagChange();
+            }
+        }
+
         // IMPORTANT if this neuron is in a brain,
         // then use Brain's UpdateNeuronDescription method instead of setting the description directly.
         // Otherwise some Brain description stuff will start having problems.
@@ -93,6 +104,7 @@ namespace Einstein.model
             Index = index;
             Type = type;
             Bias = bias;
+            Value = 0f;
             Description = description;
             ColorGroup = DEFAULT_COLOR_GROUP;
             if (IsInput() && IsOutput())
@@ -173,6 +185,15 @@ namespace Einstein.model
         public void setBiasAsStringForUI(string bias)
         {
             Bias = CustomNumberParser.StringToFloat(bias);
+        }
+        public string getValueAsStringForUI()
+        {
+            return CustomNumberParser.FloatToString(Value, int.MaxValue,
+                BibiteConfigVersionIndependent.NEURON_VALUE_MAX_DECIMALS);
+        }
+        public void setValueAsStringForUI(string value)
+        {
+            Value = CustomNumberParser.StringToFloat(value);
         }
     }
 

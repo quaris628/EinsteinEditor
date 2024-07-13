@@ -7,26 +7,23 @@
 Add:	Menu buttons
 Move:	Left-click and drag
 Remove:	Shift + Left-click
-Edit Description: Left-click text (below)
-Edit Bias: Left-click number (upper left)
+Paint: Ctrl + Left-click, or select "Paint Neurons" and Left-click
+Set brush color: Menu buttons, or 1234567890
+Bind current color to key: Ctrl + 1234567890
+
+Upper left number is the bias.
+Center right number is the output value.
 
  == Synapses ==
 
 Add:	Right-click
 Remove:	Shift + Left-click
-Edit Strength: Left-click number
 
- == Coloring ==
+ == Misc ==
 
-Paint a neuron: Ctrl + Left-click, or select "Paint Neurons" and Left-click
-Set brush color: Menu buttons, or 1234567890
-Bind current color to key: Ctrl + 1234567890
-
- == Misc keyboard shortcuts ==
 Open: Ctrl + O
 Save: Ctrl + S
 Save As: Ctrl + Shift + S
-
 
 --------------------------------
  How to get a .bb8 file from a simulation

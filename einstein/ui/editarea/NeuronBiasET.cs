@@ -16,7 +16,6 @@ namespace Einstein.ui.editarea
     // a modified copy of SynapseStrengthET
     public class NeuronBiasET : FloatET
     {
-        public static readonly Color TEXT_COLOR = EinsteinConfig.COLOR_MODE.Text;
         public const int FONT_SIZE = 11;
 
         // Neuron (and its version) must be immutable (otherwise init/uninit is fucked up)
@@ -27,7 +26,7 @@ namespace Einstein.ui.editarea
             : base(
                 (FloatETBuilder)new FloatETBuilder(
                     new Text.TextBuilder("")
-                    .WithColor(new SolidBrush(TEXT_COLOR))
+                    .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
                     .WithFontSize(FONT_SIZE)
                     .Build())
                 .WithEditingDisabled()
