@@ -79,7 +79,8 @@ namespace Einstein.model.json
                 CustomNumberParser.IntToString(inov),
                 CustomNumberParser.IntToString(fromIndex),
                 CustomNumberParser.IntToString(toIndex),
-                CustomNumberParser.FloatToString(Strength, int.MaxValue, STRENGTH_MAX_DECIMALS),
+                CustomNumberParser.FloatToString(Strength, int.MaxValue,
+                    BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX_DECIMALS),
                 En ? "true" : "false");
         }
 
@@ -89,7 +90,8 @@ namespace Einstein.model.json
                 CustomNumberParser.IntToString(inov),
                 CustomNumberParser.IntToString(From.Index),
                 CustomNumberParser.IntToString(To.Index),
-                CustomNumberParser.FloatToString(Strength, int.MaxValue, STRENGTH_MAX_DECIMALS),
+                CustomNumberParser.FloatToString(Strength, int.MaxValue,
+                    BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX_DECIMALS),
                 En ? "true" : "false");
         } 
     }

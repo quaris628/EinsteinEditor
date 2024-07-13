@@ -13,30 +13,38 @@ using System.Threading.Tasks;
 
 namespace Einstein.ui.editarea
 {
-    public class SynapseStrengthET : FloatET
+    // a modified copy of SynapseStrengthET
+    public class NeuronBiasET : FloatET
     {
         public static readonly Color TEXT_COLOR = EinsteinConfig.COLOR_MODE.Text;
+        public const int FONT_SIZE = 11;
 
-        public BaseSynapse Synapse { get; protected set; }
+        // Neuron (and its version) must be immutable (otherwise init/uninit is fucked up)
+        public BaseNeuron Neuron { get; protected set; }
         private bool justEnabledEditing;
 
-        public SynapseStrengthET(BaseSynapse synapse, int anchorX, int anchorY)
-            : base((FloatETBuilder)new FloatETBuilder(new Text.TextBuilder("").WithColor(new SolidBrush(TEXT_COLOR)).Build())
-                  .WithEditingDisabled()
-                  .WithMinValue(BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MIN)
-                  .WithMaxValue(BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX)
-                  .WithMaxDecimalPlaces(BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX_DECIMALS)
-                  .WithAnchor(anchorX, anchorY)
-                  .WithAnchorPosition(AnchorPosition.CenterCenter))
+        public NeuronBiasET(BaseNeuron neuron, int anchorX, int anchorY)
+            : base(
+                (FloatETBuilder)new FloatETBuilder(
+                    new Text.TextBuilder("")
+                    .WithColor(new SolidBrush(TEXT_COLOR))
+                    .WithFontSize(FONT_SIZE)
+                    .Build())
+                .WithEditingDisabled()
+                .WithMinValue(BibiteConfigVersionIndependent.NEURON_BIAS_MIN)
+                .WithMaxValue(BibiteConfigVersionIndependent.NEURON_BIAS_MAX)
+                .WithMaxDecimalPlaces(BibiteConfigVersionIndependent.NEURON_BIAS_MAX_DECIMALS)
+                .WithAnchor(anchorX, anchorY)
+                .WithAnchorPosition(AnchorPosition.BottomRight))
         {
-            Synapse = synapse;
+            Neuron = neuron;
             justEnabledEditing = false;
         }
 
         public override void Initialize()
         {
             base.Initialize();
-            SetValue(Synapse.getStrengthAsStringForUI());
+            SetValue(Neuron.getBiasAsStringForUI());
         }
 
         public void SetValue(string strength)
@@ -60,7 +68,7 @@ namespace Einstein.ui.editarea
             if (!IsEditingEnabled) { return; }
             justEnabledEditing = false;
             base.Backspace();
-            UpdateStrengthIfValid();
+            UpdateBiasIfValid();
         }
 
         public override void Clear()
@@ -69,7 +77,7 @@ namespace Einstein.ui.editarea
             if (!IsEditingEnabled) { return; }
             justEnabledEditing = false;
             base.Clear();
-            UpdateStrengthIfValid();
+            UpdateBiasIfValid();
         }
 
         public override void TypeChar(char c)
@@ -82,7 +90,7 @@ namespace Einstein.ui.editarea
                 Clear();
             }
             base.TypeChar(c);
-            UpdateStrengthIfValid();
+            UpdateBiasIfValid();
         }
 
         public override void EnableEditing()
@@ -97,26 +105,20 @@ namespace Einstein.ui.editarea
             base.DisableEditing();
         }
         
-        public override void RecenterOnAnchor()
-        {
-            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            GetDrawable().SetCenterXY(anchorX, anchorY);
-        }
-
-        private void UpdateStrengthIfValid()
+        private void UpdateBiasIfValid()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             try
             {
-                Synapse.setStrengthAsStringForUI(text.GetMessage());
+                Neuron.setBiasAsStringForUI(text.GetMessage());
             }
             catch (ArgumentException)
             {
-                // Strength can be left as its most recent valid value
+                // Bias can be left as its most recent valid value
             }
             catch (ArithmeticException)
             {
-                // Strength can be left as its most recent valid value
+                // Bias can be left as its most recent valid value
             }
         }
     }

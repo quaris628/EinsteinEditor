@@ -21,8 +21,8 @@ namespace Einstein.config
         public readonly Color DisabledButtonText;
         public readonly Color SynapseBase;
         public readonly Color SynapseTip;
-        public readonly Color SynapseTextBackgroundSelected;
-        public readonly Color SynapseTextBackgroundUnselected;
+        public readonly Color EditableTextBackgroundSelected;
+        public readonly Color EditableTextBackgroundUnselected;
 
         public ColorScheme(Mode mode)
         {
@@ -34,8 +34,8 @@ namespace Einstein.config
                 DisabledButtonText = Color.FromArgb(108, 108, 108);
                 SynapseBase = Color.LightGray;
                 SynapseTip = Color.FromArgb(127, 127, 127);
-                SynapseTextBackgroundSelected = Color.CornflowerBlue;
-                SynapseTextBackgroundUnselected = Background;
+                EditableTextBackgroundSelected = Color.CornflowerBlue;
+                EditableTextBackgroundUnselected = Background;
             }
             else if (mode == Mode.Dark)
             {
@@ -45,8 +45,8 @@ namespace Einstein.config
                 DisabledButtonText = Color.FromArgb(108, 108, 108);
                 SynapseBase = Color.FromArgb(64, 64, 64);
                 SynapseTip = Color.FromArgb(127, 127, 127);
-                SynapseTextBackgroundSelected = Color.FromArgb(64, 64, 128);
-                SynapseTextBackgroundUnselected = Background;
+                EditableTextBackgroundSelected = Color.FromArgb(64, 64, 128);
+                EditableTextBackgroundUnselected = Background;
             }
         }
     }

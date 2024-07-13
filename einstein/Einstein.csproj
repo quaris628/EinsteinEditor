@@ -65,6 +65,7 @@
     <Compile Include="ui\editarea\EditArea.cs" />
     <Compile Include="ui\editarea\NeuronDescET.cs" />
     <Compile Include="ui\editarea\NeuronDescSET.cs" />
+    <Compile Include="ui\editarea\NeuronBiasET.cs" />
     <Compile Include="ui\editarea\SynapseStrengthET.cs" />
     <Compile Include="ui\editarea\GradientLine.cs" />
     <Compile Include="ui\editarea\NeuronRenderable.cs" />

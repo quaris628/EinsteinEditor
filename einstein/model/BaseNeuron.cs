@@ -1,4 +1,5 @@
 ﻿using Einstein.config.bibiteVersions;
+using LibraryFunctionReplacements;
 using phi.other;
 using System;
 using System.Collections.Generic;
@@ -162,6 +163,16 @@ namespace Einstein.model
         public static bool isValidCharForDesc(char c)
         {
             return char.IsLetterOrDigit(c) || c == '_' || c == '-';
+        }
+
+        public string getBiasAsStringForUI()
+        {
+            return CustomNumberParser.FloatToString(Bias, int.MaxValue,
+                BibiteConfigVersionIndependent.NEURON_BIAS_MAX_DECIMALS);
+        }
+        public void setBiasAsStringForUI(string bias)
+        {
+            Bias = CustomNumberParser.StringToFloat(bias);
         }
     }
 

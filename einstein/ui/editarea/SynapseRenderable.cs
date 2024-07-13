@@ -23,7 +23,7 @@ namespace Einstein.ui.editarea
         public const float INITIAL_STRENGTH = 1f;
         public const string DEFAULT_STRENGTH = "0";
 
-        private const float STRENGTH_POS_ALONG_SYNAPSE_LENGTH = 0.7f;
+        private const float STRENGTH_POS_ALONG_SYNAPSE_LENGTH = 0.4f;
 
         private const string CIRCLE_ARROW_IMAGE = EinsteinConfig.RES_DIR + "CircularSynapse.png";
 
@@ -34,7 +34,7 @@ namespace Einstein.ui.editarea
         private EditArea editArea;
         private bool isFinalized;
         private SynapseStrengthET sset; // also accessible via the text variable, but this is a nice shortcut reference
-        private SelectableEditableText text;
+        private SelectableEditableText strengthText;
         private Sprite circleArrow;
 
 
@@ -51,9 +51,9 @@ namespace Einstein.ui.editarea
             To = to;
             isFinalized = true;
             sset = new SynapseStrengthET(Synapse, line.GetCenterX(), line.GetCenterY());
-            text = new SelectableEditableText(sset, DEFAULT_STRENGTH,
-                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundSelected,
-                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundUnselected);
+            strengthText = new SelectableEditableText(sset, DEFAULT_STRENGTH,
+                EinsteinConfig.COLOR_MODE.EditableTextBackgroundSelected,
+                EinsteinConfig.COLOR_MODE.EditableTextBackgroundUnselected);
         }
 
         public SynapseRenderable(EditArea editArea, NeuronRenderable from, int mouseX, int mouseY)
@@ -66,7 +66,7 @@ namespace Einstein.ui.editarea
             From = from;
             To = null;
             isFinalized = false;
-            text = null;
+            strengthText = null;
         }
 
         // ----- Initialize, Finalize, and Uninitialize -----
@@ -116,16 +116,16 @@ namespace Einstein.ui.editarea
             isFinalized = true;
 
             sset = new SynapseStrengthET(Synapse, line.GetCenterX(), line.GetCenterY());
-            text = new SelectableEditableText(sset, DEFAULT_STRENGTH,
-                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundSelected,
-                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundUnselected);
-            IO.RENDERER.Add(text, TEXT_LAYER);
-            text.Initialize();
+            strengthText = new SelectableEditableText(sset, DEFAULT_STRENGTH,
+                EinsteinConfig.COLOR_MODE.EditableTextBackgroundSelected,
+                EinsteinConfig.COLOR_MODE.EditableTextBackgroundUnselected);
+            IO.RENDERER.Add(strengthText, TEXT_LAYER);
+            strengthText.Initialize();
 
             IO.MOUSE.MOVE.Unsubscribe(UpdateTipXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(TryFinalize);
             IO.MOUSE.LEFT_UP.Subscribe(RemoveIfShiftDownAndExactlyContainsClick);
-            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfShiftDown, text.GetDrawable());
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfShiftDown, strengthText.GetDrawable());
 
             if (From == To)
             {
@@ -154,10 +154,10 @@ namespace Einstein.ui.editarea
                     base.Uninitialize();
                 }
 
-                IO.RENDERER.Remove(text);
-                text.Uninitialize();
+                IO.RENDERER.Remove(strengthText);
+                strengthText.Uninitialize();
                 IO.MOUSE.LEFT_UP.Unsubscribe(RemoveIfShiftDownAndExactlyContainsClick);
-                IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfShiftDown, text.GetDrawable());
+                IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfShiftDown, strengthText.GetDrawable());
             }
             else
             {

@@ -72,8 +72,8 @@ namespace Einstein.ui
             }
             descEditable = true;
             descSET = new NeuronDescSET(new NeuronDescET(descText, brain, Neuron),
-                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundSelected,
-                EinsteinConfig.COLOR_MODE.SynapseTextBackgroundUnselected);
+                EinsteinConfig.COLOR_MODE.EditableTextBackgroundSelected,
+                EinsteinConfig.COLOR_MODE.EditableTextBackgroundUnselected);
             descSET.Initialize();
         }
 

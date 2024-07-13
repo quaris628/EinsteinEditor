@@ -7,6 +7,8 @@
 Add:	Menu buttons
 Move:	Left-click and drag
 Remove:	Shift + Left-click
+Edit Description: Left-click text (below)
+Edit Bias: Left-click number (upper left)
 
  == Synapses ==
 
@@ -16,7 +18,7 @@ Edit Strength: Left-click number
 
  == Coloring ==
 
-Paint a neuron: Ctrl + Left-click
+Paint a neuron: Ctrl + Left-click, or select "Paint Neurons" and Left-click
 Set brush color: Menu buttons, or 1234567890
 Bind current color to key: Ctrl + 1234567890
 

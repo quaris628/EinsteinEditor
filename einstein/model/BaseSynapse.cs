@@ -81,7 +81,8 @@ namespace Einstein.model
         }
         public string getStrengthAsStringForUI()
         {
-            return CustomNumberParser.FloatToString(Strength, int.MaxValue, STRENGTH_MAX_DECIMALS);
+            return CustomNumberParser.FloatToString(Strength, int.MaxValue,
+                BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX_DECIMALS);
         }
         public void setStrengthAsStringForUI(string strength)
         {

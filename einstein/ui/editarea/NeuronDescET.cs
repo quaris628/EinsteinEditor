@@ -19,7 +19,8 @@ namespace Einstein.ui.editarea
         public NeuronDescET(Text text, BaseBrain brain, BaseNeuron neuron)
             : base(new EditableTextBuilder(text)
                   .WithAllowedChars(DESC_ALLOWED_CHARS)
-                  .WithEditingDisabled()) // must 'select' before fully 'enable'd
+                  .WithEditingDisabled() // must 'select' before fully 'enable'd
+                  .WithAnchorPosition(AnchorPosition.TopCenter))
         {
             Brain = brain;
             Neuron = neuron;
