@@ -186,6 +186,10 @@ namespace LibraryFunctionReplacements
         private static float popDigitFromFloat(float value, int powerOf10, out int digit, ref int isNonZero)
         {
             digit = (int)(value * DIGIT_POWERS_OF_10[38 + powerOf10]);
+            if (digit == 10)
+            {
+                digit = 9;
+            }
             if (0 < digit)
             {
                 isNonZero = 1;
