@@ -74,7 +74,7 @@ namespace phi.graphics.renderables
          }
       }
 
-      public void Select()
+      public virtual void Select()
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          // note: not thread-safe
@@ -94,7 +94,7 @@ namespace phi.graphics.renderables
          IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(Select, text);
       }
 
-      public void Deselect()
+      public virtual void Deselect()
       {
          if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
          // note: not thread-safe
