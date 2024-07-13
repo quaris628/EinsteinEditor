@@ -223,10 +223,47 @@ namespace Einstein.config.bibiteVersions
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
             // To 0.6a13thru15
-            // Replace constant node connections with biases, and shift all indexes down 1
+            // Remove constant node and replace connections with biases, and shift all indexes down 1
 
-            // TODO
-            return null;
+            BaseBrain brainOut = new JsonBrain(V0_6_0a13thru15);
+            foreach (BaseNeuron neuron in brain.Neurons)
+            {
+                if (neuron.Index == 0) // don't copy constant over
+                {
+                    continue;
+                }
+
+                // decrement each index by 1
+                int newIndex = neuron.Index - 1;
+
+                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, V0_6_0a0thru4);
+                jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
+                jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
+                jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
+
+                brainOut.Add(jn);
+            }
+            foreach (BaseSynapse synapse in brain.Synapses)
+            {
+                if (synapse.From.Index == 0) // if from constant
+                {
+                    int newToIndex = synapse.To.Index - 1;
+                    BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
+                    // convert to bias
+                    newTo.Bias = synapse.Strength;
+                }
+                else
+                {
+                    // decrement both indexes by 1
+                    int newToIndex = synapse.To.Index - 1;
+                    int newFromIndex = synapse.From.Index - 1;
+                    BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
+                    BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
+                    brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
+                }
+            }
+
+            return brainOut;
         }
     }
 }

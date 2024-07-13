@@ -168,9 +168,39 @@ namespace Einstein.config.bibiteVersions
             // To 0.6a5thru12
             // Replace biases with constant node synapses, and shift all indexes up 1
 
-            // TODO
+            BaseBrain brainOut = new JsonBrain(V0_6_0a5thru12);
+            JsonNeuron constant = new JsonNeuron(0, NeuronType.Input, 0f, V0_6_0a5thru12.DESCRIPTIONS[0], V0_6_0a5thru12);
+            brainOut.Add(constant);
 
-            return null;
+            foreach (BaseNeuron neuron in brain.Neurons)
+            {
+                // increment each index by 1
+                int newIndex = neuron.Index + 1;
+
+                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, V0_6_0a0thru4);
+                jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
+                jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
+                jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
+
+                brainOut.Add(jn);
+
+                if (neuron.Bias != 0f)
+                {
+                    // Replace bias with connection to constant
+                    brainOut.Add(new JsonSynapse(constant, jn, neuron.Bias));
+                }
+            }
+            foreach (BaseSynapse synapse in brain.Synapses)
+            {
+                // increment both indexes by 1
+                int newToIndex = synapse.To.Index + 1;
+                int newFromIndex = synapse.From.Index + 1;
+                BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
+                BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
+                brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
+            }
+
+            return brainOut;
         }
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)

@@ -16,7 +16,7 @@ namespace Einstein.config.bibiteVersions
     {
         #region Version Instances - Static
 
-        public static readonly BibiteVersion V0_6_0a13 = BibiteVersion0_6_0a13thru15.INSTANCE;
+        public static readonly BibiteVersion V0_6_0a13thru15 = BibiteVersion0_6_0a13thru15.INSTANCE;
         public static readonly BibiteVersion V0_6_0a5thru12 = BibiteVersion0_6_0a5thru12.INSTANCE;
         public static readonly BibiteVersion V0_6_0a0thru4 = BibiteVersion0_6_0a0thru4.INSTANCE;
         public static readonly BibiteVersion V0_5 = BibiteVersion0_5.INSTANCE;
@@ -30,9 +30,9 @@ namespace Einstein.config.bibiteVersions
 
         public static BibiteVersion FromName(string versionName)
         {
-            if (V0_6_0a13.IsMatchForVersionName(versionName))
+            if (V0_6_0a13thru15.IsMatchForVersionName(versionName))
             {
-                return V0_6_0a13;
+                return V0_6_0a13thru15;
             }
             else if (V0_6_0a5thru12.IsMatchForVersionName(versionName))
             {
