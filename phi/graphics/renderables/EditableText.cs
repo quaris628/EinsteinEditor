@@ -23,6 +23,7 @@ namespace phi.graphics.renderables
         private Dictionary<KeyStroke, Action> subscriptions;
         protected int anchorX { get; private set; }
         protected int anchorY { get; private set; }
+        protected AnchorPosition anchorPosition { get; private set; }
 
         protected EditableText(EditableTextBuilder b)
         {
@@ -32,6 +33,7 @@ namespace phi.graphics.renderables
             this.subscriptions = new Dictionary<KeyStroke, Action>();
             this.anchorX = b.anchorX;
             this.anchorY = b.anchorY;
+            this.anchorPosition = b.anchorPosition;
         }
 
         public virtual void Initialize()
@@ -141,7 +143,49 @@ namespace phi.graphics.renderables
         public virtual void RecenterOnAnchor()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            GetDrawable().SetXY(anchorX, anchorY);
+            switch (anchorPosition)
+            {
+                case AnchorPosition.TopLeft:
+                    GetDrawable().SetX(anchorX);
+                    GetDrawable().SetY(anchorY);
+                    break;
+                case AnchorPosition.TopCenter:
+                    GetDrawable().SetCenterX(anchorX);
+                    GetDrawable().SetY(anchorY);
+                    break;
+                case AnchorPosition.TopRight:
+                    GetDrawable().SetX(anchorX - GetDrawable().GetWidth());
+                    GetDrawable().SetY(anchorY);
+                    break;
+                case AnchorPosition.CenterLeft:
+                    GetDrawable().SetX(anchorX);
+                    GetDrawable().SetCenterY(anchorY);
+                    break;
+                case AnchorPosition.CenterCenter:
+                    GetDrawable().SetCenterX(anchorX);
+                    GetDrawable().SetCenterY(anchorY);
+                    break;
+                case AnchorPosition.CenterRight:
+                    GetDrawable().SetX(anchorX - GetDrawable().GetWidth());
+                    GetDrawable().SetCenterY(anchorY);
+                    break;
+                case AnchorPosition.BottomLeft:
+                    GetDrawable().SetX(anchorX);
+                    GetDrawable().SetY(anchorY - GetDrawable().GetHeight());
+                    break;
+                case AnchorPosition.BottomCenter:
+                    GetDrawable().SetCenterX(anchorX);
+                    GetDrawable().SetY(anchorY - GetDrawable().GetHeight());
+                    break;
+                case AnchorPosition.BottomRight:
+                    GetDrawable().SetX(anchorX - GetDrawable().GetWidth());
+                    GetDrawable().SetY(anchorY - GetDrawable().GetHeight());
+                    break;
+                default:
+                    GetDrawable().SetXY(anchorX, anchorY);
+                    break;
+            }
+
         }
 
         public Drawable GetDrawable()
@@ -245,6 +289,19 @@ namespace phi.graphics.renderables
         }
         */
 
+        public enum AnchorPosition
+        {
+            TopLeft,
+            TopCenter,
+            TopRight,
+            CenterLeft,
+            CenterCenter,
+            CenterRight,
+            BottomLeft,
+            BottomCenter,
+            BottomRight,
+        }
+
         public class EditableTextBuilder
         {
             public Text text { get; private set; }
@@ -252,6 +309,7 @@ namespace phi.graphics.renderables
             public bool isEditingEnabled { get; private set; }
             public int anchorX { get; private set; }
             public int anchorY { get; private set; }
+            public AnchorPosition anchorPosition { get; private set; }
 
             public EditableTextBuilder(Text text)
             {
@@ -260,12 +318,14 @@ namespace phi.graphics.renderables
                 this.isEditingEnabled = true;
                 this.anchorX = text.GetX();
                 this.anchorY = text.GetY();
+                this.anchorPosition = AnchorPosition.TopLeft;
             }
 
             public EditableTextBuilder WithAllowedChars(string allowedChars) { this.allowedChars = allowedChars; return this; }
             public EditableTextBuilder WithEditingEnabled() { this.isEditingEnabled = true; return this; }
             public EditableTextBuilder WithEditingDisabled() { this.isEditingEnabled = false; return this; }
             public EditableTextBuilder WithAnchor(int x, int y) { this.anchorX = x; this.anchorY = y; return this; }
+            public EditableTextBuilder WithAnchorPosition(AnchorPosition alignment) { this.anchorPosition = alignment; return this; }
 
             public virtual EditableText Build() { return new EditableText(this); }
         }
