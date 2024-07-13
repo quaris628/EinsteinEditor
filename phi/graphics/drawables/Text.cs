@@ -69,6 +69,7 @@ namespace phi.graphics.drawables
       public Font GetFont() { return font; }
       public void SetBackgroundColor(Brush backgroundColor) { this.backgroundColor = backgroundColor; FlagChange(); }
       public void ClearBackground() { this.backgroundColor = null; FlagChange(); }
+      public void SetColor(Color color) { this.color = new SolidBrush(color); FlagChange(); }
 
       public override string ToString()
       {
