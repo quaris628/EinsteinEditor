@@ -24,6 +24,7 @@ Remove:	Shift + Left-click
 Open: Ctrl + O
 Save: Ctrl + S
 Save As: Ctrl + Shift + S
+Calculate: Space
 
 --------------------------------
  How to get a .bb8 file from a simulation

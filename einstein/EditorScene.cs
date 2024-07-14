@@ -275,6 +275,7 @@ namespace Einstein
             IO.KEYS.Subscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
             IO.KEYS.Subscribe(resaveToBibite, EinsteinConfig.Keybinds.SAVE_BIBITE);
             IO.KEYS.Subscribe(loadFromBibite, EinsteinConfig.Keybinds.LOAD_FROM_BIBITE);
+            IO.KEYS.Subscribe(calcNeuronValues, EinsteinConfig.Keybinds.CALCULATE);
 
             IO.FRAME_TIMER.Subscribe(checkForResize);
 
@@ -327,6 +328,7 @@ namespace Einstein
             IO.KEYS.Unsubscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
             IO.KEYS.Unsubscribe(resaveToBibite, EinsteinConfig.Keybinds.SAVE_BIBITE);
             IO.KEYS.Unsubscribe(loadFromBibite, EinsteinConfig.Keybinds.LOAD_FROM_BIBITE);
+            IO.KEYS.Unsubscribe(calcNeuronValues, EinsteinConfig.Keybinds.CALCULATE);
 
             IO.FRAME_TIMER.Unsubscribe(checkForResize);
         }

@@ -28,6 +28,8 @@ namespace Einstein.config
                 new KeyStroke.KeyStrokeBuilder(Keys.S).with(Keys.Control).Build();
             public static readonly KeyStroke SAVE_TO_BIBITE =
                 new KeyStroke.KeyStrokeBuilder(Keys.S).with(Keys.Control).with(Keys.Shift).Build();
+            public static readonly KeyStroke CALCULATE =
+                new KeyStroke.KeyStrokeBuilder(Keys.Space).Build();
 
             public static readonly Keys[] SELECT_PAINT_COLORS = new Keys[] {
                 Keys.D1,
