@@ -24,6 +24,7 @@ namespace phi.graphics.renderables
         protected int anchorX { get; private set; }
         protected int anchorY { get; private set; }
         protected AnchorPosition anchorPosition { get; private set; }
+        protected Action<string> onEdit { get; private set; }
 
         protected EditableText(EditableTextBuilder b)
         {
@@ -34,6 +35,7 @@ namespace phi.graphics.renderables
             this.anchorX = b.anchorX;
             this.anchorY = b.anchorY;
             this.anchorPosition = b.anchorPosition;
+            this.onEdit = b.onEdit;
         }
 
         public virtual void Initialize()
@@ -86,6 +88,7 @@ namespace phi.graphics.renderables
             if (IsMessageValidWhileTyping(newMessage)) {
                 text.SetMessage(newMessage);
                 RecenterOnAnchor();
+                onEdit?.Invoke(newMessage);
             }
         }
 
@@ -93,8 +96,13 @@ namespace phi.graphics.renderables
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled || text.GetMessage().Length == 0) { return; }
-            text.SetMessage(text.GetMessage().Substring(0, text.GetMessage().Length - 1));
+            string newMessage = text.GetMessage().Substring(0, text.GetMessage().Length - 1);
+            text.SetMessage(newMessage);
             RecenterOnAnchor();
+            if (IsMessageValidWhileTyping(newMessage))
+            {
+                onEdit?.Invoke(newMessage);
+            }
         }
 
         public virtual void Clear()
@@ -103,6 +111,7 @@ namespace phi.graphics.renderables
             if (!IsEditingEnabled) { return; }
             text.SetMessage("");
             RecenterOnAnchor();
+            onEdit?.Invoke("");
         }
 
         protected virtual bool IsMessageValidWhileTyping(string message)
@@ -310,6 +319,7 @@ namespace phi.graphics.renderables
             public int anchorX { get; private set; }
             public int anchorY { get; private set; }
             public AnchorPosition anchorPosition { get; private set; }
+            public Action<string> onEdit { get; private set; }
 
             public EditableTextBuilder(Text text)
             {
@@ -319,6 +329,7 @@ namespace phi.graphics.renderables
                 this.anchorX = text.GetX();
                 this.anchorY = text.GetY();
                 this.anchorPosition = AnchorPosition.TopLeft;
+                this.onEdit = null;
             }
 
             public EditableTextBuilder WithAllowedChars(string allowedChars) { this.allowedChars = allowedChars; return this; }
@@ -326,6 +337,7 @@ namespace phi.graphics.renderables
             public EditableTextBuilder WithEditingDisabled() { this.isEditingEnabled = false; return this; }
             public EditableTextBuilder WithAnchor(int x, int y) { this.anchorX = x; this.anchorY = y; return this; }
             public EditableTextBuilder WithAnchorPosition(AnchorPosition alignment) { this.anchorPosition = alignment; return this; }
+            public EditableTextBuilder WithOnEdit(Action<string> onEdit) { this.onEdit = onEdit; return this; }
 
             public virtual EditableText Build() { return new EditableText(this); }
         }
