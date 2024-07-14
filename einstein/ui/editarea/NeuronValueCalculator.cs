@@ -175,7 +175,7 @@ namespace Einstein.ui.editarea
         private static float Inhibitory(float input, float previousInput, float previousOutput,
             float dt, float bias)
         {
-            return (1 - bias) * previousOutput + (input - previousInput) / dt;
+            return (float) (input - previousInput + previousOutput * Math.Exp(-bias * dt));
         }
     }
 }
