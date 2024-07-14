@@ -180,6 +180,7 @@ namespace Einstein.ui.editarea
                 editArea.Brain.FlagChange();
             }
             NeuronDrawable.SetCircleCenterXY(x, y);
+            NeuronDrawable.descSET?.EditableText.SetAnchor(x, y + NeuronDrawable.CIRCLE_RADIUS);
             UpdateBiasTextPosition();
             UpdateValueTextPosition();
 

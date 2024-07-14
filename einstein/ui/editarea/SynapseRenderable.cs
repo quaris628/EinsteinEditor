@@ -18,7 +18,7 @@ namespace Einstein.ui.editarea
     public class SynapseRenderable : LineArrow
     {
         public const int ARROW_LAYER = 5;
-        public const int TEXT_LAYER = 6;
+        public const int TEXT_LAYER = 7;
         
         public const float INITIAL_STRENGTH = 1f;
         public const string DEFAULT_STRENGTH = "0";

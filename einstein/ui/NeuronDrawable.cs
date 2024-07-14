@@ -33,7 +33,7 @@ namespace Einstein.ui
         private Sprite icon;
         private bool descEditable;
         private Text descText;
-        private SelectableEditableText descSET;
+        public SelectableEditableText descSET { get; private set; }
         private float circleCenterX;
         private float circleCenterY;
 
@@ -113,9 +113,12 @@ namespace Einstein.ui
             icon?.SetXY(x, y);
             icon?.Draw(g);
 
-            descText.SetCenterX(x + CIRCLE_RADIUS);
-            descText.SetY(y + CIRCLE_DIAMETER);
-            descText.Draw(g);
+            if (!descEditable)
+            {
+                descText.SetCenterX(x + CIRCLE_RADIUS);
+                descText.SetY(y + CIRCLE_DIAMETER);
+                descText.Draw(g);
+            }
         }
 
         private static string getIconFileName(BaseNeuron neuron)
