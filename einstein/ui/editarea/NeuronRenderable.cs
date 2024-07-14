@@ -213,7 +213,9 @@ namespace Einstein.ui.editarea
 
         private bool ShowBias()
         {
-            return Neuron.BibiteVersion.HasBiases() && Neuron.Type != NeuronType.Input;
+            return Neuron.BibiteVersion.HasBiases()
+                && Neuron.Type != NeuronType.Input
+                && Neuron.Type != NeuronType.Integrator;
         }
 
         public override string ToString()
