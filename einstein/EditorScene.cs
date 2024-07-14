@@ -838,7 +838,10 @@ namespace Einstein
 
         private void calcNeuronValues()
         {
-            editArea.RefreshValuesText(NeuronValueCalculator.Calc(editArea.Brain));
+            if (calcButton.IsDisplaying())
+            {
+                editArea.RefreshValuesText(NeuronValueCalculator.Calc(editArea.Brain));
+            }
         }
 
         public override bool CanClose()
