@@ -42,7 +42,7 @@ namespace Einstein.ui.editarea
             NeuronDrawable.SetCircleCenterXY(SPAWN_X, SPAWN_Y);
             this.editArea = editArea;
             isRemoved = false;
-            if (Neuron.BibiteVersion.HasBiases())
+            if (ShowBias())
             {
                 nbet = new NeuronBiasET(Neuron,
                     NeuronDrawable.GetCircleCenterX() + BIAS_X_OFFSET,
@@ -68,7 +68,7 @@ namespace Einstein.ui.editarea
         {
             base.Initialize();
             IO.RENDERER.Add(this);
-            if (Neuron.BibiteVersion.HasBiases())
+            if (ShowBias())
             {
                 IO.RENDERER.Add(biasText);
                 biasText.Initialize();
@@ -93,7 +93,7 @@ namespace Einstein.ui.editarea
         {
             base.Uninitialize();
             IO.RENDERER.Remove(this);
-            if (Neuron.BibiteVersion.HasBiases())
+            if (ShowBias())
             {
                 IO.RENDERER.Remove(biasText);
                 biasText.Uninitialize();
@@ -117,6 +117,12 @@ namespace Einstein.ui.editarea
         public void SetIsValueDisplaying(bool displaying)
         {
             nvet.GetDrawable().SetDisplaying(displaying);
+        }
+
+        public void RefreshValueText()
+        {
+            nvet.SetValue(CustomNumberParser.FloatToString(Neuron.Value), Neuron.Value);
+            UpdateValueTextPosition();
         }
 
         private void MaybeRemoveOrPaint()
@@ -192,7 +198,7 @@ namespace Einstein.ui.editarea
 
         private void UpdateBiasTextPosition()
         {
-            if (Neuron.BibiteVersion.HasBiases())
+            if (ShowBias())
             {
                 nbet.SetAnchor(NeuronDrawable.GetCircleCenterX() + BIAS_X_OFFSET,
                     NeuronDrawable.GetCircleCenterY() + BIAS_Y_OFFSET);
@@ -203,6 +209,11 @@ namespace Einstein.ui.editarea
         {
             nvet.SetAnchor(NeuronDrawable.GetCircleCenterX() + VALUE_X_OFFSET,
                     NeuronDrawable.GetCircleCenterY() + VALUE_Y_OFFSET);
+        }
+
+        private bool ShowBias()
+        {
+            return Neuron.BibiteVersion.HasBiases() && Neuron.Type != NeuronType.Input;
         }
 
         public override string ToString()

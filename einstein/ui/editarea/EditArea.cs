@@ -98,7 +98,7 @@ namespace Einstein.ui.editarea
             }
             AddNeuron(new JsonNeuron(nextHiddenNeuronIndex,
                 type,
-                0f,
+                type == NeuronType.Mult ? 1f : 0f,
                 type.ToString() + (nextHiddenNeuronIndex - BibiteVersion.HIDDEN_NODES_INDEX_MIN),
                 BibiteVersion),
                 true);
@@ -622,6 +622,14 @@ namespace Einstein.ui.editarea
             foreach (NeuronRenderable nr in NeuronRenderables)
             {
                 nr.SetIsValueDisplaying(displaying);
+            }
+        }
+
+        public void RefreshValuesText(IEnumerable<int> updatedNeuronsIndexes)
+        {
+            foreach (int neuronIndex in updatedNeuronsIndexes)
+            {
+                neuronIndexToNR[neuronIndex].RefreshValueText();
             }
         }
 

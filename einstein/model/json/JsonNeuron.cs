@@ -15,7 +15,6 @@ namespace Einstein.model.json
         public int Inov;
 
         // unused for now, but they're in the json so keep track of them just in case
-        private float lastInput;
         private float lastOutput;
 
         public int DiagramX;
@@ -28,8 +27,8 @@ namespace Einstein.model.json
             : base(index, type, bias, description, bibiteVersion)
         {
             Inov = 0;
-            Value = type == NeuronType.Mult ? 1f : 0f;
-            lastInput = 0f;
+            Value = bibiteVersion.IsConstantInputNeuron(index) ? 1f : 0f;
+            LastInput = 0f;
             lastOutput = 0f;
             ColorGroup = DEFAULT_COLOR_GROUP;
         }
@@ -39,7 +38,7 @@ namespace Einstein.model.json
         {
             Inov = jsonNeuron.Inov;
             Value = jsonNeuron.Value;
-            lastInput = jsonNeuron.lastInput;
+            LastInput = jsonNeuron.LastInput;
             lastOutput = jsonNeuron.lastOutput;
             DiagramX = jsonNeuron.DiagramX;
             DiagramY = jsonNeuron.DiagramY;
@@ -51,7 +50,7 @@ namespace Einstein.model.json
         {
             Inov = jsonNeuron.Inov;
             Value = jsonNeuron.Value;
-            lastInput = jsonNeuron.lastInput;
+            LastInput = jsonNeuron.LastInput;
             lastOutput = jsonNeuron.lastOutput;
             DiagramX = jsonNeuron.DiagramX;
             DiagramY = jsonNeuron.DiagramY;
@@ -67,7 +66,11 @@ namespace Einstein.model.json
             Inov = jsonFields.inov;
             Description = jsonFields.GetDescPiece(RawJsonFields.DescPiece.Description);
             Value = jsonFields.value;
-            lastInput = jsonFields.lastInput;
+            if (bibiteVersion.IsConstantInputNeuron(Index))
+            {
+                Value = 1f;
+            }
+            LastInput = jsonFields.lastInput;
             lastOutput = jsonFields.lastOutput;
             bibiteVersion.GetNeuronDiagramPositionFromRawJsonFields(jsonFields, ref DiagramX, ref DiagramY);
             ColorGroup = jsonFields.GetColorGroup();
@@ -119,8 +122,8 @@ namespace Einstein.model.json
                 this.SetDescPiece(DescPiece.ColorHex, ColorTranslator.ToHtml(
                     Color.FromArgb(jsonNeuron.ColorGroup.ToArgb())).Substring(1));
                 this.value = jsonNeuron.Value;
-                this.lastInput = jsonNeuron.lastInput;
-                this.lastOutput = jsonNeuron.lastOutput;
+                this.lastInput = jsonNeuron.LastInput;
+                this.lastOutput = jsonNeuron.Value; // I'm pretty sure lastOutput should always be set to Value?
                 jsonNeuron.BibiteVersion.SetNeuronDiagramPositionInRawJsonFields(
                     this, jsonNeuron.DiagramX, jsonNeuron.DiagramY);
             }

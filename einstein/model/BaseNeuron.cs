@@ -53,6 +53,17 @@ namespace Einstein.model
             }
         }
 
+        private float _lastInput;
+        public float LastInput
+        {
+            get { return _lastInput; }
+            set
+            {
+                _lastInput = value;
+                FlagChange();
+            }
+        }
+
         private float _value;
         public float Value
         {
@@ -104,7 +115,8 @@ namespace Einstein.model
             Index = index;
             Type = type;
             Bias = bias;
-            Value = 0f;
+            Value = bibiteVersion.IsConstantInputNeuron(index) ? 1f : 0f;
+            LastInput = 0f;
             Description = description;
             ColorGroup = DEFAULT_COLOR_GROUP;
             if (IsInput() && IsOutput())

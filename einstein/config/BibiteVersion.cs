@@ -102,6 +102,11 @@ namespace Einstein.config.bibiteVersions
             return true;
         }
 
+        public bool IsConstantInputNeuron(int index)
+        {
+            return !HasBiases() && index == 0;
+        }
+
         #region Neuron diagram positions
 
         // inov is the old system for storing position information,
