@@ -66,7 +66,7 @@
     <Compile Include="ui\editarea\NeuronDescET.cs" />
     <Compile Include="ui\editarea\NeuronDescSET.cs" />
     <Compile Include="ui\editarea\NeuronBiasET.cs" />
-    <Compile Include="ui\editarea\NeuronValueCalculator.cs" />
+    <Compile Include="ui\NeuronValueCalculator.cs" />
     <Compile Include="ui\editarea\NeuronValueET.cs" />
     <Compile Include="ui\editarea\NeuronValueSET.cs" />
     <Compile Include="ui\editarea\SynapseStrengthET.cs" />
@@ -83,6 +83,7 @@
     <Compile Include="ui\menu\categories\MenuCategory.cs" />
     <Compile Include="ui\menu\categories\neurons\NeuronMenuCategory.cs" />
     <Compile Include="ui\menu\categories\neurons\MenuCategoryButton.cs" />
+    <Compile Include="ui\menu\CalcControls.cs" />
     <Compile Include="ui\menu\ZoomControls.cs" />
     <Compile Include="ui\NeuronDrawable.cs" />
     <Compile Include="config\BibiteConfigVersionIndependent.cs" />

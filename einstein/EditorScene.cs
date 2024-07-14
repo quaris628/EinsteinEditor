@@ -57,9 +57,7 @@ namespace Einstein
         private SaveMessageText saveMessageText;
         private Button autoArrangeButton;
         private Button helpButton;
-        private SelectableButton showValuesToggle;
-        private Button calcButton;
-        private Text calcButtonMsg;
+        private CalcControls calcControls;
         private ZoomControls zoomControls;
 
         private string savePath;
@@ -187,33 +185,9 @@ namespace Einstein
                     .withOnClick(openHelp)
                     .Build();
 
-            showValuesToggle = new SelectableButton(new Button.ButtonBuilder(
-                    new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
+            calcControls = new CalcControls(editArea,
                     EinsteinConfig.PAD,
-                    EinsteinConfig.PAD * 2 + helpButton.GetY() + helpButton.GetHeight())
-                    .withText("Show Values")
-                    .withOnClick(showValues),
-                    new Button.ButtonBuilder(
-                    new ImageWrapper(MenuCategoryButton.SELECTED_IMAGE_PATH),
-                    EinsteinConfig.PAD,
-                    EinsteinConfig.PAD * 2 + helpButton.GetY() + helpButton.GetHeight())
-                    .withText("Hide Values")
-                    .withOnClick(hideValues));
-            calcButton = new Button.ButtonBuilder(
-                    new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
-                    EinsteinConfig.PAD,
-                    EinsteinConfig.PAD + showValuesToggle.GetY() + showValuesToggle.GetHeight())
-                    .withText("Calculate >")
-                    .withOnClick(calcNeuronValues)
-                    .Build();
-            calcButton.SetDisplaying(showValuesToggle.IsSelected());
-            calcButtonMsg = new TextBuilder("Assumes sim speed = 1x")
-                .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
-                .WithFontSize(10f)
-                .WithXY(EinsteinConfig.PAD,
-                    EinsteinConfig.PAD + calcButton.GetY() + calcButton.GetHeight())
-                .Build();
-            calcButtonMsg.SetDisplaying(showValuesToggle.IsSelected());
+                    EinsteinConfig.PAD * 2 + helpButton.GetY() + helpButton.GetHeight());
 
             zoomControls = new ZoomControls(editArea);
 
@@ -264,18 +238,14 @@ namespace Einstein
             IO.RENDERER.Add(autoArrangeButton);
             helpButton.Initialize();
             IO.RENDERER.Add(helpButton);
-            showValuesToggle.Initialize();
-            IO.RENDERER.Add(showValuesToggle);
-            calcButton.Initialize();
-            IO.RENDERER.Add(calcButton);
-            IO.RENDERER.Add(calcButtonMsg);
 
+            calcControls.Initialize();
+            
             zoomControls.Initialize();
 
             IO.KEYS.Subscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
             IO.KEYS.Subscribe(resaveToBibite, EinsteinConfig.Keybinds.SAVE_BIBITE);
             IO.KEYS.Subscribe(loadFromBibite, EinsteinConfig.Keybinds.LOAD_FROM_BIBITE);
-            IO.KEYS.Subscribe(calcNeuronValues, EinsteinConfig.Keybinds.CALCULATE);
 
             IO.FRAME_TIMER.Subscribe(checkForResize);
 
@@ -317,19 +287,15 @@ namespace Einstein
             IO.RENDERER.Remove(autoArrangeButton);
             helpButton.Uninitialize();
             IO.RENDERER.Remove(helpButton);
-            showValuesToggle.Uninitialize();
-            IO.RENDERER.Remove(showValuesToggle);
-            calcButton.Uninitialize();
-            IO.RENDERER.Remove(calcButton);
-            IO.RENDERER.Remove(calcButtonMsg);
+
+            calcControls.Uninitialize();
 
             zoomControls.Uninitialize();
 
             IO.KEYS.Unsubscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
             IO.KEYS.Unsubscribe(resaveToBibite, EinsteinConfig.Keybinds.SAVE_BIBITE);
             IO.KEYS.Unsubscribe(loadFromBibite, EinsteinConfig.Keybinds.LOAD_FROM_BIBITE);
-            IO.KEYS.Unsubscribe(calcNeuronValues, EinsteinConfig.Keybinds.CALCULATE);
-
+            
             IO.FRAME_TIMER.Unsubscribe(checkForResize);
         }
 
@@ -819,28 +785,6 @@ namespace Einstein
                     "The help.txt file is missing. Try re-extracting Einstein from the zip file and running that fresh copy." +
                     "\n\nIf that doesn't work, and you're using the most recent version of Einstein, " +
                     "then please report this as a bug (see github page for how to).");
-            }
-        }
-
-        private void showValues()
-        {
-            editArea.SetValuesDisplaying(true);
-            calcButton.SetDisplaying(true);
-            calcButtonMsg.SetDisplaying(true);
-        }
-
-        private void hideValues()
-        {
-            editArea.SetValuesDisplaying(false);
-            calcButton.SetDisplaying(false);
-            calcButtonMsg.SetDisplaying(false);
-        }
-
-        private void calcNeuronValues()
-        {
-            if (calcButton.IsDisplaying())
-            {
-                editArea.RefreshValuesText(NeuronValueCalculator.Calc(editArea.Brain));
             }
         }
 
