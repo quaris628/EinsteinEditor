@@ -117,6 +117,11 @@ namespace Einstein.config.bibiteVersions
             return false;
         }
 
+        public override DeltaTimeCalcMethod GetDeltaTimeCalcMethod()
+        {
+            return DeltaTimeCalcMethod.SimSpeed;
+        }
+
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
         {
             // fall back to inov if it's not in the description

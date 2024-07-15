@@ -17,7 +17,8 @@ namespace Einstein.config.bibiteVersions
         #region Version Instances - Static
 
         public static readonly BibiteVersion V0_6_0a13thru15 = BibiteVersion0_6_0a13thru15.INSTANCE;
-        public static readonly BibiteVersion V0_6_0a5thru12 = BibiteVersion0_6_0a5thru12.INSTANCE;
+        public static readonly BibiteVersion V0_6_0a5thru9 = BibiteVersion0_6_0a5thru9.INSTANCE;
+        public static readonly BibiteVersion V0_6_0a10thru12 = BibiteVersion0_6_0a10thru12.INSTANCE;
         public static readonly BibiteVersion V0_6_0a0thru4 = BibiteVersion0_6_0a0thru4.INSTANCE;
         public static readonly BibiteVersion V0_5 = BibiteVersion0_5.INSTANCE;
         public static readonly BibiteVersion V0_4 = BibiteVersion0_4.INSTANCE;
@@ -34,9 +35,13 @@ namespace Einstein.config.bibiteVersions
             {
                 return V0_6_0a13thru15;
             }
-            else if (V0_6_0a5thru12.IsMatchForVersionName(versionName))
+            else if (V0_6_0a10thru12.IsMatchForVersionName(versionName))
             {
-                return V0_6_0a5thru12;
+                return V0_6_0a10thru12;
+            }
+            else if (V0_6_0a5thru9.IsMatchForVersionName(versionName))
+            {
+                return V0_6_0a5thru9;
             }
             else if (V0_6_0a0thru4.IsMatchForVersionName(versionName))
             {
@@ -105,6 +110,11 @@ namespace Einstein.config.bibiteVersions
         public bool IsConstantInputNeuron(int index)
         {
             return !HasBiases() && index == 0;
+        }
+
+        public virtual DeltaTimeCalcMethod GetDeltaTimeCalcMethod()
+        {
+            return DeltaTimeCalcMethod.BrainUpdateFactorOverTps;
         }
 
         #region Neuron diagram positions
@@ -342,6 +352,12 @@ namespace Einstein.config.bibiteVersions
         protected abstract BaseBrain CreateVersionDownCopyOf(BaseBrain brain);
 
         #endregion Converting Between Versions
+
+        public enum DeltaTimeCalcMethod
+        {
+            SimSpeed,
+            BrainUpdateFactorOverTps,
+        }
     }
 }
 

@@ -9,13 +9,13 @@ using static Einstein.model.json.JsonNeuron;
 
 namespace Einstein.config.bibiteVersions
 {
-    public class BibiteVersion0_6_0a5thru12 : BibiteVersion
+    public class BibiteVersion0_6_0a5thru9 : BibiteVersion
     {
-        internal static readonly BibiteVersion0_6_0a5thru12 INSTANCE = new BibiteVersion0_6_0a5thru12();
+        internal static readonly BibiteVersion0_6_0a5thru9 INSTANCE = new BibiteVersion0_6_0a5thru9();
 
-        private BibiteVersion0_6_0a5thru12(): base(61)
+        private BibiteVersion0_6_0a5thru9(): base(61)
         {
-            VERSION_NAME = "0.6.0a 5 thru 12";
+            VERSION_NAME = "0.6.0a 5 thru 9";
 
             INPUT_NODES_INDEX_MIN = 0;
             INPUT_NODES_INDEX_MAX = 33;
@@ -123,7 +123,7 @@ namespace Einstein.config.bibiteVersions
                 return false;
             }
 
-            foreach (string alphaNumber in new string[] { "5", "6", "7", "8", "9", "10", "11", "12" })
+            foreach (char alphaNumber in "56789")
             {
                 if (StringHasPrefix(bibitesVersionName, "0.6a" + alphaNumber)
                     || StringHasPrefix(bibitesVersionName, "0.6.0a" + alphaNumber))
@@ -137,6 +137,11 @@ namespace Einstein.config.bibiteVersions
         public override bool HasBiases()
         {
             return false;
+        }
+
+        public override DeltaTimeCalcMethod GetDeltaTimeCalcMethod()
+        {
+            return DeltaTimeCalcMethod.SimSpeed;
         }
 
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
@@ -227,48 +232,7 @@ namespace Einstein.config.bibiteVersions
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            // To 0.6a13thru15
-            // Remove constant node and replace connections with biases, and shift all indexes down 1
-
-            BaseBrain brainOut = new JsonBrain(V0_6_0a13thru15);
-            foreach (BaseNeuron neuron in brain.Neurons)
-            {
-                if (neuron.Index == 0) // don't copy constant over
-                {
-                    continue;
-                }
-
-                // decrement each index by 1
-                int newIndex = neuron.Index - 1;
-
-                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, V0_6_0a0thru4);
-                jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
-                jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
-                jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
-
-                brainOut.Add(jn);
-            }
-            foreach (BaseSynapse synapse in brain.Synapses)
-            {
-                if (synapse.From.Index == 0) // if from constant
-                {
-                    int newToIndex = synapse.To.Index - 1;
-                    BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
-                    // convert to bias
-                    newTo.Bias = synapse.Strength;
-                }
-                else
-                {
-                    // decrement both indexes by 1
-                    int newToIndex = synapse.To.Index - 1;
-                    int newFromIndex = synapse.From.Index - 1;
-                    BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
-                    BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
-                    brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
-                }
-            }
-
-            return brainOut;
+            return new JsonBrain(V0_6_0a10thru12);
         }
     }
 }

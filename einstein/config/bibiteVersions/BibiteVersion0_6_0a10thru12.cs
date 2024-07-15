@@ -9,19 +9,19 @@ using static Einstein.model.json.JsonNeuron;
 
 namespace Einstein.config.bibiteVersions
 {
-    public class BibiteVersion0_6_0a0thru4 : BibiteVersion
+    public class BibiteVersion0_6_0a10thru12 : BibiteVersion
     {
-        internal static readonly BibiteVersion0_6_0a0thru4 INSTANCE = new BibiteVersion0_6_0a0thru4();
+        internal static readonly BibiteVersion0_6_0a10thru12 INSTANCE = new BibiteVersion0_6_0a10thru12();
 
-        private BibiteVersion0_6_0a0thru4(): base(60)
+        private BibiteVersion0_6_0a10thru12(): base(62)
         {
-            VERSION_NAME = "0.6.0a 0 thru 4";
+            VERSION_NAME = "0.6.0a 10 thru 12";
 
             INPUT_NODES_INDEX_MIN = 0;
-            INPUT_NODES_INDEX_MAX = 32;
-            OUTPUT_NODES_INDEX_MIN = 33;
-            OUTPUT_NODES_INDEX_MAX = 47;
-            HIDDEN_NODES_INDEX_MIN = 48;
+            INPUT_NODES_INDEX_MAX = 33;
+            OUTPUT_NODES_INDEX_MIN = 34;
+            OUTPUT_NODES_INDEX_MAX = 49;
+            HIDDEN_NODES_INDEX_MIN = 50;
             HIDDEN_NODES_INDEX_MAX = int.MaxValue;
 
             DESCRIPTIONS = new string[] {
@@ -34,6 +34,7 @@ namespace Einstein.config.bibiteVersions
                 "Speed",
                 "IsGrabbing",
                 "AttackedDamage",
+                "EggStored",
                 "BibiteCloseness",
                 "BibiteAngle",
                 "NBibites",
@@ -63,6 +64,7 @@ namespace Einstein.config.bibiteVersions
                 "Accelerate",
                 "Rotate",
                 "Herding",
+                "EggProduction",
                 "Want2Lay",
                 "Want2Eat",
                 "Digestion",
@@ -79,6 +81,7 @@ namespace Einstein.config.bibiteVersions
 
             outputTypes = new NeuronType[]
             {
+                NeuronType.TanH,
                 NeuronType.TanH,
                 NeuronType.TanH,
                 NeuronType.TanH,
@@ -120,7 +123,7 @@ namespace Einstein.config.bibiteVersions
                 return false;
             }
 
-            foreach (char alphaNumber in "01234")
+            foreach (string alphaNumber in new string[] { "10", "11", "12" })
             {
                 if (StringHasPrefix(bibitesVersionName, "0.6a" + alphaNumber)
                     || StringHasPrefix(bibitesVersionName, "0.6.0a" + alphaNumber))
@@ -134,11 +137,6 @@ namespace Einstein.config.bibiteVersions
         public override bool HasBiases()
         {
             return false;
-        }
-
-        public override DeltaTimeCalcMethod GetDeltaTimeCalcMethod()
-        {
-            return DeltaTimeCalcMethod.SimSpeed;
         }
 
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
@@ -161,30 +159,30 @@ namespace Einstein.config.bibiteVersions
             }
         }
 
-        // inov is the old system for storing position information,
-        // but the Inov field started being used for something in 0.6
-        // and I didn't want the position data to interfere with it,
-        // so I changed einstein to tag on the position data to the end of descriptions instead.
-        // However there will be old 0.5 (and a few 0.6 alpha) bibites that already have Inov set.
+        // Changes from 0.6a5thru9:
+        // deltaTime calculation now uses a brainUpdateFactor and tps
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
-            // To 0.5
-            // deep copy with no changes (preserve Inov)
-            return new JsonBrain(brain, V0_5);
+            return new JsonBrain(V0_6_0a5thru9);
         }
-
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            // To 0.6.0a5thru12
-            // Add 2 new IO neurons, and shift indexes to accomodate them
+            // To 0.6a13thru15
+            // Remove constant node and replace connections with biases, and shift all indexes down 1
 
-            BaseBrain brainOut = new JsonBrain(V0_6_0a5thru9);
+            BaseBrain brainOut = new JsonBrain(V0_6_0a13thru15);
             foreach (BaseNeuron neuron in brain.Neurons)
             {
-                // update each index
-                int newIndex = ConvertNeuronIndexTo0_6_0a5thru12(neuron.Index);
-                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, V0_6_0a5thru9);
+                if (neuron.Index == 0) // don't copy constant over
+                {
+                    continue;
+                }
+
+                // decrement each index by 1
+                int newIndex = neuron.Index - 1;
+
+                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, V0_6_0a0thru4);
                 jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
                 jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
                 jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
@@ -193,39 +191,25 @@ namespace Einstein.config.bibiteVersions
             }
             foreach (BaseSynapse synapse in brain.Synapses)
             {
-                int newToIndex = ConvertNeuronIndexTo0_6_0a5thru12(synapse.To.Index);
-                int newFromIndex = ConvertNeuronIndexTo0_6_0a5thru12(synapse.From.Index);
-                BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
-                BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
-                brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
+                if (synapse.From.Index == 0) // if from constant
+                {
+                    int newToIndex = synapse.To.Index - 1;
+                    BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
+                    // convert to bias
+                    newTo.Bias = synapse.Strength;
+                }
+                else
+                {
+                    // decrement both indexes by 1
+                    int newToIndex = synapse.To.Index - 1;
+                    int newFromIndex = synapse.From.Index - 1;
+                    BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
+                    BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
+                    brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
+                }
             }
-
-            // EggsStored
-            brainOut.Add(new JsonNeuron(8, NeuronType.Input, 0f, V0_6_0a5thru9.DESCRIPTIONS[8], V0_6_0a5thru9));
-            // EggProduction
-            brainOut.Add(new JsonNeuron(37, NeuronType.TanH, 0f, V0_6_0a5thru9.DESCRIPTIONS[37], V0_6_0a5thru9));
 
             return brainOut;
-        }
-
-        private int ConvertNeuronIndexTo0_6_0a5thru12(int index)
-        {
-            if (0 <= index && index <= 7)
-            {
-                return index;
-            }
-            else if (8 <= index && index <= 35)
-            {
-                return index + 1;
-            }
-            else if (36 <= index)
-            {
-                return index + 2;
-            }
-            else
-            {
-                throw new ArgumentException("index cannot be negative");
-            }
         }
     }
 }

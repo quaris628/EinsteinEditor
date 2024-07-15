@@ -1,4 +1,5 @@
 ﻿using Einstein.config;
+using Einstein.config.bibiteVersions;
 using Einstein.ui.editarea;
 using LibraryFunctionReplacements;
 using phi.graphics.drawables;
@@ -131,10 +132,14 @@ namespace Einstein.ui.menu
         {
             editArea.SetValuesDisplaying(true);
             calcButton.SetDisplaying(true);
-            simSpeedLabel.SetDisplaying(true);
-            simSpeedText.SetDisplaying(true);
+            if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == BibiteVersion.DeltaTimeCalcMethod.SimSpeed)
+            {
+                simSpeedLabel.SetDisplaying(true);
+                simSpeedText.SetDisplaying(true);
+                calcMsg.SetDisplaying(true);
+            }
             deltaTimeMsg.SetDisplaying(true);
-            calcMsg.SetDisplaying(true);
+            
         }
 
         private void hideValues()
@@ -145,6 +150,15 @@ namespace Einstein.ui.menu
             simSpeedText.SetDisplaying(false);
             deltaTimeMsg.SetDisplaying(false);
             calcMsg.SetDisplaying(false);
+        }
+
+        public void OnBibiteVersionUpdate()
+        {
+            hideValues();
+            if (showValuesToggle.IsSelected())
+            {
+                showValues();
+            }
         }
 
         private void calcNeuronValues()

@@ -13,9 +13,9 @@ namespace Einstein.config.bibiteVersions
     {
         internal static readonly BibiteVersion0_6_0a13thru15 INSTANCE = new BibiteVersion0_6_0a13thru15();
 
-        private BibiteVersion0_6_0a13thru15(): base(62)
+        private BibiteVersion0_6_0a13thru15(): base(63)
         {
-            VERSION_NAME = "0.6.0a13";
+            VERSION_NAME = "0.6.0a 13 thru 15";
 
             INPUT_NODES_INDEX_MIN = 0;
             INPUT_NODES_INDEX_MAX = 32;
@@ -156,7 +156,7 @@ namespace Einstein.config.bibiteVersions
             }
         }
 
-        // Changes from 0.6a5thru12:
+        // Changes from 0.6a10thru12:
         // - Replaced Constant neuron with Biases
         // - New hidden neurons Integrator (11) and Inhibitory (12)
         //
@@ -165,11 +165,11 @@ namespace Einstein.config.bibiteVersions
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
-            // To 0.6a5thru12
+            // To 0.6a10thru12
             // Replace biases with constant node synapses, and shift all indexes up 1
 
-            BaseBrain brainOut = new JsonBrain(V0_6_0a5thru12);
-            JsonNeuron constant = new JsonNeuron(0, NeuronType.Input, 0f, V0_6_0a5thru12.DESCRIPTIONS[0], V0_6_0a5thru12);
+            BaseBrain brainOut = new JsonBrain(V0_6_0a10thru12);
+            JsonNeuron constant = new JsonNeuron(0, NeuronType.Input, 0f, V0_6_0a10thru12.DESCRIPTIONS[0], V0_6_0a10thru12);
             brainOut.Add(constant);
 
             foreach (BaseNeuron neuron in brain.Neurons)
