@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using static phi.graphics.drawables.Text;
 using static phi.graphics.renderables.EditableText;
 using static phi.graphics.renderables.FloatET;
+using static phi.graphics.renderables.IntET;
 
 namespace Einstein.ui.menu
 {
@@ -24,21 +25,38 @@ namespace Einstein.ui.menu
         private const int SIM_SPEED_MAX_DECIMALS = 2;
         private const string DEFAULT_SIM_SPEED = "1";
 
+        private const int TICKS_PER_SECOND_MIN = 5;
+        private const int TICKS_PER_SECOND_MAX = 100;
+        private const string DEFAULT_TICKS_PER_SECOND = "40";
+
+        private const int BRAIN_UPDATE_FACTOR_MIN = 1;
+        private const int BRAIN_UPDATE_FACTOR_MAX = 100;
+        private const string DEFAULT_BRAIN_UPDATE_FACTOR = "2";
+
         private EditArea editArea;
         private float deltaTimePerTick;
 
         private SelectableButton showValuesToggle;
         private Button calcButton;
+        
         private Text simSpeedLabel;
         private Text simSpeedText;
         private SelectableEditableText simSpeedSET;
+        private Text assumeFpsMsg;
+
+        private Text ticksPerSecondLabel;
+        private Text ticksPerSecondText;
+        private SelectableEditableText ticksPerSecondSET;
+        private Text brainUpdateFactorLabel;
+        private Text brainUpdateFactorText;
+        private SelectableEditableText brainUpdateFactorSET;
+
         private Text deltaTimeMsg;
-        private Text calcMsg;
 
         public CalcControls(EditArea editArea, int x, int y)
         {
             this.editArea = editArea;
-            deltaTimePerTick = getDeltaTime(DEFAULT_SIM_SPEED);
+            deltaTimePerTick = getDeltaTimeFromSimSpeed(DEFAULT_SIM_SPEED);
 
             showValuesToggle = new SelectableButton(new Button.ButtonBuilder(
                     new ImageWrapper(MenuCategoryButton.UNSELECTED_IMAGE_PATH),
@@ -65,10 +83,9 @@ namespace Einstein.ui.menu
                 .WithXY(x,
                     EinsteinConfig.PAD + calcButton.GetY() + calcButton.GetHeight())
                 .Build();
-            simSpeedText = new Text.TextBuilder(DEFAULT_SIM_SPEED)
+            simSpeedText = new TextBuilder(DEFAULT_SIM_SPEED)
                     .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
-                    //.WithBackgroundColor(new SolidBrush(EinsteinConfig.COLOR_MODE.EditableTextBackgroundUnselected))
-                    .WithXY(simSpeedLabel.GetX() + 40, simSpeedLabel.GetY())
+                    .WithXY(simSpeedLabel.GetX() + 105, simSpeedLabel.GetY())
                     .Build();
             simSpeedSET = new SelectableEditableText(
                 ((FloatETBuilder)new FloatETBuilder(simSpeedText)
@@ -82,19 +99,66 @@ namespace Einstein.ui.menu
                 DEFAULT_SIM_SPEED,
                 EinsteinConfig.COLOR_MODE.EditableTextBackgroundSelected,
                 EinsteinConfig.COLOR_MODE.EditableTextBackgroundUnselected);
-            deltaTimeMsg = new Text.TextBuilder(getDeltaTimeMsg())
-                    .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
-                .WithFontSize(10f)
-                    .WithXY(x,
-                        EinsteinConfig.PAD + simSpeedText.GetY() + simSpeedText.GetHeight())
-                    .Build();
-
-            calcMsg = new TextBuilder("(Assuming 60 fps)")
+            assumeFpsMsg = new TextBuilder("(Assuming 60 fps)")
                 .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
                 .WithFontSize(10f)
                 .WithXY(x,
-                    EinsteinConfig.PAD + deltaTimeMsg.GetY() + deltaTimeMsg.GetHeight())
+                    EinsteinConfig.PAD + simSpeedText.GetY() + simSpeedText.GetHeight())
                 .Build();
+
+            ticksPerSecondLabel = new TextBuilder("Ticks per Second:")
+                .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
+                .WithFontSize(11f)
+                .WithXY(x,
+                    EinsteinConfig.PAD + calcButton.GetY() + calcButton.GetHeight())
+                .Build();
+            ticksPerSecondText = new TextBuilder(DEFAULT_TICKS_PER_SECOND)
+                    .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
+                    .WithFontSize(11f)
+                    .WithXY(ticksPerSecondLabel.GetX() + 130, ticksPerSecondLabel.GetY())
+                    .Build();
+            ticksPerSecondSET = new SelectableEditableText(
+                ((IntETBuilder)new IntETBuilder(ticksPerSecondText)
+                    .WithEditingDisabled()
+                    .WithMinValue(TICKS_PER_SECOND_MIN)
+                    .WithMaxValue(TICKS_PER_SECOND_MAX)
+                    .WithAnchor(ticksPerSecondLabel.GetX() + 130, ticksPerSecondLabel.GetY())
+                    .WithOnEdit(onEditTicksPerSecond)
+                    ).Build(),
+                DEFAULT_TICKS_PER_SECOND,
+                EinsteinConfig.COLOR_MODE.EditableTextBackgroundSelected,
+                EinsteinConfig.COLOR_MODE.EditableTextBackgroundUnselected);
+
+            brainUpdateFactorLabel = new TextBuilder("Brain Update Factor:")
+                .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
+                .WithFontSize(11f)
+                .WithXY(x,
+                    EinsteinConfig.PAD + ticksPerSecondLabel.GetY() + ticksPerSecondLabel.GetHeight())
+                .Build();
+            brainUpdateFactorText = new TextBuilder(DEFAULT_BRAIN_UPDATE_FACTOR)
+                    .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
+                    .WithFontSize(11f)
+                    .WithXY(brainUpdateFactorLabel.GetX() + 136, brainUpdateFactorLabel.GetY())
+                    .Build();
+            brainUpdateFactorSET = new SelectableEditableText(
+                ((IntETBuilder)new IntETBuilder(brainUpdateFactorText)
+                    .WithEditingDisabled()
+                    .WithMinValue(BRAIN_UPDATE_FACTOR_MIN)
+                    .WithMaxValue(BRAIN_UPDATE_FACTOR_MAX)
+                    .WithAnchor(brainUpdateFactorLabel.GetX() + 136, brainUpdateFactorLabel.GetY())
+                    .WithOnEdit(onEditBrainUpdateFactor)
+                    ).Build(),
+                DEFAULT_BRAIN_UPDATE_FACTOR,
+                EinsteinConfig.COLOR_MODE.EditableTextBackgroundSelected,
+                EinsteinConfig.COLOR_MODE.EditableTextBackgroundUnselected);
+
+            deltaTimeMsg = new TextBuilder(getDeltaTimeMsg())
+                    .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
+                .WithFontSize(10f)
+                    .WithXY(x,
+                        EinsteinConfig.PAD + assumeFpsMsg.GetY() + assumeFpsMsg.GetHeight())
+                    .Build();
+
         }
 
         public void Initialize()
@@ -103,11 +167,22 @@ namespace Einstein.ui.menu
             IO.RENDERER.Add(showValuesToggle);
             IO.RENDERER.Add(calcButton);
             calcButton.Initialize();
+
             IO.RENDERER.Add(simSpeedLabel);
             IO.RENDERER.Add(simSpeedText);
             simSpeedSET.Initialize();
+            IO.RENDERER.Add(assumeFpsMsg);
+
+            IO.RENDERER.Add(ticksPerSecondLabel);
+            IO.RENDERER.Add(ticksPerSecondText);
+            ticksPerSecondSET.Initialize();
+            IO.RENDERER.Add(brainUpdateFactorLabel);
+            IO.RENDERER.Add(brainUpdateFactorText);
+            brainUpdateFactorSET.Initialize();
+
             IO.RENDERER.Add(deltaTimeMsg);
-            IO.RENDERER.Add(calcMsg);
+            recalculateDeltaTimePerTick();
+            deltaTimeMsg.SetMessage(getDeltaTimeMsg());
             hideValues();
 
             IO.KEYS.Subscribe(calcNeuronValues, EinsteinConfig.Keybinds.CALCULATE);
@@ -119,11 +194,20 @@ namespace Einstein.ui.menu
             IO.RENDERER.Remove(showValuesToggle);
             IO.RENDERER.Remove(calcButton);
             calcButton.Uninitialize();
+
             IO.RENDERER.Remove(simSpeedLabel);
             IO.RENDERER.Remove(simSpeedText);
             simSpeedSET.Uninitialize();
+            IO.RENDERER.Remove(assumeFpsMsg);
+
+            IO.RENDERER.Remove(ticksPerSecondLabel);
+            IO.RENDERER.Remove(ticksPerSecondText);
+            ticksPerSecondSET.Uninitialize();
+            IO.RENDERER.Remove(brainUpdateFactorLabel);
+            IO.RENDERER.Remove(brainUpdateFactorText);
+            brainUpdateFactorSET.Uninitialize();
+
             IO.RENDERER.Remove(deltaTimeMsg);
-            IO.RENDERER.Remove(calcMsg);
 
             IO.KEYS.Unsubscribe(calcNeuronValues, EinsteinConfig.Keybinds.CALCULATE);
         }
@@ -136,7 +220,14 @@ namespace Einstein.ui.menu
             {
                 simSpeedLabel.SetDisplaying(true);
                 simSpeedText.SetDisplaying(true);
-                calcMsg.SetDisplaying(true);
+                assumeFpsMsg.SetDisplaying(true);
+            }
+            else if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == BibiteVersion.DeltaTimeCalcMethod.BrainUpdateFactorOverTps)
+            {
+                ticksPerSecondLabel.SetDisplaying(true);
+                ticksPerSecondText.SetDisplaying(true);
+                brainUpdateFactorLabel.SetDisplaying(true);
+                brainUpdateFactorText.SetDisplaying(true);
             }
             deltaTimeMsg.SetDisplaying(true);
             
@@ -146,15 +237,24 @@ namespace Einstein.ui.menu
         {
             editArea.SetValuesDisplaying(false);
             calcButton.SetDisplaying(false);
+
             simSpeedLabel.SetDisplaying(false);
             simSpeedText.SetDisplaying(false);
+            assumeFpsMsg.SetDisplaying(false);
+
+            ticksPerSecondLabel.SetDisplaying(false);
+            ticksPerSecondText.SetDisplaying(false);
+            brainUpdateFactorLabel.SetDisplaying(false);
+            brainUpdateFactorText.SetDisplaying(false);
+
             deltaTimeMsg.SetDisplaying(false);
-            calcMsg.SetDisplaying(false);
         }
 
         public void OnBibiteVersionUpdate()
         {
             hideValues();
+            recalculateDeltaTimePerTick();
+            deltaTimeMsg.SetMessage(getDeltaTimeMsg());
             if (showValuesToggle.IsSelected())
             {
                 showValues();
@@ -165,9 +265,22 @@ namespace Einstein.ui.menu
         {
             if (calcButton.IsDisplaying())
             {
-                float simSpeed = CustomNumberParser.StringToFloat(simSpeedText.GetMessage());
-                float deltaTime = simSpeed / 60; // assumes 60 fps
-                editArea.RefreshValuesText(NeuronValueCalculator.Calc(editArea.Brain, deltaTime));
+                editArea.RefreshValuesText(NeuronValueCalculator.Calc(editArea.Brain, deltaTimePerTick));
+            }
+        }
+
+        private void recalculateDeltaTimePerTick()
+        {
+            if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == BibiteVersion.DeltaTimeCalcMethod.SimSpeed)
+            {
+                string simSpeed = simSpeedText.GetMessage();
+                deltaTimePerTick = getDeltaTimeFromSimSpeed(simSpeed);
+            }
+            else if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == BibiteVersion.DeltaTimeCalcMethod.BrainUpdateFactorOverTps)
+            {
+                string ticksPerSecond = ticksPerSecondText.GetMessage();
+                string brainUpdateFactor = brainUpdateFactorText.GetMessage();
+                deltaTimePerTick = getDeltaTimeFromBufAndTps(brainUpdateFactor, ticksPerSecond);
             }
         }
 
@@ -175,8 +288,7 @@ namespace Einstein.ui.menu
         {
             try
             {
-                // assume 60 fps
-                deltaTimePerTick = getDeltaTime(simSpeed);
+                deltaTimePerTick = getDeltaTimeFromSimSpeed(simSpeed);
             }
             catch (ArithmeticException)
             {
@@ -192,9 +304,57 @@ namespace Einstein.ui.menu
             deltaTimeMsg.SetMessage(getDeltaTimeMsg());
         }
 
-        private float getDeltaTime(string simSpeed)
+        private static float getDeltaTimeFromSimSpeed(string simSpeed)
         {
+            // assume 60 fps
             return CustomNumberParser.StringToFloat(simSpeed) / 60;
+        }
+
+        private void onEditTicksPerSecond(string ticksPerSecond)
+        {
+            string brainUpdateFactor = brainUpdateFactorText.GetMessage();
+            try
+            {
+                deltaTimePerTick = getDeltaTimeFromBufAndTps(brainUpdateFactor, ticksPerSecond);
+            }
+            catch (ArithmeticException)
+            {
+                // keep last valid value
+                return;
+            }
+            catch (ArgumentException)
+            {
+                // keep last valid value
+                return;
+            }
+
+            deltaTimeMsg.SetMessage(getDeltaTimeMsg());
+        }
+
+        private void onEditBrainUpdateFactor(string brainUpdateFactor)
+        {
+            string ticksPerSecond = ticksPerSecondText.GetMessage();
+            try
+            {
+                deltaTimePerTick = getDeltaTimeFromBufAndTps(brainUpdateFactor, ticksPerSecond);
+            }
+            catch (ArithmeticException)
+            {
+                // keep last valid value
+                return;
+            }
+            catch (ArgumentException)
+            {
+                // keep last valid value
+                return;
+            }
+
+            deltaTimeMsg.SetMessage(getDeltaTimeMsg());
+        }
+
+        private static float getDeltaTimeFromBufAndTps(string brainUpdateFactor, string ticksPerSecond)
+        {
+            return (float)CustomNumberParser.StringToInt(brainUpdateFactor) / CustomNumberParser.StringToInt(ticksPerSecond);
         }
 
         private string getDeltaTimeMsg()
