@@ -16,8 +16,9 @@ namespace Einstein.ui.editarea
         /// Does not update input neurons.
         /// </summary>
         /// <param name="brain"></param>
+        /// <param name="deltaTime">Time elapsed since last frame</param>
         /// <returns>indexes of neurons with updated Values (not including LastInput)</returns>
-        public static IEnumerable<int> Calc(BaseBrain brain)
+        public static IEnumerable<int> Calc(BaseBrain brain, float deltaTime)
         {
             Dictionary<BaseNeuron, float> neuronToNewValue = new Dictionary<BaseNeuron, float>();
             Dictionary<BaseNeuron, float> neuronToNewLastInput = new Dictionary<BaseNeuron, float>();
@@ -35,7 +36,7 @@ namespace Einstein.ui.editarea
                     inputValue,
                     neuron.LastInput,
                     neuron.Value,
-                    0.016666666666f, // Assume x1 sim speed for now, TODO: allow adjusting sim speed
+                    deltaTime,
                     neuron.Bias);
                 outputValue = Math.Max(-100f, Math.Min(outputValue, 100f));
 
