@@ -25,6 +25,7 @@ namespace phi.graphics.renderables
         protected int anchorY { get; private set; }
         protected AnchorPosition anchorPosition { get; private set; }
         protected Action<string> onEdit { get; private set; }
+        private bool justEnabledEditing;
 
         protected EditableText(EditableTextBuilder b)
         {
@@ -36,6 +37,7 @@ namespace phi.graphics.renderables
             this.anchorY = b.anchorY;
             this.anchorPosition = b.anchorPosition;
             this.onEdit = b.onEdit;
+            justEnabledEditing = false;
         }
 
         public virtual void Initialize()
@@ -84,6 +86,10 @@ namespace phi.graphics.renderables
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
+            if (justEnabledEditing)
+            {
+                Clear();
+            }
             string newMessage = text.GetMessage() + c; // don't forget that ;)
             if (IsMessageValidWhileTyping(newMessage)) {
                 text.SetMessage(newMessage);
@@ -96,6 +102,7 @@ namespace phi.graphics.renderables
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled || text.GetMessage().Length == 0) { return; }
+            justEnabledEditing = false;
             string newMessage = text.GetMessage().Substring(0, text.GetMessage().Length - 1);
             text.SetMessage(newMessage);
             RecenterOnAnchor();
@@ -109,6 +116,7 @@ namespace phi.graphics.renderables
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
+            justEnabledEditing = false;
             text.SetMessage("");
             RecenterOnAnchor();
             onEdit?.Invoke("");
@@ -134,10 +142,12 @@ namespace phi.graphics.renderables
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             IsEditingEnabled = true;
+            justEnabledEditing = true;
         }
         public virtual void DisableEditing() {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             IsEditingEnabled = false;
+            justEnabledEditing = false;
             RecenterOnAnchor();
         }
 
