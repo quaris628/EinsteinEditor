@@ -20,7 +20,6 @@ namespace Einstein.ui.editarea
 
         // Neuron (and its version) must be immutable (otherwise init/uninit is fucked up)
         public BaseNeuron Neuron { get; protected set; }
-        private bool justEnabledEditing;
 
         public NeuronBiasET(BaseNeuron neuron, int anchorX, int anchorY)
             : base(
@@ -37,7 +36,6 @@ namespace Einstein.ui.editarea
                 .WithAnchorPosition(AnchorPosition.BottomRight))
         {
             Neuron = neuron;
-            justEnabledEditing = false;
         }
 
         public override void Initialize()
@@ -65,7 +63,6 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
-            justEnabledEditing = false;
             base.Backspace();
             UpdateBiasIfValid();
         }
@@ -74,7 +71,6 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
-            justEnabledEditing = false;
             base.Clear();
             UpdateBiasIfValid();
         }
@@ -83,27 +79,10 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
-            if (justEnabledEditing)
-            {
-                justEnabledEditing = false;
-                Clear();
-            }
             base.TypeChar(c);
             UpdateBiasIfValid();
         }
 
-        public override void EnableEditing()
-        {
-            base.EnableEditing();
-            justEnabledEditing = true;
-        }
-
-        public override void DisableEditing()
-        {
-            justEnabledEditing = false;
-            base.DisableEditing();
-        }
-        
         private void UpdateBiasIfValid()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }

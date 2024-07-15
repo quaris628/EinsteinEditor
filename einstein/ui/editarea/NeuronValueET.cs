@@ -18,8 +18,7 @@ namespace Einstein.ui.editarea
         public const int FONT_SIZE = 11;
 
         // Neuron (and its version) must be immutable (otherwise init/uninit is fucked up)
-        public BaseNeuron Neuron { get; protected set; }
-        private bool justEnabledEditing;
+        public BaseNeuron Neuron { get; protected set; }        private bool justEnabledEditing;
 
         public NeuronValueET(BaseNeuron neuron, int anchorX, int anchorY)
             : base(
@@ -38,7 +37,6 @@ namespace Einstein.ui.editarea
                 .WithAnchorPosition(AnchorPosition.CenterLeft))
         {
             Neuron = neuron;
-            justEnabledEditing = false;
         }
 
         public override void Initialize()
@@ -67,7 +65,6 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
-            justEnabledEditing = false;
             base.Backspace();
             UpdateValueIfValid();
         }
@@ -76,7 +73,6 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
-            justEnabledEditing = false;
             base.Clear();
             UpdateValueIfValid();
         }
@@ -85,25 +81,8 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
-            if (justEnabledEditing)
-            {
-                justEnabledEditing = false;
-                Clear();
-            }
             base.TypeChar(c);
             UpdateValueIfValid();
-        }
-
-        public override void EnableEditing()
-        {
-            base.EnableEditing();
-            justEnabledEditing = true;
-        }
-
-        public override void DisableEditing()
-        {
-            justEnabledEditing = false;
-            base.DisableEditing();
         }
 
         private void UpdateValueIfValid()

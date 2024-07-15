@@ -18,7 +18,6 @@ namespace Einstein.ui.editarea
         public static readonly Color TEXT_COLOR = EinsteinConfig.COLOR_MODE.Text;
 
         public BaseSynapse Synapse { get; protected set; }
-        private bool justEnabledEditing;
 
         public SynapseStrengthET(BaseSynapse synapse, int anchorX, int anchorY)
             : base((FloatETBuilder)new FloatETBuilder(new Text.TextBuilder("").WithColor(new SolidBrush(TEXT_COLOR)).Build())
@@ -30,7 +29,6 @@ namespace Einstein.ui.editarea
                   .WithAnchorPosition(AnchorPosition.CenterCenter))
         {
             Synapse = synapse;
-            justEnabledEditing = false;
         }
 
         public override void Initialize()
@@ -58,7 +56,6 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
-            justEnabledEditing = false;
             base.Backspace();
             UpdateStrengthIfValid();
         }
@@ -67,7 +64,6 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
-            justEnabledEditing = false;
             base.Clear();
             UpdateStrengthIfValid();
         }
@@ -76,31 +72,8 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (!IsEditingEnabled) { return; }
-            if (justEnabledEditing)
-            {
-                justEnabledEditing = false;
-                Clear();
-            }
             base.TypeChar(c);
             UpdateStrengthIfValid();
-        }
-
-        public override void EnableEditing()
-        {
-            base.EnableEditing();
-            justEnabledEditing = true;
-        }
-
-        public override void DisableEditing()
-        {
-            justEnabledEditing = false;
-            base.DisableEditing();
-        }
-        
-        public override void RecenterOnAnchor()
-        {
-            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            GetDrawable().SetCenterXY(anchorX, anchorY);
         }
 
         private void UpdateStrengthIfValid()
