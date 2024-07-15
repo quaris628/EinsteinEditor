@@ -67,6 +67,7 @@
     <Compile Include="graphics\drawables\Sprite.cs" />
     <Compile Include="graphics\drawables\Text.cs" />
     <Compile Include="graphics\drawables\Line.cs" />
+    <Compile Include="graphics\renderables\IntET.cs" />
     <Compile Include="graphics\renderables\FloatET.cs" />
     <Compile Include="graphics\renderables\SelectableEditableText.cs" />
     <Compile Include="io\FastClickRegions.cs" />
