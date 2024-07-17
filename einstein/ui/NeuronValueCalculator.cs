@@ -20,39 +20,49 @@ namespace Einstein.ui.editarea
         /// <returns>indexes of neurons with updated Values (not including LastInput)</returns>
         public static IEnumerable<int> Calc(BaseBrain brain, float deltaTime)
         {
-            Dictionary<BaseNeuron, float> neuronToNewValue = new Dictionary<BaseNeuron, float>();
-            Dictionary<BaseNeuron, float> neuronToNewLastInput = new Dictionary<BaseNeuron, float>();
+            // The order that synapses fire in is very important to brain calculations
+            // Pseudocode:
+            //   Iterate through the synapses in the order that they are listed in the json, and for each:
+            //     If the synapse hasn't already fired:
+            //       Fire all synapses that share this synapse's "To" neuron
+            //
+            // The brain is being concurrently modified during this iteration
+            // (I don't think it should be, but that's how the sim does it, so...)
+
+            HashSet<BaseSynapse> alreadyFiredSynapses = new HashSet<BaseSynapse>();
             HashSet<int> updatedNeuronsIndexes = new HashSet<int>();
 
-            // DO NOT CONCURRENTLY MODIFY
-            foreach (BaseNeuron neuron in brain.Neurons)
+            foreach (BaseSynapse synapse in brain.Synapses)
             {
-                if (neuron.Type == NeuronType.Input)
+                if (!alreadyFiredSynapses.Contains(synapse))
                 {
-                    continue;
-                }
-                float inputValue = CalcNeuronInput(neuron, brain);
-                float outputValue = CalcNeuronOutput(neuron,
-                    inputValue,
-                    neuron.LastInput,
-                    neuron.Value,
-                    deltaTime,
-                    neuron.Bias);
-                outputValue = Math.Max(-100f, Math.Min(outputValue, 100f));
+                    BaseNeuron toNeuron = synapse.To;
+                    if (synapse.To.Type == NeuronType.Input)
+                    {
+                        continue;
+                    }
 
-                neuronToNewLastInput[neuron] = inputValue;
-                neuronToNewValue[neuron] = outputValue;
-            }
-            foreach (BaseNeuron neuron in neuronToNewValue.Keys)
-            {
-                neuron.LastInput = neuronToNewLastInput[neuron];
-                float newValue = neuronToNewValue[neuron];
-                if (neuron.Value != newValue)
-                {
-                    neuron.Value = newValue;
-                    updatedNeuronsIndexes.Add(neuron.Index);
+                    float inputValue = CalcNeuronInput(toNeuron, brain);
+                    float outputValue = CalcNeuronOutput(toNeuron,
+                        inputValue,
+                        toNeuron.LastInput,
+                        toNeuron.Value,
+                        deltaTime,
+                        toNeuron.Bias);
+                    outputValue = Math.Max(-100f, Math.Min(outputValue, 100f));
+                    if (toNeuron.Value != outputValue)
+                    {
+                        toNeuron.Value = outputValue;
+                        updatedNeuronsIndexes.Add(toNeuron.Index);
+                    }
+
+                    foreach (BaseSynapse synapseFired in brain.GetSynapsesTo(synapse.To))
+                    {
+                        alreadyFiredSynapses.Add(synapseFired);
+                    }
                 }
             }
+
             return updatedNeuronsIndexes;
         }
 

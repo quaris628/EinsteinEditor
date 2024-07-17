@@ -251,7 +251,7 @@ namespace Einstein.ui.editarea
             }
             foreach (BaseSynapse synapse in Brain.Synapses)
             {
-                synapses.AddFirst(synapse);
+                synapses.AddLast(synapse);
             }
             foreach (BaseNeuron neuron in neurons)
             {

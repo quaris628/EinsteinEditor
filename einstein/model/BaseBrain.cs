@@ -14,7 +14,7 @@ namespace Einstein.model
         private Dictionary<int, BaseNeuron> neuronsIndex;
         private Dictionary<string, BaseNeuron> neuronDescriptionIndex;
 
-        public ICollection<BaseSynapse> Synapses { get; }
+        public LinkedList<BaseSynapse> Synapses { get; }
         private Dictionary<(int, int), BaseSynapse> synapsesIndex;
         private Dictionary<int, LinkedList<BaseSynapse>> synapsesFromIndex;
         private Dictionary<int, LinkedList<BaseSynapse>> synapsesToIndex;
@@ -25,7 +25,7 @@ namespace Einstein.model
         public BaseBrain(BibiteVersion bibiteVersion)
         {
             Neurons = new LinkedList<BaseNeuron>();
-            Synapses = new LinkedList<BaseSynapse>();
+            Synapses = new LinkedList<BaseSynapse>(); // order must be maintained
             neuronsIndex = new Dictionary<int, BaseNeuron>();
             neuronDescriptionIndex = new Dictionary<string, BaseNeuron>();
             synapsesIndex = new Dictionary<(int, int), BaseSynapse>();
@@ -76,7 +76,7 @@ namespace Einstein.model
                 throw new ContainsDuplicateSynapseException(synapse);
             }
 
-            Synapses.Add(synapse);
+            Synapses.AddLast(synapse);
 
             FlagChange();
             synapse.PutIn(this);
