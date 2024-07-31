@@ -16,7 +16,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using static phi.graphics.drawables.Text;
 
 namespace Einstein
@@ -31,7 +33,11 @@ namespace Einstein
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
             + "\\AppData\\LocalLow\\The Bibites\\The Bibites\\Bibites";
 
+        private const string LATEST_VERSION_GITHUB_LINK = "https://github.com/quaris628/EinsteinEditor/releases/latest";
+
         private const string HELP_FILE_PATH = EinsteinConfig.HOME_DIR + "help.txt";
+        private const string NEW_VERSION_BACKGROUND = EinsteinConfig.RES_DIR + "NewVersionBackground.png";
+        private const string NEW_VERSION_DISMISS_BACKGROUND = EinsteinConfig.RES_DIR + "NewVersionDismissBackground.png";
 
         // ----------------------------------------------------------------
         //  Data/Constructor
@@ -59,6 +65,8 @@ namespace Einstein
         private Button helpButton;
         private CalcControls calcControls;
         private ZoomControls zoomControls;
+        private Button newVersionAvailable;
+        private Button newVersionAvailableDismiss;
 
         private string savePath;
         private string loadPath;
@@ -191,6 +199,26 @@ namespace Einstein
 
             zoomControls = new ZoomControls(editArea);
 
+            newVersionAvailable = new Button.ButtonBuilder(new ImageWrapper(NEW_VERSION_BACKGROUND), 0, 0)
+                .withText(new TextBuilder("     A new version is available (click to open link)")
+                    .WithFontSize(10)
+                    .WithColor(new SolidBrush(Color.FromArgb(63, 63, 255)))
+                    .Build())
+                .withOnClick(onClickNewVersion)
+                .Build();
+            newVersionAvailable.SetDisplaying(false);
+            newVersionAvailableDismiss = new Button.ButtonBuilder(new ImageWrapper(NEW_VERSION_DISMISS_BACKGROUND), 0, 0)
+                .withText(new TextBuilder(" Dismiss")
+                    .WithFontSize(10)
+                    .Build())
+                .withOnClick(() =>
+                {
+                    newVersionAvailable.SetDisplaying(false);
+                    newVersionAvailableDismiss.SetDisplaying(false);
+                })
+                .Build();
+            newVersionAvailableDismiss.SetDisplaying(false);
+
             savePath = null;
             loadPath = null;
             mostRecentSavedToFile = null;
@@ -243,6 +271,11 @@ namespace Einstein
             
             zoomControls.Initialize();
 
+            newVersionAvailable.Initialize();
+            IO.RENDERER.Add(newVersionAvailable);
+            newVersionAvailableDismiss.Initialize();
+            IO.RENDERER.Add(newVersionAvailableDismiss);
+
             IO.KEYS.Subscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
             IO.KEYS.Subscribe(resaveToBibite, EinsteinConfig.Keybinds.SAVE_BIBITE);
             IO.KEYS.Subscribe(loadFromBibite, EinsteinConfig.Keybinds.LOAD_FROM_BIBITE);
@@ -250,6 +283,7 @@ namespace Einstein
             IO.FRAME_TIMER.Subscribe(checkForResize);
 
             editArea.Brain.MarkChangesAsSaved();
+            checkForNewerVersion();
         }
 
         protected override void UninitializeMe()
@@ -291,6 +325,11 @@ namespace Einstein
             calcControls.Uninitialize();
 
             zoomControls.Uninitialize();
+
+            newVersionAvailable.Uninitialize();
+            IO.RENDERER.Remove(newVersionAvailable);
+            newVersionAvailableDismiss.Uninitialize();
+            IO.RENDERER.Remove(newVersionAvailableDismiss);
 
             IO.KEYS.Unsubscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
             IO.KEYS.Unsubscribe(resaveToBibite, EinsteinConfig.Keybinds.SAVE_BIBITE);
@@ -586,8 +625,7 @@ namespace Einstein
         private static void showVersionMismatchErrorPopup(string title, NoSuchVersionException e)
         {
             IO.POPUPS.ShowErrorPopup(title, e.Message + "\n\n" +
-                    "This bibite's version is either invalid or is too old or too new to be recognized by Einstein.\n" +
-                    "If it's too new, consider checking for updates to Einstein at https://github.com/quaris628/EinsteinEditor/releases/\n\n" +
+                    "This bibite's version is either invalid or is too old or too new to be recognized by Einstein.\n\n" +
                     "If, for some reason, you really really really want to try editing this bibite anyway, " +
                     "beware! You will probably run into seriously bad problems like data corruption, " +
                     "unpredictable crashes, and bugged 'god' or 'demon' bibites... but technically you can change the " +
@@ -790,6 +828,65 @@ namespace Einstein
             }
         }
 
+        private void checkForNewerVersion()
+        {
+            IO.WEB_CLIENT.GetAsync(LATEST_VERSION_GITHUB_LINK)
+            .ContinueWith(fetchLatestVersionTask =>
+            {
+                HttpResponseMessage response = fetchLatestVersionTask.Result;
+                    
+                if (!response.IsSuccessStatusCode)
+                {
+                    return;
+                }
+                response.Content.ReadAsStringAsync().ContinueWith((readContent) =>
+                {
+#if !DEBUG
+                    try {
+#endif
+                    string content = readContent.Result;
+
+                    const string needle = "/quaris628/EinsteinEditor/releases/tag/";
+                    int latestVersionNumIndex = content.IndexOf(needle) + needle.Length;
+                    int i = latestVersionNumIndex;
+                    const string validVersionChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,_-";
+                    for (; validVersionChars.Contains(content[i]); i++) { }
+                    string latestVersion = content.Substring(latestVersionNumIndex, i - latestVersionNumIndex);
+                    if (!EinsteinConfig.VERSION.Equals(latestVersion))
+                    {
+                        newVersionAvailable.SetDisplaying(true);
+                        newVersionAvailableDismiss.SetDisplaying(true);
+                        repositionNewVersion();
+                    }
+#if !DEBUG
+                    } catch (Exception) { }
+#endif
+                });
+            });
+        }
+
+        private void onClickNewVersion()
+        {
+            // Could also manually download the zip (branch based on current color mode)?
+            // Or even extract that zip? And restart? Seems risky and difficult though
+            try
+            {
+                // Open github link w/ default browser
+                Process.Start(new ProcessStartInfo(LATEST_VERSION_GITHUB_LINK));
+            }
+            catch (Exception)
+            {
+                // *shrug*
+            }
+        }
+
+        private void repositionNewVersion()
+        {
+            int y = IO.WINDOW.GetHeight() - EinsteinConfig.PAD - 20;
+            newVersionAvailable.SetXY(helpButton.GetX() + helpButton.GetWidth() + EinsteinConfig.PAD, y);
+            newVersionAvailableDismiss.SetXY(newVersionAvailable.GetX() + newVersionAvailable.GetWidth() + EinsteinConfig.PAD, y);
+        }
+
         public override bool CanClose()
         {
             if (editArea.Brain.HasUnsavedChanges())
@@ -823,6 +920,7 @@ namespace Einstein
             if (newHeight != prevWindowHeight)
             {
                 zoomControls.Reposition();
+                repositionNewVersion();
                 prevWindowHeight = newHeight;
             }
         }
