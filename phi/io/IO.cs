@@ -10,6 +10,7 @@ using phi.control;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 
 namespace phi.io
 {
@@ -55,7 +56,8 @@ namespace phi.io
          }
       }
       public static readonly Renderer RENDERER = new Renderer();
-      
+      public static readonly HttpClient WEB_CLIENT = new HttpClient();
+
       public struct WINDOW
       {
          private static WindowsForm form;
