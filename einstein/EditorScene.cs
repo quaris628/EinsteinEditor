@@ -844,14 +844,14 @@ namespace Einstein
 #if !DEBUG
                     try {
 #endif
-                    string content = readContent.Result;
+                    string haystack = readContent.Result;
 
                     const string needle = "/quaris628/EinsteinEditor/releases/tag/";
-                    int latestVersionNumIndex = content.IndexOf(needle) + needle.Length;
+                    int latestVersionNumIndex = haystack.IndexOf(needle) + needle.Length;
                     int i = latestVersionNumIndex;
                     const string validVersionChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,_-";
-                    for (; validVersionChars.Contains(content[i]); i++) { }
-                    string latestVersion = content.Substring(latestVersionNumIndex, i - latestVersionNumIndex);
+                    for (; validVersionChars.Contains(haystack[i]); i++) { }
+                    string latestVersion = haystack.Substring(latestVersionNumIndex, i - latestVersionNumIndex);
                     if (!EinsteinConfig.VERSION.Equals(latestVersion))
                     {
                         newVersionAvailable.SetDisplaying(true);
