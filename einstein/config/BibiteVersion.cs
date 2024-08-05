@@ -115,6 +115,20 @@ namespace Einstein.config.bibiteVersions
             BrainUpdateFactorOverTps,
         }
 
+        public virtual SynapseFiringCalcMethod GetSynapseOrderCalcMethod()
+        {
+            return SynapseFiringCalcMethod.Simultaneous;
+        }
+
+        public enum SynapseFiringCalcMethod
+        {
+            // Synapses fire in the order that they are listed in the json.
+            // This was a bug that was patched in 0.6.0a16.
+            InOrder,
+            // Synapses all fire at the same time; doesn't matter what their order is.
+            Simultaneous,
+        }
+
         #endregion Brain Calculations
 
         #region Neuron diagram positions
