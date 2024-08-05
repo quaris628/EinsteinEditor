@@ -26,39 +26,27 @@ namespace Einstein.config.bibiteVersions
         // What the version is when you start the editor
         public static readonly BibiteVersion DEFAULT_VERSION = V0_5;
 
-        // could always do more complex version number handling here,
-        // in case we need that flexibility for weird scenarios
+        protected static readonly BibiteVersion[] ALL_VERSIONS = new BibiteVersion[] {
+                V0_6_0a13thru15,
+                V0_6_0a10thru12,
+                V0_6_0a5thru9,
+                V0_6_0a0thru4,
+                V0_5,
+                V0_4
+            };
 
         public static BibiteVersion FromName(string versionName)
         {
-            if (V0_6_0a13thru15.IsMatchForVersionName(versionName))
+            // could always do more complex version number handling here,
+            // in case we need that flexibility for weird scenarios
+            foreach(BibiteVersion version in ALL_VERSIONS)
             {
-                return V0_6_0a13thru15;
+                if (version.IsMatchForVersionName(versionName))
+                {
+                    return version;
+                }
             }
-            else if (V0_6_0a10thru12.IsMatchForVersionName(versionName))
-            {
-                return V0_6_0a10thru12;
-            }
-            else if (V0_6_0a5thru9.IsMatchForVersionName(versionName))
-            {
-                return V0_6_0a5thru9;
-            }
-            else if (V0_6_0a0thru4.IsMatchForVersionName(versionName))
-            {
-                return V0_6_0a0thru4;
-            }
-            else if (V0_5.IsMatchForVersionName(versionName))
-            {
-                return V0_5;
-            }
-            else if (V0_4.IsMatchForVersionName(versionName))
-            {
-                return V0_4;
-            }
-            else
-            {
-                throw new NoSuchVersionException($"Unrecognized version '{versionName}'");
-            }
+            throw new NoSuchVersionException($"Unrecognized version '{versionName}'");
         }
 
         #endregion Version Instances - Static
