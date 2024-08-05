@@ -1,4 +1,5 @@
-﻿using Einstein.model;
+﻿using Einstein.config.bibiteVersions;
+using Einstein.model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,58 @@ namespace Einstein.ui.editarea
         /// <returns>indexes of neurons with updated Values (not including LastInput)</returns>
         public static IEnumerable<int> Calc(BaseBrain brain, float deltaTime)
         {
-            // The order that synapses fire in is very important to brain calculations
+            switch (brain.BibiteVersion.GetSynapseOrderCalcMethod())
+            {
+                case BibiteVersion.SynapseFiringCalcMethod.InOrder:
+                    return CalcSynapsesFiringInOrder(brain, deltaTime);
+                case BibiteVersion.SynapseFiringCalcMethod.Simultaneous:
+                    return CalcSynapsesFiringSimultaneous(brain, deltaTime);
+            }
+            throw new ArgumentException(
+                $"Unrecognized synapse firing calc method '{brain?.BibiteVersion?.GetSynapseOrderCalcMethod()}'");
+        }
+
+        private static IEnumerable<int> CalcSynapsesFiringSimultaneous(BaseBrain brain, float deltaTime)
+        {
+            Dictionary<BaseNeuron, float> neuronToNewValue = new Dictionary<BaseNeuron, float>();
+            Dictionary<BaseNeuron, float> neuronToNewLastInput = new Dictionary<BaseNeuron, float>();
+            HashSet<int> updatedNeuronsIndexes = new HashSet<int>();
+
+            // DO NOT CONCURRENTLY MODIFY
+            foreach (BaseNeuron neuron in brain.Neurons)
+            {
+                if (neuron.Type == NeuronType.Input)
+                {
+                    continue;
+                }
+                float inputValue = CalcNeuronInput(neuron, brain);
+                float outputValue = CalcNeuronOutput(neuron,
+                    inputValue,
+                    neuron.LastInput,
+                    neuron.Value,
+                    deltaTime,
+                    neuron.Bias);
+                outputValue = Math.Max(-100f, Math.Min(outputValue, 100f));
+
+                neuronToNewLastInput[neuron] = inputValue;
+                neuronToNewValue[neuron] = outputValue;
+            }
+            foreach (BaseNeuron neuron in neuronToNewValue.Keys)
+            {
+                neuron.LastInput = neuronToNewLastInput[neuron];
+                float newValue = neuronToNewValue[neuron];
+                if (neuron.Value != newValue)
+                {
+                    neuron.Value = newValue;
+                    updatedNeuronsIndexes.Add(neuron.Index);
+                }
+            }
+
+            return updatedNeuronsIndexes;
+        }
+
+        private static IEnumerable<int> CalcSynapsesFiringInOrder(BaseBrain brain, float deltaTime)
+        {
             // Pseudocode:
             //   Iterate through the synapses in the order that they are listed in the json, and for each:
             //     If the synapse hasn't already fired:
