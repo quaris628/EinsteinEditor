@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Einstein.model.json.JsonNeuron;
+using static Einstein.ui.editarea.NeuronValueCalculator;
 
 namespace Einstein.config.bibiteVersions
 {

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Einstein.model.json.JsonNeuron;
+using static Einstein.ui.editarea.NeuronValueCalculator;
 
 namespace Einstein.config.bibiteVersions
 {
@@ -109,24 +110,9 @@ namespace Einstein.config.bibiteVersions
             return DeltaTimeCalcMethod.BrainUpdateFactorOverTps;
         }
 
-        public enum DeltaTimeCalcMethod
-        {
-            SimSpeed,
-            BrainUpdateFactorOverTps,
-        }
-
         public virtual SynapseFiringCalcMethod GetSynapseOrderCalcMethod()
         {
             return SynapseFiringCalcMethod.Simultaneous;
-        }
-
-        public enum SynapseFiringCalcMethod
-        {
-            // Synapses fire in the order that they are listed in the json.
-            // This was a bug that was patched in 0.6.0a16.
-            InOrder,
-            // Synapses all fire at the same time; doesn't matter what their order is.
-            Simultaneous,
         }
 
         #endregion Brain Calculations

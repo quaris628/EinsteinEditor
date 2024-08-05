@@ -1,5 +1,4 @@
-﻿using Einstein.config.bibiteVersions;
-using Einstein.model;
+﻿using Einstein.model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +22,9 @@ namespace Einstein.ui.editarea
         {
             switch (brain.BibiteVersion.GetSynapseOrderCalcMethod())
             {
-                case BibiteVersion.SynapseFiringCalcMethod.InOrder:
+                case SynapseFiringCalcMethod.InOrder:
                     return CalcSynapsesFiringInOrder(brain, deltaTime);
-                case BibiteVersion.SynapseFiringCalcMethod.Simultaneous:
+                case SynapseFiringCalcMethod.Simultaneous:
                     return CalcSynapsesFiringSimultaneous(brain, deltaTime);
             }
             throw new ArgumentException(
@@ -240,5 +239,23 @@ namespace Einstein.ui.editarea
         {
             return (float) (input - previousInput + previousOutput * Math.Exp(-bias * dt));
         }
+
+        // Things that differ between bibite versions
+
+        public enum DeltaTimeCalcMethod
+        {
+            SimSpeed,
+            BrainUpdateFactorOverTps,
+        }
+
+        public enum SynapseFiringCalcMethod
+        {
+            // Synapses fire in the order that they are listed in the json.
+            // This was a bug that was patched in 0.6.0a16.
+            InOrder,
+            // Synapses all fire at the same time; doesn't matter what their order is.
+            Simultaneous,
+        }
+
     }
 }

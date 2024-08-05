@@ -1,5 +1,4 @@
 ﻿using Einstein.config;
-using Einstein.config.bibiteVersions;
 using Einstein.ui.editarea;
 using LibraryFunctionReplacements;
 using phi.graphics.drawables;
@@ -11,6 +10,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Einstein.ui.editarea.NeuronValueCalculator;
 using static phi.graphics.drawables.Text;
 using static phi.graphics.renderables.EditableText;
 using static phi.graphics.renderables.FloatET;
@@ -216,13 +216,13 @@ namespace Einstein.ui.menu
         {
             editArea.SetValuesDisplaying(true);
             calcButton.SetDisplaying(true);
-            if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == BibiteVersion.DeltaTimeCalcMethod.SimSpeed)
+            if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == DeltaTimeCalcMethod.SimSpeed)
             {
                 simSpeedLabel.SetDisplaying(true);
                 simSpeedText.SetDisplaying(true);
                 assumeFpsMsg.SetDisplaying(true);
             }
-            else if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == BibiteVersion.DeltaTimeCalcMethod.BrainUpdateFactorOverTps)
+            else if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == DeltaTimeCalcMethod.BrainUpdateFactorOverTps)
             {
                 ticksPerSecondLabel.SetDisplaying(true);
                 ticksPerSecondText.SetDisplaying(true);
@@ -271,12 +271,12 @@ namespace Einstein.ui.menu
 
         private void recalculateDeltaTimePerTick()
         {
-            if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == BibiteVersion.DeltaTimeCalcMethod.SimSpeed)
+            if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == DeltaTimeCalcMethod.SimSpeed)
             {
                 string simSpeed = simSpeedText.GetMessage();
                 deltaTimePerTick = getDeltaTimeFromSimSpeed(simSpeed);
             }
-            else if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == BibiteVersion.DeltaTimeCalcMethod.BrainUpdateFactorOverTps)
+            else if (editArea.BibiteVersion.GetDeltaTimeCalcMethod() == DeltaTimeCalcMethod.BrainUpdateFactorOverTps)
             {
                 string ticksPerSecond = ticksPerSecondText.GetMessage();
                 string brainUpdateFactor = brainUpdateFactorText.GetMessage();
