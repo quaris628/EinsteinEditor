@@ -14,7 +14,10 @@ namespace Einstein.config.bibiteVersions
 {
     public abstract class BibiteVersion : IComparable<BibiteVersion>
     {
-        #region Version Instances - Static
+        #region Version Instances (Static)
+
+        // What the version is when you start the editor
+        public static readonly BibiteVersion DEFAULT_VERSION = V0_5;
 
         public static readonly BibiteVersion V0_6_0a13thru15 = BibiteVersion0_6_0a13thru15.INSTANCE;
         public static readonly BibiteVersion V0_6_0a5thru9 = BibiteVersion0_6_0a5thru9.INSTANCE;
@@ -22,9 +25,6 @@ namespace Einstein.config.bibiteVersions
         public static readonly BibiteVersion V0_6_0a0thru4 = BibiteVersion0_6_0a0thru4.INSTANCE;
         public static readonly BibiteVersion V0_5 = BibiteVersion0_5.INSTANCE;
         public static readonly BibiteVersion V0_4 = BibiteVersion0_4.INSTANCE;
-
-        // What the version is when you start the editor
-        public static readonly BibiteVersion DEFAULT_VERSION = V0_5;
 
         protected static readonly BibiteVersion[] ALL_VERSIONS = new BibiteVersion[] {
                 V0_6_0a13thru15,
@@ -35,23 +35,9 @@ namespace Einstein.config.bibiteVersions
                 V0_4
             };
 
-        public static BibiteVersion FromName(string versionName)
-        {
-            // could always do more complex version number handling here,
-            // in case we need that flexibility for weird scenarios
-            foreach(BibiteVersion version in ALL_VERSIONS)
-            {
-                if (version.IsMatchForVersionName(versionName))
-                {
-                    return version;
-                }
-            }
-            throw new NoSuchVersionException($"Unrecognized version '{versionName}'");
-        }
+        #endregion Version Instances (Static)
 
-        #endregion Version Instances - Static
-
-        #region Data
+        #region Properties
 
         // used to order the versions
         private int versionId;
@@ -70,14 +56,28 @@ namespace Einstein.config.bibiteVersions
         protected NeuronType[] outputTypes;
         protected NeuronType[] neuronTypes;
 
-        #endregion Data
+        #endregion Properties
 
         protected BibiteVersion(int versionId)
         {
             this.versionId = versionId;
         }
 
-        #region Abstract and Virtual Methods
+        #region Version Name Matching
+
+        public static BibiteVersion FromName(string versionName)
+        {
+            // could always do more complex version number handling here,
+            // in case we need that flexibility for weird scenarios
+            foreach (BibiteVersion version in ALL_VERSIONS)
+            {
+                if (version.IsMatchForVersionName(versionName))
+                {
+                    return version;
+                }
+            }
+            throw new NoSuchVersionException($"Unrecognized version '{versionName}'");
+        }
 
         protected virtual bool IsMatchForVersionName(string bibitesVersionName)
         {
@@ -89,6 +89,10 @@ namespace Einstein.config.bibiteVersions
             return haystack.Length >= prefix.Length
                 && haystack.Substring(0, prefix.Length).Equals(prefix);
         }
+
+        #endregion Version Name Matching
+
+        #region Brain Calculations
 
         public virtual bool HasBiases()
         {
@@ -104,6 +108,14 @@ namespace Einstein.config.bibiteVersions
         {
             return DeltaTimeCalcMethod.BrainUpdateFactorOverTps;
         }
+
+        public enum DeltaTimeCalcMethod
+        {
+            SimSpeed,
+            BrainUpdateFactorOverTps,
+        }
+
+        #endregion Brain Calculations
 
         #region Neuron diagram positions
 
@@ -205,9 +217,7 @@ namespace Einstein.config.bibiteVersions
 
         #endregion Neuron diagram positions
 
-        #endregion Abstract and Virtual Methods
-
-        #region Getters
+        #region Neuron Getters
 
         public NeuronType GetOutputNeuronType(int index)
         {
@@ -269,9 +279,9 @@ namespace Einstein.config.bibiteVersions
             }
         }
 
-        #endregion Getters
+        #endregion Neuron Getters
 
-        #region Overrides
+        #region Generic Overrides
 
         public int CompareTo(BibiteVersion other)
         {
@@ -303,7 +313,7 @@ namespace Einstein.config.bibiteVersions
             return VERSION_NAME;
         }
 
-        #endregion Overrides
+        #endregion Generic Overrides
 
         #region Converting Between Versions
 
@@ -340,12 +350,6 @@ namespace Einstein.config.bibiteVersions
         protected abstract BaseBrain CreateVersionDownCopyOf(BaseBrain brain);
 
         #endregion Converting Between Versions
-
-        public enum DeltaTimeCalcMethod
-        {
-            SimSpeed,
-            BrainUpdateFactorOverTps,
-        }
     }
 }
 
