@@ -10,13 +10,13 @@ using static Einstein.ui.editarea.NeuronValueCalculator;
 
 namespace Einstein.config.bibiteVersions
 {
-    public class BibiteVersion0_6_0a13thru15 : BibiteVersion
+    public class BibiteVersion0_6_0a16 : BibiteVersion
     {
-        internal static readonly BibiteVersion0_6_0a13thru15 INSTANCE = new BibiteVersion0_6_0a13thru15();
+        internal static readonly BibiteVersion0_6_0a16 INSTANCE = new BibiteVersion0_6_0a16();
 
-        private BibiteVersion0_6_0a13thru15(): base(63)
+        private BibiteVersion0_6_0a16(): base(64)
         {
-            VERSION_NAME = "0.6.0a 13 thru 15";
+            VERSION_NAME = "0.6.0a16";
 
             INPUT_NODES_INDEX_MIN = 0;
             INPUT_NODES_INDEX_MAX = 32;
@@ -113,8 +113,8 @@ namespace Einstein.config.bibiteVersions
                 NeuronType.Differential,
                 NeuronType.Abs,
                 NeuronType.Mult,
-                NeuronType.Integrator, // added
-                NeuronType.Inhibitory, // added
+                NeuronType.Integrator,
+                NeuronType.Inhibitory,
             };
         }
 
@@ -128,7 +128,7 @@ namespace Einstein.config.bibiteVersions
                 return false;
             }
 
-            foreach (string alphaNumber in new string[] { "13", "14", "15" })
+            foreach (string alphaNumber in new string[] { "16" })
             {
                 if (StringHasPrefix(bibitesVersionName, "0.6a" + alphaNumber)
                     || StringHasPrefix(bibitesVersionName, "0.6.0a" + alphaNumber))
@@ -140,15 +140,6 @@ namespace Einstein.config.bibiteVersions
         }
 
         #endregion Version Name Matching
-
-        #region Brain Calculations
-
-        public override SynapseFiringCalcMethod GetSynapseOrderCalcMethod()
-        {
-            return SynapseFiringCalcMethod.InOrder;
-        }
-
-        #endregion Brain Calculations
 
         #region Neuron diagram positions
 
@@ -176,58 +167,19 @@ namespace Einstein.config.bibiteVersions
 
         #region Converting Between Versions
 
-        // Changes from 0.6a10thru12:
-        // - Replaced Constant neuron with Biases
-        // - New hidden neurons Integrator (11) and Inhibitory (12)
-        //
-        // Internal side effects:
-        // all indices are now 1 less
+        // Changes from 0.6a13thru15:
+        // None (except for synapse order calculations)
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
-            // To 0.6a10thru12
-            // Replace biases with constant node synapses, and shift all indexes up 1
-
-            BaseBrain brainOut = new JsonBrain(V0_6_0a10thru12);
-            JsonNeuron constant = new JsonNeuron(0, NeuronType.Input, 0f, V0_6_0a10thru12.DESCRIPTIONS[0], V0_6_0a10thru12);
-            brainOut.Add(constant);
-
-            foreach (BaseNeuron neuron in brain.Neurons)
-            {
-                // increment each index by 1
-                int newIndex = neuron.Index + 1;
-
-                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, V0_6_0a0thru4);
-                jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
-                jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
-                jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
-
-                brainOut.Add(jn);
-
-                if (neuron.Bias != 0f)
-                {
-                    // Replace bias with connection to constant
-                    brainOut.Add(new JsonSynapse(constant, jn, neuron.Bias));
-                }
-            }
-            foreach (BaseSynapse synapse in brain.Synapses)
-            {
-                // increment both indexes by 1
-                int newToIndex = synapse.To.Index + 1;
-                int newFromIndex = synapse.From.Index + 1;
-                BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
-                BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
-                brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
-            }
-
-            return brainOut;
+            // To 0.6a13thru15
+            // deep copy with no changes
+            return new JsonBrain(brain, V0_6_0a13thru15);
         }
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            // To 0.6a16
-            // deep copy with no changes
-            return new JsonBrain(brain, V0_6_0a16);
+            throw new NoSuchVersionException("There is no supported version higher than " + VERSION_NAME);
         }
 
         #endregion Converting Between Versions
