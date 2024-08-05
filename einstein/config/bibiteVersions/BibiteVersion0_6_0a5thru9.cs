@@ -115,6 +115,8 @@ namespace Einstein.config.bibiteVersions
             };
         }
 
+        #region Version Name Matching
+
         protected override bool IsMatchForVersionName(string bibitesVersionName)
         {
             if (!StringHasPrefix(bibitesVersionName, "0.6a")
@@ -134,6 +136,10 @@ namespace Einstein.config.bibiteVersions
             return false;
         }
 
+        #endregion Version Name Matching
+
+        #region Brain Calculations
+
         public override bool HasBiases()
         {
             return false;
@@ -148,6 +154,10 @@ namespace Einstein.config.bibiteVersions
         {
             return SynapseFiringCalcMethod.InOrder;
         }
+
+        #endregion Brain Calculations
+
+        #region Neuron diagram positions
 
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
         {
@@ -168,6 +178,10 @@ namespace Einstein.config.bibiteVersions
                 fields.inov = fields.index + 1;
             }
         }
+
+        #endregion Neuron diagram positions
+
+        #region Converting Between Versions
 
         // Changes from 0.6a0thru4:
         // - New input neuron EggsStored added at new index 8
@@ -206,7 +220,7 @@ namespace Einstein.config.bibiteVersions
 
             return brainOut;
         }
-        // index0_6_0a0thru4
+
         private int ConvertNeuronIndexTo0_6_0a0thru4(int index)
         {
             if (0 <= index && index <= 7)
@@ -239,5 +253,8 @@ namespace Einstein.config.bibiteVersions
         {
             return new JsonBrain(V0_6_0a10thru12);
         }
+
+        #endregion Converting Between Versions
+
     }
 }

@@ -112,6 +112,8 @@ namespace Einstein.config.bibiteVersions
             };
         }
 
+        #region Version Name Matching
+
         protected override bool IsMatchForVersionName(string bibitesVersionName)
         {
             if (!StringHasPrefix(bibitesVersionName, "0.6a")
@@ -131,6 +133,10 @@ namespace Einstein.config.bibiteVersions
             return false;
         }
 
+        #endregion Version Name Matching
+
+        #region Brain Calculations
+
         public override bool HasBiases()
         {
             return false;
@@ -145,6 +151,10 @@ namespace Einstein.config.bibiteVersions
         {
             return SynapseFiringCalcMethod.InOrder;
         }
+
+        #endregion Brain Calculations
+
+        #region Neuron diagram positions
 
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
         {
@@ -165,6 +175,10 @@ namespace Einstein.config.bibiteVersions
                 fields.inov = fields.index + 1;
             }
         }
+
+        #endregion Neuron diagram positions
+
+        #region Converting Between Versions
 
         // inov is the old system for storing position information,
         // but the Inov field started being used for something in 0.6
@@ -232,5 +246,7 @@ namespace Einstein.config.bibiteVersions
                 throw new ArgumentException("index cannot be negative");
             }
         }
+
+        #endregion Converting Between Versions
     }
 }

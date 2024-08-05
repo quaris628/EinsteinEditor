@@ -115,6 +115,8 @@ namespace Einstein.config.bibiteVersions
             };
         }
 
+        #region Version Name Matching
+
         protected override bool IsMatchForVersionName(string bibitesVersionName)
         {
             if (!StringHasPrefix(bibitesVersionName, "0.6a")
@@ -134,6 +136,10 @@ namespace Einstein.config.bibiteVersions
             return false;
         }
 
+        #endregion Version Name Matching
+
+        #region Brain Calculations
+
         public override bool HasBiases()
         {
             return false;
@@ -143,6 +149,10 @@ namespace Einstein.config.bibiteVersions
         {
             return SynapseFiringCalcMethod.InOrder;
         }
+
+        #endregion Brain Calculations
+
+        #region Neuron diagram positions
 
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
         {
@@ -164,8 +174,12 @@ namespace Einstein.config.bibiteVersions
             }
         }
 
+        #endregion Neuron diagram positions
+
         // Changes from 0.6a5thru9:
         // deltaTime calculation now uses a brainUpdateFactor and tps
+
+        #region Converting Between Versions
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
@@ -216,5 +230,7 @@ namespace Einstein.config.bibiteVersions
 
             return brainOut;
         }
+
+        #endregion Converting Between Versions
     }
 }

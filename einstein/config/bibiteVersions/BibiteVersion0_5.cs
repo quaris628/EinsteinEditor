@@ -112,6 +112,8 @@ namespace Einstein.config.bibiteVersions
             };
         }
 
+        #region Brain Calculations
+
         public override bool HasBiases()
         {
             return false;
@@ -127,6 +129,10 @@ namespace Einstein.config.bibiteVersions
             return SynapseFiringCalcMethod.InOrder;
         }
 
+        #endregion Brain Calculations
+
+        #region Neuron diagram positions
+
         public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
         {
             // fall back to inov if it's not in the description
@@ -139,6 +145,10 @@ namespace Einstein.config.bibiteVersions
             // always set inov
             SetNeuronDiagramPositionInInov(fields, x, y);
         }
+
+        #endregion Neuron diagram positions
+
+        #region Converting Between Versions
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
@@ -163,5 +173,7 @@ namespace Einstein.config.bibiteVersions
 
             return brainOut;
         }
+
+        #endregion Converting Between Versions
     }
 }
