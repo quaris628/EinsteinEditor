@@ -10,13 +10,13 @@ using static Einstein.ui.editarea.NeuronValueCalculator;
 
 namespace Einstein.config.bibiteVersions
 {
-    public class BibiteVersion0_6_0a16 : BibiteVersion
+    public class BibiteVersion0_6_0a16thru17 : BibiteVersion
     {
-        internal static readonly BibiteVersion0_6_0a16 INSTANCE = new BibiteVersion0_6_0a16();
+        internal static readonly BibiteVersion0_6_0a16thru17 INSTANCE = new BibiteVersion0_6_0a16thru17();
 
-        private BibiteVersion0_6_0a16(): base(64)
+        private BibiteVersion0_6_0a16thru17(): base(64)
         {
-            VERSION_NAME = "0.6.0a16";
+            VERSION_NAME = "0.6.0a16 thru 17";
 
             INPUT_NODES_INDEX_MIN = 0;
             INPUT_NODES_INDEX_MAX = 32;
@@ -128,7 +128,7 @@ namespace Einstein.config.bibiteVersions
                 return false;
             }
 
-            foreach (string alphaNumber in new string[] { "16" })
+            foreach (string alphaNumber in new string[] { "16", "17" })
             {
                 if (bibitesVersionName.Equals("0.6a" + alphaNumber)
                     || bibitesVersionName.Equals("0.6.0a" + alphaNumber))

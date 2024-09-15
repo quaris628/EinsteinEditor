@@ -227,7 +227,7 @@ namespace Einstein.config.bibiteVersions
         {
             // To 0.6a16
             // deep copy with no changes
-            return new JsonBrain(brain, V0_6_0a16);
+            return new JsonBrain(brain, V0_6_0a16thru17);
         }
 
         #endregion Converting Between Versions
