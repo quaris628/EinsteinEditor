@@ -128,8 +128,8 @@ namespace Einstein.config.bibiteVersions
 
             foreach (char alphaNumber in "56789")
             {
-                if (StringHasPrefix(bibitesVersionName, "0.6a" + alphaNumber)
-                    || StringHasPrefix(bibitesVersionName, "0.6.0a" + alphaNumber))
+                if (bibitesVersionName.Equals("0.6a" + alphaNumber)
+                    || bibitesVersionName.Equals("0.6.0a" + alphaNumber))
                 {
                     return true;
                 }
