@@ -33,7 +33,7 @@ namespace Einstein.model
             {
                 return _type;
             }
-            protected set
+            set
             {
                 _type = value;
                 FlagChange();

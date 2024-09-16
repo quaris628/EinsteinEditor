@@ -82,22 +82,22 @@ namespace Einstein.config.bibiteVersions
 
             outputTypes = new NeuronType[]
             {
-                NeuronType.TanH,
-                NeuronType.TanH,
-                NeuronType.TanH,
-                NeuronType.TanH,
-                NeuronType.Sigmoid,
-                NeuronType.Sigmoid,
-                NeuronType.Sigmoid,
-                NeuronType.TanH,
-                NeuronType.Sigmoid,
-                NeuronType.ReLu,
-                NeuronType.ReLu,
-                NeuronType.ReLu,
-                NeuronType.Sigmoid,
-                NeuronType.Sigmoid,
-                NeuronType.Sigmoid,
-                NeuronType.TanH,
+                NeuronType.TanH, // Accelerate
+                NeuronType.TanH, // Rotate
+                NeuronType.TanH, // Herding
+                NeuronType.TanH, // EggProduction
+                NeuronType.Sigmoid, // Want2Lay
+                NeuronType.TanH, // Want2Eat - Changed to a TanH (instead of Sigmoid)
+                NeuronType.Sigmoid, // Digestion
+                NeuronType.TanH, // Grab
+                NeuronType.Sigmoid, // ClkReset
+                NeuronType.ReLu, // PhereOut1
+                NeuronType.ReLu, // PhereOut2
+                NeuronType.ReLu, // PhereOut3
+                NeuronType.Sigmoid, // Want2Grow
+                NeuronType.Sigmoid, // Want2Heal
+                NeuronType.Sigmoid, // Want2Attack
+                NeuronType.TanH, // ImmuneSystem
             };
 
             neuronTypes = new NeuronType[]
@@ -173,8 +173,10 @@ namespace Einstein.config.bibiteVersions
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
             // To 0.6a13thru15
-            // deep copy with no changes
-            return new JsonBrain(brain, V0_6_0a13thru15);
+            // Want2Eat needs to have its type changed to a Sigmoid
+            JsonBrain newBrain = new JsonBrain(brain, V0_6_0a13thru15);
+            newBrain.GetNeuron(38).Type = NeuronType.Sigmoid;
+            return newBrain;
         }
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)

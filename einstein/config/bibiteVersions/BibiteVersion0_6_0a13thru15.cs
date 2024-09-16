@@ -226,8 +226,10 @@ namespace Einstein.config.bibiteVersions
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
             // To 0.6a16
-            // deep copy with no changes
-            return new JsonBrain(brain, V0_6_0a16thru17);
+            // Want2Eat needs to have its type changed to a TanH
+            JsonBrain newBrain = new JsonBrain(brain, V0_6_0a16thru17);
+            newBrain.GetNeuron(38).Type = NeuronType.TanH;
+            return newBrain;
         }
 
         #endregion Converting Between Versions
