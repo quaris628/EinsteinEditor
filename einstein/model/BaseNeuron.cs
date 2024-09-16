@@ -207,6 +207,11 @@ namespace Einstein.model
         {
             Value = CustomNumberParser.StringToFloat(value);
         }
+
+        public static float GetDefaultBias(NeuronType type)
+        {
+            return type == NeuronType.Mult ? 1 : 0;
+        }
     }
 
     public class InvalidIndexException : BrainException

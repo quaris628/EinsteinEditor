@@ -222,21 +222,35 @@ namespace Einstein.ui.editarea
             Brain = brain;
 
             // Remove neurons that aren't connected to anything
+            // (Unless they are outputs with non-default biases)
             LinkedList<BaseNeuron> neuronsToRemoveFromNewBrain = new LinkedList<BaseNeuron>(); // avoid concurrent modification
+            LinkedList<BaseNeuron> neuronsToReplaceInNewBrain = new LinkedList<BaseNeuron>();
             foreach (BaseNeuron neuron in Brain.Neurons)
             {
                 if (Brain.GetSynapsesFrom(neuron).Count == 0
                     && Brain.GetSynapsesTo(neuron).Count == 0)
                 {
-                    neuronsToRemoveFromNewBrain.AddFirst(neuron);
-                    continue;
+                    if (Brain.BibiteVersion.HasBiases()
+                        && neuron.IsOutput()
+                        && neuron.Bias != BaseNeuron.GetDefaultBias(neuron.Type))
+                    {
+                        neuronsToReplaceInNewBrain.AddFirst(neuron);
+                    }
+                    else
+                    {
+                        neuronsToRemoveFromNewBrain.AddFirst(neuron);
+                    }
                 }
-                if (neuron.Index >= nextHiddenNeuronIndex)
+                else if (neuron.Index >= nextHiddenNeuronIndex)
                 {
                     nextHiddenNeuronIndex = neuron.Index + 1;
                 }
             }
             foreach (BaseNeuron neuron in neuronsToRemoveFromNewBrain)
+            {
+                Brain.Remove(neuron);
+            }
+            foreach (BaseNeuron neuron in neuronsToReplaceInNewBrain)
             {
                 Brain.Remove(neuron);
             }
@@ -258,6 +272,10 @@ namespace Einstein.ui.editarea
                 Brain.Remove(neuron); // also removes all synapses
             }
             foreach (BaseNeuron neuron in neurons)
+            {
+                AddNeuron(neuron, false);
+            }
+            foreach (BaseNeuron neuron in neuronsToReplaceInNewBrain)
             {
                 AddNeuron(neuron, false);
             }
