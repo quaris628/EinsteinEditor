@@ -123,7 +123,6 @@ namespace Einstein.model.json
                 bool alreadyInBrain = false;
                 foreach (BaseNeuron oldNeuron in allNeurons)
                 {
-                    // TODO handle saving between different versions
                     if (newNeuron.Equals(oldNeuron))
                     {
                         // Remove and replace b/c there may be hidden properties we
