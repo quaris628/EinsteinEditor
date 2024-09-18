@@ -561,10 +561,17 @@ namespace Einstein
                         newDescription = nonNumberDesc + descNumberInt;
                     }
                     // replace 2nd instance of the original description with the new description
-                    int indexOf1stInstance = 1 + Math.Max(json.IndexOf("\"" + originalDescription + "\""),
-                        json.IndexOf("\"" + originalDescription + "-"));
+                    int indexOf1stInstanceWithoutDash = json.IndexOf("\"" + originalDescription + "\"");
+                    int indexOf1stInstanceWithDash = json.IndexOf("\"" + originalDescription + "-");
+                    int indexOf1stInstance = Math.Min(indexOf1stInstanceWithoutDash == -1 ? int.MaxValue : 1 + indexOf1stInstanceWithoutDash,
+                        indexOf1stInstanceWithDash == -1 ? int.MaxValue : 1 + indexOf1stInstanceWithDash);
+
                     int indexOf2ndInstance = 1 + Math.Max(json.IndexOf("\"" + originalDescription + "\"", indexOf1stInstance),
                         json.IndexOf("\"" + originalDescription + "-", indexOf1stInstance));
+                    if (indexOf2ndInstance == 0)
+                    {
+                        throw new InvalidOperationException($"A second instance of the '{originalDescription}' duplicate description couldn't be found");
+                    }
                     json = json.Substring(0, indexOf2ndInstance) +
                         newDescription +
                         json.Substring(indexOf2ndInstance + originalDescription.Length);
