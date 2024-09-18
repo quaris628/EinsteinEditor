@@ -570,7 +570,6 @@ namespace Einstein
                         json.Substring(indexOf2ndInstance + originalDescription.Length);
                     continue;
                 }
-                // TODO could catch InvalidDescriptionException and ask if they want the description automatically corrected
                 catch (BrainException e)
                 {
                     IO.POPUPS.ShowErrorPopup("Load Failed",
