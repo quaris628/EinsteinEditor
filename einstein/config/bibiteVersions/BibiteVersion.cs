@@ -1,4 +1,5 @@
 ﻿using Einstein.config.bibiteVersions;
+using Einstein.config.bibiteVersions.vanilla;
 using Einstein.model;
 using Einstein.model.json;
 using LibraryFunctionReplacements;
@@ -13,7 +14,7 @@ using static Einstein.ui.editarea.NeuronValueCalculator;
 
 namespace Einstein.config.bibiteVersions
 {
-    public abstract class BibiteVersion : IComparable<BibiteVersion>
+    public abstract class BibiteVersion
     {
         // When adding a new version, update at minimum the Version Instances region
 
@@ -30,6 +31,8 @@ namespace Einstein.config.bibiteVersions
         // What the version is when you start the editor
         public static readonly BibiteVersion DEFAULT_VERSION = V0_5; // Must be listed after V0_5
 
+        // Order is important!
+        // If there's any overlaps w/ version name matching, the first version in this list is used
         protected static readonly BibiteVersion[] ALL_VERSIONS = new BibiteVersion[] {
                 V0_6_0a16thru17,
                 V0_6_0a13thru15,
@@ -43,9 +46,6 @@ namespace Einstein.config.bibiteVersions
         #endregion Version Instances (Static)
 
         #region Properties
-
-        // used to order the versions
-        private int versionId;
 
         public string VERSION_NAME { get; protected set; }
         
@@ -63,10 +63,12 @@ namespace Einstein.config.bibiteVersions
 
         #endregion Properties
 
-        protected BibiteVersion(int versionId)
+        protected BibiteVersion()
         {
-            this.versionId = versionId;
+
         }
+
+        public abstract BibiteVanillaVersion GetVanilla();
 
         #region Version Name Matching
 
@@ -287,31 +289,6 @@ namespace Einstein.config.bibiteVersions
 
         #region Generic Overrides
 
-        public int CompareTo(BibiteVersion other)
-        {
-            return versionId.CompareTo(other.versionId);
-        }
-
-        public static bool operator >(BibiteVersion v1, BibiteVersion v2)
-        {
-            return v1.CompareTo(v2) > 0;
-        }
-
-        public static bool operator <(BibiteVersion v1, BibiteVersion v2)
-        {
-            return v1.CompareTo(v2) < 0;
-        }
-
-        public static bool operator >=(BibiteVersion v1, BibiteVersion v2)
-        {
-            return v1.CompareTo(v2) >= 0;
-        }
-
-        public static bool operator <=(BibiteVersion v1, BibiteVersion v2)
-        {
-            return v1.CompareTo(v2) <= 0;
-        }
-
         public override string ToString()
         {
             return VERSION_NAME;
@@ -321,37 +298,44 @@ namespace Einstein.config.bibiteVersions
 
         #region Converting Between Versions
 
-        public BaseBrain CreateConvertedCopyOf(BaseBrain brain, BibiteVersion targetVersion)
+        public static BaseBrain CreateConvertedCopyOf(BaseBrain brain, BibiteVersion targetVersion)
         {
             if (brain.BibiteVersion == targetVersion)
             {
                 return brain;
             }
-            else if (brain.BibiteVersion < targetVersion)
+            else if (brain.BibiteVersion is BibiteModdedVersion
+                && targetVersion is BibiteModdedVersion)
             {
-                // convert upwards
-                do
-                {
-                    brain = brain.BibiteVersion.CreateVersionUpCopyOf(brain);
-                }
-                while (brain.BibiteVersion < targetVersion);
-                return brain;
+                throw new CannotConvertException("Directly converting between different modded versions is not supported");
             }
-            else // if (brain.BibiteVersion > targetVersion)
+            else if (brain.BibiteVersion is BibiteVanillaVersion
+                && targetVersion is BibiteVanillaVersion targetVanillaVersion)
             {
-                // convert downwards
-                do
-                {
-                    brain = brain.BibiteVersion.CreateVersionDownCopyOf(brain);
-                }
-                while (brain.BibiteVersion > targetVersion);
-                return brain;
+                return BibiteVanillaVersion.CreateConvertedCopyOf(brain, targetVanillaVersion);
+            }
+            else if (brain.BibiteVersion is BibiteModdedVersion brainModdedVersion
+                && targetVersion is BibiteVanillaVersion targetVanillaVersion1)
+            {
+                // modded to base vanilla
+               BaseBrain vanillaBrain = brainModdedVersion.CreateVanillaCopyOf(brain);
+                // base vanilla to target
+                return BibiteVanillaVersion.CreateConvertedCopyOf(vanillaBrain, targetVanillaVersion1);
+            }
+            else if (brain.BibiteVersion is BibiteVanillaVersion
+                && targetVersion is BibiteModdedVersion targetModdedVersion)
+            {
+                // current version to base vanilla
+                BaseBrain baseVanillaBrain = BibiteVanillaVersion.CreateConvertedCopyOf(
+                    brain, targetModdedVersion.GetVanilla());
+                // base vanilla to target modded version
+                return targetModdedVersion.CreateCopyFromVanilla(baseVanillaBrain);
+            }
+            else
+            {
+                throw new InvalidOperationException("Unrecognized mix of modded vs. vanilla bibite versions");
             }
         }
-
-        protected abstract BaseBrain CreateVersionUpCopyOf(BaseBrain brain);
-
-        protected abstract BaseBrain CreateVersionDownCopyOf(BaseBrain brain);
 
         #endregion Converting Between Versions
     }

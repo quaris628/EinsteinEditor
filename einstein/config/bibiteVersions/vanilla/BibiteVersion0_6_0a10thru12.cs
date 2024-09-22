@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using static Einstein.model.json.JsonNeuron;
 using static Einstein.ui.editarea.NeuronValueCalculator;
 
-namespace Einstein.config.bibiteVersions
+namespace Einstein.config.bibiteVersions.vanilla
 {
-    public class BibiteVersion0_6_0a10thru12 : BibiteVersion
+    public class BibiteVersion0_6_0a10thru12 : BibiteVanillaVersion
     {
         internal static readonly BibiteVersion0_6_0a10thru12 INSTANCE = new BibiteVersion0_6_0a10thru12();
 

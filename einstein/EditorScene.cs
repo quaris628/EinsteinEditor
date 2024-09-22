@@ -455,7 +455,7 @@ namespace Einstein
                 }
                 try
                 {
-                    brainToSave = bibiteVersion.CreateConvertedCopyOf(brainToSave, targetBibiteVersion);
+                    brainToSave = BibiteVersion.CreateConvertedCopyOf(brainToSave, targetBibiteVersion);
                 }
                 catch (CannotConvertException e)
                 {
