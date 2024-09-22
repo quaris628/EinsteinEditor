@@ -70,7 +70,7 @@ namespace Einstein
 
         private string savePath;
         private string loadPath;
-        private string mostRecentSavedToFile;
+        private string mostRecentSavedToFile; // most recent save that did not involve a version conversion
         private string mostRecentLoadedToFile;
         private int prevWindowWidth;
         private int prevWindowHeight;
@@ -357,7 +357,7 @@ namespace Einstein
 
             string targetFile = getResaveTargetFile();
 
-            if (targetFile != null && saveToBibite(targetFile))
+            if (targetFile != null && saveToBibite(targetFile, out bool _))
             {
                 editArea.Brain.MarkChangesAsSaved();
                 resaveButton.SetDisplaying(false);
@@ -375,17 +375,18 @@ namespace Einstein
                 // User cancelled
                 return;
             }
-            if (saveToBibite(filepath))
+            if (saveToBibite(filepath, out bool didConversion) && !didConversion)
             {
                 bibiteNameText.SetMessage(getBb8NameText());
                 resaveButton.SetDisplaying(false);
             }
         }
 
-        private bool saveToBibite(string filepath)
+        private bool saveToBibite(string filepath, out bool didConversion)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
 
+            didConversion = false;
             if (!File.Exists(filepath))
             {
                 IO.POPUPS.ShowErrorPopup("Save Failed", "File not found.");
@@ -456,6 +457,7 @@ namespace Einstein
                 try
                 {
                     brainToSave = BibiteVersion.CreateConvertedCopyOf(brainToSave, targetBibiteVersion);
+                    didConversion = true;
                 }
                 catch (CannotConvertException e)
                 {
@@ -469,7 +471,14 @@ namespace Einstein
             json = json.Substring(0, startIndex) + " " + brainJson + json.Substring(endIndex);
             File.WriteAllText(filepath, json);
             savePath = Path.GetDirectoryName(filepath);
-            mostRecentSavedToFile = filepath;
+            if (!didConversion)
+            {
+                if (filepath.Equals(getResaveTargetFile()))
+                {
+                    editArea.Brain.MarkChangesAsSaved();
+                }
+                mostRecentSavedToFile = filepath;
+            }
             saveMessageText.Show();
             return true;
         }
