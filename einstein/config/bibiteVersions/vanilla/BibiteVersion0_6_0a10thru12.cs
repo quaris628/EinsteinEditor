@@ -184,7 +184,7 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
-            return new JsonBrain(V0_6_0a5thru9);
+            return new JsonBrain(brain, V0_6_0a5thru9);
         }
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {

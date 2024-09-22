@@ -252,7 +252,7 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            return new JsonBrain(V0_6_0a10thru12);
+            return new JsonBrain(brain, V0_6_0a10thru12);
         }
 
         #endregion Converting Between Versions
