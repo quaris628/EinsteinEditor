@@ -45,6 +45,7 @@
     <Compile Include="config\bibiteVersions\BibiteModdedVersion.cs" />
     <Compile Include="config\bibiteVersions\BibiteVanillaVersion.cs" />
     <Compile Include="config\bibiteVersions\BibiteVersion.cs" />
+    <Compile Include="config\bibiteVersions\dietStrengthDefence\BibiteVersion0_5_DietStrengthDefence_v1.cs" />
     <Compile Include="config\bibiteVersions\strafe\BibiteVersion0_5_Strafe_v1.cs" />
     <Compile Include="config\bibiteVersions\vanilla\BibiteVersion0_4.cs" />
     <Compile Include="config\bibiteVersions\vanilla\BibiteVersion0_6_0a0thru4.cs" />

@@ -28,6 +28,7 @@ namespace Einstein.config.bibiteVersions
         public static readonly BibiteVersion V0_6_0a0thru4 = BibiteVersion0_6_0a0thru4.INSTANCE;
         public static readonly BibiteVersion V0_5 = BibiteVersion0_5.INSTANCE;
         public static readonly BibiteVersion V0_5_Strafe_v1 = BibiteVersion0_5_Strafe_v1.INSTANCE;
+        public static readonly BibiteVersion V0_5_DietStrengthDefence_v1 = BibiteVersion0_5_DietStrengthDefence_v1.INSTANCE;
         public static readonly BibiteVersion V0_4 = BibiteVersion0_4.INSTANCE;
 
         // What the version is when you start the editor
@@ -42,6 +43,7 @@ namespace Einstein.config.bibiteVersions
                 V0_6_0a5thru9,
                 V0_6_0a0thru4,
                 V0_5_Strafe_v1,
+                V0_5_DietStrengthDefence_v1,
                 V0_5,
                 V0_4
             };
