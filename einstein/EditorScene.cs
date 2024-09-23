@@ -245,6 +245,25 @@ namespace Einstein
             editArea.Initialize();
 
             IO.RENDERER.Add(leftMenuBackground, LEFT_MENU_LAYER - 1);
+            // Workaround to a phi bug where drawables that don't have actions subscribed to them
+            // do not block clicks from hitting other drawables that are in a further-back layer
+            IO.MOUSE.CLICK.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.DOWN.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.LEFT_DOWN.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.MID_CLICK.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.MID_CLICK_DOWN.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.MID_CLICK_UP.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.MOVE.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.RIGHT_CLICK.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.RIGHT_DOWN.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.UP.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.MID_SCROLL.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.MID_SCROLL_DOWN.SubscribeOnDrawable(() => { }, leftMenuBackground);
+            IO.MOUSE.MID_CLICK_UP.SubscribeOnDrawable(() => { }, leftMenuBackground);
+
             input.Initialize();
             hidden.Initialize();
             output.Initialize();

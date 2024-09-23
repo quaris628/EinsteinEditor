@@ -43,6 +43,25 @@ namespace Einstein.ui.menu
                 IO.RENDERER.Add(optionDrawable, OPTION_LAYER);
             }
             IO.RENDERER.Add(background, BACKGROUND_LAYER);
+            // Workaround to a phi bug where drawables that don't have actions subscribed to them
+            // do not block clicks from hitting other drawables that are in a further-back layer
+            IO.MOUSE.CLICK.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.DOWN.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.LEFT_DOWN.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.MID_CLICK.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.MID_CLICK_DOWN.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.MID_CLICK_UP.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.MOVE.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.RIGHT_CLICK.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.RIGHT_DOWN.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.UP.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.MID_SCROLL.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.MID_SCROLL_DOWN.SubscribeOnDrawable(() => { }, background);
+            IO.MOUSE.MID_CLICK_UP.SubscribeOnDrawable(() => { }, background);
+
             isInit = true;
             RepositionOptions();
             HideOptions();
