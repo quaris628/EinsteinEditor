@@ -41,6 +41,9 @@ What this can do:
  - Support multiple bibite versions
  - Auto-convert brains between bibite versions (when saving to different-versioned files)
  - Simulate calculations of neuron values!
+ - Support some mods for the bibites:
+   - Strafing https://github.com/MeltingDiamond/Strafe-mod
+   - Diet, Strength, and Defense neurons https://github.com/MeltingDiamond/Diet-Strength-and-Defence-nuron
 
 What this can't do (and probably never will):
  - Edit bibite genes
@@ -78,7 +81,18 @@ What this might do (future ideas):
 
  -----
 
-To any potential contributors:
- - I want to talk with you about what you want to work on and help you out! (If it hasn't been too long since I wrote this, anyway.) In order of my preference, Discord: quaris#9905 Reddit: u/quaris628 Email: quaris314@gmail.com and finally Carrier pigeon.
+To programmers who want to contribute:
+ - I want to talk with you about what you want to work on and help you out! In order of my preference, Discord: quaris#9905 Email: quaris314@gmail.com Reddit: u/quaris628 and finally Carrier pigeon.
  - I've been using Visual Studio 2019 and 2022 for an IDE. Just FYI so that if you're running into problems with another IDE, you can always try switching as a workaround.
  - This project uses the phi graphics "library"/framework/whatever thing, which is a separate project I partnered in creating a few years ago. It has its own repository (https://github.com/quaris628/PhiGraphicsEngine), so if you spot any issues with or want to contribute to any of the code in the 'phi' folder, consider also going to that repo to write up an issue or pull request (or whatever). If you don't, I'll still try to keep the two in sync myself. [Edit: Given how many small fixes and enhancements I've been making, I'm just giving up on keeping the other repo in sync. I'll do a larger sync 'sometime later'.]
+
+To modders who want to integrate:
+ - Make your mod save .bb8s with a unique identifier in the "version" field, so that Einstein can identify this version. Format for the existing mods is: "vX.X.X modded: modName v1"
+ - Make your mod allow loading .bb8s with these unique identifiers
+   1. Find Utility.Version
+   2. Find this line near the end of the file: 'private static Regex format = new Regex("^[0-9]+(\\.[0-9]+)(\\.[0-9]+)?([aA][0-9]+)?$");'
+   3. Update that string to be "^[0-9]+(\\.[0-9]+)(\\.[0-9]+)?([aA][0-9]+)?( ?modded:.*)?$" (optionally, you can replace the ".*" with your mod's name if you want it to refuse to load other mods)
+   4. It's possible you'll have to update the Parse function? Not updating it didn't seem to cause Melting Diamond any problems though.
+ - Add support for your mod's different brains to Einstein.
+   - If you can contact me (Quaris), I'll try to find time to do this for you!
+   - if I can't do it for some reason... Take a look around einstein/config/bibiteVersions. Create a new bibite version class (see the bibiteVersions folder) that extends BibiteModdedVersion, and add it to ALL_VERSIONS in BibiteVersion. If you're doing something simple like adding an input/output neuron, you can look at how the existing versions (modded or unmodded) handle that and copy them. If you're doing more complex stuff, up to and including a complete overhaul of how brains work... good luck, I hope Einstein's code isn't unreadable!
