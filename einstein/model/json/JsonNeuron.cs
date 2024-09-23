@@ -119,8 +119,11 @@ namespace Einstein.model.json
                 this.index = jsonNeuron.Index;
                 this.inov = jsonNeuron.Inov;
                 this.SetDescPiece(DescPiece.Description, jsonNeuron.Description);
-                this.SetDescPiece(DescPiece.ColorHex, ColorTranslator.ToHtml(
-                    Color.FromArgb(jsonNeuron.ColorGroup.ToArgb())).Substring(1));
+                if (jsonNeuron.ColorGroup != DEFAULT_COLOR_GROUP)
+                {
+                    this.SetDescPiece(DescPiece.ColorHex, ColorTranslator.ToHtml(
+                        Color.FromArgb(jsonNeuron.ColorGroup.ToArgb())).Substring(1));
+                }
                 this.value = jsonNeuron.Value;
                 this.lastInput = jsonNeuron.LastInput;
                 this.lastOutput = jsonNeuron.Value; // I'm pretty sure lastOutput should always be set to Value?
