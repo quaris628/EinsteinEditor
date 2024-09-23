@@ -32,8 +32,6 @@ namespace phi.graphics.drawables
             {
                 onDeselect.Add(selectedButton.GetOnClick());
             }
-            unselectedButton.withOnClick(Select);
-            selectedButton.withOnClick(Deselect);
             this.unselectedButton = unselectedButton.Build();
             this.selectedButton = selectedButton.Build();
             this.selectedButton.SetDisplaying(false);
@@ -44,6 +42,7 @@ namespace phi.graphics.drawables
         {
             unselectedButton.Initialize();
             selectedButton.Initialize();
+            IO.MOUSE.CLICK.SubscribeOnDrawable(onClick, this);
             isInit = true;
         }
 
@@ -53,6 +52,19 @@ namespace phi.graphics.drawables
             isInit = false;
             unselectedButton.Uninitialize();
             unselectedButton.Uninitialize();
+            IO.MOUSE.CLICK.UnsubscribeFromDrawable(onClick, this);
+        }
+
+        private void onClick()
+        {
+            if (selected)
+            {
+                Deselect();
+            }
+            else
+            {
+                Select();
+            }
         }
 
         public virtual void Select()
