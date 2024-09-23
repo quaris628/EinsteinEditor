@@ -33,6 +33,8 @@ namespace Einstein.ui.menu
         private const int BRAIN_UPDATE_FACTOR_MAX = 100;
         private const string DEFAULT_BRAIN_UPDATE_FACTOR = "2";
 
+        private const int LAYER = EditorScene.LEFT_MENU_LAYER;
+
         private EditArea editArea;
         private float deltaTimePerTick;
 
@@ -164,23 +166,23 @@ namespace Einstein.ui.menu
         public void Initialize()
         {
             showValuesToggle.Initialize();
-            IO.RENDERER.Add(showValuesToggle);
-            IO.RENDERER.Add(calcButton);
+            IO.RENDERER.Add(showValuesToggle, LAYER);
+            IO.RENDERER.Add(calcButton, LAYER);
             calcButton.Initialize();
 
-            IO.RENDERER.Add(simSpeedLabel);
-            IO.RENDERER.Add(simSpeedText);
+            IO.RENDERER.Add(simSpeedLabel, LAYER);
+            IO.RENDERER.Add(simSpeedText, LAYER);
             simSpeedSET.Initialize();
-            IO.RENDERER.Add(assumeFpsMsg);
+            IO.RENDERER.Add(assumeFpsMsg, LAYER);
 
-            IO.RENDERER.Add(ticksPerSecondLabel);
-            IO.RENDERER.Add(ticksPerSecondText);
+            IO.RENDERER.Add(ticksPerSecondLabel, LAYER);
+            IO.RENDERER.Add(ticksPerSecondText, LAYER);
             ticksPerSecondSET.Initialize();
-            IO.RENDERER.Add(brainUpdateFactorLabel);
-            IO.RENDERER.Add(brainUpdateFactorText);
+            IO.RENDERER.Add(brainUpdateFactorLabel, LAYER);
+            IO.RENDERER.Add(brainUpdateFactorText, LAYER);
             brainUpdateFactorSET.Initialize();
 
-            IO.RENDERER.Add(deltaTimeMsg);
+            IO.RENDERER.Add(deltaTimeMsg, LAYER);
             recalculateDeltaTimePerTick();
             deltaTimeMsg.SetMessage(getDeltaTimeMsg());
             hideValues();

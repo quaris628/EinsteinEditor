@@ -39,6 +39,8 @@ namespace Einstein
         private const string NEW_VERSION_BACKGROUND = EinsteinConfig.RES_DIR + "NewVersionBackground.png";
         private const string NEW_VERSION_DISMISS_BACKGROUND = EinsteinConfig.RES_DIR + "NewVersionDismissBackground.png";
 
+        public const int LEFT_MENU_LAYER = 20;
+
         // ----------------------------------------------------------------
         //  Data/Constructor
         // ----------------------------------------------------------------
@@ -48,6 +50,8 @@ namespace Einstein
         private EditArea editArea;
 
         // TODO maybe refactor the input/output/hidden buttons into one renderable class
+
+        private RectangleDrawable leftMenuBackground;
         private MenuCategory selected;
         private IONeuronMenuCategory input;
         private HiddenNeuronMenuCategory hidden;
@@ -80,6 +84,11 @@ namespace Einstein
             bibiteVersion = BibiteVersion.DEFAULT_VERSION;
 
             editArea = new EditArea(new JsonBrain(bibiteVersion), moveNeuronIntoMenu, bibiteVersion);
+
+            leftMenuBackground = new RectangleDrawable(0, 0,
+                MenuCategoryButton.WIDTH + 2 * EinsteinConfig.PAD,
+                EinsteinConfig.Window.INITIAL_HEIGHT);
+            leftMenuBackground.SetPen(new Pen(new SolidBrush(EinsteinConfig.COLOR_MODE.MenuBackground)));
 
             selected = null;
             MenuCategoryButton inputButton = new MenuCategoryButton(
@@ -235,11 +244,12 @@ namespace Einstein
         {
             editArea.Initialize();
 
+            IO.RENDERER.Add(leftMenuBackground, LEFT_MENU_LAYER - 1);
             input.Initialize();
             hidden.Initialize();
             output.Initialize();
             editColorMenuCategory.Initialize();
-            IO.RENDERER.Add(paintColorDisplay, EinsteinConfig.Render.DEFAULT_LAYER);
+            IO.RENDERER.Add(paintColorDisplay, LEFT_MENU_LAYER);
             IO.KEYS.Subscribe(RebindColorShortcut1, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[0] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
             IO.KEYS.Subscribe(RebindColorShortcut2, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[1] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
             IO.KEYS.Subscribe(RebindColorShortcut3, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[2] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
@@ -252,29 +262,29 @@ namespace Einstein
             IO.KEYS.Subscribe(RebindColorShortcut0, (int)EinsteinConfig.Keybinds.SELECT_PAINT_COLORS[9] + (int)EinsteinConfig.Keybinds.REBIND_PAINT_COLOR_MODIFIER);
 
             loadButton.Initialize();
-            IO.RENDERER.Add(loadButton);
+            IO.RENDERER.Add(loadButton, LEFT_MENU_LAYER);
             resaveButton.Initialize();
-            IO.RENDERER.Add(resaveButton, EinsteinConfig.Render.DEFAULT_LAYER + 1);
+            IO.RENDERER.Add(resaveButton, LEFT_MENU_LAYER + 1);
             resaveButtonDisabledPlaceholder.Initialize();
-            IO.RENDERER.Add(resaveButtonDisabledPlaceholder);
-            IO.RENDERER.Add(bibiteNameText);
-            IO.RENDERER.Add(bibiteVersionText);
+            IO.RENDERER.Add(resaveButtonDisabledPlaceholder, LEFT_MENU_LAYER);
+            IO.RENDERER.Add(bibiteNameText, LEFT_MENU_LAYER);
+            IO.RENDERER.Add(bibiteVersionText, LEFT_MENU_LAYER);
             saveToButton.Initialize();
-            IO.RENDERER.Add(saveToButton);
+            IO.RENDERER.Add(saveToButton, LEFT_MENU_LAYER);
 
             autoArrangeButton.Initialize();
-            IO.RENDERER.Add(autoArrangeButton);
+            IO.RENDERER.Add(autoArrangeButton, LEFT_MENU_LAYER);
             helpButton.Initialize();
-            IO.RENDERER.Add(helpButton);
+            IO.RENDERER.Add(helpButton, LEFT_MENU_LAYER);
 
             calcControls.Initialize();
             
             zoomControls.Initialize();
 
             newVersionAvailable.Initialize();
-            IO.RENDERER.Add(newVersionAvailable);
+            IO.RENDERER.Add(newVersionAvailable, LEFT_MENU_LAYER);
             newVersionAvailableDismiss.Initialize();
-            IO.RENDERER.Add(newVersionAvailableDismiss);
+            IO.RENDERER.Add(newVersionAvailableDismiss, LEFT_MENU_LAYER);
 
             IO.KEYS.Subscribe(saveToBibite, EinsteinConfig.Keybinds.SAVE_TO_BIBITE);
             IO.KEYS.Subscribe(resaveToBibite, EinsteinConfig.Keybinds.SAVE_BIBITE);
@@ -934,6 +944,7 @@ namespace Einstein
             }
             if (newHeight != prevWindowHeight)
             {
+                leftMenuBackground.SetHeight(newHeight);
                 zoomControls.Reposition();
                 repositionNewVersion();
                 prevWindowHeight = newHeight;

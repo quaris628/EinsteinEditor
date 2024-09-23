@@ -18,6 +18,8 @@ namespace Einstein.ui.menu
         public const string RESET_IMAGE = EinsteinConfig.RES_DIR + "ZoomReset.png";
         public const int IMAGES_SIZE = 32;
 
+        private const int LAYER = EditorScene.LEFT_MENU_LAYER;
+
         private Sprite zoomIcon;
         private Button zoomOut;
         private Button zoomIn;
@@ -53,10 +55,10 @@ namespace Einstein.ui.menu
             zoomOut.Initialize();
             zoomIn.Initialize();
             reset.Initialize();
-            IO.RENDERER.Add(zoomOut);
-            IO.RENDERER.Add(zoomIcon);
-            IO.RENDERER.Add(zoomIn);
-            IO.RENDERER.Add(reset);
+            IO.RENDERER.Add(zoomOut, LAYER);
+            IO.RENDERER.Add(zoomIcon, LAYER);
+            IO.RENDERER.Add(zoomIn, LAYER);
+            IO.RENDERER.Add(reset, LAYER);
         }
 
         public void Uninitialize()

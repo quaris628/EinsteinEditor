@@ -31,7 +31,7 @@ namespace Einstein.ui
         {
             hideAt = DateTime.Now.AddSeconds(SECONDS_TO_SHOW);
             IO.FRAME_TIMER.Subscribe(WaitToHide);
-            IO.RENDERER.Add(this);
+            IO.RENDERER.Add(this, EditorScene.LEFT_MENU_LAYER);
         }
 
         private void WaitToHide()

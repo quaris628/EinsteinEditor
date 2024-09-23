@@ -37,7 +37,7 @@ namespace Einstein.ui.menu
             Button.Initialize();
             Button.SubscribeOnSelect(ShowOptions);
             Button.SubscribeOnDeselect(HideOptions);
-            IO.RENDERER.Add(Button);
+            IO.RENDERER.Add(Button, EditorScene.LEFT_MENU_LAYER);
             foreach (Drawable optionDrawable in sortedOptionDrawables.Values)
             {
                 IO.RENDERER.Add(optionDrawable, OPTION_LAYER);
