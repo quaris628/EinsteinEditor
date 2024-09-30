@@ -4,25 +4,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using static Einstein.model.json.JsonNeuron;
-using static Einstein.ui.editarea.NeuronValueCalculator;
 
 namespace Einstein.config.bibiteVersions.vanilla
 {
-    public class BibiteVersion0_6_0a16thru17 : BibiteVanillaVersion
+    public class BibiteVersion0_6_0a18 : BibiteVanillaVersion
     {
-        internal static readonly BibiteVersion0_6_0a16thru17 INSTANCE = new BibiteVersion0_6_0a16thru17();
+        internal static readonly BibiteVersion0_6_0a18 INSTANCE = new BibiteVersion0_6_0a18();
 
-        private BibiteVersion0_6_0a16thru17(): base(64)
+        private BibiteVersion0_6_0a18(): base(65)
         {
-            VERSION_NAME = "0.6.0a16 thru 17";
+            VERSION_NAME = "0.6.0a18";
 
+            // TODO
             INPUT_NODES_INDEX_MIN = 0;
-            INPUT_NODES_INDEX_MAX = 32;
-            OUTPUT_NODES_INDEX_MIN = 33;
-            OUTPUT_NODES_INDEX_MAX = 48;
-            HIDDEN_NODES_INDEX_MIN = 49;
+            INPUT_NODES_INDEX_MAX = 31;
+            OUTPUT_NODES_INDEX_MIN = 32;
+            OUTPUT_NODES_INDEX_MAX = 46;
+            HIDDEN_NODES_INDEX_MIN = 47;
             HIDDEN_NODES_INDEX_MAX = int.MaxValue;
 
             DESCRIPTIONS = new string[] {
@@ -59,7 +58,7 @@ namespace Einstein.config.bibiteVersions.vanilla
                 "Phero1Heading",
                 "Phero2Heading",
                 "Phero3Heading",
-                "InfectionRate",
+                // Removed "InfectionRate",
                 // ----- Outputs -----
                 "Accelerate",
                 "Rotate",
@@ -76,7 +75,7 @@ namespace Einstein.config.bibiteVersions.vanilla
                 "Want2Grow",
                 "Want2Heal",
                 "Want2Attack",
-                "ImmuneSystem",
+                // Removed "ImmuneSystem",
             };
 
             outputTypes = new NeuronType[]
@@ -96,7 +95,7 @@ namespace Einstein.config.bibiteVersions.vanilla
                 NeuronType.Sigmoid, // Want2Grow
                 NeuronType.Sigmoid, // Want2Heal
                 NeuronType.Sigmoid, // Want2Attack
-                NeuronType.TanH, // ImmuneSystem
+                // Removed NeuronType.TanH, // ImmuneSystem
             };
 
             neuronTypes = new NeuronType[]
@@ -127,7 +126,7 @@ namespace Einstein.config.bibiteVersions.vanilla
                 return false;
             }
 
-            foreach (string alphaNumber in new string[] { "16", "17" })
+            foreach (string alphaNumber in new string[] { "18" })
             {
                 if (bibitesVersionName.Equals("0.6a" + alphaNumber)
                     || bibitesVersionName.Equals("0.6.0a" + alphaNumber))
@@ -166,8 +165,8 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         #region Converting Between Versions
 
-        // Changes from 0.6a13thru15:
-        // None (except for synapse order calculations)
+        // Changes from 0.6a16 thru 17:
+        // Removed immune system neurons: Input InfectionRate and output ImmuneSystem
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
@@ -175,11 +174,12 @@ namespace Einstein.config.bibiteVersions.vanilla
             {
                 throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
             }
-            // To 0.6a13thru15
-            // Want2Eat needs to have its type changed to a Sigmoid
-            JsonBrain newBrain = new JsonBrain(brain, V0_6_0a13thru15);
-            newBrain.GetNeuron(38).Type = NeuronType.Sigmoid;
-            return newBrain;
+            // To 0.6a16 thru 17
+            return ConversionAddIONeurons(brain, V0_6_0a16thru17, new (int, NeuronType)[]
+            {
+                (32, NeuronType.Input), // InfectionRate
+                (48, NeuronType.TanH), // ImmuneSystem
+            });
         }
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
@@ -188,12 +188,7 @@ namespace Einstein.config.bibiteVersions.vanilla
             {
                 throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
             }
-            // To 0.6a18
-            return ConversionRemoveIONeurons(brain, V0_6_0a18, new int[]
-            {
-                32, // InfectionRate
-                48, // ImmuneSystem
-            });
+            throw new NoSuchVersionException("There is no supported version higher than " + VERSION_NAME);
         }
 
         #endregion Converting Between Versions

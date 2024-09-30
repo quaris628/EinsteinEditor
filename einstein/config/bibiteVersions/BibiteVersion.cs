@@ -22,6 +22,7 @@ namespace Einstein.config.bibiteVersions
 
         #region Version Instances (Static)
 
+        public static readonly BibiteVersion V0_6_0a18 = BibiteVersion0_6_0a18.INSTANCE;
         public static readonly BibiteVersion V0_6_0a16thru17 = BibiteVersion0_6_0a16thru17.INSTANCE;
         public static readonly BibiteVersion V0_6_0a13thru15 = BibiteVersion0_6_0a13thru15.INSTANCE;
         public static readonly BibiteVersion V0_6_0a5thru9 = BibiteVersion0_6_0a5thru9.INSTANCE;
@@ -38,6 +39,7 @@ namespace Einstein.config.bibiteVersions
         // Order is important!
         // If there's any overlaps w/ version name matching, the first version in this list is used
         protected static readonly BibiteVersion[] ALL_VERSIONS = new BibiteVersion[] {
+                V0_6_0a18,
                 V0_6_0a16thru17,
                 V0_6_0a13thru15,
                 V0_6_0a10thru12,
@@ -484,4 +486,3 @@ namespace Einstein.config.bibiteVersions
         #endregion Converting Between Versions
     }
 }
-

@@ -49,6 +49,7 @@
     <Compile Include="config\bibiteVersions\strafe\BibiteVersion0_5_Strafe_v1.cs" />
     <Compile Include="config\bibiteVersions\vanilla\BibiteVersion0_4.cs" />
     <Compile Include="config\bibiteVersions\vanilla\BibiteVersion0_6_0a0thru4.cs" />
+    <Compile Include="config\bibiteVersions\vanilla\BibiteVersion0_6_0a18.cs" />
     <Compile Include="config\bibiteVersions\vanilla\BibiteVersion0_6_0a16thru17.cs" />
     <Compile Include="config\bibiteVersions\vanilla\BibiteVersion0_6_0a13thru15.cs" />
     <Compile Include="config\bibiteVersions\vanilla\BibiteVersion0_6_0a10thru12.cs" />
