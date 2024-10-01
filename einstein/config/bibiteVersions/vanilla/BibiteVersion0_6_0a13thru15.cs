@@ -197,7 +197,11 @@ namespace Einstein.config.bibiteVersions.vanilla
                 // increment each index by 1
                 int newIndex = neuron.Index + 1;
 
-                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, V0_6_0a0thru4);
+                JsonNeuron jn = new JsonNeuron(newIndex,
+                    neuron.Type,
+                    0f,
+                    neuron.Description,
+                    V0_6_0a10thru12);
                 jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
                 jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
                 jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
