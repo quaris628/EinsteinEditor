@@ -194,64 +194,25 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
-            // To 0.6a0thru4
-            // Remove the 2 new IO neurons, and shift indexes to fill the holes
-
-            BaseBrain brainOut = new JsonBrain(V0_6_0a0thru4);
-            foreach (BaseNeuron neuron in brain.Neurons)
+            if (brain.BibiteVersion != this)
             {
-                // update each index
-                int newIndex = ConvertNeuronIndexTo0_6_0a0thru4(neuron.Index);
-
-                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, V0_6_0a0thru4);
-                jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
-                jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
-                jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
-
-                brainOut.Add(jn);
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
             }
-            foreach (BaseSynapse synapse in brain.Synapses)
+            // To 0.6a0 thru 4
+            return ConversionRemoveIONeurons(brain, V0_6_0a0thru4, new int[]
             {
-                int newToIndex = ConvertNeuronIndexTo0_6_0a0thru4(synapse.To.Index);
-                int newFromIndex = ConvertNeuronIndexTo0_6_0a0thru4(synapse.From.Index);
-                BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
-                BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
-                brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
-            }
-
-            return brainOut;
-        }
-
-        private int ConvertNeuronIndexTo0_6_0a0thru4(int index)
-        {
-            if (0 <= index && index <= 7)
-            {
-                return index;
-            }
-            else if (8 == index)
-            {
-                throw new CannotConvertException("This brain contains an EggsStored neuron, which does not exist in version " + V0_5.VERSION_NAME);
-            }
-            else if (9 <= index && index <= 36)
-            {
-                return index - 1;
-            }
-            else if (37 == index)
-            {
-                throw new CannotConvertException("This brain contains an EggProduction neuron, which does not exist in version " + V0_5.VERSION_NAME);
-            }
-            else if (38 <= index)
-            {
-                return index - 2;
-            }
-            else
-            {
-                throw new ArgumentException("index cannot be negative");
-            }
+                8, // EggStored
+                37, // EggProduction
+            });
         }
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
+            if (brain.BibiteVersion != this)
+            {
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
+            }
+            // To 0.6a10 thru 12
             return new JsonBrain(brain, V0_6_0a10thru12);
         }
 

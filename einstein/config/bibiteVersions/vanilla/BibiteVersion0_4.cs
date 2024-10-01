@@ -153,11 +153,19 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
+            if (brain.BibiteVersion != this)
+            {
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
+            }
             throw new NoSuchVersionException("There is no supported version lower than " + VERSION_NAME);
         }
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
+            if (brain.BibiteVersion != this)
+            {
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
+            }
             // To 0.5
             // deep copy with no changes
             return new JsonBrain(brain, V0_5);

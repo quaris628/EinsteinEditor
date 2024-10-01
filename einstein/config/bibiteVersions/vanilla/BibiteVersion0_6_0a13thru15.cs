@@ -185,7 +185,11 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
-            // To 0.6a10thru12
+            if (brain.BibiteVersion != this)
+            {
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
+            }
+            // To 0.6a10 thru 12
             // Replace biases with constant node synapses, and shift all indexes up 1
 
             BaseBrain brainOut = new JsonBrain(V0_6_0a10thru12);
@@ -229,7 +233,11 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            // To 0.6a16
+            if (brain.BibiteVersion != this)
+            {
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
+            }
+            // To 0.6a16 thru 17
             // Want2Eat needs to have its type changed to a TanH
             JsonBrain newBrain = new JsonBrain(brain, V0_6_0a16thru17);
             if (brain.ContainsNeuron(38))

@@ -172,118 +172,25 @@ namespace Einstein.config.bibiteVersions.strafe
         {
             if (brain.BibiteVersion != GetVanilla())
             {
-                throw new InvalidOperationException("brain version must be the mod's base vanilla version");
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the mod's base vanilla version ({GetVanilla().VERSION_NAME})");
             }
-            // Add 2 new IO neurons, and shift indexes to accomodate them
-
-            BaseBrain brainOut = new JsonBrain(this);
-            foreach (BaseNeuron neuron in brain.Neurons)
-            {
-                // update each index
-                int newIndex = ConvertVanillaNeuronIndexToModded(neuron.Index);
-                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, GetVanilla());
-                jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
-                jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
-                jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
-
-                brainOut.Add(jn);
-            }
-            foreach (BaseSynapse synapse in brain.Synapses)
-            {
-                int newToIndex = ConvertVanillaNeuronIndexToModded(synapse.To.Index);
-                int newFromIndex = ConvertVanillaNeuronIndexToModded(synapse.From.Index);
-                BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
-                BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
-                brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
-            }
-
-            // StrafeSpeed
-            brainOut.Add(new JsonNeuron(33, NeuronType.Input, 0f, this.DESCRIPTIONS[33], this));
-            // Strafe
-            brainOut.Add(new JsonNeuron(49, NeuronType.TanH, 0f, this.DESCRIPTIONS[49], this));
-
-            return brainOut;
-        }
-
-        private int ConvertVanillaNeuronIndexToModded(int vanillaIndex)
-        {
-            if (0 <= vanillaIndex && vanillaIndex <= 32)
-            {
-                return vanillaIndex;
-            }
-            else if (33 <= vanillaIndex && vanillaIndex <= 47)
-            {
-                return vanillaIndex + 1;
-            }
-            else if (48 <= vanillaIndex)
-            {
-                return vanillaIndex + 2;
-            }
-            else
-            {
-                throw new ArgumentException("index cannot be negative");
-            }
+            return ConversionAddIONeurons(brain, this, new (int, NeuronType)[] {
+                (33, NeuronType.Input), // StrafeSpeed
+                (49, NeuronType.TanH), // Strafe
+            });
         }
 
         internal override BaseBrain CreateVanillaCopyOf(BaseBrain brain)
         {
             if (brain.BibiteVersion != this)
             {
-                throw new InvalidOperationException("brain version must match");
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
             }
-            // Remove the 2 new IO neurons, and shift indexes to fill the holes
-
-            BaseBrain brainOut = new JsonBrain(GetVanilla());
-            foreach (BaseNeuron neuron in brain.Neurons)
+            return ConversionRemoveIONeurons(brain, GetVanilla(), new int[]
             {
-                // update each index
-                int newIndex = ConvertModdedNeuronIndexToVanilla(neuron.Index);
-
-                JsonNeuron jn = new JsonNeuron(newIndex, neuron.Type, 0f, neuron.Description, GetVanilla());
-                jn.DiagramX = ((JsonNeuron)neuron).DiagramX;
-                jn.DiagramY = ((JsonNeuron)neuron).DiagramY;
-                jn.ColorGroup = ((JsonNeuron)neuron).ColorGroup;
-
-                brainOut.Add(jn);
-            }
-            foreach (BaseSynapse synapse in brain.Synapses)
-            {
-                int newToIndex = ConvertModdedNeuronIndexToVanilla(synapse.To.Index);
-                int newFromIndex = ConvertModdedNeuronIndexToVanilla(synapse.From.Index);
-                BaseNeuron newTo = brainOut.GetNeuron(newToIndex);
-                BaseNeuron newFrom = brainOut.GetNeuron(newFromIndex);
-                brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
-            }
-
-            return brainOut;
-        }
-
-        private int ConvertModdedNeuronIndexToVanilla(int moddedIndex)
-        {
-            if (0 <= moddedIndex && moddedIndex <= 32)
-            {
-                return moddedIndex;
-            }
-            else if (33 == moddedIndex)
-            {
-                throw new CannotConvertException("This brain contains a StrafeSpeed neuron, which does not exist in version " + GetVanilla().VERSION_NAME);
-            }
-            else if (34 <= moddedIndex && moddedIndex <= 48)
-            {
-                return moddedIndex - 1;
-            }
-            else if (49 == moddedIndex)
-            {
-                throw new CannotConvertException("This brain contains an Strafe neuron, which does not exist in version " + GetVanilla().VERSION_NAME);
-            }
-            else if (50 <= moddedIndex)
-            {
-                return moddedIndex - 2;
-            }
-            else
-            {
-                throw new ArgumentException("index cannot be negative");
-            }
+                33, // StrafeSpeed
+                49, // Strafe
+            });
         }
 
         #endregion Converting Between Versions

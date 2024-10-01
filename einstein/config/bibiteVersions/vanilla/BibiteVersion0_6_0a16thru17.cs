@@ -171,6 +171,10 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
+            if (brain.BibiteVersion != this)
+            {
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
+            }
             // To 0.6a13thru15
             // Want2Eat needs to have its type changed to a Sigmoid
             JsonBrain newBrain = new JsonBrain(brain, V0_6_0a13thru15);

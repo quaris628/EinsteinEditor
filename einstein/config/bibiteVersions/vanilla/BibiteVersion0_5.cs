@@ -153,6 +153,10 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
+            if (brain.BibiteVersion != this)
+            {
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
+            }
             // To 0.4
             // deep copy with no changes
             return new JsonBrain(brain, V0_4);
@@ -160,7 +164,11 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
         {
-            // To 0.6.0a
+            if (brain.BibiteVersion != this)
+            {
+                throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
+            }
+            // To 0.6.0a 0 thru 4
             // set inov for Input/output neurons to 1 + index
             BaseBrain brainOut = new JsonBrain(brain, V0_6_0a0thru4);
 

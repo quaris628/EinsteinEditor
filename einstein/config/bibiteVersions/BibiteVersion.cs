@@ -3,6 +3,7 @@ using Einstein.config.bibiteVersions.strafe;
 using Einstein.config.bibiteVersions.vanilla;
 using Einstein.model;
 using Einstein.model.json;
+using Einstein.ui.editarea;
 using LibraryFunctionReplacements;
 using System;
 using System.Collections.Generic;
@@ -340,6 +341,144 @@ namespace Einstein.config.bibiteVersions
             {
                 throw new InvalidOperationException("Unrecognized mix of modded vs. vanilla bibite versions");
             }
+        }
+
+        protected static BaseBrain ConversionAddIONeurons(
+            BaseBrain sourceBrain,
+            BibiteVersion destinationVersion,
+            IEnumerable<(int, NeuronType)> addedNeurons)
+        {
+            BaseBrain destinationBrain = new JsonBrain(destinationVersion);
+            int[] sortedAddedNeuronIndexes = addedNeurons.Select(neuronInfo => neuronInfo.Item1).ToArray();
+            Array.Sort(sortedAddedNeuronIndexes);
+            foreach (BaseNeuron neuron in sourceBrain.Neurons)
+            {
+                int index = ConvertNeuronIndexWithAddedIONeurons(
+                    neuron.Index,
+                    sortedAddedNeuronIndexes);
+                JsonNeuron convertedNeuron = new JsonNeuron(
+                    index,
+                    neuron.Type,
+                    neuron.Bias,
+                    neuron.Description,
+                    destinationBrain.BibiteVersion);
+                JsonNeuron jsonNeuron = (JsonNeuron)neuron;
+                convertedNeuron.DiagramX = jsonNeuron.DiagramX;
+                convertedNeuron.DiagramY = jsonNeuron.DiagramY;
+                convertedNeuron.ColorGroup = jsonNeuron.ColorGroup;
+                destinationBrain.Add(convertedNeuron);
+            }
+            foreach ((int, NeuronType) addedNeuron in addedNeurons)
+            {
+                int addedNeuronIndex = addedNeuron.Item1;
+                NeuronType addedNeuronType = addedNeuron.Item2;
+                JsonNeuron convertedNeuron = new JsonNeuron(addedNeuronIndex,
+                    addedNeuronType,
+                    BaseNeuron.GetDefaultBias(addedNeuronType),
+                    destinationVersion.DESCRIPTIONS[addedNeuronIndex],
+                    destinationVersion);
+                convertedNeuron.DiagramX = NeuronRenderable.SPAWN_X;
+                convertedNeuron.DiagramY = NeuronRenderable.SPAWN_Y;
+                convertedNeuron.ColorGroup = BaseNeuron.DEFAULT_COLOR_GROUP;
+                destinationBrain.Add(convertedNeuron);
+            }
+            foreach (BaseSynapse synapse in sourceBrain.Synapses)
+            {
+                int convertedFromIndex = ConvertNeuronIndexWithAddedIONeurons(
+                    synapse.From.Index,
+                    sortedAddedNeuronIndexes);
+                int convertedToIndex = ConvertNeuronIndexWithAddedIONeurons(
+                    synapse.To.Index,
+                    sortedAddedNeuronIndexes);
+                JsonNeuron convertedFrom = (JsonNeuron)destinationBrain.GetNeuron(convertedFromIndex);
+                JsonNeuron convertedTo = (JsonNeuron)destinationBrain.GetNeuron(convertedToIndex);
+                destinationBrain.Add(new JsonSynapse(convertedFrom, convertedTo, synapse.Strength));
+            }
+            return destinationBrain;
+
+        }
+
+        private static int ConvertNeuronIndexWithAddedIONeurons(
+            int index, int[] sortedAddedNeuronIndexes)
+        {
+            // from lowest index to highest index
+            foreach (int addedIndex in sortedAddedNeuronIndexes)
+            {
+                if (addedIndex <= index)
+                {
+                    index++;
+                }
+            }
+            return index;
+        }
+
+        protected static BaseBrain ConversionRemoveIONeurons(
+            BaseBrain sourceBrain,
+            BibiteVersion destinationVersion,
+            IEnumerable<int> removedNeuronIndexes)
+        {
+            BaseBrain destinationBrain = new JsonBrain(destinationVersion);
+            int[] sortedRemovedNeuronIndexes = removedNeuronIndexes.ToArray();
+            Array.Sort(sortedRemovedNeuronIndexes);
+            foreach (BaseNeuron neuron in sourceBrain.Neurons)
+            {
+                int index = ConvertNeuronIndexWithRemovedIONeurons(
+                    neuron.Index,
+                    sortedRemovedNeuronIndexes,
+                    sourceBrain.BibiteVersion,
+                    destinationBrain.BibiteVersion);
+                JsonNeuron convertedNeuron = new JsonNeuron(
+                    index,
+                    neuron.Type,
+                    neuron.Bias,
+                    neuron.Description,
+                    destinationBrain.BibiteVersion);
+                JsonNeuron jsonNeuron = (JsonNeuron)neuron;
+                convertedNeuron.DiagramX = jsonNeuron.DiagramX;
+                convertedNeuron.DiagramY = jsonNeuron.DiagramY;
+                convertedNeuron.ColorGroup = jsonNeuron.ColorGroup;
+                destinationBrain.Add(convertedNeuron);
+            }
+            foreach (BaseSynapse synapse in sourceBrain.Synapses)
+            {
+                int convertedFromIndex = ConvertNeuronIndexWithRemovedIONeurons(
+                    synapse.From.Index,
+                    sortedRemovedNeuronIndexes,
+                    sourceBrain.BibiteVersion,
+                    destinationBrain.BibiteVersion);
+                int convertedToIndex = ConvertNeuronIndexWithRemovedIONeurons(
+                    synapse.To.Index,
+                    sortedRemovedNeuronIndexes,
+                    sourceBrain.BibiteVersion,
+                    destinationBrain.BibiteVersion);
+                JsonNeuron convertedFrom = (JsonNeuron)destinationBrain.GetNeuron(convertedFromIndex);
+                JsonNeuron convertedTo = (JsonNeuron)destinationBrain.GetNeuron(convertedToIndex);
+                destinationBrain.Add(new JsonSynapse(convertedFrom, convertedTo, synapse.Strength));
+            }
+            return destinationBrain;
+        }
+
+        private static int ConvertNeuronIndexWithRemovedIONeurons(
+            int index, int[] sortedRemovedNeuronIndexes,
+            BibiteVersion sourceVersion, BibiteVersion destinationVersion)
+        {
+            // Order doesn't matter
+            foreach (int removedIndex in sortedRemovedNeuronIndexes)
+            {
+                if (removedIndex == index)
+                {
+                    throw new CannotConvertException($"This brain contains a '{sourceVersion.DESCRIPTIONS[removedIndex]}' neuron, which does not exist in version {destinationVersion.VERSION_NAME}");
+                }
+            }
+            // from highest index to lowest index
+            foreach (int removedIndex in sortedRemovedNeuronIndexes.Reverse())
+            {
+                if (removedIndex < index)
+                {
+                    index--;
+                }
+            }
+            return index;
         }
 
         #endregion Converting Between Versions
