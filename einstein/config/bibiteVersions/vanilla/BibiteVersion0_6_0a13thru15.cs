@@ -228,7 +228,10 @@ namespace Einstein.config.bibiteVersions.vanilla
             // To 0.6a16
             // Want2Eat needs to have its type changed to a TanH
             JsonBrain newBrain = new JsonBrain(brain, V0_6_0a16thru17);
-            newBrain.GetNeuron(38).Type = NeuronType.TanH;
+            if (brain.ContainsNeuron(38))
+            {
+                newBrain.GetNeuron(38).Type = NeuronType.TanH;
+            }
             return newBrain;
         }
 
