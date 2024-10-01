@@ -16,7 +16,6 @@ namespace Einstein.config.bibiteVersions.vanilla
         {
             VERSION_NAME = "0.6.0a18";
 
-            // TODO
             INPUT_NODES_INDEX_MIN = 0;
             INPUT_NODES_INDEX_MAX = 31;
             OUTPUT_NODES_INDEX_MIN = 32;
