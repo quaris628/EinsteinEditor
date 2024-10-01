@@ -32,6 +32,10 @@ namespace Einstein.config.bibiteVersions.vanilla
             {
                 throw new InvalidOperationException("vanillabrain must be vanilla");
             }
+            else if (vanillabrain.BibiteVersion.GetVanilla() == targetVersion)
+            {
+                return vanillabrain;
+            }
             else if (vanillabrain.BibiteVersion.GetVanilla() < targetVersion)
             {
                 // convert upwards
@@ -42,7 +46,7 @@ namespace Einstein.config.bibiteVersions.vanilla
                 while (vanillabrain.BibiteVersion.GetVanilla() < targetVersion);
                 return vanillabrain;
             }
-            else // if (brain.BibiteVersion > targetVersion)
+            else // if (targetVersion < vanillabrain.BibiteVersion.GetVanilla())
             {
                 do
                 {
