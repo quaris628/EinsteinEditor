@@ -12,7 +12,7 @@ namespace Einstein.config.bibiteVersions.vanilla
     {
         internal static readonly BibiteVersion0_6_0a18 INSTANCE = new BibiteVersion0_6_0a18();
 
-        private BibiteVersion0_6_0a18(): base(65)
+        private BibiteVersion0_6_0a18(): base(605)
         {
             VERSION_NAME = "0.6.0a18";
 
@@ -187,7 +187,9 @@ namespace Einstein.config.bibiteVersions.vanilla
             {
                 throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
             }
-            throw new NoSuchVersionException("There is no supported version higher than " + VERSION_NAME);
+            // To 0.6.0
+            // deep copy with no changes
+            return new JsonBrain(brain, V0_6_0);
         }
 
         #endregion Converting Between Versions

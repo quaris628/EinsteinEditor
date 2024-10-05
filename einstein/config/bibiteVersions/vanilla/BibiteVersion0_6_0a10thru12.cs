@@ -14,7 +14,7 @@ namespace Einstein.config.bibiteVersions.vanilla
     {
         internal static readonly BibiteVersion0_6_0a10thru12 INSTANCE = new BibiteVersion0_6_0a10thru12();
 
-        private BibiteVersion0_6_0a10thru12(): base(62)
+        private BibiteVersion0_6_0a10thru12(): base(602)
         {
             VERSION_NAME = "0.6.0a 10 thru 12";
 
