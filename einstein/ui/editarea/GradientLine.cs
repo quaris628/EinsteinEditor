@@ -16,13 +16,6 @@ namespace Einstein.ui.editarea
         public Color EndColor { get; private set; }
         public int Width { get; private set; }
 
-        public GradientLine(Edge e, Color startColor, Color endColor, int width) : base(e)
-        {
-            this.StartColor = startColor;
-            this.EndColor = endColor;
-            this.Width = width;
-        }
-
         public GradientLine(int startX, int startY, int endX, int endY, Color startColor, Color endColor, int width) : base(startX, startY, endX, endY)
         {
             this.StartColor = startColor;
