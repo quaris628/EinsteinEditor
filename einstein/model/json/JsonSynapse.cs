@@ -32,13 +32,11 @@ namespace Einstein.model.json
 
         // unused for now, but keep track of between loading and saving just in case
         private int inov;
-        private bool En;
 
         public JsonSynapse(JsonNeuron from, JsonNeuron to, float strength)
-            : base(from, to, strength)
+            : base(from, to, strength, true)
         {
             inov = 0;
-            En = true;
         }
 
         public JsonSynapse(string json, int startIndex, JsonBrain brain)
@@ -65,7 +63,7 @@ namespace Einstein.model.json
             
             Strength = parser.getNextValueFloat("Weight");
 
-            En = parser.getNextValueBool("En");
+            IsEnabled = parser.getNextValueBool("En");
 
             parser.endParsingLeafObj();
         }
@@ -81,7 +79,7 @@ namespace Einstein.model.json
                 CustomNumberParser.IntToString(toIndex),
                 CustomNumberParser.FloatToString(Strength, int.MaxValue,
                     BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX_DECIMALS),
-                En ? "true" : "false");
+                IsEnabled ? "true" : "false");
         }
 
         public override string GetSave()
@@ -92,7 +90,7 @@ namespace Einstein.model.json
                 CustomNumberParser.IntToString(To.Index),
                 CustomNumberParser.FloatToString(Strength, int.MaxValue,
                     BibiteConfigVersionIndependent.SYNAPSE_STRENGTH_MAX_DECIMALS),
-                En ? "true" : "false");
+                IsEnabled ? "true" : "false");
         } 
     }
 

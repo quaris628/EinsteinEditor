@@ -16,6 +16,8 @@ namespace Einstein.model
         private BaseNeuron _from;
         private BaseNeuron _to;
         private float _strength;
+        private bool _isEnabled;
+
         public BaseNeuron From {
             get { return _from; }
             set {
@@ -40,18 +42,33 @@ namespace Einstein.model
             }
         }
 
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set
+            {
+                _isEnabled = value;
+                FlagChange();
+            }
+        }
+
         protected BaseSynapse() { }
 
-        public BaseSynapse(BaseNeuron from, BaseNeuron to, float strength)
+        public BaseSynapse(BaseNeuron from, BaseNeuron to, float strength, bool isEnabled)
         {
             From = from;
             To = to;
             Strength = strength;
+            IsEnabled = isEnabled;
         }
 
         public override string ToString()
         {
-            return From.ToString() + " --(x" + getStrengthAsStringForUI() + ")--> " + To.ToString();
+            return From.ToString()
+                + (IsEnabled ? " ---(x" : " - -(x")
+                + getStrengthAsStringForUI()
+                + (IsEnabled ? ")---> " : ") - >")
+                + To.ToString();
         }
 
         public virtual string GetSave() { throw new NotSupportedException(); }
