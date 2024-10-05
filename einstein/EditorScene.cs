@@ -642,6 +642,7 @@ namespace Einstein
             bibiteVersionText.SetMessage(getBb8VersionText());
 
             calcControls.OnBibiteVersionUpdate();
+            editArea.ResetZoomLevel();
         }
 
         private string parseVersionName(string json)
