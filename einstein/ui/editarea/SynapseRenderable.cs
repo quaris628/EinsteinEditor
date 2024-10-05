@@ -26,6 +26,7 @@ namespace Einstein.ui.editarea
         private const float STRENGTH_POS_ALONG_SYNAPSE_LENGTH = 0.7f;
 
         private const string CIRCLE_ARROW_IMAGE = EinsteinConfig.RES_DIR + "CircularSynapse.png";
+        private const string CIRCLE_ARROW_DOTTED_IMAGE = EinsteinConfig.RES_DIR + "CircularSynapseDotted.png";
 
         public BaseSynapse Synapse { get; private set; }
         public NeuronRenderable From { get; private set; }
@@ -43,7 +44,8 @@ namespace Einstein.ui.editarea
             : base(from.NeuronDrawable.GetCircleCenterX(),
                   from.NeuronDrawable.GetCircleCenterY(),
                   to.NeuronDrawable.GetCircleCenterX(),
-                  to.NeuronDrawable.GetCircleCenterY())
+                  to.NeuronDrawable.GetCircleCenterY(),
+                  synapse.IsEnabled)
         {
             this.editArea = editArea;
             Synapse = synapse;
@@ -59,7 +61,7 @@ namespace Einstein.ui.editarea
         public SynapseRenderable(EditArea editArea, NeuronRenderable from, int mouseX, int mouseY)
             : base(from.NeuronDrawable.GetCircleCenterX(),
                   from.NeuronDrawable.GetCircleCenterY(),
-                  mouseX, mouseY)
+                  mouseX, mouseY, true)
         {
             this.editArea = editArea;
             Synapse = null;
@@ -124,14 +126,16 @@ namespace Einstein.ui.editarea
 
             IO.MOUSE.MOVE.Unsubscribe(UpdateTipXY);
             IO.MOUSE.RIGHT_UP.Unsubscribe(TryFinalize);
-            IO.MOUSE.LEFT_UP.Subscribe(RemoveIfShiftDownAndExactlyContainsClick);
-            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(RemoveIfShiftDown, strengthText.GetDrawable());
+            IO.MOUSE.LEFT_UP.Subscribe(OnClickArrowRectangle);
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(OnClickStrengthText, strengthText.GetDrawable());
 
             if (From == To)
             {
                 IO.RENDERER.Remove(line);
                 IO.RENDERER.Remove(arrow);
-                circleArrow = new Sprite(new ImageWrapper(CIRCLE_ARROW_IMAGE), line.GetCenterX(), line.GetCenterY());
+                circleArrow = new Sprite(
+                    new ImageWrapper(Synapse.IsEnabled ? CIRCLE_ARROW_IMAGE : CIRCLE_ARROW_DOTTED_IMAGE),
+                    line.GetCenterX(), line.GetCenterY());
                 IO.RENDERER.Add(circleArrow, ARROW_LAYER);
             }
 
@@ -156,8 +160,8 @@ namespace Einstein.ui.editarea
 
                 IO.RENDERER.Remove(strengthText);
                 strengthText.Uninitialize();
-                IO.MOUSE.LEFT_UP.Unsubscribe(RemoveIfShiftDownAndExactlyContainsClick);
-                IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(RemoveIfShiftDown, strengthText.GetDrawable());
+                IO.MOUSE.LEFT_UP.Unsubscribe(OnClickArrowRectangle);
+                IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(OnClickStrengthText, strengthText.GetDrawable());
             }
             else
             {
@@ -240,23 +244,13 @@ namespace Einstein.ui.editarea
             sset.SetAnchor((int)textX, (int)textY);
         }
 
-        // ----- Removing -----
+        // ----- On-Click -----
 
-        private void RemoveIfShiftDown()
+        private void OnClickArrowRectangle(int x, int y)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
-            {
-                editArea.RemoveSynapse(Synapse);
-            }
-        }
 
-        private void RemoveIfShiftDownAndExactlyContainsClick(int x, int y)
-        {
-            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            if (!IO.KEYS.IsModifierKeyDown(Keys.Shift)) { return; }
-
-            // We only want to remove the synapse if the click was on the arrow's shape,
+            // We only want to respond to clicks if the click was on the arrow's shape,
             if (From == To && circleArrow.GetBoundaryRectangle().Contains(x, y))
             {
                 // i.e., for circular arrowss, is it inside the circle the arrow makes?
@@ -269,16 +263,56 @@ namespace Einstein.ui.editarea
                 int dy = y - arrowCircleCenterY;
                 if (dx * dx + dy * dy <= 22 * 22)
                 {
-                    editArea.RemoveSynapse(Synapse);
+                    OnClickArrow();
                 }
             }
             // i.e. for straight arrows, if the distance is less than half of the line's width,
             // or if the click is inside the triangle of the arrow
-            else if (line.GetBoundaryRectangle().Contains(x, y)
-                && (line.CalcSqDistanceToLine(x, y) <= HALF_LINE_WIDTH * HALF_LINE_WIDTH
-                || arrow.TriangleContainsPoint(x, y)))
+            else if ((line.CalcSqDistanceToLine(x, y) <= HALF_LINE_WIDTH * HALF_LINE_WIDTH
+                && (line.GetX() <= x && x <= line.GetX2() || line.GetX2() <= x && x <= line.GetX()
+                    || line.GetY() <= y && y <= line.GetY2() || line.GetY2() <= y && y <= line.GetY()))
+                || arrow.TriangleContainsPoint(x, y))
+            {
+                OnClickArrow();
+            }
+        }
+
+        private void OnClickArrow()
+        {
+            if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
             {
                 editArea.RemoveSynapse(Synapse);
+            }
+            else if (IO.KEYS.IsModifierKeyDown(Keys.Alt))
+            {
+                Synapse.IsEnabled = !Synapse.IsEnabled;
+                if (From == To)
+                {
+                    IO.RENDERER.Remove(circleArrow);
+                    circleArrow = new Sprite(
+                        new ImageWrapper(Synapse.IsEnabled ? CIRCLE_ARROW_IMAGE : CIRCLE_ARROW_DOTTED_IMAGE),
+                        circleArrow.GetX(), circleArrow.GetY());
+                    IO.RENDERER.Add(circleArrow, ARROW_LAYER);
+                }
+                else
+                {
+                    SetIsSolid(Synapse.IsEnabled);
+                }
+            }
+        }
+
+        private void OnClickStrengthText()
+        {
+            if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
+            {
+                editArea.RemoveSynapse(Synapse);
+            }
+            else if (IO.KEYS.IsModifierKeyDown(Keys.Alt))
+            {
+                Synapse.IsEnabled = !Synapse.IsEnabled;
+                SetIsSolid(Synapse.IsEnabled);
+                IO.FRAME_TIMER.QueueUninit(() => { sset.DisableEditing(); }); // kinda hacky but whatever
             }
         }
 

@@ -16,21 +16,35 @@ namespace Einstein.ui.editarea
         public const int LINE_WIDTH = 2 * HALF_LINE_WIDTH;
         public const int HALF_LINE_WIDTH = 3;
 
-        protected GradientLine line;
+        protected Line line;
         protected SynapseArrow arrow;
         protected bool isInit;
+        protected int layer;
 
-        public LineArrow(int startX, int startY, int pointX, int pointY)
+        public LineArrow(int startX, int startY, int pointX, int pointY, bool isSolid)
         {
-            line = new GradientLine(startX, startY, pointX, pointY,
-                EinsteinConfig.COLOR_MODE.SynapseBase,
-                EinsteinConfig.COLOR_MODE.SynapseTip, LINE_WIDTH);
+            if (isSolid)
+            {
+                line = new GradientLine(startX, startY, pointX, pointY,
+                    EinsteinConfig.COLOR_MODE.SynapseBase,
+                    EinsteinConfig.COLOR_MODE.SynapseTip, LINE_WIDTH);
+            }
+            else
+            {
+                line = new DottedGradientLine(startX, startY, pointX, pointY,
+                    EinsteinConfig.COLOR_MODE.SynapseBase,
+                    EinsteinConfig.COLOR_MODE.SynapseTip,
+                    LINE_WIDTH,
+                    LINE_WIDTH * 2,
+                    LINE_WIDTH);
+            }
             arrow = new SynapseArrow(pointX, pointY, pointX - startX, pointY - startY);
             arrow.SetPen(new Pen(EinsteinConfig.COLOR_MODE.SynapseTip, LINE_WIDTH));
         }
 
         public virtual void Initialize(int layer)
         {
+            this.layer = layer;
             IO.RENDERER.Add(line, layer);
             IO.RENDERER.Add(arrow, layer);
             isInit = true;
@@ -41,6 +55,40 @@ namespace Einstein.ui.editarea
             isInit = false;
             IO.RENDERER.Remove(line);
             IO.RENDERER.Remove(arrow);
+        }
+
+        /// <summary>
+        /// As opposed to dotted.
+        /// </summary>
+        /// <param name="solid"></param>
+        public void SetIsSolid(bool solid)
+        {
+            if (solid && (line is DottedGradientLine dottedLine))
+            {
+                IO.RENDERER.Remove(line);
+                line = new GradientLine(line.GetX(),
+                    dottedLine.GetY(),
+                    dottedLine.GetX2(),
+                    dottedLine.GetY2(),
+                    dottedLine.StartColor,
+                    dottedLine.EndColor,
+                    LINE_WIDTH);
+                IO.RENDERER.Add(line, layer);
+            }
+            else if (!solid && (line is GradientLine solidLine))
+            {
+                IO.RENDERER.Remove(line);
+                line = new DottedGradientLine(line.GetX(),
+                    solidLine.GetY(),
+                    solidLine.GetX2(),
+                    solidLine.GetY2(),
+                    solidLine.StartColor,
+                    solidLine.EndColor,
+                    LINE_WIDTH,
+                    LINE_WIDTH * 2,
+                    LINE_WIDTH);
+                IO.RENDERER.Add(line, layer);
+            }
         }
 
         protected virtual void UpdateBaseXY(int x, int y)
