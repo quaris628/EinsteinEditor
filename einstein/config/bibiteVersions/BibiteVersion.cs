@@ -35,7 +35,7 @@ namespace Einstein.config.bibiteVersions
         public static readonly BibiteVersion V0_4 = BibiteVersion0_4.INSTANCE;
 
         // What the version is when you start the editor
-        public static readonly BibiteVersion DEFAULT_VERSION = V0_5; // Must be listed after V0_5
+        public static readonly BibiteVersion DEFAULT_VERSION = V0_6_0; // Must be listed after the above variables
 
         // Order is important!
         // If there's any overlaps w/ version name matching, the first version in this list is used
