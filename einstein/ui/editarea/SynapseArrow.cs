@@ -56,22 +56,33 @@ namespace Einstein.ui.editarea
         {
             // quick check first for being inside square around tip point
             int taxicabDistance = Math.Abs(x - GetX()) + Math.Abs(y - GetY());
-            if (taxicabDistance > HYPOTENUSE_LENGTH)
+            if (taxicabDistance > HYPOTENUSE_LENGTH * 2)
             {
                 return false;
             }
 
             // slower, (more) exact check second
 
+            // Actual click area needs to include the width of the line being drawn (at least roughly)
+            float extraLineWidth = GetPen().Width * 0.5f;
+            float cosBaseAngle = (rightBaseX - leftBaseX) / (2 * HALF_WIDTH);
+            float sinBaseAngle = (rightBaseY - leftBaseY) / (2 * HALF_WIDTH);
+            int clickAreaLeftBaseX = (int)(leftBaseX - cosBaseAngle * extraLineWidth);
+            int clickAreaLeftBaseY = (int)(leftBaseY - sinBaseAngle * extraLineWidth);
+            int clickAreaRightBaseX = (int)(rightBaseX + cosBaseAngle * extraLineWidth);
+            int clickAreaRightBaseY = (int)(rightBaseY + sinBaseAngle * extraLineWidth);
+            int clickAreaTipX = (int)(GetX() - sinBaseAngle * extraLineWidth);
+            int clickAreaTipY = (int)(GetY() + cosBaseAngle * extraLineWidth);
+
             // this way seems roundabout, but I think it's the easiest:
             // calculate the areas of the 3 triangles the point would divide the
             // arrow triangle into if the point was in the interior
-            int area1 = triangle2xArea(x, y, leftBaseX, leftBaseY, rightBaseX, rightBaseY);
-            int area2 = triangle2xArea(GetX(), GetY(), x, y, rightBaseX, rightBaseY);
-            int area3 = triangle2xArea(GetX(), GetY(), leftBaseX, leftBaseY, x, y);
+            int area1 = triangle2xArea(x, y, clickAreaLeftBaseX, clickAreaLeftBaseY, clickAreaRightBaseX, clickAreaRightBaseY);
+            int area2 = triangle2xArea(clickAreaTipX, clickAreaTipY, x, y, clickAreaRightBaseX, clickAreaRightBaseY);
+            int area3 = triangle2xArea(clickAreaTipX, clickAreaTipY, clickAreaLeftBaseX, clickAreaLeftBaseY, x, y);
             // if the sum of the areas is greater than the area of the whole triangle,
             // then the point can't be inside the arrow triangle.
-            int bigArea = triangle2xArea(GetX(), GetY(), leftBaseX, leftBaseY, rightBaseX, rightBaseY);
+            int bigArea = triangle2xArea(clickAreaTipX, clickAreaTipY, clickAreaLeftBaseX, clickAreaLeftBaseY, clickAreaRightBaseX, clickAreaRightBaseY);
             return area1 + area2 + area3 <= bigArea;
         }
 
