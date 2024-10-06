@@ -2,7 +2,7 @@
  Controls
 --------------------------------
 
- == Neurons ==
+ ----- Neurons -----
 
 Add:	Menu buttons
 Move:	Left-click and drag
@@ -14,12 +14,13 @@ Bind current color to key: Ctrl + 1234567890
 Upper left number is the bias.
 Center right number is the output value.
 
- == Synapses ==
+ ----- Synapses -----
 
 Add:	Right-click
 Remove:	Shift + Left-click
+Enable/disable: Alt + Left-click
 
- == Misc ==
+ ----- Misc -----
 
 Open: Ctrl + O
 Save: Ctrl + S
