@@ -72,6 +72,7 @@
     <Compile Include="model\NeuronType.cs" />
     <Compile Include="ui\editarea\EditArea.cs" />
     <Compile Include="ui\editarea\DottedGradientLine.cs" />
+    <Compile Include="ui\editarea\GenericGradientLine.cs" />
     <Compile Include="ui\editarea\NeuronDescET.cs" />
     <Compile Include="ui\editarea\NeuronDescSET.cs" />
     <Compile Include="ui\editarea\NeuronBiasET.cs" />

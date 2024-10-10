@@ -137,6 +137,10 @@ namespace Einstein.ui.editarea
             else if (editArea.isPainting || IO.KEYS.IsModifierKeyDown(Keys.Control))
             {
                 NeuronDrawable.SetColorGroup(editArea.PaintColor);
+                foreach (BaseSynapse synapseTo in editArea.Brain.GetSynapsesTo(Neuron))
+                {
+                    editArea.GetSROf(synapseTo).SetColor(editArea.PaintColor);
+                }
             }
         }
 

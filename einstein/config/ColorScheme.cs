@@ -15,6 +15,7 @@ namespace Einstein.config
             Dark,
         }
 
+        public readonly Mode ColorMode;
         public readonly Color Background;
         public readonly Color MenuBackground;
         public readonly Color Text;
@@ -26,6 +27,7 @@ namespace Einstein.config
 
         public ColorScheme(Mode mode)
         {
+            ColorMode = mode;
             if (mode == Mode.Light)
             {
                 Background = Color.White;
@@ -47,6 +49,32 @@ namespace Einstein.config
                 SynapseTip = Color.FromArgb(127, 127, 127);
                 EditableTextBackgroundSelected = Color.FromArgb(64, 64, 128);
                 EditableTextBackgroundUnselected = Background;
+            }
+        }
+
+        public Color GetSynapseBaseTipColor(Color tipColor)
+        {
+            if (ColorMode == Mode.Light)
+            {
+                const float lighteningFactor = 0.3f; // lower is lighter
+                return Color.FromArgb(
+                    255 - (int)((255 - tipColor.R) * lighteningFactor),
+                    255 - (int)((255 - tipColor.G) * lighteningFactor),
+                    255 - (int)((255 - tipColor.B) * lighteningFactor)
+                    );
+            }
+            else if (ColorMode == Mode.Dark)
+            {
+                const float darkeningFactor = 0.3f; // lower is darker
+                return Color.FromArgb(
+                    (int)(tipColor.R * darkeningFactor),
+                    (int)(tipColor.G * darkeningFactor),
+                    (int)(tipColor.B * darkeningFactor)
+                    );
+            }
+            else
+            {
+                return tipColor; // robust fallback in the unlikely event a third color mode is added and I forget to update this
             }
         }
     }

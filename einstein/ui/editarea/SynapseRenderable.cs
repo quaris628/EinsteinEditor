@@ -139,6 +139,7 @@ namespace Einstein.ui.editarea
                 IO.RENDERER.Add(circleArrow, ARROW_LAYER);
             }
 
+            SetColor(To.Neuron.ColorGroup);
             UpdateTipPositionToToNeuron();
             editArea.FinishSynapse(Synapse);
         }

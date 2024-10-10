@@ -10,10 +10,27 @@ using System.Threading.Tasks;
 
 namespace Einstein.ui.editarea
 {
-    public class DottedGradientLine : Line
+    public class DottedGradientLine : Line, GenericGradientLine
     {
-        public Color StartColor { get; private set; }
-        public Color EndColor { get; private set; }
+        private Color _startColor;
+        public Color StartColor {
+            get { return _startColor; }
+            set
+            {
+                _startColor = value;
+                FlagChange();
+            }
+        }
+        private Color _endColor;
+        public Color EndColor
+        {
+            get { return _endColor; }
+            set
+            {
+                _endColor = value;
+                FlagChange();
+            }
+        }
         public int Width { get; private set; }
         public int DotDistance { get; private set; }
         public int SpaceDistance { get; private set; }

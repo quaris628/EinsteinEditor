@@ -10,10 +10,28 @@ using System.Threading.Tasks;
 
 namespace Einstein.ui.editarea
 {
-    public class GradientLine : Line
+    public class GradientLine : Line, GenericGradientLine
     {
-        public Color StartColor { get; private set; }
-        public Color EndColor { get; private set; }
+        private Color _startColor;
+        public Color StartColor
+        {
+            get { return _startColor; }
+            set
+            {
+                _startColor = value;
+                FlagChange();
+            }
+        }
+        private Color _endColor;
+        public Color EndColor
+        {
+            get { return _endColor; }
+            set
+            {
+                _endColor = value;
+                FlagChange();
+            }
+        }
         public int Width { get; private set; }
 
         public GradientLine(int startX, int startY, int endX, int endY, Color startColor, Color endColor, int width) : base(startX, startY, endX, endY)

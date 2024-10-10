@@ -1,4 +1,5 @@
 ﻿using Einstein.config;
+using Einstein.model;
 using phi.graphics;
 using phi.graphics.drawables;
 using phi.io;
@@ -88,6 +89,23 @@ namespace Einstein.ui.editarea
                     LINE_WIDTH * 2,
                     LINE_WIDTH);
                 IO.RENDERER.Add(line, layer);
+            }
+        }
+
+        public virtual void SetColor(Color color)
+        {
+            if (color == BaseNeuron.DEFAULT_COLOR_GROUP)
+            {
+                (line as GenericGradientLine).StartColor = EinsteinConfig.COLOR_MODE.SynapseBase;
+                (line as GenericGradientLine).EndColor = EinsteinConfig.COLOR_MODE.SynapseTip;
+                arrow.SetPen(new Pen(EinsteinConfig.COLOR_MODE.SynapseTip, LINE_WIDTH));
+            }
+            else
+            {
+                Color adjustedBaseColor = EinsteinConfig.COLOR_MODE.GetSynapseBaseTipColor(color);
+                (line as GenericGradientLine).StartColor = adjustedBaseColor;
+                (line as GenericGradientLine).EndColor = color;
+                arrow.SetPen(new Pen(color, LINE_WIDTH));
             }
         }
 
