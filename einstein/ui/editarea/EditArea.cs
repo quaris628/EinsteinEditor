@@ -17,7 +17,7 @@ namespace Einstein.ui.editarea
         // must be exact reciprocals of each other
         public const float ZOOM_IN_RATIO = 1.25f;
         public const float ZOOM_OUT_RATIO = 0.8f;
-        public const int ZOOM_MIN_LEVEL = -32;
+        public const int ZOOM_MIN_LEVEL = -16;
         public const int ZOOM_MAX_LEVEL = 8;
 
         public BaseBrain Brain { get; private set; }
@@ -283,8 +283,6 @@ namespace Einstein.ui.editarea
                 AddSynapse(synapse);
             }
 
-            AutoArrange();
-
             if (neuronIndexToNR.Any() && neuronIndexToNR.First().Value.Neuron is JsonNeuron)
             {
                 foreach (NeuronRenderable nr in neuronIndexToNR.Values)
@@ -388,6 +386,13 @@ namespace Einstein.ui.editarea
 
         public void ResetZoomLevel()
         {
+            int editAreaCenterX = GetX() + GetWidth() / 2;
+            int editAreaCenterY = GetY() + GetHeight() / 2;
+            int leftBound = GetX() + NeuronDrawable.CIRCLE_RADIUS + EinsteinConfig.PAD * 2;
+            int rightBound = GetX() + GetWidth() - NeuronDrawable.CIRCLE_RADIUS - EinsteinConfig.PAD * 2;
+            int upperBound = GetY() + NeuronDrawable.CIRCLE_RADIUS + EinsteinConfig.PAD * 2;
+            int lowerBound = GetY() + GetHeight() - NeuronDrawable.CIRCLE_RADIUS - NeuronDrawable.TEXT_MIN_HEIGHT - EinsteinConfig.PAD * 2;
+
             // re-center view
             int minX = int.MaxValue;
             int maxX = int.MinValue;
@@ -404,31 +409,46 @@ namespace Einstein.ui.editarea
             }
             int neuronsCenterX = (minX + maxX) / 2;
             int neuronsCenterY = (minY + maxY) / 2;
-            int editAreaCenterX = GetX() + GetWidth() / 2;
-            int editAreaCenterY = GetY() + GetHeight() / 2;
             ShiftView(editAreaCenterX - neuronsCenterX, editAreaCenterY - neuronsCenterY);
 
-            // undo zoom
-            if (zoomLevel == 0) { return; }
-            float ratio;
-            if (zoomLevel > 0) // if we are currently zoomed out
+            // "Zoom" in and out by repositioning neurons
+            minX = int.MaxValue;
+            maxX = int.MinValue;
+            minY = int.MaxValue;
+            maxY = int.MinValue;
+            foreach (NeuronRenderable nr in neuronIndexToNR.Values)
             {
-                // ratio = ZOOM_IN_RATIO ^ zoomLevel
-                ratio = 1f;
-                for (int i = 0; i < zoomLevel; i++)
-                {
-                    ratio *= ZOOM_IN_RATIO;
-                }
+                int x = nr.NeuronDrawable.GetCircleCenterX();
+                int y = nr.NeuronDrawable.GetCircleCenterY();
+                minX = Math.Min(x, minX);
+                minY = Math.Min(y, minY);
+                maxX = Math.Max(x, maxX);
+                maxY = Math.Max(y, maxY);
             }
-            else // if we are currently zoomed in
+
+            float leftZoomRatio = (editAreaCenterX - leftBound) / (float)(editAreaCenterX - minX);
+            float rightZoomRatio = (rightBound - editAreaCenterX) / (float)(maxX - editAreaCenterX);
+            float upperZoomRatio = (editAreaCenterY - upperBound) / (float)(editAreaCenterY - minY);
+            float lowerZoomRatio = (lowerBound - editAreaCenterY) / (float)(maxY - editAreaCenterY);
+
+            float ratio = int.MaxValue;
+            if (0 < leftZoomRatio && leftZoomRatio < ratio)
             {
-                // ratio = ZOOM_OUT_RATIO ^ -zoomLevel
-                ratio = 1f;
-                for (int i = 0; i < -zoomLevel; i++)
-                {
-                    ratio *= ZOOM_OUT_RATIO;
-                }
+                ratio = leftZoomRatio;
             }
+            if (0 < rightZoomRatio && rightZoomRatio < ratio)
+            {
+                ratio = rightZoomRatio;
+            }
+            if (0 < upperZoomRatio && upperZoomRatio < ratio)
+            {
+                ratio = upperZoomRatio;
+            }
+            if (0 < lowerZoomRatio && lowerZoomRatio < ratio)
+            {
+                ratio = lowerZoomRatio;
+            }
+
             foreach (NeuronRenderable nr in neuronIndexToNR.Values)
             {
                 // Make the distance to the mouse pointer a fraction of what it was
@@ -439,6 +459,7 @@ namespace Einstein.ui.editarea
                 nr.NeuronDrawable.SetCircleCenterXY((int)(editAreaCenterX + dx + 0.5f), (int)(editAreaCenterY + dy + 0.5f));
                 nr.Reposition();
             }
+
             zoomLevel = 0;
         }
 

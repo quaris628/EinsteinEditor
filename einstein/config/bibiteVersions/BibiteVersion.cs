@@ -193,8 +193,8 @@ namespace Einstein.config.bibiteVersions
 
         protected const string BASE_36_DIGITS = "0123456789abcdefghijklmnopqrstuvwxyz";
         // inclusive
-        protected const int MAX_POS = (36 * 36 * 36) / 2 - 1;
-        protected const int MIN_POS = -(36 * 36 * 36) / 2;
+        public const int MAX_POS = (36 * 36 * 36) / 2 - 1;
+        public const int MIN_POS = -(36 * 36 * 36) / 2;
 
         protected virtual string DiagramPositionToDescStrPiece(int pos)
         {

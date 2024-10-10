@@ -140,12 +140,46 @@ namespace Einstein.model.json
                 }
             }
 
+            // normalize the diagram positions if necessary
+            // calculate max positions
+            int absMaxPos = 0;
+            foreach (JsonNeuron neuron in allNeurons)
+            {
+                if (absMaxPos < Math.Abs(neuron.DiagramX))
+                {
+                    absMaxPos = Math.Abs(neuron.DiagramX);
+                }
+                if (absMaxPos < Math.Abs(neuron.DiagramY))
+                {
+                    absMaxPos = Math.Abs(neuron.DiagramY);
+                }
+            }
+
+            // Could probably be more efficient, but meh
+            int numScaleDownBitShifts = 0;
+            while (absMaxPos >= BibiteVersion.MAX_POS)
+            {
+                absMaxPos = absMaxPos >> 1;
+                numScaleDownBitShifts++;
+            }
+
             string[] neuronJsons = new string[allNeurons.Count];
             int i = 0;
             foreach (JsonNeuron neuron in allNeurons)
             {
                 oldNewNeuronIndicesMap[neuron.Index] = i;
-                JsonNeuron.RawJsonFields jsonFields = new JsonNeuron.RawJsonFields(neuron);
+                JsonNeuron scaledNeuron;
+                if (numScaleDownBitShifts > 0)
+                {
+                    scaledNeuron = new JsonNeuron(neuron);
+                    scaledNeuron.DiagramX = neuron.DiagramX >> numScaleDownBitShifts;
+                    scaledNeuron.DiagramY = neuron.DiagramY >> numScaleDownBitShifts;
+                }
+                else
+                {
+                    scaledNeuron = neuron;
+                }
+                JsonNeuron.RawJsonFields jsonFields = new JsonNeuron.RawJsonFields(scaledNeuron);
                 jsonFields.index = i;
                 neuronJsons[i] = jsonFields.ToString(bibiteVersion);
                 i++;
