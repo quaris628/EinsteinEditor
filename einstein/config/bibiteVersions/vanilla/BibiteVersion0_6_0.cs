@@ -117,7 +117,8 @@ namespace Einstein.config.bibiteVersions.vanilla
         protected override bool IsMatchForVersionName(string bibitesVersionName)
         {
             return bibitesVersionName.Equals("0.6")
-                    || bibitesVersionName.Equals("0.6.0");
+                    || bibitesVersionName.Equals("0.6.0")
+                    || bibitesVersionName.Equals("0.6.0.1");
         }
 
         #endregion Version Name Matching
