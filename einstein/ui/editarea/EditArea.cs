@@ -30,7 +30,6 @@ namespace Einstein.ui.editarea
         private Action<BaseNeuron> onRemove;
         private bool disableOnRemove;
         private Dictionary<(int, int), SynapseRenderable> synapseIndicesToSR;
-        private Dictionary<int, int> indexToLayer;
         private SynapseRenderable startedSynapse;
         private int nextHiddenNeuronIndex;
         private bool justFinishedSynapse;
@@ -445,6 +444,8 @@ namespace Einstein.ui.editarea
 
         // ----- Auto-Arrange neuron renderables -----
 
+        // This is used to sort all the different types of layers.
+        // NeverOutputsToInput is leftmost, NeverOutputsFromOutput is rightmost, etc.
         private enum LayerType
         {
             NeverOutputsToInput = -0x60000000,    // 111
@@ -459,14 +460,13 @@ namespace Einstein.ui.editarea
         {
             GetLayer = 0x1fffffff,                // 0001111...
             GetType = -0x60000000,                // 111
-            MidValue = 0x10000000,                // 0001
+            MidValue = 0x10000000,                // 0001 (value that is perfectly in the middle of the range)
             IsNeverOutputs = 0x20000000,          // 001 (currently unused)
         }
 
         public void AutoArrange()
         {
             ResetZoomLevel();
-            indexToLayer = new Dictionary<int, int>();
 
             LinkedList<BaseNeuron> inputNeurons = new LinkedList<BaseNeuron>();
             LinkedList<BaseNeuron> outputNeurons = new LinkedList<BaseNeuron>();
@@ -487,6 +487,7 @@ namespace Einstein.ui.editarea
                 }
             }
 
+            Dictionary<int, int> indexToLayer = new Dictionary<int, int>();
             // assign layers of hidden neurons
             // note that later assignments overwrite the earlier assignments
             foreach (BaseNeuron hiddenNeuron in hiddenNeurons)
@@ -519,49 +520,149 @@ namespace Einstein.ui.editarea
                 indexToLayer[inNeuron.Index] = ((int)LayerType.Input | (int)LayerTypeMasks.MidValue);
             }
 
-            // Count number of neurons in each layer
-            Dictionary<int, int> layerToTotalNeurons = new Dictionary<int, int>();
+            // assign vertical groups (all neurons)
+            Dictionary<int, int> indexToVerticalGroup = new Dictionary<int, int>();
+            Dictionary<int, HashSet<int>> verticalGroupToIndexes = new Dictionary<int, HashSet<int>>();
+            int verticalGroupCount = 0;
+            void assignVerticalGroups(int startingNeuronIndex)
+            {
+                if (!indexToVerticalGroup.ContainsKey(startingNeuronIndex))
+                {
+                    // Create new vertical group
+                    verticalGroupToIndexes.Add(verticalGroupCount, new HashSet<int>());
+
+                    // Add this neuron and all of the neurons linked to it to this new vertical group
+                    // (This could include other outputs too)
+                    HashSet<int> linkedNeuronIndexes = new HashSet<int>
+                    {
+                        startingNeuronIndex
+                    };
+                    while (linkedNeuronIndexes.Any())
+                    {
+                        int neuronIndex = linkedNeuronIndexes.First();
+                        linkedNeuronIndexes.Remove(neuronIndex);
+
+                        indexToVerticalGroup.Add(neuronIndex, verticalGroupCount);
+                        verticalGroupToIndexes[verticalGroupCount].Add(neuronIndex);
+
+                        foreach (BaseSynapse synapse in Brain.GetSynapsesFrom(neuronIndex))
+                        {
+                            int linkedNeuronIndex = synapse.To.Index;
+                            if (!indexToVerticalGroup.ContainsKey(linkedNeuronIndex))
+                            {
+                                linkedNeuronIndexes.Add(linkedNeuronIndex);
+                            }
+                        }
+                        foreach (BaseSynapse synapse in Brain.GetSynapsesTo(neuronIndex))
+                        {
+                            int linkedNeuronIndex = synapse.From.Index;
+                            if (!indexToVerticalGroup.ContainsKey(linkedNeuronIndex))
+                            {
+                                linkedNeuronIndexes.Add(linkedNeuronIndex);
+                            }
+                        }
+                    }
+                    verticalGroupCount++;
+                }
+            }
+            // Assign outputs first!
+            foreach (BaseNeuron outNeuron in outputNeurons)
+            {
+                assignVerticalGroups(outNeuron.Index);
+            }
+            // Then cover the rest (this could be way more efficient but whatever)
+            foreach (BaseNeuron neuron in Brain.Neurons)
+            {
+                assignVerticalGroups(neuron.Index);
+            }
+
+            // Count max number of neurons in a layer, for each vertical group
+            Dictionary<(int, int), int> vgLayerToNumNeurons = new Dictionary<(int, int), int>();
             foreach (BaseNeuron neuron in Brain.Neurons)
             {
                 int layer = indexToLayer[neuron.Index];
-                layerToTotalNeurons[layer] = layerToTotalNeurons.ContainsKey(layer) ? layerToTotalNeurons[layer] + 1 : 1;
+                int verticalGroup = indexToVerticalGroup[neuron.Index];
+                if (!vgLayerToNumNeurons.TryGetValue((verticalGroup, layer), out int numNeurons))
+                {
+                    numNeurons = 0;
+                }
+                vgLayerToNumNeurons[(verticalGroup, layer)] = numNeurons + 1;
+            }
+            Dictionary<int, int> vgToMaxNumNeuronsInLayer = new Dictionary<int, int>();
+            foreach ((int, int) cell in vgLayerToNumNeurons.Keys)
+            {
+                int numNeurons = vgLayerToNumNeurons[cell];
+                if (!vgToMaxNumNeuronsInLayer.TryGetValue(cell.Item1, out int maxNumNeurons)
+                    || maxNumNeurons < numNeurons)
+                {
+                    maxNumNeurons = numNeurons;
+                }
+                vgToMaxNumNeuronsInLayer[cell.Item1] = maxNumNeurons;
+            }
+            float totalVerticalNeuronSpaces = 0;
+            foreach (int maxNumNeurons in vgToMaxNumNeuronsInLayer.Values)
+            {
+                totalVerticalNeuronSpaces += maxNumNeurons;
+            }
+
+            Dictionary<int, int> layerToTotalNeuronSpaces = new Dictionary<int, int>();
+            foreach (BaseNeuron neuron in Brain.Neurons)
+            {
+                int layer = indexToLayer[neuron.Index];
+                layerToTotalNeuronSpaces[layer] = layerToTotalNeuronSpaces.ContainsKey(layer) ? layerToTotalNeuronSpaces[layer] + 1 : 1;
             }
 
             int totalWidth = EditArea.GetWidth() - NeuronDrawable.CIRCLE_DIAMETER;
             int totalHeight = EditArea.GetHeight() - NeuronDrawable.CIRCLE_DIAMETER;
 
-            // TODO? find a better vertical order for each layer to have its neurons be put in?
-
             // horizontally divide up layers
             // vertically divide up neurons in each layer
-            if (layerToTotalNeurons.Count == 0) { return; } // avoid divide by 0
+            if (layerToTotalNeuronSpaces.Count == 0) { return; } // avoid divide by 0
             // used floats to not let rounding make everything get slightly further off from ideal
             // positions the further down and right you go
-            float eachWidth = totalWidth / (float)layerToTotalNeurons.Count;
+            float eachWidth = totalWidth / (float)layerToTotalNeuronSpaces.Count;
             float x = EditArea.GetX() + NeuronDrawable.CIRCLE_RADIUS - eachWidth / 2;
-            List<int> sortedLayers = layerToTotalNeurons.Keys.ToList();
+            Dictionary<int, float> vgToStartYPos = new Dictionary<int, float>();
+            float startYPos = 0;
+            foreach (int verticalGroup in vgToMaxNumNeuronsInLayer.Keys)
+            {
+                vgToStartYPos[verticalGroup] = startYPos;
+                startYPos += totalHeight * vgToMaxNumNeuronsInLayer[verticalGroup] / totalVerticalNeuronSpaces;
+            }
+            List<int> sortedLayers = layerToTotalNeuronSpaces.Keys.ToList();
             sortedLayers.Sort();
             foreach (int layer in sortedLayers)
             {
-                if (layerToTotalNeurons[layer] == 0) { continue; }
+                if (layerToTotalNeuronSpaces[layer] == 0) { continue; }
                 x += eachWidth;
-                float eachHeight = totalHeight / (float)layerToTotalNeurons[layer];
-                float y = EditArea.GetY() + NeuronDrawable.CIRCLE_RADIUS - eachHeight / 2;
 
-                // maybe there's a more efficient way but meh, "this is fine"
-                foreach (BaseNeuron neuron in Brain.Neurons)
+                for (int verticalGroup = 0; verticalGroup < verticalGroupCount; verticalGroup++)
                 {
-                    if (indexToLayer[neuron.Index] == layer)
+                    if (!vgLayerToNumNeurons.TryGetValue((verticalGroup, layer), out int numNeurons))
                     {
-                        y += eachHeight;
-                        // position neuron
-                        neuronIndexToNR[neuron.Index].Reposition((int)x, (int)y);
+                        continue; // there are zero neurons in this cell
+                    }
+
+                    float verticalGroupHeight = totalHeight * vgToMaxNumNeuronsInLayer[verticalGroup] / totalVerticalNeuronSpaces;
+                    float eachHeight = verticalGroupHeight / numNeurons;
+                    float y = vgToStartYPos[verticalGroup] + NeuronDrawable.CIRCLE_RADIUS - eachHeight / 2;
+
+                    // maybe there's a more efficient way but meh, "this is fine"
+                    HashSet<int> neuronIndexesInGroup = verticalGroupToIndexes[verticalGroup];
+                    foreach (int neuronIndex in neuronIndexesInGroup)
+                    {
+                        if (indexToLayer[neuronIndex] == layer)
+                        {
+                            y += eachHeight;
+                            // position neuron
+                            neuronIndexToNR[neuronIndex].Reposition((int)x, (int)y);
+                        }
                     }
                 }
             }
         }
 
-        public void AssignLayersBefore(Dictionary<int, int> layers,
+        private void AssignLayersBefore(Dictionary<int, int> layers,
             BaseNeuron toThisNeuron, int thisNeuronLayer,
             HashSet<int> dontAssign)
         {
@@ -587,7 +688,8 @@ namespace Einstein.ui.editarea
                 }
             }
         }
-        public void AssignLayersAfter(Dictionary<int, int> layers,
+
+        private void AssignLayersAfter(Dictionary<int, int> layers,
             BaseNeuron fromThisNeuron, int thisNeuronLayer,
             HashSet<int> dontAssign)
         {
