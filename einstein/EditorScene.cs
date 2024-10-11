@@ -161,6 +161,7 @@ namespace Einstein
                 .Build();
             editArea.Brain.OnChangeFlagged += (_container) => {
                 resaveButton.SetDisplaying(getResaveTargetFile() != null);
+                calcControls.onEditBrain();
             };
             resaveButton.SetDisplaying(false);
             saveToButton = new Button.ButtonBuilder(
@@ -636,8 +637,10 @@ namespace Einstein
             mostRecentSavedToFile = null;
             brain.OnChangeFlagged += (_container) => {
                 resaveButton.SetDisplaying(true);
+                calcControls.onEditBrain();
             };
             resaveButton.SetDisplaying(false);
+            calcControls.onEditBrain();
             bibiteNameText.SetMessage(getBb8NameText());
             bibiteVersionText.SetMessage(getBb8VersionText());
 

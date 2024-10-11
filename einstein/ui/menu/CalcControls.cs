@@ -55,6 +55,9 @@ namespace Einstein.ui.menu
 
         private Text deltaTimeMsg;
 
+        private Text neuronCountMsg;
+        private Text synapsesCountMsg;
+
         public CalcControls(EditArea editArea, int x, int y)
         {
             this.editArea = editArea;
@@ -161,6 +164,18 @@ namespace Einstein.ui.menu
                         EinsteinConfig.PAD + assumeFpsMsg.GetY() + assumeFpsMsg.GetHeight())
                     .Build();
 
+            neuronCountMsg = new TextBuilder(getNeuronCountMsg())
+                    .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
+                .WithFontSize(10f)
+                    .WithXY(x,
+                        EinsteinConfig.PAD + showValuesToggle.GetY() + showValuesToggle.GetHeight())
+                    .Build();
+            synapsesCountMsg = new TextBuilder(getSynapseCountMsg())
+                    .WithColor(new SolidBrush(EinsteinConfig.COLOR_MODE.Text))
+                .WithFontSize(10f)
+                    .WithXY(x,
+                        EinsteinConfig.PAD + neuronCountMsg.GetY() + neuronCountMsg.GetHeight())
+                    .Build();
         }
 
         public void Initialize()
@@ -187,6 +202,11 @@ namespace Einstein.ui.menu
             deltaTimeMsg.SetMessage(getDeltaTimeMsg());
             hideValues();
 
+            IO.RENDERER.Add(neuronCountMsg, LAYER);
+            neuronCountMsg.SetMessage(getNeuronCountMsg());
+            IO.RENDERER.Add(synapsesCountMsg, LAYER);
+            synapsesCountMsg.SetMessage(getSynapseCountMsg());
+
             IO.KEYS.Subscribe(calcNeuronValues, EinsteinConfig.Keybinds.CALCULATE);
         }
 
@@ -211,6 +231,9 @@ namespace Einstein.ui.menu
 
             IO.RENDERER.Remove(deltaTimeMsg);
 
+            IO.RENDERER.Remove(neuronCountMsg);
+            IO.RENDERER.Remove(synapsesCountMsg);
+
             IO.KEYS.Unsubscribe(calcNeuronValues, EinsteinConfig.Keybinds.CALCULATE);
         }
 
@@ -232,7 +255,10 @@ namespace Einstein.ui.menu
                 brainUpdateFactorText.SetDisplaying(true);
             }
             deltaTimeMsg.SetDisplaying(true);
-            
+
+            neuronCountMsg.SetDisplaying(false);
+            synapsesCountMsg.SetDisplaying(false);
+
         }
 
         private void hideValues()
@@ -250,6 +276,9 @@ namespace Einstein.ui.menu
             brainUpdateFactorText.SetDisplaying(false);
 
             deltaTimeMsg.SetDisplaying(false);
+
+            neuronCountMsg.SetDisplaying(true);
+            synapsesCountMsg.SetDisplaying(true);
         }
 
         public void OnBibiteVersionUpdate()
@@ -362,6 +391,26 @@ namespace Einstein.ui.menu
         private string getDeltaTimeMsg()
         {
             return $"{deltaTimePerTick:0.#####}s between ticks";
+        }
+
+        public void onEditBrain()
+        {
+            neuronCountMsg.SetMessage(getNeuronCountMsg());
+            synapsesCountMsg.SetMessage(getSynapseCountMsg());
+        }
+
+        private string getNeuronCountMsg()
+        {
+            int countHidden = editArea.Brain.Neurons.Where(
+                (neuron) => { return neuron.IsHidden(); }
+                ).Count();
+            return $"{countHidden} hidden neurons";
+        }
+
+        private string getSynapseCountMsg()
+        {
+            int countSynapses = editArea.Brain.Synapses.Count;
+            return $"{countSynapses} synapses";
         }
     }
 }
