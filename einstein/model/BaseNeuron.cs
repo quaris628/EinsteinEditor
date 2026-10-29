@@ -1,4 +1,5 @@
-﻿using Einstein.config.bibiteVersions;
+﻿using Einstein.config;
+using Einstein.config.bibiteVersions;
 using LibraryFunctionReplacements;
 using phi.other;
 using System;
@@ -176,17 +177,13 @@ namespace Einstein.model
             {
                 return GetDefaultDescription(Index);
             }
-            else if (!value.All(isValidCharForDesc))
+            else if (!value.All(EinsteinConfig.IsValidCharForNeuronDescFromFile))
             {
+                string invalidChars = string.Concat(value.Where(c => !EinsteinConfig.IsValidCharForNeuronDescFromFile(c)).Distinct());
                 throw new InvalidDescriptionException(
-                    "Neuron descriptions must be alphanumeric (except _ and -)");
+                    $"Description '{value}' contains the invalid character(s) {invalidChars}");
             }
             return value;
-        }
-
-        public static bool isValidCharForDesc(char c)
-        {
-            return char.IsLetterOrDigit(c) || c == '_' || c == '-';
         }
 
         public string getBiasAsStringForUI()

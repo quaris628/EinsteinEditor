@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Einstein.ui;
 using phi;
+using phi.graphics.renderables;
 using phi.io;
 
 namespace Einstein.config
@@ -19,6 +20,19 @@ namespace Einstein.config
         public const string VERSION = "v1.17.0";
 
         public static readonly ColorScheme COLOR_MODE = new ColorScheme(ColorScheme.Mode.Dark);
+
+        // Characters allowed in neuron descriptions
+        public const string NEURON_DESC_ALLOWED_CHARS = EditableText.UPPERCASE_ALPHABET_CHARS
+            + EditableText.LOWERCASE_ALPHABET_CHARS + EditableText.NUMBER_CHARS + OTHER_ALLOWED_CHARS;
+        // do not add '-'; it's used as a delimiter for storing neuron locations
+        private const string OTHER_ALLOWED_CHARS = " *./;'";
+        // Einstein used to allow _ in descriptions only when loading from a file, for reasons I now forget, but it doesn't seem worth questioning
+        private const string CHARS_ONLY_ALLOWED_IN_FILE_LOAD = "_";
+        public static bool IsValidCharForNeuronDescFromFile(char c)
+        {
+            // This will probably be more performant than NEURON_DESC_ALLOWED_CHARS.Contains(c)
+            return char.IsLetterOrDigit(c) || OTHER_ALLOWED_CHARS.Contains(c) || CHARS_ONLY_ALLOWED_IN_FILE_LOAD.Contains(c);
+        }
 
         public class Keybinds
         {

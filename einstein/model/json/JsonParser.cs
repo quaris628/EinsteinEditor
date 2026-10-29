@@ -91,6 +91,7 @@ namespace Einstein.model.json
 
         public string getNextValue(string tag)
         {
+            // TODO improve handling of " characters in string fields. They would be escaped with \.
             string searchString = '"' + tag + "\":";
             int indexLeft = json.IndexOf(searchString, index);
             if (indexLeft < 0)

@@ -1,4 +1,5 @@
-﻿using Einstein.model;
+﻿using Einstein.config;
+using Einstein.model;
 using phi.graphics.drawables;
 using phi.graphics.renderables;
 using phi.io;
@@ -12,7 +13,6 @@ namespace Einstein.ui.editarea
 {
     public class NeuronDescET : EditableText
     {
-        public const string DESC_ALLOWED_CHARS = UPPERCASE_ALPHABET_CHARS + LOWERCASE_ALPHABET_CHARS + NUMBER_CHARS;
         public const int NOT_EDITING_LAYER = 7;
         public const int EDITING_LAYER = 11;
 
@@ -21,7 +21,7 @@ namespace Einstein.ui.editarea
 
         public NeuronDescET(Text text, BaseBrain brain, BaseNeuron neuron)
             : base(new EditableTextBuilder(text)
-                  .WithAllowedChars(DESC_ALLOWED_CHARS)
+                  .WithAllowedChars(EinsteinConfig.NEURON_DESC_ALLOWED_CHARS)
                   .WithEditingDisabled() // must 'select' before fully 'enable'd
                   .WithAnchor(text.GetCenterX(), text.GetY())
                   .WithAnchorPosition(AnchorPosition.TopCenter))
