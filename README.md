@@ -96,3 +96,10 @@ To modders who want to integrate:
  - Add support for your mod's different brains to Einstein.
    - If you can contact me (Quaris), I'll try to find time to do this for you!
    - if I can't do it for some reason... Take a look around einstein/config/bibiteVersions. Create a new bibite version class (see the bibiteVersions folder) that extends BibiteModdedVersion, and add it to ALL_VERSIONS in BibiteVersion. If you're doing something simple like adding an input/output neuron, you can look at how the existing versions (modded or unmodded) handle that and copy them. If you're doing more complex stuff, up to and including a complete overhaul of how brains work... good luck, I hope Einstein's code isn't unreadable!
+
+ -----
+
+__Credits__
+
+- MeltingDiamond - contributed code for supporting bibite versions 0.6.1 through 0.6.3
+- Many, many others - sharing sample bibite files from different versions, and giving ideas, bug reports, and other feedback
