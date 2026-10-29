@@ -209,6 +209,15 @@ namespace Einstein.model
         {
             return type == NeuronType.Mult ? 1 : 0;
         }
+
+        public float GetBiasMin()
+        {
+            return (Type == NeuronType.SoftLatch || Type == NeuronType.Inhibitory) ? 0.0001f : float.MinValue;
+        }
+        public float GetBiasMax()
+        {
+            return float.MaxValue;
+        }
     }
 
     public class InvalidIndexException : BrainException
