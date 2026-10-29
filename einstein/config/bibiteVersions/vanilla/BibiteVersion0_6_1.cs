@@ -82,7 +82,7 @@ namespace Einstein.config.bibiteVersions.vanilla
                 NeuronType.TanH, // Herding
                 NeuronType.TanH, // EggProduction
                 NeuronType.Sigmoid, // Want2Lay
-                NeuronType.TanH, // Want2Eat - Changed to a TanH (instead of Sigmoid)
+                NeuronType.TanH, // Want2Eat
                 NeuronType.Sigmoid, // Digestion
                 NeuronType.TanH, // Grab
                 NeuronType.Sigmoid, // ClkReset
@@ -148,7 +148,7 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         #region Converting Between Versions
 
-        // Changes from 0.6a18:
+        // Changes from 0.6.0:
         // Nothing.
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
@@ -157,7 +157,7 @@ namespace Einstein.config.bibiteVersions.vanilla
             {
                 throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
             }
-            // To 0.6a18
+            // To 0.6.0
             // deep copy with no changes
             return new JsonBrain(brain, V0_6_0a18);
         }
