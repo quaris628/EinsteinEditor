@@ -167,7 +167,8 @@ namespace Einstein.config.bibiteVersions.vanilla
         #region Converting Between Versions
 
         // Changes from 0.6a13thru15:
-        // None (except for synapse order calculations)
+        // - Synapse order calculations
+        // - Want2Eat changed type from Sigmoid to TanH
 
         protected override BaseBrain CreateVersionDownCopyOf(BaseBrain brain)
         {
