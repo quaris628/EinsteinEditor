@@ -122,30 +122,6 @@ namespace Einstein.config.bibiteVersions.vanilla
 
         #endregion Version Name Matching
 
-        #region Neuron diagram positions
-
-        public override bool GetNeuronDiagramPositionFromRawJsonFields(RawJsonFields fields, ref int x, ref int y)
-        {
-            // fall back to inov if it's not in the description
-            return GetNeuronDiagramPositionFromDescription(fields, ref x, ref y)
-                || GetNeuronDiagramPositionFromInov(fields, ref x, ref y);
-        }
-        public override void SetNeuronDiagramPositionInRawJsonFields(RawJsonFields fields, int x, int y)
-        {
-            SetNeuronDiagramPositionInDesc(fields, x, y);
-            // set inov for diagram position if and only if the neuron type is hidden
-            if (new JsonNeuron(fields, INSTANCE).IsHidden())
-            {
-                SetNeuronDiagramPositionInInov(fields, x, y);
-            }
-            else
-            {
-                fields.inov = fields.index + 1;
-            }
-        }
-
-        #endregion Neuron diagram positions
-
         #region Converting Between Versions
 
         // Changes from 0.6.0:
