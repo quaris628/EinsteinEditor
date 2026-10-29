@@ -489,6 +489,37 @@ namespace Einstein.config.bibiteVersions
             return index;
         }
 
+        /// <summary>
+        /// If sourceBrain has any hidden neurons with a new type that's not supported in the destination version, throws CannotConvertException.
+        /// </summary>
+        /// <param name="sourceBrain"></param>
+        /// <param name="destinationVersion"></param>
+        /// <param name="newNeuronTypes"></param>
+        /// <exception cref="CannotConvertException"></exception>
+        protected static void CheckForHiddenNeuronsWithNewType(BaseBrain sourceBrain, BibiteVersion destinationVersion, IEnumerable<NeuronType> newNeuronTypes)
+        {
+            IEnumerable<BaseNeuron> neuronsWithNewType = sourceBrain.Neurons.Where(
+                neuron => neuron.IsHidden() && newNeuronTypes.Contains(neuron.Type));
+            if (!neuronsWithNewType.Any())
+            {
+                // All good
+                return;
+            }
+
+            StringBuilder s = new StringBuilder(
+                $"This brain contains the following neurons whose type is " +
+                $"not supported in bibites version '{destinationVersion.VERSION_NAME}'. " +
+                $"These neurons must be removed before the brain can be converted to this version.\n");
+            foreach (BaseNeuron neuron in neuronsWithNewType)
+            {
+                s.Append(neuron.Description);
+                s.Append(" (Type: ");
+                s.Append(neuron.Type);
+                s.Append(")\n");
+            }
+            throw new CannotConvertException(s.ToString());
+        }
+        
         #endregion Converting Between Versions
     }
 }
