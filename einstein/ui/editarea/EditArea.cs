@@ -32,7 +32,6 @@ namespace Einstein.ui.editarea
         private Dictionary<(int, int), SynapseRenderable> synapseIndicesToSR;
         private SynapseRenderable startedSynapse;
         private int nextHiddenNeuronIndex;
-        private bool justFinishedSynapse;
         private int zoomLevel;
         private bool shiftView;
         private int shiftViewInitX;
@@ -49,7 +48,6 @@ namespace Einstein.ui.editarea
             disableOnRemove = false;
             synapseIndicesToSR = new Dictionary<(int, int), SynapseRenderable>();
             nextHiddenNeuronIndex = bibiteVersion.HIDDEN_NODES_INDEX_MIN;
-            justFinishedSynapse = false;
             Brain = brain;
             zoomLevel = 0;
             shiftView = false;
@@ -60,18 +58,18 @@ namespace Einstein.ui.editarea
         {
             IO.MOUSE.MID_SCROLL_UP.Subscribe(ZoomIn);
             IO.MOUSE.MID_SCROLL_DOWN.Subscribe(ZoomOut);
-            IO.MOUSE.LEFT_DOWN.Subscribe(EnableShiftingView);
+            IO.MOUSE.RIGHT_DOWN.Subscribe(EnableShiftingView);
             IO.MOUSE.MOVE.Subscribe(ShiftViewTo);
-            IO.MOUSE.LEFT_UP.Subscribe(DisableShiftingView);
+            IO.MOUSE.RIGHT_UP.Subscribe(DisableShiftingView);
         }
 
         public void Uninitialize()
         {
             IO.MOUSE.MID_SCROLL_UP.Unsubscribe(ZoomIn);
             IO.MOUSE.MID_SCROLL_DOWN.Unsubscribe(ZoomOut);
-            IO.MOUSE.LEFT_DOWN.Unsubscribe(EnableShiftingView);
+            IO.MOUSE.RIGHT_DOWN.Unsubscribe(EnableShiftingView);
             IO.MOUSE.MOVE.Unsubscribe(ShiftViewTo);
-            IO.MOUSE.LEFT_UP.Unsubscribe(DisableShiftingView);
+            IO.MOUSE.RIGHT_UP.Unsubscribe(DisableShiftingView);
         }
 
         // ----- Manage neurons -----
@@ -145,10 +143,8 @@ namespace Einstein.ui.editarea
         // For starting to add a synapse via the UI
         public void StartSynapse(NeuronRenderable from, int x, int y)
         {
-            if (justFinishedSynapse || startedSynapse != null)
+            if (startedSynapse != null)
             {
-                // don't start a new synapse every time you complete one
-                justFinishedSynapse = false;
                 return;
             }
             startedSynapse = new SynapseRenderable(this, from, x, y);
@@ -168,7 +164,6 @@ namespace Einstein.ui.editarea
 
             synapseIndicesToSR.Add((synapse.From.Index, synapse.To.Index), startedSynapse);
             startedSynapse = null;
-            justFinishedSynapse = true;
         }
 
         // For programmatically adding a synapse (e.g. during loading)
@@ -179,11 +174,9 @@ namespace Einstein.ui.editarea
             SynapseRenderable sr = new SynapseRenderable(this, synapse, from, to);
 
             SynapseRenderable oldStartedSynapse = startedSynapse;
-            bool oldJustFinishedSynapse = justFinishedSynapse;
             startedSynapse = sr;
             sr.Initialize(); // Calls FinishSynapse, which calls Brain.Add(synapse)
             startedSynapse = oldStartedSynapse;
-            justFinishedSynapse = oldJustFinishedSynapse;
         }
 
         public void RemoveSynapse(BaseSynapse synapse)
@@ -799,7 +792,6 @@ namespace Einstein.ui.editarea
         {
             IO.FRAME_TIMER.QueueUninit(startedSynapse.Uninitialize);
             startedSynapse = null;
-            justFinishedSynapse = clickedOnNeuron;
         }
         public NeuronRenderable GetNROf(BaseNeuron neuron)
         {

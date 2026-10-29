@@ -73,15 +73,15 @@ namespace Einstein.ui.editarea
                 IO.RENDERER.Add(biasText);
                 biasText.Initialize();
                 IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(MaybeRemoveOrPaint, biasText.GetDrawable());
-                IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(StartASynapse, biasText.GetDrawable());
+                IO.MOUSE.LEFT_UP.SubscribeOnDrawable(MaybeStartASynapse, biasText.GetDrawable());
             }
             IO.RENDERER.Add(valueText);
             valueText.Initialize();
             IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(MaybeRemoveOrPaint, valueText.GetDrawable());
-            IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(StartASynapse, valueText.GetDrawable());
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(MaybeStartASynapse, valueText.GetDrawable());
 
             IO.MOUSE.LEFT_CLICK.SubscribeOnDrawable(MaybeRemoveOrPaint, GetDrawable());
-            IO.MOUSE.RIGHT_UP.SubscribeOnDrawable(StartASynapse, GetDrawable());
+            IO.MOUSE.LEFT_UP.SubscribeOnDrawable(MaybeStartASynapse, GetDrawable());
             if (Neuron.IsHidden())
             {
                 NeuronDrawable.EnableEditingDescription(editArea.Brain);
@@ -98,16 +98,16 @@ namespace Einstein.ui.editarea
                 IO.RENDERER.Remove(biasText);
                 biasText.Uninitialize();
                 IO.MOUSE.LEFT_CLICK.UnsubscribeFromDrawable(MaybeRemoveOrPaint, biasText.GetDrawable());
-                IO.MOUSE.RIGHT_UP.UnsubscribeFromDrawable(StartASynapse, biasText.GetDrawable());
+                IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(MaybeStartASynapse, biasText.GetDrawable());
             }
             IO.RENDERER.Remove(valueText);
             valueText.Uninitialize();
             IO.MOUSE.LEFT_CLICK.UnsubscribeFromDrawable(MaybeRemoveOrPaint, valueText.GetDrawable());
-            IO.MOUSE.RIGHT_UP.UnsubscribeFromDrawable(StartASynapse, valueText.GetDrawable());
+            IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(MaybeStartASynapse, valueText.GetDrawable());
 
 
             IO.MOUSE.LEFT_CLICK.UnsubscribeFromDrawable(MaybeRemoveOrPaint, GetDrawable());
-            IO.MOUSE.RIGHT_UP.UnsubscribeFromDrawable(StartASynapse, GetDrawable());
+            IO.MOUSE.LEFT_UP.UnsubscribeFromDrawable(MaybeStartASynapse, GetDrawable());
             if (Neuron.IsHidden())
             {
                 NeuronDrawable.DisableEditingDescription();
@@ -129,7 +129,7 @@ namespace Einstein.ui.editarea
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (isRemoved) { return; }
-            if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
+            if (IO.KEYS.IsModifierKeyDown(Keys.Alt))
             {
                 editArea.RemoveNeuron(Neuron);
                 isRemoved = true;
@@ -144,10 +144,11 @@ namespace Einstein.ui.editarea
             }
         }
 
-        private void StartASynapse(int x, int y)
+        private void MaybeStartASynapse(int x, int y)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
             if (isRemoved) { return; }
+            if (!IO.KEYS.IsModifierKeyDown(Keys.Shift)) { return; }
             editArea.StartSynapse(this, x, y);
         }
 

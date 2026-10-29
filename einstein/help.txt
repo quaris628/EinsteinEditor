@@ -6,7 +6,8 @@
 
 Add:	Menu buttons
 Move:	Left-click and drag
-Remove:	Shift + Left-click
+Remove:	Alt + Left-click
+
 Paint: Ctrl + Left-click, or select "Paint Neurons" and Left-click
 Set brush color: Menu buttons, or 1234567890
 Bind current color to key: Ctrl + 1234567890
@@ -16,15 +17,20 @@ Center right number is the output value.
 
  ----- Synapses -----
 
-Add:	Right-click
-Remove:	Shift + Left-click
-Enable/disable: Alt + Left-click
+Start adding:    Shift + Left- or Right-click on "From" neuron
+Finalize adding: Left- or Right-click on "To" neuron
+Remove:          Alt + Left-click
+Enable/disable:  Ctrl + Shift + Left-click
 
  ----- Misc -----
 
-Open: Ctrl + O
-Save: Ctrl + S
-Save As: Ctrl + Shift + S
+Pan:       Right-click and drag
+Zoom:      Mouse Scroll, or buttons in bottom left
+
+Open:      Ctrl + O
+Save:      Ctrl + S
+Save As:   Ctrl + Shift + S
+
 Calculate: Space
 
 --------------------------------

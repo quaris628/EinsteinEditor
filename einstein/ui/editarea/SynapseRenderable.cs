@@ -78,6 +78,7 @@ namespace Einstein.ui.editarea
         {
             base.Initialize(ARROW_LAYER);
             IO.MOUSE.MOVE.Subscribe(UpdateTipXY);
+            IO.MOUSE.LEFT_UP.Subscribe(TryFinalize);
             IO.MOUSE.RIGHT_UP.Subscribe(TryFinalize);
             if (isFinalized)
             {
@@ -88,6 +89,7 @@ namespace Einstein.ui.editarea
         private void TryFinalize(int x, int y)
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
+            if (IO.KEYS.IsModifierKeyDown(Keys.Alt)) { return; }
             NeuronRenderable toNeuronR = editArea.HasNeuronAtPosition(x, y);
             if (toNeuronR == null
                 || (From == toNeuronR && From.Neuron.IsInput())
@@ -125,6 +127,7 @@ namespace Einstein.ui.editarea
             strengthText.Initialize();
 
             IO.MOUSE.MOVE.Unsubscribe(UpdateTipXY);
+            IO.MOUSE.LEFT_UP.Unsubscribe(TryFinalize);
             IO.MOUSE.RIGHT_UP.Unsubscribe(TryFinalize);
             IO.MOUSE.LEFT_UP.Subscribe(OnClickArrowRectangle);
             IO.MOUSE.LEFT_UP.SubscribeOnDrawable(OnClickStrengthText, strengthText.GetDrawable());
@@ -168,6 +171,7 @@ namespace Einstein.ui.editarea
             {
                 base.Uninitialize();
                 IO.MOUSE.MOVE.Unsubscribe(UpdateTipXY);
+                IO.MOUSE.LEFT_UP.Unsubscribe(TryFinalize);
                 IO.MOUSE.RIGHT_UP.Unsubscribe(TryFinalize);
             }
         }
@@ -280,11 +284,11 @@ namespace Einstein.ui.editarea
 
         private void OnClickArrow()
         {
-            if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
+            if (IO.KEYS.IsModifierKeyDown(Keys.Alt))
             {
                 editArea.RemoveSynapse(Synapse);
             }
-            else if (IO.KEYS.IsModifierKeyDown(Keys.Alt))
+            else if (IO.KEYS.IsModifierKeyDown(Keys.Control) && IO.KEYS.IsModifierKeyDown(Keys.Shift))
             {
                 Synapse.IsEnabled = !Synapse.IsEnabled;
                 if (From == To)
@@ -305,11 +309,11 @@ namespace Einstein.ui.editarea
         private void OnClickStrengthText()
         {
             if (!isInit) { throw new InvalidOperationException(this + " is not inited"); }
-            if (IO.KEYS.IsModifierKeyDown(Keys.Shift))
+            if (IO.KEYS.IsModifierKeyDown(Keys.Alt))
             {
                 editArea.RemoveSynapse(Synapse);
             }
-            else if (IO.KEYS.IsModifierKeyDown(Keys.Alt))
+            else if (IO.KEYS.IsModifierKeyDown(Keys.Control) && IO.KEYS.IsModifierKeyDown(Keys.Shift))
             {
                 Synapse.IsEnabled = !Synapse.IsEnabled;
                 SetIsSolid(Synapse.IsEnabled);
