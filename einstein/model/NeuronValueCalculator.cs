@@ -139,7 +139,13 @@ namespace Einstein.ui.editarea
                 {
                     sum += synapse.From.Value * synapse.Strength;
                 }
-                sum += neuron.Bias;
+                // An Integrator completely ignores its bias
+                // An Inhibitory's bias impacts its decay rate, but doesn't seem to be added to its inputs
+                //     (despite apparent bugs in the template editor that might make it seem like it is added)
+                if (neuron.Type != NeuronType.Integrator && neuron.Type != NeuronType.Inhibitory)
+                {
+                    sum += neuron.Bias;
+                }
                 return sum;
             }
         }
