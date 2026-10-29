@@ -12,7 +12,7 @@ namespace Einstein.config.bibiteVersions.vanilla
     {
         internal static readonly BibiteVersion0_6_2 INSTANCE = new BibiteVersion0_6_2();
 
-        private BibiteVersion0_6_2(): base(611)
+        private BibiteVersion0_6_2(): base(620)
         {
             VERSION_NAME = "0.6.2";
 
@@ -135,8 +135,11 @@ namespace Einstein.config.bibiteVersions.vanilla
                 throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
             }
             // To 0.6.1
-            // deep copy with no changes
-            return new JsonBrain(brain, V0_6_0a18);
+            // remove RotateSpeed
+            return ConversionRemoveIONeurons(brain, V0_6_1, new int[]
+            {
+                5, // RotateSpeed
+            });
         }
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
