@@ -134,6 +134,7 @@ namespace Einstein.ui.editarea
 
             if (From == To)
             {
+                // TODO: Circle arrows do not get colored the same as their neuron's painted color
                 IO.RENDERER.Remove(line);
                 IO.RENDERER.Remove(arrow);
                 circleArrow = new Sprite(
