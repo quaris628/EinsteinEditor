@@ -169,7 +169,9 @@ namespace Einstein.config.bibiteVersions.vanilla
             {
                 throw new ArgumentException($"source brain version ({brain.BibiteVersion.VERSION_NAME}) does not match the converting version ({VERSION_NAME})");
             }
-            throw new NoSuchVersionException("There is no supported version higher than " + VERSION_NAME);
+            // To 0.6.1
+            // deep copy with no changes
+            return new JsonBrain(brain, V0_6_1);
         }
 
         #endregion Converting Between Versions

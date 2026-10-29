@@ -12,7 +12,7 @@ namespace Einstein.config.bibiteVersions.vanilla
     {
         internal static readonly BibiteVersion0_6_1 INSTANCE = new BibiteVersion0_6_1();
 
-        private BibiteVersion0_6_1(): base(609)
+        private BibiteVersion0_6_1(): base(610)
         {
             VERSION_NAME = "0.6.1";
 
@@ -135,7 +135,7 @@ namespace Einstein.config.bibiteVersions.vanilla
             }
             // To 0.6.0
             // deep copy with no changes
-            return new JsonBrain(brain, V0_6_0a18);
+            return new JsonBrain(brain, V0_6_0);
         }
 
         protected override BaseBrain CreateVersionUpCopyOf(BaseBrain brain)
