@@ -142,7 +142,8 @@ namespace Einstein.ui.editarea
                 // An Integrator completely ignores its bias
                 // An Inhibitory's bias impacts its decay rate, but doesn't seem to be added to its inputs
                 //     (despite apparent bugs in the template editor that might make it seem like it is added)
-                if (neuron.Type != NeuronType.Integrator && neuron.Type != NeuronType.Inhibitory)
+                // A SoftLatch's bias impacts its softness, but is NOT added to its inputs
+                if (neuron.Type != NeuronType.Integrator && neuron.Type != NeuronType.Inhibitory && neuron.Type != NeuronType.SoftLatch)
                 {
                     sum += neuron.Bias;
                 }
@@ -180,6 +181,8 @@ namespace Einstein.ui.editarea
                     return Integrator(inputValue, previousOutput, dt);
                 case NeuronType.Inhibitory:
                     return Inhibitory(inputValue, previousInput, previousOutput, dt, bias);
+                case NeuronType.SoftLatch:
+                    return SoftLatch(inputValue, previousInput, previousOutput, bias);
                 default:
                     throw new ArgumentException("Invalid Neuron Type, cannot calculate");
             }
@@ -244,6 +247,67 @@ namespace Einstein.ui.editarea
             float dt, float bias)
         {
             return (float) (input - previousInput + previousOutput * Math.Exp(-bias * dt));
+        }
+
+        private static float SoftLatch(float input, float previousInput, float previousOutput, float bias)
+        {
+            // How the sim calculates soft latches doesn't seem to be documented very well.
+            // I'm taking these two sources as truth:
+            // 1. (Reportedly) shared by the creator: https://www.desmos.com/calculator/hwoqs4rnwd
+            // 2. The sim's actual code, as reported by DrBwaa in the bibite research discord:
+            /*
+                public static float SoftLatchFunc(Node node, float x)
+                {
+                    float baseActivation = node.baseActivation;
+                    float lastOutput = node.LastOutput;
+                    float num = node.LastInput;
+                    if (x >= 0.999f)
+                    {
+                        return 1f;
+                    }
+                    if (x <= 0.001f)
+                    {
+                        return 0f;
+                    }
+                    if (num >= 0.999f)
+                    {
+                        num = 1f;
+                    }
+                    if (num <= 0.001f)
+                    {
+                        num = 0f;
+                    }
+                    float num2 = 0f;
+                    if (x < num)
+                    {
+                        return lastOutput / (1f - Mathf.Exp((0f - baseActivation) * num)) * (1f - Mathf.Exp((0f - baseActivation) * x));
+                    }
+                    float num3 = (lastOutput - Mathf.Exp(baseActivation * (num - 1f))) / (1f - Mathf.Exp(baseActivation * (num - 1f)));
+                    return num3 + (1f - num3) * Mathf.Exp(baseActivation * (x - 1f));
+                }
+             */
+            // Also, both reportedly and based on my own testing,
+            // the bias is *NOT* added to the inputs.
+
+            if (input <= 0.001f || previousInput <= 0.001f)
+            {
+                return 0f;
+            }
+            else if (0.999f <= input || 0.999f <= previousInput)
+            {
+                return 1f;
+            }
+            else if (input <= previousInput)
+            {
+                double M = previousOutput / (1 - Math.Exp(-bias * previousInput));
+                return (float)(M * (1 - Math.Exp(-bias * input)));
+            }
+            else
+            {
+                double mExpPart = Math.Exp(bias * (previousInput - 1));
+                double m = (previousOutput - mExpPart) / (1 - mExpPart);
+                return (float)(m + (1 - m) * Math.Exp(bias * (input - 1)));
+            }
         }
 
         // Things that differ between bibite versions

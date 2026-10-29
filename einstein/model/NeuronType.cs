@@ -21,5 +21,6 @@ namespace Einstein.model
         Mult = 10,
         Integrator = 11,
         Inhibitory = 12,
+        SoftLatch = 13,
     }
 }
