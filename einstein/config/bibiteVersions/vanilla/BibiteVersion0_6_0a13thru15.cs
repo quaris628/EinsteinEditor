@@ -228,6 +228,12 @@ namespace Einstein.config.bibiteVersions.vanilla
                 brainOut.Add(new JsonSynapse((JsonNeuron)newFrom, (JsonNeuron)newTo, synapse.Strength));
             }
 
+            CheckForHiddenNeuronsWithNewType(brain, V0_6_0a10thru12, new NeuronType[]
+            {
+                NeuronType.Integrator,
+                NeuronType.Inhibitory,
+            });
+
             return brainOut;
         }
 
