@@ -865,7 +865,7 @@ namespace Einstein
         {
             if (File.Exists(HELP_FILE_PATH))
             {
-                Process.Start("notepad.exe", HELP_FILE_PATH);
+                Process.Start(Path.GetFullPath(HELP_FILE_PATH));
             }
             else
             {
